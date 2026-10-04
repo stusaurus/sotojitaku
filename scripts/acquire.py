@@ -50,7 +50,8 @@ def acquire():
         if category_failed:continue
         for raw_item in raw:
             item=raw_item.get('Item',raw_item);code=item.get('itemCode')
-            audit=next((x for x in audits if x.get('itemCode')==code and x.get('category')==c['id']),None)
+            item_url=canonical_item_url(item.get('itemUrl',''))
+            audit=next((x for x in audits if x.get('category')==c['id'] and ((x.get('itemCode') and x.get('itemCode')==code) or (x.get('itemUrl')==item_url and x.get('model','') in title))),None)
             if not audit or code in seen:continue
             title=item.get('itemName','')
             if any(x in title for x in equipment['global_exclude_terms']+c['exclude_any']):continue
@@ -65,7 +66,7 @@ def acquire():
             img=imgs[0] if imgs else ''
             if isinstance(img,dict):img=img.get('imageUrl','')
             if not img:continue
-            p={**audit,'name':title,'price':price,'available':str(item.get('availability'))=='1','affiliateUrl':item.get('affiliateUrl',''),'itemUrl':canonical_item_url(item.get('itemUrl','')),'image':img,'verifiedAt':now,'shipping':'included' if str(item.get('postageFlag'))=='0' else 'unknown'}
+            p={**audit,'itemCode':code,'name':title,'price':price,'available':str(item.get('availability'))=='1','affiliateUrl':item.get('affiliateUrl',''),'itemUrl':item_url,'image':img,'verifiedAt':now,'shipping':'included' if str(item.get('postageFlag'))=='0' else 'unknown'}
             products.append(p);seen.add(code)
     return {'version':1,'products':products,'status':'partial_error' if errors else 'ok','failedCategories':list(set(errors)),'updatedAt':now}
 if __name__=='__main__':
