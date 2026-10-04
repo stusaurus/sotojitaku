@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-04T10:30:23.674362+00:00",
+  "status": "partial",
+  "products": [],
+  "failed": {
+    "2000038857": "listing_rejected:missing_sales_evidence",
+    "2000031235": "listing_rejected:missing_sales_evidence",
+    "2000038141": "listing_rejected:missing_sales_evidence"
+  }
+}
