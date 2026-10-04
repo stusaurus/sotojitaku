@@ -2,7 +2,7 @@ name: Refresh audited camping products
 on:
   push:
     branches: [main]
-    paths: ['scripts/**', 'data/audited-products.json']
+    paths: ['scripts/**', 'data/audited-products.json', '.github/workflows/refresh-products.yml']
   workflow_dispatch:
   schedule:
     - cron: '15 21 * * *'
@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir public
           cp index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml .nojekyll public/
-          cp -r assets data guides public/
+          cp -r assets data camp-guide public/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public
