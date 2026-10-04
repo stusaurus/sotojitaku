@@ -47,7 +47,8 @@ def discover():
         return ''.join(ch for ch in str(value or '').upper() if ch.isalnum())
     for seed in seeds:
         try:
-            req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':seed['model'],'hits':20}),headers=HEADERS)
+            search_query=seed.get('searchQuery') or seed['model']
+            req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':search_query,'hits':20}),headers=HEADERS)
             result=fetch_with_retry(req)
             observed[seed['model']]=[{k:p.get(k) for k in ('product_no','name','shipping_match_name','shipping_included_url','shipping_included_price','review_count','review_average')} for p in (result.get('products') or [])[:10]]
             needle=model_key(seed['model'])
