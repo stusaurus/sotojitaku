@@ -2,6 +2,58 @@
   "version": 1,
   "products": [
     {
+      "category": "sleeping_bag",
+      "itemCode": "naturum-outdoor:10241000",
+      "model": "2000034774",
+      "query": "2000034774",
+      "family": "coleman-2000034774",
+      "name": "コールマン Coleman シュラフ パフォーマーIII/C5 オレンジ 2000034774",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 6380,
+      "spec": {
+        "comfort_temperature": 5,
+        "weight": 1400,
+        "packed_size": "φ24×41cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
+        "specification": "https://ec.coleman.co.jp/category/240/2000034774.html",
+        "fields": {
+          "comfort_temperature": "https://ec.coleman.co.jp/category/240/2000034774.html",
+          "weight": "https://ec.coleman.co.jp/category/240/2000034774.html",
+          "packed_size": "https://ec.coleman.co.jp/category/240/2000034774.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.85,
+        "comfort": 0.85,
+        "portability": 0.55,
+        "value": 0.8,
+        "trust": 0.9
+      },
+      "listingAuditedAt": "2026-10-04T09:21:15.165851+00:00",
+      "listingAudit": "型番一致、本体1点、新品通常販売、購入可能、実SKU1種類、税込単一価格を販売ページのitemInfoSkuで確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
+      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
+      "identityTerms": [
+        "パフォーマーIII/C5",
+        "2000034774"
+      ],
+      "price": 5600,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=500x500",
+      "verifiedAt": "2026-10-04T11:02:38.760646+00:00",
+      "shipping": "included",
+      "verificationMode": "exact_audit_worker_fallback"
+    },
+    {
       "category": "mat",
       "itemCode": "rugia:10029568",
       "model": "2000032354",
@@ -45,7 +97,7 @@
       "price": 8438,
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00ufobo.7cx6m8c8.g00ufobo.7cx6n4db/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frugia%2Frg861505d84a%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Frugia%2Fi%2F10029568%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/rugia/cabinet/onesell136/rg861505d84a.jpg?_ex=500x500",
-      "verifiedAt": "2026-10-04T10:47:02.397808+00:00",
+      "verifiedAt": "2026-10-04T11:02:38.760646+00:00",
       "shipping": "included",
       "verificationMode": "exact_audit_worker_fallback"
     },
@@ -91,7 +143,168 @@
       "price": 6600,
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40col-2000037321%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10409672%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sports-bazaar/cabinet/spopia-87/s-40col-2000037321_1.jpg?_ex=500x500",
-      "verifiedAt": "2026-10-04T10:47:02.397808+00:00",
+      "verifiedAt": "2026-10-04T11:02:38.760646+00:00",
+      "shipping": "included",
+      "verificationMode": "exact_audit_worker_fallback"
+    },
+    {
+      "category": "fire_pit",
+      "model": "2000031235",
+      "query": "コールマン ファイアーディスク 2000031235",
+      "family": "coleman-fire-disc-2000031235",
+      "name": "Coleman(コールマン) ファイアーディスク 2000031235",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 8690,
+      "spec": {
+        "weight": 1600,
+        "packed_size": "約φ46×8.5(h)cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2824592/",
+        "specification": "https://ec.coleman.co.jp/item/2000031235.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2000031235.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000031235.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.95,
+        "comfort": 0.8,
+        "portability": 0.6,
+        "value": 0.82,
+        "trust": 0.92
+      },
+      "childStable": false,
+      "listingAuditedAt": "2026-10-04T10:30:00+00:00",
+      "listingAudit": "JAN 4992826711122 と型番2000031235でColemanファイアーディスク本体を確認。楽天Workerの商品コード照合・固定販売URL・本体名称・価格・画像を毎日再確認し、アクセサリは除外。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2824592/",
+      "specSummary": "約1.6kg / 収納約φ46×8.5cm。焚き火時は耐熱シート・火ばさみ・耐熱グローブ・消火用の水も用意。",
+      "lookupCode": "4992826711122",
+      "brand": "Coleman",
+      "identityTerms": [
+        "ファイアーディスク",
+        "2000031235"
+      ],
+      "itemCode": "naturum-outdoor:10240394",
+      "price": 7907,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2824592%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10240394%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/028245/92_1.jpg?_ex=500x500",
+      "verifiedAt": "2026-10-04T11:02:38.760646+00:00",
+      "shipping": "included",
+      "verificationMode": "exact_audit_worker_fallback"
+    },
+    {
+      "category": "led_lantern",
+      "model": "2000034245",
+      "query": "2000034245",
+      "family": "coleman-batteryguard-1000-2000034245",
+      "name": "Coleman バッテリーガードLED ランタン/1000 レッド 2000034245",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 9995,
+      "spec": {
+        "brightness_lm": 1000,
+        "runtime_hours": 14,
+        "power_type": "アルカリ単1形乾電池×4",
+        "weight": 570
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/cross-one/csb812784247/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/",
+        "fields": {
+          "brightness_lm": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/",
+          "runtime_hours": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/",
+          "power_type": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/"
+        }
+      },
+      "scores": {
+        "fit": 0.92,
+        "beginner": 0.95,
+        "comfort": 0.9,
+        "portability": 0.72,
+        "value": 0.78,
+        "trust": 0.93
+      },
+      "listingAuditedAt": "2026-10-04T10:30:00+00:00",
+      "listingAudit": "型番2000034245のLEDランタン本体。メーカー公式でHigh 1000lm、High約14時間、単1形乾電池4本を確認。Workerが返す同一型番の本体販売ページへ固定し、名称・価格・URLを毎日再確認。",
+      "itemUrl": "https://item.rakuten.co.jp/cross-one/csb812784247/",
+      "specSummary": "High 1000lm / High約14時間 / 単1形乾電池4本 / 約570g。",
+      "identityTerms": [
+        "バッテリーガードLEDランタン/1000",
+        "1000ルーメン"
+      ],
+      "itemCode": "cross-one:10024752",
+      "price": 11364,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u2doo.7cx6m858.g00u2doo.7cx6ne19/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcross-one%2Fcsb812784247%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fcross-one%2Fi%2F10024752%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/cross-one/cabinet/onesell017/csb812784247.jpg?_ex=500x500",
+      "verifiedAt": "2026-10-04T11:02:38.760646+00:00",
+      "shipping": "included",
+      "verificationMode": "exact_audit_worker_fallback"
+    },
+    {
+      "category": "burner",
+      "model": "ST-310",
+      "query": "SOTO レギュレーターストーブ ST-310",
+      "family": "soto-regulator-stove-st310",
+      "name": "SOTO　レギュレーターストーブ ST-310 キャンプ　アウトドア",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 7480,
+      "spec": {
+        "fuel_type": "CB",
+        "ignition_type": "圧電点火方式",
+        "weight": 330
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/kkkkk/10000650/",
+        "specification": "https://shop.shinfuji.co.jp/products/st-310",
+        "fields": {
+          "fuel_type": "https://shop.shinfuji.co.jp/products/st-310",
+          "ignition_type": "https://shop.shinfuji.co.jp/products/st-310",
+          "weight": "https://shop.shinfuji.co.jp/products/st-310"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 0.9,
+        "comfort": 0.82,
+        "portability": 0.9,
+        "value": 0.86,
+        "trust": 0.95
+      },
+      "childStable": false,
+      "listingAuditedAt": "2026-10-04T10:30:00+00:00",
+      "listingAudit": "JAN 4953571073101 と型番ST-310でSOTOレギュレーターストーブ本体を確認。楽天Workerの商品コード照合・固定販売URL・本体名称・価格・画像を毎日再確認し、風防やアシスト用品は除外。",
+      "itemUrl": "https://item.rakuten.co.jp/kkkkk/10000650/",
+      "specSummary": "約330g / CB缶系燃料 / 圧電点火。屋外専用、ボンベ別売。",
+      "lookupCode": "4953571073101",
+      "brand": "SOTO",
+      "identityTerms": [
+        "レギュレーターストーブ",
+        "ST-310"
+      ],
+      "itemCode": "kkkkk:10000650",
+      "price": 7480,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tkebo.7cx6md8b.g00tkebo.7cx6n97a/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkkkkk%2F10000650%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fkkkkk%2Fi%2F10000650%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/kkkkk/cabinet/08349664/st310web210529_2.jpg?_ex=500x500",
+      "verifiedAt": "2026-10-04T11:02:38.760646+00:00",
       "shipping": "included",
       "verificationMode": "exact_audit_worker_fallback"
     },
@@ -137,23 +350,13 @@
       "price": 1950,
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tbwxo.7cx6m020.g00tbwxo.7cx6n3f6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fisles-store%2F0465-018877%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fisles-store%2Fi%2F10010274%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/isles-store/cabinet/amayahoo/11951020/0465-018877.jpg?_ex=500x500",
-      "verifiedAt": "2026-10-04T10:47:02.397808+00:00",
+      "verifiedAt": "2026-10-04T11:02:38.760646+00:00",
       "shipping": "included",
       "verificationMode": "exact_audit_worker_fallback"
     }
   ],
-  "status": "partial_error",
-  "failedCategories": [
-    "sleeping_bag",
-    "fire_pit",
-    "led_lantern",
-    "burner"
-  ],
-  "failureReasons": {
-    "sleeping_bag": "unmatched_listing",
-    "fire_pit": "unmatched_listing",
-    "led_lantern": "unmatched_listing",
-    "burner": "unmatched_listing"
-  },
-  "updatedAt": "2026-10-04T10:47:02.397808+00:00"
+  "status": "ok",
+  "failedCategories": [],
+  "failureReasons": {},
+  "updatedAt": "2026-10-04T11:02:38.760646+00:00"
 }
