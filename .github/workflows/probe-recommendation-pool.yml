@@ -10,32 +10,23 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe exact model candidates
+      - name: Probe strict name lookups
         shell: python
         run: |
           import json, urllib.parse, urllib.request, time
-          base='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
+          base='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
           headers={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-pool-probe/1.0'}
-          models=[
-            '2000038141','2000038142','2000038139',
-            '2190858','2207586','2000038833','2221375',
-            '2205816','2205813',
-            '2000034772','2000036154','2000036153','2000038137','2000038857','2000037404','1709435','UG-3005','ST-340','ST-350','2238147','2238149','2238314','2000038844','2238318'
+          cases=[
+            ('st340','','SOTO レギュレーターストーブ Range ST-340','SOTO'),
+            ('st350','','SOTO レギュレーターストーブ TriTrail ST-350','SOTO'),
+            ('hotsand','','Coleman ホットサンドイッチクッカー 1709435','Coleman')
           ]
-          for model in models:
+          for label,code,name,brand in cases:
             try:
-              url=base+'?'+urllib.parse.urlencode({'q':model,'hits':12})
+              url=base+'?'+urllib.parse.urlencode({'code':code,'name':name,'brand':brand})
               req=urllib.request.Request(url,headers=headers)
               with urllib.request.urlopen(req,timeout=35) as r:data=json.load(r)
-              print('===MODEL',model,'COUNT',data.get('count'),'===')
-              for p in (data.get('products') or []):
-                if p.get('product_no')==model:
-                  print(json.dumps({
-                    'model':model,'catalog_name':p.get('name'),'ship_name':p.get('shipping_match_name'),
-                    'ship_url':p.get('shipping_included_url'),'price':p.get('shipping_included_price'),
-                    'image':p.get('shipping_included_image'),
-                    'reviewCount':p.get('review_count'),'reviewAverage':p.get('review_average')
-                  },ensure_ascii=False))
-            except Exception as e:
-              print('ERROR',model,type(e).__name__,str(e)[:160])
+              print('===',label,'===')
+              print(json.dumps(data,ensure_ascii=False))
+            except Exception as e:print('ERROR',label,type(e).__name__,str(e)[:160])
             time.sleep(1.2)
