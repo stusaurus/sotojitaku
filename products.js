@@ -39,8 +39,8 @@ export function reject(p,category,answers,equipment,now=Date.now()){
 
 function prefBonus(p,pref){
  const s=p.scores,t=Array.isArray(p.traits)?p.traits:[];
- const map={easy:s.beginner*12+s.trust*3,comfort:s.comfort*12+s.fit*3,compact:s.portability*15,value:s.value*12+s.fit*3,balanced:s.fit*5+s.beginner*3};
- return (map[pref]??map.balanced)+(t.includes(pref)?4:0);
+ const map={easy:s.beginner*24+s.trust*4,comfort:s.comfort*24+s.fit*4,compact:s.portability*26+s.fit*2,value:s.value*24+s.fit*4,balanced:s.fit*5+s.beginner*3};
+ return (map[pref]??map.balanced)+(t.includes(pref)?6:0);
 }
 function budgetBonus(p,quantity,targetBudget){
  if(!Number.isFinite(targetBudget)||targetBudget<=0)return 0;
