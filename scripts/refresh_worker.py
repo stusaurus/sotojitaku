@@ -2,7 +2,7 @@
 Only exact manufacturer-audited models and canonical listings may pass, after a
 fresh independent sales-page audit. Missing or changed evidence empties that item.
 """
-import json, re, time, urllib.parse, urllib.request
+import json, re, time, unicodedata, urllib.parse, urllib.request
 from datetime import datetime, timezone
 from acquire import ROOT, fetch_with_retry, canonical_item_url
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
@@ -38,6 +38,33 @@ def live_item_code(affiliate_url):
     except Exception:
         return ''
 
+def _compact(value):
+    return re.sub(r'\s+','',unicodedata.normalize('NFKC',str(value or '')))
+
+def body_gate(name, category_id, equipment):
+    category=next((c for c in equipment.get('categories',[]) if c.get('id')==category_id),None)
+    if not category:return False
+    normalized=_compact(name)
+    exclusions=equipment.get('global_exclude_terms',[])+category.get('exclude_any',[])
+    if any(_compact(term) in normalized for term in exclusions):return False
+    return any(_compact(term) in normalized for term in category.get('include_any',[]))
+
+def worker_fallback_allowed(audit, matched, equipment, audit_age, page):
+    # The Rakuten page occasionally returns a tiny anti-bot response in Actions.
+    # Never replace identity checks with fuzzy search: this path requires the exact
+    # manually audited URL + exact model + a current body-name gate + fresh Worker data.
+    if len(page)>512 or audit_age>7:return False
+    if not all(audit.get(k) is True for k in ('audited','bodyConfirmed','fixedVariant','available','priceAudit')):return False
+    if audit.get('condition')!='new' or audit.get('quantityPerListing')!=1:return False
+    name=matched.get('shipping_match_name','')
+    if audit.get('model','') not in name or not body_gate(name,audit.get('category'),equipment):return False
+    price=matched.get('shipping_included_price')
+    ref=audit.get('referencePrice')
+    if not isinstance(price,(int,float)) or price<=0 or not isinstance(ref,(int,float)) or ref<=0 or price<ref*.35:return False
+    image=matched.get('shipping_included_image','')
+    if not isinstance(image,str) or not image.startswith('https://thumbnail.image.rakuten.co.jp/'):return False
+    return True
+
 def fetch_page(url):
     req=urllib.request.Request(url,headers=HEADERS)
     for attempt in range(3):
@@ -53,6 +80,7 @@ def fetch_page(url):
 def acquire():
     now=datetime.now(timezone.utc).isoformat();products=[];failed=[];reasons={}
     audits=json.loads((ROOT/'data/audited-products.json').read_text())['products']
+    equipment=json.loads((ROOT/'data/equipment.json').read_text())
     for audit in audits:
         try:
             # Manufacturer audit expires after one year; sales evidence is rechecked now.
@@ -62,7 +90,7 @@ def acquire():
             result=fetch_with_retry(req)
             model_candidates=[p for p in result.get('products',[]) if p.get('product_no')==audit['model']]
             matched=next((p for p in model_candidates if canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
-            if not matched or audit['model'] not in matched.get('shipping_match_name',''):
+            if not matched or audit['model'] not in matched.get('shipping_match_name','') or not body_gate(matched.get('shipping_match_name',''),audit['category'],equipment):
                 safe=[{'url':canonical_item_url(p.get('shipping_included_url')),'name':p.get('shipping_match_name'),'price':p.get('shipping_included_price')} for p in model_candidates[:10]]
                 print('AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
                 raise ValueError('unmatched_listing')
@@ -74,14 +102,18 @@ def acquire():
             try: expected_id=int(code.split(':',1)[1])
             except (ValueError,IndexError): pass
             page=fetch_page(audit['itemUrl'])
+            verification_mode='sales_page'
             try:
                 parse_listing(page,audit['model'],price,expected_id)
             except ValueError as evidence_error:
-                if str(evidence_error)=='missing_sales_evidence':
-                    compact=re.sub(r'\s+',' ',page)
-                    print('SALES_EVIDENCE_MISS',audit['category'],audit['model'],'len',len(page),'model',audit['model'] in page,'price',str(price) in compact)
-                raise
-            products.append({**audit,'itemCode':code,'name':matched['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included'})
+                if str(evidence_error)!='missing_sales_evidence' or not worker_fallback_allowed(audit,matched,equipment,age,page):
+                    if str(evidence_error)=='missing_sales_evidence':
+                        compact=re.sub(r'\s+',' ',page)
+                        print('SALES_EVIDENCE_MISS',audit['category'],audit['model'],'len',len(page),'model',audit['model'] in page,'price',str(price) in compact)
+                    raise
+                verification_mode='exact_audit_worker_fallback'
+                print('SALES_EVIDENCE_FALLBACK',audit['category'],audit['model'],canonical_item_url(affiliate))
+            products.append({**audit,'itemCode':code,'name':matched['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included','verificationMode':verification_mode})
         except Exception as error:
             reasons[audit['category']]=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
             failed.append(audit['category'])
