@@ -43,11 +43,18 @@ def discover():
     seeds=json.loads((ROOT/'data/product-seeds.json').read_text())['products']
     now=datetime.now(timezone.utc).isoformat()
     found=[];failed={}
+    def model_key(value):
+        return ''.join(ch for ch in str(value or '').upper() if ch.isalnum())
     for seed in seeds:
         try:
-            req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':seed['model'],'hits':10}),headers=HEADERS)
+            req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':seed['model'],'hits':20}),headers=HEADERS)
             result=fetch_with_retry(req)
-            exact=[p for p in result.get('products',[]) if p.get('product_no')==seed['model']]
+            needle=model_key(seed['model'])
+            def model_match(p):
+                product_no=model_key(p.get('product_no'))
+                text=model_key(' '.join(str(p.get(k) or '') for k in ('name','shipping_match_name')))
+                return product_no==needle or (len(needle)>=5 and needle in text)
+            exact=[p for p in result.get('products',[]) if model_match(p)]
             if not exact:
                 raise ValueError('no_exact_model')
             accepted=None
