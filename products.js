@@ -1,9 +1,20 @@
+const compact=s=>String(s??'').normalize('NFKC').replace(/\s/g,'');
 export function safeUrl(value,kind='item'){try{const u=new URL(value);if(u.protocol!=='https:')return false;if(kind==='affiliate'){if(u.hostname!=='hb.afl.rakuten.co.jp'||!u.pathname.startsWith('/hgc/'))return false;const dest=new URL(u.searchParams.get('pc'));return dest.protocol==='https:'&&dest.hostname==='item.rakuten.co.jp';}if(kind==='image')return u.hostname==='thumbnail.image.rakuten.co.jp';return u.hostname==='item.rakuten.co.jp';}catch{return false;}}
+
+export function defaultPreference(category,a){
+ if(a.transport==='no_car')return 'compact';
+ if((a.experiences||[]).includes('easy'))return 'easy';
+ if(a.budget==='comfort')return 'comfort';
+ if(['30000','50000'].includes(String(a.budget)))return 'value';
+ if(Number(a.children)>0&&['tent','chair','table','fire_pit','burner'].includes(category))return 'easy';
+ return 'balanced';
+}
+
 export function reject(p,category,answers,equipment,now=Date.now()){
  const c=equipment.categories.find(x=>x.id===category);if(!c||p.category!==category)return 'unknown_category';
  if(!p.name||!p.itemCode||!p.family||p.audited!==true||p.bodyConfirmed!==true)return 'unverified_body';
  const name=p.name.normalize('NFKC');if([...equipment.global_exclude_terms,...c.exclude_any,'選択式','価格から','円〜','円～','最安価格','タイプ選択'].some(x=>name.includes(x)))return 'excluded';
- const compact=s=>String(s??'').normalize('NFKC').replace(/\s/g,'');const identity=Array.isArray(p.identityTerms)&&p.identityTerms.length>0&&p.identityTerms.every(x=>compact(name).includes(compact(x)));if(!c.include_any.some(x=>compact(name).includes(compact(x)))&&!identity)return 'category_mismatch';
+ const identity=Array.isArray(p.identityTerms)&&p.identityTerms.length>0&&p.identityTerms.every(x=>compact(name).includes(compact(x)));if(!c.include_any.some(x=>compact(name).includes(compact(x)))&&!identity)return 'category_mismatch';
  if(p.condition!=='new'||p.fixedVariant!==true||p.available!==true||p.quantityPerListing!==1)return 'listing_conditions';
  if(!safeUrl(p.itemUrl)||!safeUrl(p.affiliateUrl,'affiliate')||!safeUrl(p.image,'image'))return 'unsafe_url';
  if(new URL(new URL(p.affiliateUrl).searchParams.get('pc')).pathname!==new URL(p.itemUrl).pathname)return 'wrong_affiliate_destination';
@@ -25,14 +36,66 @@ export function reject(p,category,answers,equipment,now=Date.now()){
  if(!p.scores||['fit','beginner','comfort','portability','value','trust'].some(k=>!Number.isFinite(p.scores[k])||p.scores[k]<0||p.scores[k]>1))return 'unknown_score';
  return null;
 }
-export function recommend(products,category,a,equipment,rules,now=Date.now()){
- const distinct=new Map();for(const p of products){if(reject(p,category,a,equipment,now))continue;const key=new URL(p.itemUrl).pathname;const previous=distinct.get(key);if(!previous||previous.price>p.price)distinct.set(key,p);}
- const pool=[...distinct.values()];const weights=rules.profiles[a.transport==='no_car'?'no_car':a.experiences.includes('easy')?'easy_mode':a.budget==='comfort'?'comfort':'default'];
- const score=(p,w)=>Object.keys(w).reduce((s,k)=>s+p.scores[k]*w[k],0);
- const result=[],families=new Set();
- for(const [profile,badge] of [['default','迷ったらこれ'],['budget','価格重視'],['comfort','快適重視']]){
- const ranked=pool.filter(p=>!families.has(p.family)&&(profile!=='default'||p.scores.fit>=.8&&p.scores.beginner>=.7)).sort((x,y)=>score(y,profile==='default'?weights:rules.profiles[profile])-score(x,profile==='default'?weights:rules.profiles[profile]));
- if(ranked[0]){families.add(ranked[0].family);result.push({...ranked[0],badge,reason:reason(ranked[0],category,a)});}
- }return result.slice(0,3);
+
+function prefBonus(p,pref){
+ const s=p.scores,t=Array.isArray(p.traits)?p.traits:[];
+ const map={easy:s.beginner*12+s.trust*3,comfort:s.comfort*12+s.fit*3,compact:s.portability*15,value:s.value*12+s.fit*3,balanced:s.fit*5+s.beginner*3};
+ return (map[pref]??map.balanced)+(t.includes(pref)?4:0);
 }
-function reason(p,c,a){const n=Number(a.adults)+Number(a.children);const base={tent:`${n}人で使える定員を確認。`,sleeping_bag:`${a.season==='summer'?'夏':'春・秋'}の計画向けに快適使用温度を確認。`,table:`${n}人の食卓に合う大きさを確認。`,cooler:`${n}人の食材に合う容量を確認。`,hot_sandwich_maker:'直火で使える仕様を確認。',burner:'対応燃料と点火方式を確認。'}[c]||'本体と必要な仕様を確認。';return base+(a.transport==='no_car'?'持ち運びの重量を重視しています。':a.children>0?'家族での安定性も確認しています。':'初めての扱いやすさを重視しています。');}
+function budgetBonus(p,quantity,targetBudget){
+ if(!Number.isFinite(targetBudget)||targetBudget<=0)return 0;
+ const total=p.price*Math.max(1,quantity||1),ratio=total/targetBudget;
+ return ratio<=1?8-Math.max(0,ratio-.75)*8:-Math.min(24,(ratio-1)*24);
+}
+function popularityBonus(p){
+ const count=Number(p.reviewCount||p.review_count||0),avg=Number(p.reviewAverage||p.review_average||0);
+ const countScore=count>0?Math.min(5,Math.log10(count+1)*1.8):0;
+ const avgScore=avg>0?Math.max(0,Math.min(5,(avg-3.5)*3.33)):0;
+ return countScore+avgScore;
+}
+function baseScore(p,w){const total=Object.values(w).reduce((s,v)=>s+v,0)||1;return Object.entries(w).reduce((s,[k,v])=>s+(p.scores[k]||0)*v,0)/total*100;}
+function reasonParts(p,c,a,pref,quantity,targetBudget){
+ const n=Number(a.adults)+Number(a.children),parts=[];
+ if(c==='tent')parts.push(`${n}人で使える定員を確認`);
+ if(c==='sleeping_bag')parts.push(`${a.season==='summer'?'夏':'春・秋'}の計画に合う快適使用温度`);
+ if(c==='table')parts.push(`${n}人で使える食卓サイズ`);
+ if(c==='cooler')parts.push(`${n}人・${a.stay==='daytrip'?'日帰り':'1泊'}に必要な容量を確保`);
+ if(c==='hot_sandwich_maker')parts.push('直火対応を確認');
+ if(c==='burner')parts.push('対応燃料と点火方式を確認');
+ if(c==='led_lantern')parts.push('夜を過ごせる明るさと点灯時間');
+ if(c==='mat')parts.push(`${quantity||n}人分をそろえられる寝床`);
+ if(c==='chair')parts.push(`${quantity||n}人分をそろえやすい`);
+ if(c==='fire_pit')parts.push('本体・設営性・安全用品との組み合わせを確認');
+ const labels={easy:'扱いやすさ',comfort:'快適さ',compact:'持ち運び',value:'予算',balanced:'総合バランス'};
+ parts.push(`${labels[pref]||labels.balanced}を優先`);
+ if(a.transport==='no_car')parts.push('車なしの重量条件を通過');
+ else if(Number(a.children)>0&&['tent','chair','table','burner','fire_pit'].includes(c))parts.push('子ども連れの安定性条件を通過');
+ if(Number.isFinite(targetBudget)&&targetBudget>0){const total=p.price*Math.max(1,quantity||1);parts.push(total<=targetBudget?'この道具の予算目安内':'必要条件を優先して予算超過を表示');}
+ return parts;
+}
+function decorate(p,badge,c,a,pref,quantity,targetBudget,score){
+ const totalPrice=p.price*Math.max(1,quantity||1),parts=reasonParts(p,c,a,pref,quantity,targetBudget);
+ return {...p,badge,totalPrice,matchScore:Math.max(0,Math.min(100,Math.round(score))),matchReasons:parts,reason:parts.join('。')+'。',budgetStatus:Number.isFinite(targetBudget)&&targetBudget>0?(totalPrice<=targetBudget?'within':'over'):'open'};
+}
+export function recommend(products,category,a,equipment,rules,options={},now=Date.now()){
+ if(typeof options==='number'){now=options;options={};}
+ const quantity=Math.max(1,Number(options.quantity)||1),targetBudget=Number(options.targetBudget),pref=options.preference||defaultPreference(category,a);
+ const distinct=new Map();for(const p of products){if(reject(p,category,a,equipment,now))continue;const key=new URL(p.itemUrl).pathname;const previous=distinct.get(key);if(!previous||previous.price>p.price)distinct.set(key,p);}
+ const pool=[...distinct.values()],profile=a.transport==='no_car'?'no_car':a.experiences.includes('easy')?'easy_mode':a.budget==='comfort'?'comfort':'default',weights=rules.profiles[profile]||rules.profiles.default;
+ const score=p=>baseScore(p,weights)+prefBonus(p,pref)+budgetBonus(p,quantity,targetBudget)+popularityBonus(p);
+ const ranked=[...pool].sort((x,y)=>score(y)-score(x));
+ if(!ranked.length)return [];
+ const result=[decorate(ranked[0],'あなたなら、まずこれ',category,a,pref,quantity,targetBudget,score(ranked[0]))],families=new Set([ranked[0].family]);
+ const alternate=(kind,badge)=>[...ranked].filter(p=>!families.has(p.family)).sort((x,y)=>{
+   const sx=kind==='value'?x.scores.value*70+x.scores.fit*30:kind==='comfort'?x.scores.comfort*65+x.scores.fit*35:x.scores.portability*65+x.scores.fit*35;
+   const sy=kind==='value'?y.scores.value*70+y.scores.fit*30:kind==='comfort'?y.scores.comfort*65+y.scores.fit*35:y.scores.portability*65+y.scores.fit*35;
+   return sy-sx;
+ })[0]&&(()=>{const p=[...ranked].filter(p=>!families.has(p.family)).sort((x,y)=>{
+   const sx=kind==='value'?x.scores.value*70+x.scores.fit*30:kind==='comfort'?x.scores.comfort*65+x.scores.fit*35:x.scores.portability*65+x.scores.fit*35;
+   const sy=kind==='value'?y.scores.value*70+y.scores.fit*30:kind==='comfort'?y.scores.comfort*65+y.scores.fit*35:y.scores.portability*65+y.scores.fit*35;
+   return sy-sx;
+ })[0];families.add(p.family);return decorate(p,badge,category,a,pref,quantity,targetBudget,score(p));})();
+ const a2=alternate('value','価格を抑えるなら');if(a2)result.push(a2);
+ const a3=alternate(a.transport==='no_car'?'compact':'comfort',a.transport==='no_car'?'軽く運ぶなら':'快適さを上げるなら');if(a3)result.push(a3);
+ return result.slice(0,3);
+}
