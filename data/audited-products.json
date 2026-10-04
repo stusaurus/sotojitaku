@@ -2595,57 +2595,6 @@
     },
     {
       "category": "fire_pit",
-      "itemCode": "sundaymountain:10001362",
-      "model": "ST-033R",
-      "query": "ST-033R",
-      "family": "snowpeak-firepit-st033r",
-      "name": "Snow Peak 焚火台 M ST-033R",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 17160,
-      "spec": {
-        "weight": 3500,
-        "packed_size": "450×515×27mm",
-        "capacity": 3
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/sundaymountain/s06009/",
-        "specification": "https://ec.snowpeak.co.jp/item/SNP0114A0412",
-        "fields": {
-          "weight": "https://ec.snowpeak.co.jp/item/SNP0114A0412",
-          "packed_size": "https://ec.snowpeak.co.jp/item/SNP0114A0412"
-        }
-      },
-      "scores": {
-        "fit": 0.97,
-        "beginner": 0.99,
-        "comfort": 0.94,
-        "portability": 0.35,
-        "value": 0.58,
-        "trust": 0.99
-      },
-      "traits": [
-        "easy",
-        "comfort"
-      ],
-      "reviewCount": 116,
-      "reviewAverage": 4.78,
-      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
-      "listingAudit": "Snow Peak公式仕様と楽天Workerの型番一致販売結果を照合。本体・収納ケース・新品・固定販売URLを確認。",
-      "itemUrl": "https://item.rakuten.co.jp/sundaymountain/s06009/",
-      "specSummary": "2〜3人向け / 約3.5kg / 収納450×515×27mm。開いて置くだけのシンプルな焚火台。",
-      "identityTerms": [
-        "焚火台",
-        "ST-033R"
-      ]
-    },
-    {
-      "category": "fire_pit",
       "itemCode": "naturum-outdoor:10524068",
       "model": "ST-032RS",
       "query": "ST-032RS",
@@ -2695,5 +2644,5 @@
       ]
     }
   ],
-  "refreshRequestedAt": "2026-10-04T22:18:30+00:00"
+  "refreshRequestedAt": "2026-10-04T22:32:30+00:00"
 }
