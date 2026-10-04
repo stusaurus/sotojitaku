@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "abilities": [
+    {
+      "id": "shelter",
+      "label": "泊まる場所ができた",
+      "group": "stay",
+      "visual": "tent"
+    },
+    {
+      "id": "sleep",
+      "label": "朝まで眠れる",
+      "group": "stay",
+      "visual": "sleeping"
+    },
+    {
+      "id": "sleep_comfort",
+      "label": "快適に眠れる",
+      "group": "stay",
+      "visual": "sleeping_comfort"
+    },
+    {
+      "id": "sit",
+      "label": "座って休める",
+      "group": "relax",
+      "visual": "chair"
+    },
+    {
+      "id": "dining",
+      "label": "外で食事できる",
+      "group": "relax",
+      "visual": "table"
+    },
+    {
+      "id": "shade",
+      "label": "日陰で過ごせる",
+      "group": "weather",
+      "visual": "tarp"
+    },
+    {
+      "id": "rain",
+      "label": "雨でも過ごしやすい",
+      "group": "weather",
+      "visual": "rain"
+    },
+    {
+      "id": "night",
+      "label": "夜もサイトで過ごせる",
+      "group": "night",
+      "visual": "lantern"
+    },
+    {
+      "id": "walk_night",
+      "label": "夜も移動しやすい",
+      "group": "night",
+      "visual": "headlight"
+    },
+    {
+      "id": "cook",
+      "label": "温かい料理を作れる",
+      "group": "food",
+      "visual": "cooking"
+    },
+    {
+      "id": "bbq",
+      "label": "BBQができる",
+      "group": "food",
+      "visual": "bbq"
+    },
+    {
+      "id": "rice",
+      "label": "ご飯を炊ける",
+      "group": "food",
+      "visual": "rice"
+    },
+    {
+      "id": "hot_sandwich",
+      "label": "ホットサンドを作れる",
+      "group": "food",
+      "visual": "hot_sandwich"
+    },
+    {
+      "id": "coffee",
+      "label": "朝コーヒーを楽しめる",
+      "group": "food",
+      "visual": "coffee"
+    },
+    {
+      "id": "cold_food",
+      "label": "食材を冷やして持ち込める",
+      "group": "food",
+      "visual": "cooler"
+    },
+    {
+      "id": "bonfire",
+      "label": "焚き火ができる",
+      "group": "fire",
+      "visual": "bonfire"
+    },
+    {
+      "id": "bonfire_food",
+      "label": "焚き火料理ができる",
+      "group": "fire",
+      "visual": "bonfire_food"
+    },
+    {
+      "id": "marshmallow",
+      "label": "焼きマシュマロができる",
+      "group": "fire",
+      "visual": "marshmallow"
+    },
+    {
+      "id": "carry",
+      "label": "荷物を運びやすい",
+      "group": "carry",
+      "visual": "wagon"
+    },
+    {
+      "id": "organize",
+      "label": "サイトを整理できる",
+      "group": "carry",
+      "visual": "container"
+    },
+    {
+      "id": "child_play",
+      "label": "子どもと遊べる",
+      "group": "play",
+      "visual": "play"
+    },
+    {
+      "id": "stargazing",
+      "label": "星空時間を楽しめる",
+      "group": "play",
+      "visual": "stars"
+    },
+    {
+      "id": "hygiene",
+      "label": "片付け・衛生管理ができる",
+      "group": "life",
+      "visual": "cleanup"
+    },
+    {
+      "id": "weather_ready",
+      "label": "天候変化に対応しやすい",
+      "group": "weather",
+      "visual": "weather"
+    }
+  ],
+  "completion_rules": [
+    {
+      "id": "overnight_core",
+      "when": {
+        "stay": "one_night"
+      },
+      "required_abilities": [
+        "shelter",
+        "sleep",
+        "night",
+        "walk_night"
+      ]
+    },
+    {
+      "id": "daytrip_core",
+      "when": {
+        "stay": "daytrip"
+      },
+      "required_abilities": []
+    }
+  ]
+}

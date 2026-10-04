@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "service": "SOTOJITAKU CAMP",
+  "questions": [
+    {
+      "id": "party_type",
+      "order": 1,
+      "label": "誰と行く？",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "solo",
+          "label": "ひとり"
+        },
+        {
+          "id": "couple",
+          "label": "ふたり"
+        },
+        {
+          "id": "family",
+          "label": "家族"
+        },
+        {
+          "id": "friends",
+          "label": "友人"
+        }
+      ],
+      "analytics": "simulator_answer"
+    },
+    {
+      "id": "party_size",
+      "order": 2,
+      "label": "何人で行く？",
+      "type": "steppers",
+      "required": true,
+      "fields": [
+        {
+          "id": "adults",
+          "label": "大人",
+          "min": 1,
+          "max": 6,
+          "default": 2
+        },
+        {
+          "id": "children",
+          "label": "子ども",
+          "min": 0,
+          "max": 4,
+          "default": 0
+        }
+      ],
+      "mvp_recommendation_max_party_size": 4,
+      "analytics": "simulator_answer"
+    },
+    {
+      "id": "season",
+      "order": 3,
+      "label": "いつ行く？",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "spring",
+          "label": "春"
+        },
+        {
+          "id": "summer",
+          "label": "夏"
+        },
+        {
+          "id": "autumn",
+          "label": "秋"
+        }
+      ],
+      "analytics": "simulator_answer"
+    },
+    {
+      "id": "stay",
+      "order": 4,
+      "label": "泊まる？",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "daytrip",
+          "label": "日帰り"
+        },
+        {
+          "id": "one_night",
+          "label": "1泊2日"
+        }
+      ],
+      "analytics": "simulator_answer"
+    },
+    {
+      "id": "transport",
+      "order": 5,
+      "label": "どうやって行く？",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "car",
+          "label": "車"
+        },
+        {
+          "id": "no_car",
+          "label": "車なし"
+        }
+      ],
+      "effects": {
+        "no_car": {
+          "portability_weight_bonus": 10
+        }
+      },
+      "analytics": "simulator_answer"
+    },
+    {
+      "id": "experiences",
+      "order": 6,
+      "label": "何をしたい？",
+      "type": "multi",
+      "required": true,
+      "options": [
+        {
+          "id": "bbq",
+          "label": "BBQ",
+          "abilities": [
+            "bbq",
+            "cold_food"
+          ]
+        },
+        {
+          "id": "bonfire",
+          "label": "焚き火",
+          "abilities": [
+            "bonfire"
+          ]
+        },
+        {
+          "id": "cooking",
+          "label": "料理",
+          "abilities": [
+            "cook"
+          ]
+        },
+        {
+          "id": "coffee",
+          "label": "朝コーヒー",
+          "abilities": [
+            "coffee"
+          ]
+        },
+        {
+          "id": "stargazing",
+          "label": "星空",
+          "abilities": [
+            "stargazing",
+            "night"
+          ]
+        },
+        {
+          "id": "child_play",
+          "label": "子どもと遊ぶ",
+          "abilities": [
+            "child_play"
+          ]
+        },
+        {
+          "id": "relax",
+          "label": "のんびり",
+          "abilities": [
+            "sit"
+          ]
+        },
+        {
+          "id": "sleep_comfort",
+          "label": "ぐっすり眠る",
+          "abilities": [
+            "sleep_comfort"
+          ]
+        },
+        {
+          "id": "easy",
+          "label": "とにかく簡単",
+          "modifiers": [
+            "easy_mode"
+          ]
+        }
+      ],
+      "analytics": "simulator_answer"
+    },
+    {
+      "id": "budget",
+      "order": 7,
+      "label": "道具にどのくらい使いたい？",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "30000",
+          "label": "3万円まで",
+          "yen": 30000
+        },
+        {
+          "id": "50000",
+          "label": "5万円まで",
+          "yen": 50000
+        },
+        {
+          "id": "100000",
+          "label": "10万円まで",
+          "yen": 100000
+        },
+        {
+          "id": "150000",
+          "label": "15万円まで",
+          "yen": 150000
+        },
+        {
+          "id": "comfort",
+          "label": "予算より快適さ",
+          "yen": null
+        }
+      ],
+      "analytics": "simulator_answer"
+    }
+  ]
+}

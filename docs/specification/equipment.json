@@ -1,0 +1,530 @@
+{
+  "version": 1,
+  "global_exclude_terms": [
+    "中古",
+    "展示品",
+    "開封品",
+    "アウトレット",
+    "訳あり",
+    "訳アリ",
+    "ふるさと納税",
+    "法人限定",
+    "個人宅配送不可",
+    "レンタル",
+    "交換用",
+    "補修用",
+    "専用ケース",
+    "収納袋のみ",
+    "カバーのみ"
+  ],
+  "status_values": [
+    "owned",
+    "buy",
+    "rent",
+    "skip",
+    "undecided"
+  ],
+  "priority_values": [
+    "MUST",
+    "CONDITIONAL_MUST",
+    "BETTER",
+    "FUN"
+  ],
+  "categories": [
+    {
+      "id": "tent",
+      "label": "テント",
+      "department": "stay",
+      "priority": "CONDITIONAL_MUST",
+      "required_when": {
+        "stay": "one_night"
+      },
+      "abilities": [
+        "shelter"
+      ],
+      "rental_score": 85,
+      "ownership_value": 60,
+      "queries": [
+        "キャンプ テント 初心者",
+        "ドームテント 2人用",
+        "ファミリーテント 4人用"
+      ],
+      "include_any": [
+        "テント",
+        "ドームテント",
+        "ファミリーテント"
+      ],
+      "exclude_any": [
+        "グランドシート",
+        "インナーシート",
+        "フライシート",
+        "ポール",
+        "ペグ",
+        "ガイロープ",
+        "補修",
+        "収納バッグ",
+        "テントマット",
+        "タープ",
+        "カーサイド",
+        "ルーフテント"
+      ],
+      "required_fields": [
+        "capacity",
+        "weight",
+        "packed_size"
+      ],
+      "hard_gates": [
+        "capacity >= party_size"
+      ],
+      "score_hints": {
+        "beginner": [
+          "easy_setup",
+          "self_standing"
+        ],
+        "comfort": [
+          "space",
+          "vestibule",
+          "height"
+        ]
+      }
+    },
+    {
+      "id": "sleeping_bag",
+      "label": "寝袋",
+      "department": "stay",
+      "priority": "CONDITIONAL_MUST",
+      "required_when": {
+        "stay": "one_night"
+      },
+      "abilities": [
+        "sleep"
+      ],
+      "rental_score": 35,
+      "ownership_value": 90,
+      "queries": [
+        "寝袋 キャンプ",
+        "シュラフ 春 秋",
+        "寝袋 初心者"
+      ],
+      "include_any": [
+        "寝袋",
+        "シュラフ"
+      ],
+      "exclude_any": [
+        "寝袋カバー",
+        "インナーシュラフ",
+        "圧縮袋",
+        "収納袋",
+        "シーツ",
+        "寝袋型ウェア"
+      ],
+      "required_fields": [
+        "comfort_temperature",
+        "weight",
+        "packed_size"
+      ],
+      "hard_gates": [
+        "temperature_known == true"
+      ]
+    },
+    {
+      "id": "mat",
+      "label": "キャンプマット",
+      "department": "stay",
+      "priority": "CONDITIONAL_MUST",
+      "required_when": {
+        "stay": "one_night"
+      },
+      "abilities": [
+        "sleep",
+        "sleep_comfort"
+      ],
+      "rental_score": 35,
+      "ownership_value": 85,
+      "queries": [
+        "キャンプ マット",
+        "インフレーターマット キャンプ",
+        "エアーマット キャンプ"
+      ],
+      "include_any": [
+        "キャンプマット",
+        "インフレーターマット",
+        "エアーマット"
+      ],
+      "exclude_any": [
+        "ヨガ",
+        "トレーニング",
+        "ポンプのみ",
+        "バルブ",
+        "補修",
+        "収納袋",
+        "コット",
+        "テント用床"
+      ],
+      "required_fields": [
+        "length",
+        "width",
+        "weight"
+      ],
+      "score_hints": {
+        "beginner": [
+          "self_inflating",
+          "simple_valve"
+        ],
+        "comfort": [
+          "thickness"
+        ]
+      }
+    },
+    {
+      "id": "chair",
+      "label": "チェア",
+      "department": "relax",
+      "priority": "BETTER",
+      "abilities": [
+        "sit"
+      ],
+      "rental_score": 65,
+      "ownership_value": 65,
+      "queries": [
+        "アウトドアチェア",
+        "キャンプ チェア",
+        "ローチェア キャンプ"
+      ],
+      "include_any": [
+        "アウトドアチェア",
+        "キャンプチェア",
+        "ローチェア"
+      ],
+      "exclude_any": [
+        "カバー",
+        "替え生地",
+        "脚のみ",
+        "ゴムキャップ",
+        "ドリンクホルダー",
+        "収納ケース",
+        "チェア用テーブル"
+      ],
+      "required_fields": [
+        "weight",
+        "packed_size",
+        "load_capacity"
+      ]
+    },
+    {
+      "id": "table",
+      "label": "テーブル",
+      "department": "relax",
+      "priority": "BETTER",
+      "abilities": [
+        "dining"
+      ],
+      "rental_score": 70,
+      "ownership_value": 60,
+      "queries": [
+        "アウトドアテーブル",
+        "キャンプ テーブル",
+        "折りたたみテーブル キャンプ"
+      ],
+      "include_any": [
+        "アウトドアテーブル",
+        "キャンプテーブル",
+        "折りたたみテーブル"
+      ],
+      "exclude_any": [
+        "テーブルクロス",
+        "天板のみ",
+        "脚のみ",
+        "収納袋",
+        "ラック",
+        "拡張パーツ",
+        "ランタンスタンド"
+      ],
+      "required_fields": [
+        "table_size",
+        "weight",
+        "packed_size"
+      ],
+      "hard_gates": [
+        "table_capacity >= party_size"
+      ]
+    },
+    {
+      "id": "led_lantern",
+      "label": "LEDランタン",
+      "department": "night",
+      "priority": "CONDITIONAL_MUST",
+      "required_when": {
+        "stay": "one_night"
+      },
+      "abilities": [
+        "night"
+      ],
+      "rental_score": 25,
+      "ownership_value": 85,
+      "queries": [
+        "LEDランタン キャンプ",
+        "キャンプ ランタン LED",
+        "充電式 LEDランタン"
+      ],
+      "include_any": [
+        "LEDランタン",
+        "ランタン LED",
+        "充電式ランタン"
+      ],
+      "exclude_any": [
+        "スタンド",
+        "ハンガー",
+        "シェードのみ",
+        "ケース",
+        "替え芯",
+        "オイル",
+        "電球のみ",
+        "ガス缶"
+      ],
+      "required_fields": [
+        "brightness_lm",
+        "runtime_hours",
+        "power_type"
+      ]
+    },
+    {
+      "id": "burner",
+      "label": "バーナー",
+      "department": "cooking",
+      "priority": "CONDITIONAL_MUST",
+      "required_when_any_ability": [
+        "cook",
+        "coffee",
+        "hot_sandwich",
+        "rice"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "rental_score": 30,
+      "ownership_value": 80,
+      "queries": [
+        "シングルバーナー キャンプ",
+        "カセットコンロ アウトドア",
+        "CB缶 バーナー キャンプ"
+      ],
+      "include_any": [
+        "バーナー",
+        "カセットコンロ"
+      ],
+      "exclude_any": [
+        "ガス缶のみ",
+        "五徳のみ",
+        "風防のみ",
+        "スタンド",
+        "アダプター",
+        "ホース",
+        "ケース",
+        "着火器",
+        "交換部品"
+      ],
+      "required_fields": [
+        "fuel_type",
+        "ignition_type",
+        "weight"
+      ],
+      "hard_gates": [
+        "fuel_type_known == true"
+      ]
+    },
+    {
+      "id": "cooler",
+      "label": "クーラーボックス",
+      "department": "cooking",
+      "priority": "CONDITIONAL_MUST",
+      "required_when_any_ability": [
+        "cold_food",
+        "bbq"
+      ],
+      "abilities": [
+        "cold_food"
+      ],
+      "rental_score": 70,
+      "ownership_value": 55,
+      "queries": [
+        "クーラーボックス キャンプ",
+        "クーラーボックス 20L",
+        "クーラーボックス ファミリー"
+      ],
+      "include_any": [
+        "クーラーボックス",
+        "クーラーバッグ"
+      ],
+      "exclude_any": [
+        "保冷剤のみ",
+        "スタンド",
+        "カバー",
+        "肩掛けベルト",
+        "パーツ",
+        "タックルケース",
+        "水筒"
+      ],
+      "required_fields": [
+        "capacity_l",
+        "weight"
+      ],
+      "hard_gates": [
+        "capacity_fit == true"
+      ]
+    },
+    {
+      "id": "fire_pit",
+      "label": "焚き火台",
+      "department": "bonfire",
+      "priority": "CONDITIONAL_MUST",
+      "required_when_any_ability": [
+        "bonfire",
+        "bonfire_food",
+        "marshmallow"
+      ],
+      "abilities": [
+        "bonfire"
+      ],
+      "rental_score": 55,
+      "ownership_value": 60,
+      "queries": [
+        "焚き火台",
+        "焚火台 キャンプ",
+        "焚き火台 初心者"
+      ],
+      "include_any": [
+        "焚き火台",
+        "焚火台"
+      ],
+      "exclude_any": [
+        "焚き火シートのみ",
+        "焚き火テーブル",
+        "五徳のみ",
+        "網のみ",
+        "火ばさみ",
+        "風防",
+        "収納ケース",
+        "ロストル",
+        "薪"
+      ],
+      "required_fields": [
+        "weight",
+        "packed_size"
+      ],
+      "notes": [
+        "ability bonfire requires safety accessories in addition to fire_pit"
+      ]
+    },
+    {
+      "id": "hot_sandwich_maker",
+      "label": "ホットサンドメーカー",
+      "department": "cooking",
+      "priority": "CONDITIONAL_MUST",
+      "required_when_any_ability": [
+        "hot_sandwich"
+      ],
+      "abilities": [
+        "hot_sandwich"
+      ],
+      "rental_score": 15,
+      "ownership_value": 70,
+      "queries": [
+        "ホットサンドメーカー 直火",
+        "キャンプ ホットサンドメーカー",
+        "直火式 ホットサンド"
+      ],
+      "include_any": [
+        "ホットサンドメーカー"
+      ],
+      "exclude_any": [
+        "電気式",
+        "交換プレート",
+        "収納ケース",
+        "ハンドルのみ",
+        "レシピ本"
+      ],
+      "required_fields": [
+        "heat_source",
+        "weight"
+      ],
+      "hard_gates": [
+        "direct_flame_compatible == true"
+      ]
+    }
+  ],
+  "supporting_items": [
+    {
+      "id": "headlight",
+      "label": "ヘッドライトまたは携帯ライト",
+      "priority": "CONDITIONAL_MUST",
+      "abilities": [
+        "walk_night"
+      ],
+      "required_when": {
+        "stay": "one_night"
+      }
+    },
+    {
+      "id": "garbage_bags",
+      "label": "ゴミ袋",
+      "priority": "MUST",
+      "abilities": [
+        "hygiene"
+      ]
+    },
+    {
+      "id": "first_aid",
+      "label": "救急セット",
+      "priority": "BETTER",
+      "abilities": []
+    },
+    {
+      "id": "rainwear",
+      "label": "レインウェア",
+      "priority": "CONDITIONAL_MUST",
+      "abilities": [
+        "weather_ready"
+      ],
+      "required_when_weather": [
+        "rain"
+      ]
+    },
+    {
+      "id": "fire_tongs",
+      "label": "火ばさみ",
+      "priority": "CONDITIONAL_MUST",
+      "abilities": [],
+      "required_when_any_ability": [
+        "bonfire"
+      ]
+    },
+    {
+      "id": "heat_gloves",
+      "label": "耐熱グローブ",
+      "priority": "CONDITIONAL_MUST",
+      "abilities": [],
+      "required_when_any_ability": [
+        "bonfire"
+      ]
+    },
+    {
+      "id": "firestarter",
+      "label": "着火用品",
+      "priority": "CONDITIONAL_MUST",
+      "abilities": [],
+      "required_when_any_ability": [
+        "bonfire"
+      ]
+    },
+    {
+      "id": "extinguish_water",
+      "label": "消火用の水など",
+      "priority": "CONDITIONAL_MUST",
+      "abilities": [],
+      "required_when_any_ability": [
+        "bonfire"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,612 @@
+{
+  "version": 1,
+  "fields": [
+    "id",
+    "name",
+    "meal",
+    "difficulty",
+    "prep_time_min",
+    "cook_time_min",
+    "cleanup",
+    "children",
+    "required_gear",
+    "optional_gear",
+    "ingredients",
+    "abilities",
+    "schedule_slot"
+  ],
+  "recipes": [
+    {
+      "id": "hot_sandwich",
+      "name": "ホットサンド",
+      "meal": "breakfast",
+      "difficulty": 1,
+      "prep_time_min": 5,
+      "cook_time_min": 10,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "burner",
+        "hot_sandwich_maker"
+      ],
+      "optional_gear": [],
+      "ingredients": [
+        "食パン",
+        "ハム",
+        "チーズ"
+      ],
+      "abilities": [
+        "hot_sandwich"
+      ],
+      "schedule_slot": "day2_0730"
+    },
+    {
+      "id": "pancake",
+      "name": "ホットケーキ",
+      "meal": "breakfast",
+      "difficulty": 1,
+      "prep_time_min": 5,
+      "cook_time_min": 15,
+      "cleanup": "medium",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "frying_pan"
+      ],
+      "ingredients": [
+        "ホットケーキミックス",
+        "卵",
+        "牛乳"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day2_0730"
+    },
+    {
+      "id": "sausage_bread",
+      "name": "ソーセージ＆パン",
+      "meal": "breakfast",
+      "difficulty": 1,
+      "prep_time_min": 3,
+      "cook_time_min": 10,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "frying_pan"
+      ],
+      "ingredients": [
+        "パン",
+        "ソーセージ"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day2_0730"
+    },
+    {
+      "id": "boil_only_breakfast",
+      "name": "お湯だけ朝食",
+      "meal": "breakfast",
+      "difficulty": 1,
+      "prep_time_min": 2,
+      "cook_time_min": 8,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "kettle"
+      ],
+      "ingredients": [
+        "パン",
+        "スープ等"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day2_0730"
+    },
+    {
+      "id": "bbq",
+      "name": "BBQ",
+      "meal": "dinner",
+      "difficulty": 1,
+      "prep_time_min": 15,
+      "cook_time_min": 60,
+      "cleanup": "medium",
+      "children": true,
+      "required_gear": [
+        "fire_pit",
+        "cooler"
+      ],
+      "optional_gear": [
+        "grill_net",
+        "tongs"
+      ],
+      "ingredients": [
+        "肉",
+        "野菜"
+      ],
+      "abilities": [
+        "bbq",
+        "cold_food"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "curry",
+      "name": "カレー",
+      "meal": "dinner",
+      "difficulty": 2,
+      "prep_time_min": 15,
+      "cook_time_min": 45,
+      "cleanup": "high",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "pot",
+        "knife",
+        "cutting_board"
+      ],
+      "ingredients": [
+        "カレールー",
+        "肉",
+        "野菜"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "hot_pot",
+      "name": "鍋",
+      "meal": "dinner",
+      "difficulty": 1,
+      "prep_time_min": 10,
+      "cook_time_min": 35,
+      "cleanup": "medium",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "pot"
+      ],
+      "ingredients": [
+        "鍋つゆ",
+        "肉または魚",
+        "野菜"
+      ],
+      "abilities": [
+        "cook",
+        "cold_food"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "yakisoba",
+      "name": "焼きそば",
+      "meal": "dinner",
+      "difficulty": 1,
+      "prep_time_min": 10,
+      "cook_time_min": 20,
+      "cleanup": "medium",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "frying_pan"
+      ],
+      "ingredients": [
+        "麺",
+        "肉",
+        "野菜"
+      ],
+      "abilities": [
+        "cook",
+        "cold_food"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "pasta",
+      "name": "パスタ",
+      "meal": "dinner",
+      "difficulty": 2,
+      "prep_time_min": 10,
+      "cook_time_min": 25,
+      "cleanup": "medium",
+      "children": false,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "pot"
+      ],
+      "ingredients": [
+        "パスタ",
+        "ソース"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "steak",
+      "name": "ステーキ",
+      "meal": "dinner",
+      "difficulty": 2,
+      "prep_time_min": 5,
+      "cook_time_min": 20,
+      "cleanup": "medium",
+      "children": false,
+      "required_gear": [
+        "burner",
+        "cooler"
+      ],
+      "optional_gear": [
+        "frying_pan",
+        "tongs"
+      ],
+      "ingredients": [
+        "牛肉"
+      ],
+      "abilities": [
+        "cook",
+        "cold_food"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "ajillo",
+      "name": "アヒージョ",
+      "meal": "dinner",
+      "difficulty": 1,
+      "prep_time_min": 5,
+      "cook_time_min": 15,
+      "cleanup": "medium",
+      "children": false,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "skillet"
+      ],
+      "ingredients": [
+        "オリーブオイル",
+        "具材"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1800"
+    },
+    {
+      "id": "mestin_rice",
+      "name": "メスティン炊飯",
+      "meal": "rice",
+      "difficulty": 2,
+      "prep_time_min": 35,
+      "cook_time_min": 30,
+      "cleanup": "medium",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "mess_tin"
+      ],
+      "ingredients": [
+        "米",
+        "水"
+      ],
+      "abilities": [
+        "rice"
+      ],
+      "schedule_slot": "day1_1630"
+    },
+    {
+      "id": "mixed_rice",
+      "name": "炊き込みご飯",
+      "meal": "rice",
+      "difficulty": 2,
+      "prep_time_min": 20,
+      "cook_time_min": 35,
+      "cleanup": "medium",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "mess_tin"
+      ],
+      "ingredients": [
+        "米",
+        "具材",
+        "調味料"
+      ],
+      "abilities": [
+        "rice"
+      ],
+      "schedule_slot": "day1_1630"
+    },
+    {
+      "id": "marshmallow",
+      "name": "焼きマシュマロ",
+      "meal": "snack",
+      "difficulty": 1,
+      "prep_time_min": 2,
+      "cook_time_min": 5,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "fire_pit"
+      ],
+      "optional_gear": [
+        "long_skewer"
+      ],
+      "ingredients": [
+        "マシュマロ"
+      ],
+      "abilities": [
+        "marshmallow"
+      ],
+      "schedule_slot": "day1_1930"
+    },
+    {
+      "id": "sweet_potato",
+      "name": "焼き芋",
+      "meal": "snack",
+      "difficulty": 1,
+      "prep_time_min": 5,
+      "cook_time_min": 50,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "fire_pit"
+      ],
+      "optional_gear": [
+        "foil"
+      ],
+      "ingredients": [
+        "さつまいも"
+      ],
+      "abilities": [
+        "bonfire_food"
+      ],
+      "schedule_slot": "day1_1900"
+    },
+    {
+      "id": "hot_dog",
+      "name": "ホットドッグ",
+      "meal": "meal",
+      "difficulty": 1,
+      "prep_time_min": 5,
+      "cook_time_min": 10,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "frying_pan"
+      ],
+      "ingredients": [
+        "パン",
+        "ソーセージ"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1600"
+    },
+    {
+      "id": "mini_pizza",
+      "name": "ミニピザ",
+      "meal": "meal",
+      "difficulty": 2,
+      "prep_time_min": 10,
+      "cook_time_min": 20,
+      "cleanup": "medium",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "frying_pan"
+      ],
+      "ingredients": [
+        "ピザ生地",
+        "チーズ",
+        "具材"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1600"
+    },
+    {
+      "id": "popcorn",
+      "name": "ポップコーン",
+      "meal": "snack",
+      "difficulty": 1,
+      "prep_time_min": 2,
+      "cook_time_min": 8,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "pot"
+      ],
+      "ingredients": [
+        "ポップコーン豆"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1530"
+    },
+    {
+      "id": "easy_coffee",
+      "name": "簡単コーヒー",
+      "meal": "drink",
+      "difficulty": 1,
+      "prep_time_min": 2,
+      "cook_time_min": 5,
+      "cleanup": "low",
+      "children": false,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "kettle"
+      ],
+      "ingredients": [
+        "ドリップバッグまたはインスタント"
+      ],
+      "abilities": [
+        "coffee"
+      ],
+      "schedule_slot": "day2_0800"
+    },
+    {
+      "id": "hand_drip_coffee",
+      "name": "ハンドドリップコーヒー",
+      "meal": "drink",
+      "difficulty": 2,
+      "prep_time_min": 5,
+      "cook_time_min": 10,
+      "cleanup": "low",
+      "children": false,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "kettle",
+        "dripper",
+        "filter"
+      ],
+      "ingredients": [
+        "コーヒー豆または粉"
+      ],
+      "abilities": [
+        "coffee"
+      ],
+      "schedule_slot": "day2_0800"
+    },
+    {
+      "id": "cocoa",
+      "name": "ココア",
+      "meal": "drink",
+      "difficulty": 1,
+      "prep_time_min": 2,
+      "cook_time_min": 8,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "kettle"
+      ],
+      "ingredients": [
+        "ココア"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1930"
+    },
+    {
+      "id": "foil_grill",
+      "name": "ホイル焼き",
+      "meal": "dinner",
+      "difficulty": 1,
+      "prep_time_min": 10,
+      "cook_time_min": 25,
+      "cleanup": "low",
+      "children": true,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "foil",
+        "frying_pan"
+      ],
+      "ingredients": [
+        "魚または肉",
+        "野菜"
+      ],
+      "abilities": [
+        "cook",
+        "cold_food"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "one_pan_pasta",
+      "name": "ワンパンパスタ",
+      "meal": "dinner",
+      "difficulty": 1,
+      "prep_time_min": 8,
+      "cook_time_min": 20,
+      "cleanup": "low",
+      "children": false,
+      "required_gear": [
+        "burner"
+      ],
+      "optional_gear": [
+        "frying_pan"
+      ],
+      "ingredients": [
+        "パスタ",
+        "ソース"
+      ],
+      "abilities": [
+        "cook"
+      ],
+      "schedule_slot": "day1_1700"
+    },
+    {
+      "id": "no_cook",
+      "name": "できるだけ料理しない",
+      "meal": "dinner",
+      "difficulty": 1,
+      "prep_time_min": 0,
+      "cook_time_min": 0,
+      "cleanup": "none",
+      "children": true,
+      "required_gear": [],
+      "optional_gear": [],
+      "ingredients": [
+        "買ってきた食事等"
+      ],
+      "abilities": [],
+      "schedule_slot": "day1_1700"
+    }
+  ],
+  "selection_rules": {
+    "max_main_dinner": 1,
+    "max_main_breakfast": 1,
+    "warn_when_total_cooking_minutes_over": 90,
+    "easy_mode_cleanup_preference": [
+      "none",
+      "low"
+    ],
+    "easy_mode_difficulty_max": 1
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "screens": [
+    {
+      "id": "home_hero",
+      "priority": 1,
+      "viewport": "mobile first",
+      "height": "90–100svh",
+      "background_scene": "scene_00_empty",
+      "header": {
+        "left": "SOTOJITAKU",
+        "submark": "CAMP",
+        "right": "menu"
+      },
+      "headline": "はじめてのキャンプを、あなた仕立てに。",
+      "body": "道具も、ごはんも、過ごし方も。やりたい休日から考えよう。",
+      "primary_cta": "キャンプをつくる",
+      "secondary_content_below_fold": [
+        {
+          "label": "キャンプをつくる",
+          "desc": "自分に必要なものを一緒に決める"
+        },
+        {
+          "label": "売り場を見る",
+          "desc": "泊まる・料理・焚き火などから探す"
+        },
+        {
+          "label": "やりたいことから探す",
+          "desc": "BBQ・星空・朝コーヒーなどから探す"
+        }
+      ],
+      "forbidden": [
+        "product_grid_above_fold",
+        "price_badges",
+        "busy_nav"
+      ]
+    },
+    {
+      "id": "simulator_question",
+      "priority": 2,
+      "layout": {
+        "visual": "55–60%",
+        "sheet": "40–45%"
+      },
+      "visual_behavior": "crossfade matched scenes; preserve camera angle",
+      "sheet": {
+        "progress_format": "01 / 07",
+        "title_example": "誰と行く？",
+        "option_style": "large text-led options; use experiential imagery only where useful",
+        "sticky_primary_action": false
+      },
+      "q6_override": {
+        "title": "何をしたい？",
+        "style": "experience image tiles",
+        "examples": [
+          "BBQ",
+          "焚き火",
+          "朝コーヒー",
+          "星空",
+          "子どもと遊ぶ",
+          "料理",
+          "のんびり",
+          "ぐっすり"
+        ],
+        "rule": "show the experience, not the equipment"
+      }
+    },
+    {
+      "id": "completion",
+      "priority": 3,
+      "visual_height": "60–70%",
+      "background_scene": "scene_06_complete",
+      "headline": "キャンプ、できた。",
+      "subhead": "あなたがやりたかったこと、ちゃんとできそうです。",
+      "ability_display": "plain-language outcomes, not percentage-first",
+      "summary_examples": [
+        "泊まれる",
+        "BBQできる",
+        "焚き火できる",
+        "朝コーヒーを楽しめる"
+      ],
+      "gear_summary": [
+        "すでに持っている",
+        "今回そろえる",
+        "借りる"
+      ],
+      "primary_cta": "1泊2日の予定を見る",
+      "secondary_cta": "足りない道具を見る",
+      "forbidden": [
+        "confetti",
+        "completion_percent_as_hero",
+        "affiliate_grid_before_schedule"
+      ]
+    },
+    {
+      "id": "product_recommendation",
+      "priority": 4,
+      "card_order": [
+        "badge",
+        "image",
+        "reason",
+        "price",
+        "cta"
+      ],
+      "badges": [
+        "迷ったらこれ",
+        "価格重視",
+        "快適重視"
+      ],
+      "primary_copy_rule": "why it fits the user > price",
+      "cta": "楽天で見る"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Sitemap: https://stusaurus.github.io/sotojitaku/sitemap.xml
+
+Disallow: /qa.html

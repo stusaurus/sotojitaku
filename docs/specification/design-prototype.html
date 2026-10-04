@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOTOJITAKU Design Prototype</title>
+<style>
+:root{--canvas:#F4F0E7;--forest:#23382D;--char:#1F2420;--moss:#5D6B5C;--ember:#A95332;--sand:#D8CBB8;--white:#FBFAF7}
+*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--char);font-family:Arial,"Noto Sans JP",sans-serif}
+.hero{min-height:95svh;padding:20px;display:flex;flex-direction:column;justify-content:space-between;background:
+linear-gradient(rgba(20,32,24,.08),rgba(20,32,24,.30)),
+radial-gradient(circle at 70% 20%,#dfe4d4 0 12%,transparent 35%),
+linear-gradient(#b7c1ad 0 38%,#6f8168 38% 58%,#586d4f 58% 100%)}
+header{display:flex;justify-content:space-between;align-items:center;color:var(--white);font-weight:800;letter-spacing:.08em}
+.brand small{display:block;font-size:10px;letter-spacing:.18em;font-weight:500;margin-top:2px}
+.hero-copy{max-width:520px;color:var(--white);padding-bottom:28px}.hero-copy h1{font-size:44px;line-height:1.2;margin:0 0 18px}.hero-copy p{font-size:16px;line-height:1.8;margin:0 0 24px}
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 24px;border-radius:16px;background:var(--forest);color:var(--white);text-decoration:none;font-weight:700}
+.section{padding:76px 20px;max-width:880px;margin:auto}.section h2{font-size:30px;margin:0 0 28px}
+.entry{padding:24px 0;border-top:1px solid var(--sand)}.entry:last-child{border-bottom:1px solid var(--sand)}
+.entry h3{margin:0 0 6px;font-size:22px}.entry p{margin:0;color:var(--moss);line-height:1.7}
+.sim{min-height:100svh;background:var(--canvas);display:grid;grid-template-rows:58svh 1fr}.scene{
+background:linear-gradient(#c3c9b9 0 38%,#708067 38% 58%,#4f6648 58% 100%);position:relative}
+.scene:after{content:"SCENE 00 — EMPTY FIELD";position:absolute;bottom:18px;left:20px;color:rgba(255,255,255,.75);font-size:12px;letter-spacing:.08em}
+.sheet{margin-top:-28px;background:var(--canvas);border-radius:28px 28px 0 0;padding:28px 20px 38px;position:relative}
+.progress{font-size:12px;color:var(--moss);letter-spacing:.08em}.sheet h2{font-size:30px;margin:10px 0 24px}
+.option{border-top:1px solid var(--sand);padding:18px 2px;font-size:20px}.option:last-child{border-bottom:1px solid var(--sand)}
+.complete{min-height:100svh;background:var(--forest);color:var(--white)}.complete-visual{height:66svh;background:
+radial-gradient(circle at 65% 60%,rgba(240,170,90,.36),transparent 9%),
+linear-gradient(#647067 0 35%,#35483e 35% 58%,#1f3329 58% 100%)}
+.complete-copy{padding:34px 20px 60px}.complete-copy h2{font-family:Georgia,"Noto Serif JP",serif;font-size:40px;margin:0 0 12px}.complete-copy p{line-height:1.8;color:#e3e6df}
+.abilities{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.abilities span{border:1px solid rgba(255,255,255,.28);padding:10px 14px;border-radius:999px}
+.note{padding:16px 20px;background:#fff7dc;color:#4b4025;font-size:13px}
+</style>
+</head>
+<body>
+<div class="note">Layout prototype only. Replace all CSS scenery with approved high-quality matched imagery in production.</div>
+
+<section class="hero">
+<header><div class="brand">SOTOJITAKU<small>CAMP</small></div><div>☰</div></header>
+<div class="hero-copy"><h1>はじめてのキャンプを、<br>あなた仕立てに。</h1><p>道具も、ごはんも、過ごし方も。<br>やりたい休日から考えよう。</p><a class="cta">キャンプをつくる →</a></div>
+</section>
+
+<section class="section">
+<h2>どう始める？</h2>
+<div class="entry"><h3>キャンプをつくる</h3><p>自分に必要なものを一緒に決める</p></div>
+<div class="entry"><h3>売り場を見る</h3><p>泊まる・料理・焚き火などから探す</p></div>
+<div class="entry"><h3>やりたいことから探す</h3><p>BBQ・星空・朝コーヒーなどから探す</p></div>
+</section>
+
+<section class="sim">
+<div class="scene"></div>
+<div class="sheet"><div class="progress">01 / 07</div><h2>誰と行く？</h2><div class="option">ひとり</div><div class="option">ふたり</div><div class="option">家族</div><div class="option">友人</div></div>
+</section>
+
+<section class="complete">
+<div class="complete-visual"></div>
+<div class="complete-copy"><h2>キャンプ、できた。</h2><p>あなたがやりたかったこと、<br>ちゃんとできそうです。</p>
+<div class="abilities"><span>泊まれる</span><span>BBQできる</span><span>焚き火できる</span><span>朝コーヒー</span></div>
+<a class="cta" style="background:var(--ember)">1泊2日の予定を見る →</a>
+</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "brand": "SOTOJITAKU",
+  "theme": "Quiet Outdoor × Build Your Camp",
+  "colors": {
+    "warm_canvas": "#F4F0E7",
+    "deep_forest": "#23382D",
+    "charcoal": "#1F2420",
+    "moss": "#5D6B5C",
+    "ember": "#A95332",
+    "sand": "#D8CBB8",
+    "soft_white": "#FBFAF7"
+  },
+  "typography": {
+    "sans_jp": "Noto Sans JP",
+    "serif_jp": "Noto Serif JP",
+    "hero_px": {
+      "min": 40,
+      "max": 48
+    },
+    "section_px": 32,
+    "subsection_px": 26,
+    "question_px": 30,
+    "body_px": 16,
+    "caption_px": 14
+  },
+  "spacing": {
+    "unit_px": 8,
+    "mobile_gutter_px": 20,
+    "section_gap_px": 64,
+    "major_transition_gap_px": 96
+  },
+  "radius": {
+    "card_px": 20,
+    "image_px": 24,
+    "button_px": 16,
+    "pill_px": 999,
+    "question_sheet_top_px": 28
+  },
+  "motion_ms": {
+    "tap": 180,
+    "card": 300,
+    "scene_crossfade": 600,
+    "completion": 900
+  },
+  "mobile_nav": [
+    "ホーム",
+    "売り場",
+    "わたしのキャンプ"
+  ],
+  "rules": {
+    "no_gradient_overuse": true,
+    "no_emoji_as_primary_icons": true,
+    "no_white_card_everywhere": true,
+    "no_products_above_fold": true,
+    "no_bouncy_motion": true,
+    "no_cheap_svg_hero": true,
+    "support_reduced_motion": true
+  }
+}

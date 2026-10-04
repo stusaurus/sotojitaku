@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "principles": [
+    "Fail closed: unknown fit or critical attributes never pass as a primary recommendation.",
+    "Hard gates run before scoring.",
+    "Do not rescue an incompatible product with a high score.",
+    "Show at most three recommended products per category."
+  ],
+  "base_weights": {
+    "fit": 30,
+    "beginner": 20,
+    "comfort": 15,
+    "portability": 10,
+    "value": 15,
+    "trust": 10
+  },
+  "profiles": {
+    "default": {
+      "fit": 30,
+      "beginner": 20,
+      "comfort": 15,
+      "portability": 10,
+      "value": 15,
+      "trust": 10
+    },
+    "budget": {
+      "fit": 30,
+      "beginner": 20,
+      "comfort": 5,
+      "portability": 10,
+      "value": 30,
+      "trust": 5
+    },
+    "comfort": {
+      "fit": 30,
+      "beginner": 15,
+      "comfort": 30,
+      "portability": 10,
+      "value": 5,
+      "trust": 10
+    },
+    "easy_mode": {
+      "fit": 30,
+      "beginner": 30,
+      "comfort": 10,
+      "portability": 10,
+      "value": 15,
+      "trust": 5
+    },
+    "no_car": {
+      "fit": 30,
+      "beginner": 20,
+      "comfort": 10,
+      "portability": 20,
+      "value": 15,
+      "trust": 5
+    }
+  },
+  "minimums": {
+    "default_pick": {
+      "fit_ratio": 0.8,
+      "beginner_ratio": 0.7
+    }
+  },
+  "trust_formula": {
+    "spec_completeness": 4,
+    "review_count": 3,
+    "review_average": 2,
+    "listing_clarity": 1,
+    "review_count_transform": "logarithmic"
+  },
+  "value_rules": {
+    "compare_only_within_hard_gate_passed_products": true,
+    "extreme_low_price_action": "audit_before_recommendation",
+    "shipping_unknown_label": "商品価格",
+    "never_claim": [
+      "楽天最安",
+      "最安値"
+    ]
+  },
+  "diversity": {
+    "max_same_product_family": 1,
+    "prefer_distinct_products_across_three_slots": true,
+    "allow_same_product_all_slots_if_no_reasonable_alternative": true
+  },
+  "budget_engine": {
+    "preserve_order": [
+      "SAFETY_CORE",
+      "DESIRED_EXPERIENCE",
+      "COMFORT",
+      "FUN"
+    ],
+    "actions": [
+      "buy",
+      "rent",
+      "defer"
+    ],
+    "rental_preference_threshold": 70,
+    "defer_priority": [
+      "FUN",
+      "BETTER"
+    ]
+  },
+  "completion": {
+    "based_on": "desired_abilities",
+    "safety_core_must_be_complete": true,
+    "unused_ability_does_not_reduce_score": true
+  }
+}

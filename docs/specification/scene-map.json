@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "strategy": "Use consistent camera position / art direction across all hero and simulator scenes. Prefer layered high-quality imagery or matched generated scenes over clip-art composition.",
+  "scenes": [
+    {
+      "id": "scene_00_empty",
+      "moment": "early_morning",
+      "contains": [],
+      "purpose": "landing + simulator start"
+    },
+    {
+      "id": "scene_01_people",
+      "moment": "morning",
+      "contains": [
+        "subtle_people_presence"
+      ],
+      "trigger": [
+        "party_type"
+      ]
+    },
+    {
+      "id": "scene_02_shelter",
+      "moment": "late_morning",
+      "contains": [
+        "tent_or_day_base"
+      ],
+      "trigger": [
+        "stay"
+      ]
+    },
+    {
+      "id": "scene_03_relax",
+      "moment": "afternoon",
+      "contains": [
+        "chairs",
+        "table"
+      ],
+      "trigger": [
+        "relax",
+        "party_size"
+      ]
+    },
+    {
+      "id": "scene_04_food",
+      "moment": "late_afternoon",
+      "contains": [
+        "cooking_or_bbq_cues"
+      ],
+      "trigger": [
+        "bbq",
+        "cooking"
+      ]
+    },
+    {
+      "id": "scene_05_evening",
+      "moment": "dusk",
+      "contains": [
+        "lantern_glow"
+      ],
+      "trigger": [
+        "one_night"
+      ]
+    },
+    {
+      "id": "scene_06_complete",
+      "moment": "blue_hour",
+      "contains": [
+        "user_selected_experiences"
+      ],
+      "trigger": [
+        "simulator_complete"
+      ]
+    }
+  ],
+  "variants": {
+    "bonfire": "add only when selected",
+    "child_play": "add only when children > 0 and selected",
+    "coffee": "surface mainly in morning schedule/completion detail",
+    "stargazing": "night sky emphasis without reducing legibility"
+  }
+}
