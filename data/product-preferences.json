@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "categories": {
+    "tent": {
+      "question": "テントで一番大事なのは？",
+      "options": [
+        {
+          "id": "easy",
+          "label": "設営の簡単さ",
+          "hint": "はじめてでも迷いにくい"
+        },
+        {
+          "id": "comfort",
+          "label": "広さ・快適さ",
+          "hint": "荷物を置いてもゆったり"
+        },
+        {
+          "id": "compact",
+          "label": "持ち運び",
+          "hint": "収納と重さを小さく"
+        },
+        {
+          "id": "value",
+          "label": "予算",
+          "hint": "必要条件を満たして抑える"
+        }
+      ]
+    },
+    "sleeping_bag": {
+      "question": "寝袋は何を優先する？",
+      "options": [
+        {
+          "id": "comfort",
+          "label": "寝心地・暖かさ",
+          "hint": "余裕のある快適さ"
+        },
+        {
+          "id": "compact",
+          "label": "収納の小ささ",
+          "hint": "荷物を軽く"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "人数分そろえやすく"
+        },
+        {
+          "id": "easy",
+          "label": "扱いやすさ",
+          "hint": "収納や手入れを簡単に"
+        }
+      ]
+    },
+    "mat": {
+      "question": "マットは何を優先する？",
+      "options": [
+        {
+          "id": "comfort",
+          "label": "寝心地",
+          "hint": "厚みと快適さ"
+        },
+        {
+          "id": "compact",
+          "label": "コンパクト",
+          "hint": "軽さ・収納性"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "人数分そろえやすく"
+        },
+        {
+          "id": "easy",
+          "label": "設営の簡単さ",
+          "hint": "膨らませやすさ"
+        }
+      ]
+    },
+    "chair": {
+      "question": "チェアはどう使いたい？",
+      "options": [
+        {
+          "id": "comfort",
+          "label": "のんびり座る",
+          "hint": "座り心地を優先"
+        },
+        {
+          "id": "compact",
+          "label": "軽く運ぶ",
+          "hint": "重量・収納性を優先"
+        },
+        {
+          "id": "easy",
+          "label": "開くだけ",
+          "hint": "設営の手軽さ"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "人数分そろえやすく"
+        }
+      ]
+    },
+    "table": {
+      "question": "テーブルは何を優先する？",
+      "options": [
+        {
+          "id": "comfort",
+          "label": "食事のしやすさ",
+          "hint": "人数に合う広さ"
+        },
+        {
+          "id": "compact",
+          "label": "収納のしやすさ",
+          "hint": "車載・持ち運び"
+        },
+        {
+          "id": "easy",
+          "label": "設営の簡単さ",
+          "hint": "開閉の手軽さ"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "必要サイズを抑えて"
+        }
+      ]
+    },
+    "cooler": {
+      "question": "クーラーは何を優先する？",
+      "options": [
+        {
+          "id": "comfort",
+          "label": "保冷力",
+          "hint": "1泊でも余裕を持つ"
+        },
+        {
+          "id": "compact",
+          "label": "持ち運び",
+          "hint": "重さとサイズを抑える"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "必要容量を満たして抑える"
+        },
+        {
+          "id": "easy",
+          "label": "扱いやすさ",
+          "hint": "出し入れ・持ち運び"
+        }
+      ]
+    },
+    "led_lantern": {
+      "question": "ランタンは何を優先する？",
+      "options": [
+        {
+          "id": "easy",
+          "label": "扱いやすさ",
+          "hint": "迷わず使える"
+        },
+        {
+          "id": "comfort",
+          "label": "明るさ",
+          "hint": "サイト全体を照らしやすく"
+        },
+        {
+          "id": "compact",
+          "label": "小ささ",
+          "hint": "荷物を減らす"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "必要な明るさを確保"
+        }
+      ]
+    },
+    "burner": {
+      "question": "バーナーは何を優先する？",
+      "options": [
+        {
+          "id": "easy",
+          "label": "使いやすさ",
+          "hint": "点火・燃料交換が簡単"
+        },
+        {
+          "id": "compact",
+          "label": "コンパクト",
+          "hint": "軽く持ち運ぶ"
+        },
+        {
+          "id": "comfort",
+          "label": "調理の安定感",
+          "hint": "鍋を置きやすく"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "必要機能を絞る"
+        }
+      ]
+    },
+    "fire_pit": {
+      "question": "焚き火台はどう楽しみたい？",
+      "options": [
+        {
+          "id": "easy",
+          "label": "とにかく簡単",
+          "hint": "設営・撤収が楽"
+        },
+        {
+          "id": "comfort",
+          "label": "焚き火をしっかり",
+          "hint": "火を眺める時間を優先"
+        },
+        {
+          "id": "compact",
+          "label": "小さく運ぶ",
+          "hint": "ソロ・荷物少なめ"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "必要な安全性を確保"
+        }
+      ]
+    },
+    "hot_sandwich_maker": {
+      "question": "朝ごはんは何を優先する？",
+      "options": [
+        {
+          "id": "easy",
+          "label": "簡単さ",
+          "hint": "迷わず使える"
+        },
+        {
+          "id": "compact",
+          "label": "収納",
+          "hint": "荷物を小さく"
+        },
+        {
+          "id": "comfort",
+          "label": "焼きやすさ",
+          "hint": "扱いやすさを優先"
+        },
+        {
+          "id": "value",
+          "label": "価格",
+          "hint": "シンプルに"
+        }
+      ]
+    }
+  }
+}
