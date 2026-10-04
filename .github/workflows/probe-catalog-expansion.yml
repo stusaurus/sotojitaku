@@ -15,7 +15,7 @@ jobs:
           import json, urllib.parse, urllib.request, time
           base='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
           headers={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-catalog-probe/1.0'}
-          models=['2000034777','2190857','2190856','2238318','2000038934','ST-320','2000031270','2218364','2194360','2000032516']
+          models=['2000038771','2000022267','2218350','2000038838','2190855','2219642','2219647']
           for model in models:
             try:
               url=base+'?'+urllib.parse.urlencode({'q':model,'hits':20})
