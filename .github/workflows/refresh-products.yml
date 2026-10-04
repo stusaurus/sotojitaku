@@ -1,16 +1,24 @@
 name: Refresh audited camping products
 on:
+  push:
+    branches: [main]
+    paths: ['scripts/**', 'data/audited-products.json', '.github/workflows/refresh-products.yml']
   workflow_dispatch:
   schedule:
     - cron: '15 21 * * *'
 permissions:
   contents: write
+  pages: write
+  id-token: write
 concurrency:
   group: sotojitaku-products
   cancel-in-progress: false
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,3 +39,14 @@ jobs:
             git commit -m 'Refresh verified camping product catalog'
             git push
           fi
+      - name: Prepare static site
+        run: |
+          mkdir public
+          cp index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml .nojekyll public/
+          cp -r assets data public/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - name: Publish refreshed data to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

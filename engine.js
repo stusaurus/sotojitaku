@@ -53,15 +53,15 @@ export function schedule(state,data){const a=state.answers,r=readiness(state,dat
  push('11:00','キャンプ場に到着','受付・ルール・水場を確認。チェックイン時刻は施設に合わせて。');
  push('12:00',a.stay==='one_night'?'わたしたちの場所をつくる':'木陰に、今日の居場所を','急がず、荷物を下ろしてひと休み。',a.stay==='one_night'?['tent']:[],'relax');
  push('14:00',has(a,'child_play')?'子どもと、外を探検':'何もしない時間','木漏れ日や風の音を楽しむ。予定を入れない余白です。',[],has(a,'child_play')?'child_play':'relax');
- const dinner=recipes.find(x=>x.meal==='dinner');
+ const usable=recipe=>[...recipe.required_gear,...recipe.optional_gear].every(id=>!p.some(g=>g.id===id&&['skip','undecided'].includes(g.status)));const dinner=recipes.find(x=>x.meal==='dinner');
  if(available('bbq')&&(!dinner||dinner.id==='bbq'))push(a.stay==='daytrip'?'13:00':'17:00','BBQを楽しむ','生肉は保冷し、中心まで十分に加熱。調理用と食事用のトングを分ける。',['fire_pit','cooler','grill_net'],'bbq');
- else if(dinner&&dinner.id!=='no_cook')push(a.stay==='daytrip'?'13:00':'17:00',dinner.name+'をつくる','材料：'+dinner.ingredients.join('・'),[...dinner.required_gear,...dinner.optional_gear],'cooking');
+ else if(dinner&&dinner.id!=='no_cook'&&usable(dinner))push(a.stay==='daytrip'?'13:00':'17:00',dinner.name+'をつくる','材料：'+dinner.ingredients.join('・'),[...dinner.required_gear,...dinner.optional_gear],'cooking');
  else push(a.stay==='daytrip'?'13:00':'17:00','気楽なごはんの時間','買ってきた食事で、料理をがんばらないキャンプ。');
  if(a.stay==='daytrip'){push('16:00','片付けて、明るいうちに帰る','ゴミの持ち帰りと忘れ物の確認。夕方以降の体験は次のお楽しみに。',['garbage_bags']);return out.sort((a,b)=>a.time.localeCompare(b.time));}
  if(available('bonfire'))push('19:00','焚き火を囲む','直火の可否と消火時刻を確認。火はテントから離し、最後は完全に消火。',['fire_pit','fire_tongs','heat_gloves','extinguish_water','fire_sheet'],'bonfire');
  if(available('stargazing'))push('20:00','星空を見上げる','晴れていれば、少しだけ空の散歩。曇りなら静かな夜を楽しむ。',['headlight'],'stargazing');
  push('21:00','おやすみなさい','静かな時間へ。火気はテント内で使わず、燃料器具は屋外に。',['sleeping_bag','mat','led_lantern','headlight'],'sleep_comfort');
  if(available('coffee'))push('翌 07:00','朝コーヒーを味わう','お湯と一杯のコーヒーで、ゆっくり始まる朝。',['burner','fuel','kettle'],'coffee');
- const breakfast=recipes.find(x=>x.meal==='breakfast');push('翌 08:00',breakfast?breakfast.name+'の朝ごはん':'簡単な朝ごはん',breakfast?'材料：'+breakfast.ingredients.join('・'):'パンなど、調理のいらない朝食も。',breakfast?[...breakfast.required_gear,...breakfast.optional_gear]:[],'coffee');
+ const breakfast=recipes.find(x=>x.meal==='breakfast'&&usable(x));push('翌 08:00',breakfast?breakfast.name+'の朝ごはん':'簡単な朝ごはん',breakfast?'材料：'+breakfast.ingredients.join('・'):'パンなど、調理のいらない朝食も。',breakfast?[...breakfast.required_gear,...breakfast.optional_gear]:[],'coffee');
  push('翌 10:00','また来たい、を持ち帰る','撤収・分別・忘れ物を確認。チェックアウト時刻は施設に合わせて。',['garbage_bags']);return out.sort((a,b)=>a.time.localeCompare(b.time));}
 export function validateStored(raw,data){if(!raw||raw.version!==1||!raw.answers||!raw.gear)return null;const a=raw.answers;for(const q of data.questions.questions.filter(q=>q.type==='single'))if(!q.options.some(o=>o.id===a[q.id]))return null;if(!Number.isInteger(a.adults)||a.adults<1||a.adults>6||!Number.isInteger(a.children)||a.children<0||a.children>4||!Array.isArray(a.experiences)||!a.experiences.length)return null;const valid=data.questions.questions[5].options.map(o=>o.id);if(a.experiences.some(x=>!valid.includes(x)))return null;const ids=new Set([...data.equipment.categories,...data.equipment.supporting_items,...EXTRA].map(x=>x.id));raw.gear=Object.fromEntries(Object.entries(raw.gear).filter(([k,v])=>ids.has(k)&&STATUS.includes(v)));raw.recipes=(raw.recipes||[]).filter(x=>data.recipes.recipes.some(r=>r.id===x));return raw;}

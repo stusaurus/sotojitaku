@@ -6,6 +6,7 @@ export function reject(p,category,answers,equipment,now=Date.now()){
  if(!c.include_any.some(x=>name.replace(/\s/g,'').includes(x.replace(/\s/g,''))))return 'category_mismatch';
  if(p.condition!=='new'||p.fixedVariant!==true||p.available!==true||p.quantityPerListing!==1)return 'listing_conditions';
  if(!safeUrl(p.itemUrl)||!safeUrl(p.affiliateUrl,'affiliate')||!safeUrl(p.image,'image'))return 'unsafe_url';
+ if(new URL(new URL(p.affiliateUrl).searchParams.get('pc')).pathname!==new URL(p.itemUrl).pathname)return 'wrong_affiliate_destination';
  if(!p.verifiedAt||!Number.isFinite(Date.parse(p.verifiedAt))||now-Date.parse(p.verifiedAt)>7*86400000)return 'stale';
  if(!Number.isFinite(p.price)||p.price<=0||p.priceAudit!==true||!Number.isFinite(p.referencePrice)||p.referencePrice<=0||p.price<p.referencePrice*0.35)return 'price_audit';
  if(!p.spec||c.required_fields.some(f=>p.spec[f]===null||p.spec[f]===undefined||p.spec[f]===''||p.spec[f]===false))return 'missing_critical_field';
