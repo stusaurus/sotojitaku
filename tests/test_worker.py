@@ -39,8 +39,8 @@ class SalesAudit(unittest.TestCase):
   m={'shipping_match_name':'SOTO レギュレーターストーブ ST-310','shipping_included_price':7480,'shipping_included_image':'https://thumbnail.image.rakuten.co.jp/x.jpg'}
   self.assertFalse(worker_fallback_allowed(self.audit(),m,self.equipment(),8,'blocked'))
  def test_exact_audit_identity_terms_handle_retailer_title_variants(self):
-  e={'global_exclude_terms':[],'categories':[{'id':'sleeping_bag','include_any':['寝袋','シュラフ'],'exclude_any':[]}]}
+  e={'global_exclude_terms':[],'categories':[{'id':'sleeping_bag','include_any':['寝袋','シュラフ'],'exclude_any':['収納袋']}]}
   a={'category':'sleeping_bag','model':'2000034774','identityTerms':['パフォーマーIII/C5','2000034774']}
   self.assertTrue(identity_gate('Coleman パフォーマーIII/C5 オレンジ 2000034774',a,e))
-  self.assertFalse(identity_gate('Coleman パフォーマーIII/C5 専用 収納袋 2000034774',{'category':'sleeping_bag','model':'2000034774','identityTerms':['パフォーマーIII/C5','本体']},e))
+  self.assertFalse(identity_gate('Coleman パフォーマーIII/C5 専用 収納袋 2000034774',a,e))
 if __name__=='__main__':unittest.main()
