@@ -1287,60 +1287,6 @@
       "brand": "Coleman"
     },
     {
-      "category": "tent",
-      "itemCode": "currypan-online:10000118",
-      "model": "1122763",
-      "query": "1122763",
-      "family": "montbell-moonlight2-1122763",
-      "name": "mont-bell ムーンライト テント2 1122763",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 47975,
-      "spec": {
-        "capacity": 2,
-        "weight": 2460,
-        "packed_size": "本体約φ17×35cm / ポール約φ11×47cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/currypan-online/20221204_41580/",
-        "specification": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763",
-        "fields": {
-          "capacity": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763",
-          "weight": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763",
-          "packed_size": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763"
-        }
-      },
-      "scores": {
-        "fit": 0.96,
-        "beginner": 0.9,
-        "comfort": 0.82,
-        "portability": 0.99,
-        "value": 0.45,
-        "trust": 0.97
-      },
-      "traits": [
-        "compact"
-      ],
-      "reviewCount": 0,
-      "reviewAverage": 0,
-      "listingAuditedAt": "2026-10-04T12:18:23+00:00",
-      "listingAudit": "モンベル公式仕様と楽天販売ページを照合。新品・テント本体・型番1122763・春〜秋向けを確認。日次で固定販売URLと販売状態を再確認。",
-      "itemUrl": "https://item.rakuten.co.jp/currypan-online/20221204_41580/",
-      "specSummary": "2人用 / 総重量約2.46kg / 本体収納約φ17×35cm。車なし・ツーリング向けの軽量候補。",
-      "identityTerms": [
-        "ムーンライト",
-        "テント",
-        "1122763"
-      ],
-      "lookupName": true,
-      "brand": "mont-bell"
-    },
-    {
       "category": "mat",
       "itemCode": "import-ss-shop:10048152",
       "model": "1124667",
@@ -1396,5 +1342,5 @@
       "brand": "mont-bell"
     }
   ],
-  "refreshRequestedAt": "2026-10-04T12:55:10Z"
+  "refreshRequestedAt": "2026-10-04T13:06:00Z"
 }
