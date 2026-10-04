@@ -31,7 +31,7 @@ export function reject(p,category,answers,equipment,now=Date.now()){
  if(category==='burner'&&!['CB','OD','butane','propane'].includes(s.fuel_type))return 'fuel';
  if(category==='led_lantern'&&(!Number.isFinite(s.runtime_hours)||s.runtime_hours<6||s.brightness_lm<100))return 'light';
  if(answers.transport==='no_car'&&(!Number.isFinite(s.weight)||s.weight>({tent:4500,chair:3000,table:2000,cooler:1500}[category]||1500)))return 'portability';
- if(answers.children>0&&p.childStable!==true&&['burner','fire_pit'].includes(category))return 'child_stability';
+ if(Number(answers.children)>0&&p.familyRestricted===true)return 'family_restricted';
  if(!p.evidence||!safeUrl(p.evidence.listing)||!p.evidence.specification||!p.evidence.fields||c.required_fields.some(f=>typeof p.evidence.fields[f]!=='string'||!p.evidence.fields[f]))return 'no_evidence';
  if(!p.scores||['fit','beginner','comfort','portability','value','trust'].some(k=>!Number.isFinite(p.scores[k])||p.scores[k]<0||p.scores[k]>1))return 'unknown_score';
  return null;
@@ -69,7 +69,7 @@ function reasonParts(p,c,a,pref,quantity,targetBudget){
  const labels={easy:'扱いやすさ',comfort:'快適さ',compact:'持ち運び',value:'予算',balanced:'総合バランス'};
  parts.push(`${labels[pref]||labels.balanced}を優先`);
  if(a.transport==='no_car')parts.push('車なしの重量条件を通過');
- else if(Number(a.children)>0&&['tent','chair','table','burner','fire_pit'].includes(c))parts.push('子ども連れの安定性条件を通過');
+ else if(Number(a.children)>0&&['burner','fire_pit'].includes(c))parts.push('火器は大人が操作し、子どもの動線から離して使用');else if(Number(a.children)>0)parts.push('家族の人数条件を反映');
  if(Number.isFinite(targetBudget)&&targetBudget>0){const total=p.price*Math.max(1,quantity||1);parts.push(total<=targetBudget?'この道具の予算目安内':'必要条件を優先して予算超過を表示');}
  return parts;
 }
