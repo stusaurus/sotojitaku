@@ -9,20 +9,22 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe lightweight exact models
+      - name: Probe lightweight strict names
         shell: python
         run: |
           import json, urllib.parse, urllib.request, time
-          base='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
+          base='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
           headers={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-pool-probe/1.0'}
-          for model in ['1122763','1134278','1134282']:
+          cases=[
+            ('tent','モンベル ムーンライト テント2 1122763','mont-bell'),
+            ('mat','モンベル U.L.エアパッド 180 1134278','mont-bell'),
+            ('matwide','モンベル U.L.エアパッド ワイド 180 1134282','mont-bell')
+          ]
+          for label,name,brand in cases:
             try:
-              url=base+'?'+urllib.parse.urlencode({'q':model,'hits':20})
+              url=base+'?'+urllib.parse.urlencode({'name':name,'brand':brand})
               req=urllib.request.Request(url,headers=headers)
               with urllib.request.urlopen(req,timeout=35) as r:data=json.load(r)
-              print('===',model,'===')
-              for p in data.get('products',[]):
-                if p.get('product_no')==model:
-                  print(json.dumps({'model':model,'name':p.get('name'),'ship_name':p.get('shipping_match_name'),'ship_url':p.get('shipping_included_url'),'price':p.get('shipping_included_price'),'image':p.get('shipping_included_image'),'reviewCount':p.get('review_count'),'reviewAverage':p.get('review_average')},ensure_ascii=False))
-            except Exception as e:print('ERROR',model,type(e).__name__,str(e)[:160])
+              print('===',label,'===',json.dumps(data,ensure_ascii=False))
+            except Exception as e:print('ERROR',label,type(e).__name__,str(e)[:160])
             time.sleep(1.2)
