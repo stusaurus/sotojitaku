@@ -15,7 +15,7 @@ jobs:
           import json, urllib.parse, urllib.request, time
           base='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
           headers={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-firepit-probe/1.0'}
-          models=['ST-033R','ST-032RS','2194360']
+          models=['ST-033R','ST-032RS','2205811']
           for model in models:
             for attempt in range(3):
               try:
