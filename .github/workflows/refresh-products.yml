@@ -66,7 +66,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir public
-          cp index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml .nojekyll public/
+          cp index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml googlef35e71acece62b67.html .nojekyll public/
           cp -r assets data guides public/
       - uses: actions/upload-pages-artifact@v3
         with:
