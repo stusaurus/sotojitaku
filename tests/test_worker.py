@@ -1,7 +1,7 @@
 import unittest,sys,json
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from refresh_worker import parse_listing, live_item_code
+from refresh_worker import parse_listing, live_item_code, body_gate, worker_fallback_allowed
 class SalesAudit(unittest.TestCase):
  def info(self):
   return {'itemId':1,'sellType':'NORMAL','inventoryType':'single','sku':[],'purchaseInfo':{'purchaseBySellType':{'purchaseCondition':'enabled','normalPurchase':{'price':{'minPrice':1000}}},'variantMappedInventories':[{'quantity':1}]}}
@@ -23,4 +23,19 @@ class SalesAudit(unittest.TestCase):
   self.assertEqual(live_item_code(url),'shop:12345678')
  def test_optional_item_id(self):
   self.assertTrue(parse_listing('MODEL "itemInfoSku":'+json.dumps(self.info()),'MODEL',1000,None))
+ def equipment(self):
+  return {'global_exclude_terms':['中古'],'categories':[{'id':'burner','include_any':['バーナー','レギュレーターストーブ'],'exclude_any':['風防','アシストグリップ']}]}
+ def audit(self):
+  return {'category':'burner','model':'ST-310','audited':True,'bodyConfirmed':True,'fixedVariant':True,'available':True,'priceAudit':True,'condition':'new','quantityPerListing':1,'referencePrice':7480}
+ def test_body_gate_rejects_accessory_with_model_number(self):
+  self.assertFalse(body_gate('SOTO ST-310 対応 風防 シングルバーナー用', 'burner', self.equipment()))
+  self.assertTrue(body_gate('SOTO レギュレーターストーブ ST-310', 'burner', self.equipment()))
+ def test_blocked_page_fallback_requires_exact_body_conditions(self):
+  m={'shipping_match_name':'SOTO レギュレーターストーブ ST-310','shipping_included_price':7480,'shipping_included_image':'https://thumbnail.image.rakuten.co.jp/x.jpg'}
+  self.assertTrue(worker_fallback_allowed(self.audit(),m,self.equipment(),0,'blocked'))
+  m['shipping_match_name']='SOTO ST-310 対応 風防'
+  self.assertFalse(worker_fallback_allowed(self.audit(),m,self.equipment(),0,'blocked'))
+ def test_fallback_expires_after_seven_days(self):
+  m={'shipping_match_name':'SOTO レギュレーターストーブ ST-310','shipping_included_price':7480,'shipping_included_image':'https://thumbnail.image.rakuten.co.jp/x.jpg'}
+  self.assertFalse(worker_fallback_allowed(self.audit(),m,self.equipment(),8,'blocked'))
 if __name__=='__main__':unittest.main()
