@@ -16,20 +16,10 @@ jobs:
           base='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
           headers={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-gap-probe/1.0'}
           queries=[
-            'Coleman バタフライテーブル 120',
-            'Coleman バタフライテーブル 90',
-            'Coleman オールインワンキッチンテーブル',
-            'Coleman テーブル 120 キャンプ',
-            'CAPTAIN STAG テーブル 120',
-            'Coleman エクストリーム ホイールクーラー',
-            'Coleman クーラーボックス 30L',
-            'Coleman クーラーボックス 40L',
-            'Coleman アルティメイトアイスクーラー 35L',
-            'UNIFLAME ファイアグリル',
-            'snow peak 焚火台 M',
-            'snow peak 焚火台 L',
-            'CAPTAIN STAG ヘキサステンレスファイアグリル',
-            'Coleman ファイアーディスク マックス'
+            '2205811',
+            '2238333',
+            '2244060',
+            '2238145'
           ]
           for q in queries:
             try:
