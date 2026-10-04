@@ -41,19 +41,29 @@ def live_item_code(affiliate_url):
 def _compact(value):
     return re.sub(r'\s+','',unicodedata.normalize('NFKC',str(value or '')))
 
-def body_gate(name, category_id, equipment):
-    category=next((c for c in equipment.get('categories',[]) if c.get('id')==category_id),None)
-    if not category:return False
+def category_for(category_id, equipment):
+    return next((c for c in equipment.get('categories',[]) if c.get('id')==category_id),None)
+
+def excluded_name(name, category_id, equipment):
+    category=category_for(category_id,equipment)
+    if not category:return True
     normalized=_compact(name)
     exclusions=equipment.get('global_exclude_terms',[])+category.get('exclude_any',[])
-    if any(_compact(term) in normalized for term in exclusions):return False
+    return any(_compact(term) in normalized for term in exclusions)
+
+def body_gate(name, category_id, equipment):
+    category=category_for(category_id,equipment)
+    if not category or excluded_name(name,category_id,equipment):return False
+    normalized=_compact(name)
     return any(_compact(term) in normalized for term in category.get('include_any',[]))
 
 def identity_gate(name, audit, equipment):
+    category_id=audit.get('category')
+    if excluded_name(name,category_id,equipment):return False
     terms=audit.get('identityTerms') or []
     term_match=bool(terms) and all(_compact(term) in _compact(name) for term in terms)
     model_match=_compact(audit.get('model')) in _compact(name)
-    return (body_gate(name,audit.get('category'),equipment) and model_match) or term_match
+    return (body_gate(name,category_id,equipment) and model_match) or term_match
 
 def worker_fallback_allowed(audit, matched, equipment, audit_age, page):
     # The Rakuten page occasionally returns a tiny anti-bot response in Actions.
