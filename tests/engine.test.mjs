@@ -30,3 +30,24 @@ test('D baseline owned tent stays within 50k by renting family chairs',()=>{cons
 
 test('preference inference prioritizes transport and explicit comfort',()=>{assert.equal(defaultPreference('tent',C().answers),'compact');const a=B().answers;a.budget='comfort';assert.equal(defaultPreference('tent',a),'comfort');});
 test('personalized recommendation can change top pick and calculates quantity total',()=>{const base=product('sleeping_bag');const comfy={...structuredClone(base),itemCode:'test:comfort',itemUrl:'https://item.rakuten.co.jp/test/comfort/',affiliateUrl:'https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftest%2Fcomfort%2F',family:'comfort-family',price:9000,referencePrice:10000,scores:{fit:.92,beginner:.8,comfort:.99,portability:.35,value:.45,trust:.9}};const value={...structuredClone(base),itemCode:'test:value',itemUrl:'https://item.rakuten.co.jp/test/value/',affiliateUrl:'https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftest%2Fvalue%2F',family:'value-family',price:4500,referencePrice:10000,scores:{fit:.9,beginner:.85,comfort:.6,portability:.7,value:.99,trust:.9}};const a=A().answers;const comfort=recommend([comfy,value],'sleeping_bag',a,data.equipment,data.rules,{preference:'comfort',quantity:2,targetBudget:0},now);const cheap=recommend([comfy,value],'sleeping_bag',a,data.equipment,data.rules,{preference:'value',quantity:2,targetBudget:10000},now);assert.equal(comfort[0].itemCode,'test:comfort');assert.equal(cheap[0].itemCode,'test:value');assert.equal(cheap[0].totalPrice,9000);});
+
+test('real catalog covers core profiles and preference choices',()=>{
+  const catalog=JSON.parse(fs.readFileSync(new URL('../data/products.json',import.meta.url)));
+  const profiles=[
+    ['solo-car',{...structuredClone(DEFAULT),party_type:'solo',adults:1,children:0,season:'spring',stay:'one_night',transport:'car',experiences:['easy'],budget:'50000'}],
+    ['solo-no-car',{...structuredClone(DEFAULT),party_type:'solo',adults:1,children:0,season:'spring',stay:'one_night',transport:'no_car',experiences:['easy'],budget:'50000'}],
+    ['family-four',{...structuredClone(DEFAULT),party_type:'family',adults:2,children:2,season:'autumn',stay:'one_night',transport:'car',experiences:['bbq','bonfire','coffee'],budget:'100000'}]
+  ];
+  const preferences=['easy','comfort','compact','value'];
+  for(const [profile,answers] of profiles){
+    const quantity=Number(answers.adults)+Number(answers.children);
+    for(const category of data.equipment.categories.map(x=>x.id)){
+      for(const preference of preferences){
+        const picks=recommend(catalog.products,category,answers,data.equipment,data.rules,{preference,quantity,targetBudget:50000},Date.now());
+        assert.ok(picks.length>0,profile+':'+category+':'+preference);
+        assert.equal(picks[0].badge,'あなたなら、まずこれ');
+        assert.ok(picks[0].matchReasons.length>=2);
+      }
+    }
+  }
+});
