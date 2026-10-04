@@ -31,7 +31,7 @@ export function reject(p,category,answers,equipment,now=Date.now()){
  if(category==='burner'&&!['CB','OD','butane','propane'].includes(s.fuel_type))return 'fuel';
  if(category==='led_lantern'&&(!Number.isFinite(s.runtime_hours)||s.runtime_hours<6||s.brightness_lm<100))return 'light';
  if(answers.transport==='no_car'&&(!Number.isFinite(s.weight)||s.weight>({tent:3000,chair:1500,table:2000,cooler:1500}[category]||1500)))return 'portability';
- if(answers.children>0&&p.childStable!==true&&['tent','chair','table','burner','fire_pit'].includes(category))return 'child_stability';
+ if(answers.children>0&&p.childStable!==true&&['burner','fire_pit'].includes(category))return 'child_stability';
  if(!p.evidence||!safeUrl(p.evidence.listing)||!p.evidence.specification||!p.evidence.fields||c.required_fields.some(f=>typeof p.evidence.fields[f]!=='string'||!p.evidence.fields[f]))return 'no_evidence';
  if(!p.scores||['fit','beginner','comfort','portability','value','trust'].some(k=>!Number.isFinite(p.scores[k])||p.scores[k]<0||p.scores[k]>1))return 'unknown_score';
  return null;
