@@ -24,13 +24,13 @@ export function reject(p,category,answers,equipment,now=Date.now()){
  const n=Number(answers.adults)+Number(answers.children),s=p.spec;
  if(n>4)return 'outside_mvp';
  if(category==='tent'&&(!Number.isFinite(s.capacity)||s.capacity<n))return 'capacity';
- if(category==='table'&&(!Number.isFinite(s.table_capacity)||s.table_capacity<n))return 'table_capacity';
+ if(category==='table'){const width=Number(String(s.table_size||'').match(/[0-9.]+/)?.[0]||0),capacity=Number(s.table_capacity)||(width>=110?4:width>=75?2:1);if(capacity<n)return 'table_capacity';}
  if(category==='sleeping_bag'&&(!Number.isFinite(s.comfort_temperature)||s.comfort_temperature>(answers.season==='summer'?15:5)))return 'temperature';
  if(category==='cooler'&&(!Number.isFinite(s.capacity_l)||s.capacity_l<(answers.stay==='daytrip'?n*3:n*6)))return 'cooler_capacity';
  if(category==='hot_sandwich_maker'&&s.heat_source!=='direct_flame')return 'heat_source';
  if(category==='burner'&&!['CB','OD','butane','propane'].includes(s.fuel_type))return 'fuel';
  if(category==='led_lantern'&&(!Number.isFinite(s.runtime_hours)||s.runtime_hours<6||s.brightness_lm<100))return 'light';
- if(answers.transport==='no_car'&&(!Number.isFinite(s.weight)||s.weight>({tent:3000,chair:1500,table:2000,cooler:1500}[category]||1500)))return 'portability';
+ if(answers.transport==='no_car'&&(!Number.isFinite(s.weight)||s.weight>({tent:4500,chair:3000,table:2000,cooler:1500}[category]||1500)))return 'portability';
  if(answers.children>0&&p.childStable!==true&&['burner','fire_pit'].includes(category))return 'child_stability';
  if(!p.evidence||!safeUrl(p.evidence.listing)||!p.evidence.specification||!p.evidence.fields||c.required_fields.some(f=>typeof p.evidence.fields[f]!=='string'||!p.evidence.fields[f]))return 'no_evidence';
  if(!p.scores||['fit','beginner','comfort','portability','value','trust'].some(k=>!Number.isFinite(p.scores[k])||p.scores[k]<0||p.scores[k]>1))return 'unknown_score';
@@ -74,8 +74,8 @@ function reasonParts(p,c,a,pref,quantity,targetBudget){
  return parts;
 }
 function decorate(p,badge,c,a,pref,quantity,targetBudget,score){
- const totalPrice=p.price*Math.max(1,quantity||1),parts=reasonParts(p,c,a,pref,quantity,targetBudget);
- return {...p,badge,totalPrice,matchScore:Math.max(0,Math.min(100,Math.round(score))),matchReasons:parts,reason:parts.join('。')+'。',budgetStatus:Number.isFinite(targetBudget)&&targetBudget>0?(totalPrice<=targetBudget?'within':'over'):'open'};
+ const personsPerUnit=Math.max(1,Number(p.spec?.persons_per_unit)||1),units=Math.max(1,Math.ceil(Math.max(1,quantity||1)/personsPerUnit)),totalPrice=p.price*units,parts=reasonParts(p,c,a,pref,quantity,targetBudget);
+ return {...p,badge,units,totalPrice,matchScore:Math.max(0,Math.min(100,Math.round(score))),matchReasons:parts,reason:parts.join('。')+'。',budgetStatus:Number.isFinite(targetBudget)&&targetBudget>0?(totalPrice<=targetBudget?'within':'over'):'open'};
 }
 export function recommend(products,category,a,equipment,rules,options={},now=Date.now()){
  if(typeof options==='number'){now=options;options={};}
