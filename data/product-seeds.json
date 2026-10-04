@@ -104,6 +104,124 @@
         "trust": 0.95
       },
       "specSummary": "1〜2人用 / 約4kg / 収納約φ19×49cm。車利用のソロ・デュオ向け。"
+    },
+    {
+      "category": "tent",
+      "model": "T5-47-TN",
+      "family": "dod-t5-47-tn",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 20440,
+      "spec": {
+        "capacity": 5,
+        "weight": 4500,
+        "packed_size": "約W58×D18×H18cm"
+      },
+      "evidence": {
+        "specification": "https://www.dod.camp/product/t5_47_tn/",
+        "fields": {
+          "capacity": "https://www.dod.camp/product/t5_47_tn/",
+          "weight": "https://www.dod.camp/product/t5_47_tn/",
+          "packed_size": "https://www.dod.camp/product/t5_47_tn/"
+        }
+      },
+      "scores": {
+        "fit": 0.92,
+        "beginner": 0.95,
+        "comfort": 0.82,
+        "portability": 0.8,
+        "value": 0.95,
+        "trust": 0.92
+      },
+      "traits": [
+        "easy",
+        "value",
+        "compact"
+      ],
+      "specSummary": "大人5名 / 約4.5kg / 収納約W58×D18×H18cm。ワンポール構造で初心者でも設営手順が少ない。"
+    },
+    {
+      "category": "tent",
+      "model": "T3-623-KH",
+      "family": "dod-t3-623-kh",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 44000,
+      "spec": {
+        "capacity": 3,
+        "weight": 8900,
+        "packed_size": "約W63×D22×H22cm"
+      },
+      "evidence": {
+        "specification": "https://www.dod.camp/product/t3_623_kh/",
+        "fields": {
+          "capacity": "https://www.dod.camp/product/t3_623_kh/",
+          "weight": "https://www.dod.camp/product/t3_623_kh/",
+          "packed_size": "https://www.dod.camp/product/t3_623_kh/"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.92,
+        "comfort": 0.88,
+        "portability": 0.38,
+        "value": 0.62,
+        "trust": 0.92
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "specSummary": "大人3名 / 約8.9kg / 収納約W63×D22×H22cm。クロスフレーム型で前室付き。"
+    },
+    {
+      "category": "tent",
+      "model": "T3-673-KH",
+      "family": "dod-t3-673-kh",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 35370,
+      "spec": {
+        "capacity": 3,
+        "weight": 8400,
+        "packed_size": "約W75×D22×H22cm"
+      },
+      "evidence": {
+        "specification": "https://www.dod.camp/product/t3_673_kh/",
+        "fields": {
+          "capacity": "https://www.dod.camp/product/t3_673_kh/",
+          "weight": "https://www.dod.camp/product/t3_673_kh/",
+          "packed_size": "https://www.dod.camp/product/t3_673_kh/"
+        }
+      },
+      "scores": {
+        "fit": 0.91,
+        "beginner": 0.99,
+        "comfort": 0.86,
+        "portability": 0.36,
+        "value": 0.7,
+        "trust": 0.92
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "specSummary": "大人3名 / 約8.4kg / 収納約W75×D22×H22cm。ワンタッチ式インナーテントで設営しやすい。"
     }
   ]
 }
