@@ -1,5 +1,5 @@
-import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validateStored,selectedRecipes} from './engine.js';
-import {recommend} from './products.js';
+import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validateStored,selectedRecipes} from './engine.js?v=dd0eb357d333';
+import {recommend} from './products.js?v=5b06fcdd80ba';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const yen=n=>'¥'+Number(n).toLocaleString('ja-JP');

@@ -8,6 +8,8 @@ Static, mobile-first camping experience planner. GitHub Pages serves repository 
 
 `npm run serve` → http://localhost:4173
 
+After editing JS/CSS, run `python scripts/stamp_assets.py` to refresh content fingerprints (avoids stale browser modules after Pages deployments).
+
 `npm run check`, `npm test`, `python -m unittest discover -s tests -p 'test_*.py' -v`
 
 The Work-ready pack is authoritative; unmodified JSON files are in `data/`, textual source specifications in `docs/specification/`. Visual source images remain in the supplied original pack. Generated production imagery is in `assets/`.
