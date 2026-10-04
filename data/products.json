@@ -45,7 +45,8 @@
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=500x500",
       "verifiedAt": "2026-10-04T09:21:15.555164+00:00",
-      "shipping": "included"
+      "shipping": "included",
+      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。"
     },
     {
       "category": "mat",
@@ -91,7 +92,8 @@
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00ufobo.7cx6m8c8.g00ufobo.7cx6n4db/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frugia%2Frg861505d84a%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Frugia%2Fi%2F10029568%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/rugia/cabinet/onesell136/rg861505d84a.jpg?_ex=500x500",
       "verifiedAt": "2026-10-04T09:21:15.555164+00:00",
-      "shipping": "included"
+      "shipping": "included",
+      "specSummary": "約63×195×5cm / 約1.8kg / 1人用。"
     },
     {
       "category": "cooler",
@@ -107,7 +109,7 @@
       "available": true,
       "quantityPerListing": 1,
       "priceAudit": true,
-      "referencePrice": 10780,
+      "referencePrice": 7590,
       "spec": {
         "capacity_l": 26,
         "weight": 3200
@@ -135,7 +137,8 @@
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40col-2000037321%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10409672%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sports-bazaar/cabinet/spopia-87/s-40col-2000037321_1.jpg?_ex=500x500",
       "verifiedAt": "2026-10-04T09:21:15.555164+00:00",
-      "shipping": "included"
+      "shipping": "included",
+      "specSummary": "容量約26L / 約3.2kg。食材量と保冷剤も確認。"
     }
   ],
   "status": "ok",
