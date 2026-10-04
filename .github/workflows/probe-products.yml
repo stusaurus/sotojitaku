@@ -10,39 +10,24 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Query Rakuten worker variants
+      - name: Probe exact JAN lookups
         shell: python
         run: |
           import json, urllib.parse, urllib.request, time
-          base='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
+          base='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
           headers={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-probe/1.0'}
-          queries=[
-            ('sleep','2000034774'),
-            ('sleep2','Coleman パフォーマーIII C5 2000034774'),
-            ('lantern','2000034245'),
-            ('lantern2','Coleman バッテリーガード LEDランタン 1000'),
-            ('fire1','2000031235'),
-            ('fire2','Coleman ファイアーディスク'),
-            ('fire3','Coleman ファイアーディスク 2000031235 本体'),
-            ('burner1','ST-310'),
-            ('burner2','SOTO レギュレーターストーブ ST-310'),
-            ('burner3','SOTO ST-310 本体')
+          cases=[
+            ('fire','4992826711122','Coleman ファイアーディスク 2000031235','Coleman'),
+            ('burner','4953571073101','SOTO レギュレーターストーブ ST-310','SOTO')
           ]
-          for label,q in queries:
-            url=base+'?'+urllib.parse.urlencode({'q':q,'hits':30})
+          for label,code,name,brand in cases:
+            url=base+'?'+urllib.parse.urlencode({'code':code,'name':name,'brand':brand})
             try:
               req=urllib.request.Request(url,headers=headers)
               with urllib.request.urlopen(req,timeout=30) as r:
                 data=json.load(r)
-              print('===',label,q,'count',data.get('count'),'===')
-              for p in (data.get('products') or [])[:12]:
-                print(json.dumps({
-                  'product_no':p.get('product_no'),
-                  'name':p.get('name'),
-                  'ship_name':p.get('shipping_match_name'),
-                  'ship_url':p.get('shipping_included_url'),
-                  'price':p.get('shipping_included_price')
-                },ensure_ascii=False))
+              print('===',label,'===')
+              print(json.dumps(data,ensure_ascii=False))
             except Exception as e:
-              print('ERROR',label,type(e).__name__,str(e)[:120])
+              print('ERROR',label,type(e).__name__,str(e)[:160])
             time.sleep(1.2)
