@@ -42,13 +42,14 @@ def inspect_listing(page, model, expected_price):
 def discover():
     seeds=json.loads((ROOT/'data/product-seeds.json').read_text())['products']
     now=datetime.now(timezone.utc).isoformat()
-    found=[];failed={}
+    found=[];failed={};observed={}
     def model_key(value):
         return ''.join(ch for ch in str(value or '').upper() if ch.isalnum())
     for seed in seeds:
         try:
             req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':seed['model'],'hits':20}),headers=HEADERS)
             result=fetch_with_retry(req)
+            observed[seed['model']]=[{k:p.get(k) for k in ('product_no','name','shipping_match_name','shipping_included_url','shipping_included_price','review_count','review_average')} for p in (result.get('products') or [])[:10]]
             needle=model_key(seed['model'])
             def model_match(p):
                 product_no=model_key(p.get('product_no'))
@@ -93,7 +94,7 @@ def discover():
         except Exception as e:
             failed[seed['model']]=str(e) if isinstance(e,ValueError) else type(e).__name__
         time.sleep(1.2)
-    return {'version':1,'generatedAt':now,'status':'ok' if not failed else 'partial','products':found,'failed':failed}
+    return {'version':1,'generatedAt':now,'status':'ok' if not failed else 'partial','products':found,'failed':failed,'observed':observed}
 
 if __name__=='__main__':
     out=discover()
