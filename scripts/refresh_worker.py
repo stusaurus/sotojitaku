@@ -41,7 +41,7 @@ def fetch_page(url):
             time.sleep(1+attempt*2)
 
 def acquire():
-    now=datetime.now(timezone.utc).isoformat();products=[];failed=[]
+    now=datetime.now(timezone.utc).isoformat();products=[];failed=[];reasons={}
     audits=json.loads((ROOT/'data/audited-products.json').read_text())['products']
     for audit in audits:
         try:
@@ -56,10 +56,11 @@ def acquire():
             page=fetch_page(audit['itemUrl'])
             parse_listing(page,audit['model'],price,int(audit['itemCode'].split(':')[1]))
             products.append({**audit,'name':matched['name'],'price':price,'affiliateUrl':matched['shipping_included_url'],'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included'})
-        except Exception:
+        except Exception as error:
+            reasons[audit['category']]=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
             failed.append(audit['category'])
         time.sleep(1.2)
-    return {'version':1,'products':products,'status':'partial_error' if failed else 'ok','failedCategories':failed,'updatedAt':now}
+    return {'version':1,'products':products,'status':'partial_error' if failed else 'ok','failedCategories':failed,'failureReasons':reasons,'updatedAt':now}
 if __name__=='__main__':
     result=acquire();p=ROOT/'data/products.json';tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n');tmp.replace(p)
     print('catalog:',result['status'],'verified:',len(result['products']))

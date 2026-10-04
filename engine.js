@@ -42,7 +42,7 @@ export function readiness(state,data){const p=plan(state,data),d=desired(state,d
 }
 export function costs(state,data){const p=plan(state,data);const buy=p.filter(g=>g.status==='buy').reduce((s,g)=>s+g.estimate,0),rent=p.filter(g=>g.status==='rent').reduce((s,g)=>s+g.rentalEstimate,0);const limit=state.answers.budget==='comfort'?null:Number(state.answers.budget);return {buy,rent,total:buy+rent,limit,over:limit!==null&&buy+rent>limit};}
 export function adjust(state,data){const s=structuredClone(state);const limit=costs(s,data).limit;if(limit===null)return s;
- const gear=plan(s,data).filter(g=>g.status==='buy'&&g.rental_score>=70).sort((a,b)=>(b.estimate-b.rentalEstimate)-(a.estimate-a.rentalEstimate));
+ const gear=plan(s,data).filter(g=>g.status==='buy'&&g.rental_score>=55).sort((a,b)=>(b.estimate-b.rentalEstimate)-(a.estimate-a.rentalEstimate));
  for(const g of gear){if(!costs(s,data).over)break;s.gear[g.id]='rent';}
  // Safety and desired experiences are never silently removed.
  for(const g of plan(s,data).filter(g=>!g.required&&g.status==='buy').sort((a,b)=>b.estimate-a.estimate)){if(!costs(s,data).over)break;s.gear[g.id]='skip';}
