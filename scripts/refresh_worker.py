@@ -117,6 +117,8 @@ def fetch_page(url):
 def acquire():
     now=datetime.now(timezone.utc).isoformat();products=[];item_failures={};reasons={}
     audits=json.loads((ROOT/'data/audited-products.json').read_text())['products']
+    extra=ROOT/'data/audited-products-extra.json'
+    if extra.exists():audits+=json.loads(extra.read_text()).get('products',[])
     equipment=json.loads((ROOT/'data/equipment.json').read_text())
     for audit in audits:
         try:
