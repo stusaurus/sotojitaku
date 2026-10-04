@@ -7,11 +7,12 @@ from datetime import datetime, timezone
 from acquire import ROOT, fetch_with_retry, canonical_item_url
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
 HEADERS={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-camp/1.0'}
-def parse_listing(page, model, expected_price, expected_id):
+def parse_listing(page, model, expected_price, expected_id=None):
     marker='"itemInfoSku":'
     if marker not in page:raise ValueError('missing_sales_evidence')
     info,_=json.JSONDecoder().raw_decode(page.split(marker,1)[1])
-    if info.get('itemId')!=expected_id or info.get('sellType')!='NORMAL':raise ValueError('wrong_listing')
+    if expected_id is not None and info.get('itemId')!=expected_id:raise ValueError('wrong_listing')
+    if info.get('sellType')!='NORMAL':raise ValueError('wrong_listing')
     purchase=info.get('purchaseInfo',{})
     if purchase.get('purchaseBySellType',{}).get('purchaseCondition')!='enabled':raise ValueError('unavailable')
     actual=purchase.get('purchaseBySellType',{}).get('normalPurchase',{}).get('price',{}).get('minPrice')
@@ -27,6 +28,15 @@ def parse_listing(page, model, expected_price, expected_id):
     elif info.get('inventoryType')!='single' or info.get('sku'):raise ValueError('variant_unknown')
     if model not in page:raise ValueError('model_missing')
     return True
+
+def live_item_code(affiliate_url):
+    try:
+        parsed=urllib.parse.urlparse(affiliate_url or '')
+        mobile=urllib.parse.parse_qs(parsed.query).get('m',[''])[0]
+        match=re.search(r'//m\.rakuten\.co\.jp/([^/]+)/i/(\d+)/?',mobile)
+        return f'{match.group(1)}:{match.group(2)}' if match else ''
+    except Exception:
+        return ''
 
 def fetch_page(url):
     req=urllib.request.Request(url,headers=HEADERS)
@@ -48,14 +58,20 @@ def acquire():
             # Manufacturer audit expires after one year; sales evidence is rechecked now.
             age=(datetime.now(timezone.utc)-datetime.fromisoformat(audit['listingAuditedAt'])).days
             if not 0<=age<=365:raise ValueError('spec_audit_expired')
-            req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':audit['query'],'hits':5}),headers=HEADERS)
+            req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':audit['query'],'hits':30}),headers=HEADERS)
             result=fetch_with_retry(req)
             matched=next((p for p in result.get('products',[]) if p.get('product_no')==audit['model'] and canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
             if not matched or audit['model'] not in matched.get('shipping_match_name',''):raise ValueError('unmatched_listing')
             price=matched.get('shipping_included_price')
+            affiliate=matched.get('shipping_included_url','')
+            code=live_item_code(affiliate) or audit.get('itemCode','')
+            if not code:raise ValueError('missing_item_code')
+            expected_id=None
+            try: expected_id=int(code.split(':',1)[1])
+            except (ValueError,IndexError): pass
             page=fetch_page(audit['itemUrl'])
-            parse_listing(page,audit['model'],price,int(audit['itemCode'].split(':')[1]))
-            products.append({**audit,'name':matched['name'],'price':price,'affiliateUrl':matched['shipping_included_url'],'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included'})
+            parse_listing(page,audit['model'],price,expected_id)
+            products.append({**audit,'itemCode':code,'name':matched['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included'})
         except Exception as error:
             reasons[audit['category']]=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
             failed.append(audit['category'])
