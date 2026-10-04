@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "products": [
+    {
+      "category": "led_lantern",
+      "model": "2000038857",
+      "family": "coleman-2000038857",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 7590,
+      "spec": {
+        "brightness_lm": 800,
+        "runtime_hours": 15,
+        "power_type": "rechargeable_li_ion",
+        "weight": 830
+      },
+      "evidence": {
+        "specification": "https://ec.coleman.co.jp/item/2000038857.html",
+        "fields": {
+          "brightness_lm": "https://ec.coleman.co.jp/item/2000038857.html",
+          "runtime_hours": "https://ec.coleman.co.jp/item/2000038857.html",
+          "power_type": "https://ec.coleman.co.jp/item/2000038857.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.9,
+        "comfort": 0.85,
+        "portability": 0.75,
+        "value": 0.72,
+        "trust": 0.95
+      },
+      "specSummary": "最大約800lm / Medium約15時間 / 充電式リチウムイオン電池 / 約830g。"
+    },
+    {
+      "category": "fire_pit",
+      "model": "2000031235",
+      "family": "coleman-2000031235",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 8690,
+      "spec": {
+        "weight": 1600,
+        "packed_size": "約φ46×8.5(h)cm"
+      },
+      "evidence": {
+        "specification": "https://ec.coleman.co.jp/item/2000031235.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2000031235.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000031235.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.9,
+        "comfort": 0.82,
+        "portability": 0.72,
+        "value": 0.78,
+        "trust": 0.95
+      },
+      "specSummary": "約1.6kg / 収納約φ46×8.5(h)cm / 3秒設営。焚き火はキャンプ場ルールと安全用品も確認。"
+    },
+    {
+      "category": "tent",
+      "model": "2000038141",
+      "family": "coleman-2000038141",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 21780,
+      "spec": {
+        "capacity": 2,
+        "weight": 4000,
+        "packed_size": "約φ19×49cm"
+      },
+      "evidence": {
+        "specification": "https://ec.coleman.co.jp/item/2000038141.html",
+        "fields": {
+          "capacity": "https://www.coleman.co.jp/customersupport/howtomovie/2000038141/",
+          "weight": "https://ec.coleman.co.jp/item/2000038141.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000038141.html"
+        }
+      },
+      "scores": {
+        "fit": 0.88,
+        "beginner": 0.9,
+        "comfort": 0.72,
+        "portability": 0.5,
+        "value": 0.78,
+        "trust": 0.95
+      },
+      "specSummary": "1〜2人用 / 約4kg / 収納約φ19×49cm。車利用のソロ・デュオ向け。"
+    }
+  ]
+}
