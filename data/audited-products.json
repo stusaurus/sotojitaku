@@ -41,7 +41,11 @@
       "listingAuditedAt": "2026-10-04T09:21:15.165851+00:00",
       "listingAudit": "型番一致、本体1点、新品通常販売、購入可能、実SKU1種類、税込単一価格を販売ページのitemInfoSkuで確認。",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
-      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。"
+      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
+      "identityTerms": [
+        "パフォーマーIII/C5",
+        "2000034774"
+      ]
     },
     {
       "category": "mat",
@@ -205,7 +209,11 @@
       "listingAuditedAt": "2026-10-04T10:30:00+00:00",
       "listingAudit": "型番2000034245のLEDランタン本体。メーカー公式でHigh 1000lm、High約14時間、単1形乾電池4本を確認。Workerが返す同一型番の本体販売ページへ固定し、名称・価格・URLを毎日再確認。",
       "itemUrl": "https://item.rakuten.co.jp/cross-one/csb812784247/",
-      "specSummary": "High 1000lm / High約14時間 / 単1形乾電池4本 / 約570g。"
+      "specSummary": "High 1000lm / High約14時間 / 単1形乾電池4本 / 約570g。",
+      "identityTerms": [
+        "バッテリーガードLEDランタン/1000",
+        "1000ルーメン"
+      ]
     },
     {
       "category": "burner",
