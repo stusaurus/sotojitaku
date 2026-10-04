@@ -2,7 +2,7 @@ name: Refresh audited camping products
 on:
   push:
     branches: [main]
-    paths: ['scripts/**', 'data/audited-products.json', '.github/workflows/refresh-products.yml']
+    paths: ['scripts/**', 'data/audited-products.json']
   workflow_dispatch:
   schedule:
     - cron: '15 21 * * *'
