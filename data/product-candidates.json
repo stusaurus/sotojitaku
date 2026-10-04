@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-04T23:52:07.110337+00:00",
+  "generatedAt": "2026-10-04T23:53:57.196001+00:00",
   "status": "partial",
   "products": [],
   "failed": {
@@ -10,5 +10,53 @@
     "T5-47-TN": "no_exact_model",
     "T3-623-KH": "listing_rejected:missing_sales_evidence",
     "T3-673-KH": "no_exact_model"
+  },
+  "observed": {
+    "2000038857": [
+      {
+        "product_no": "2000038857",
+        "name": "Coleman エクステリア 卓上ランタン リチャージブルマルチランタン 2000038857",
+        "shipping_match_name": "Coleman(コールマン) リチャージブルマルチランタン 2000038857 防災 停電 充電式 アウトドア キャンプ 照明 作業灯 送料無料",
+        "shipping_included_url": "https://hb.afl.rakuten.co.jp/hgc/g00u3i4o.7cx6mf3f.g00u3i4o.7cx6nf69/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgr-online%2Foo4cde5a72bc%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fgr-online%2Fi%2F10082014%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+        "shipping_included_price": 6956,
+        "review_count": 33,
+        "review_average": 4.48
+      }
+    ],
+    "2000031235": [
+      {
+        "product_no": "2000031235",
+        "name": "Coleman バーベキュー コンロ ファイヤーディスク 2000031235",
+        "shipping_match_name": "【レビューを書いて500円OFFクーポン】 ZEOOR ゼオール 極厚バーベキュー鉄板 キャンプ BBQ アウトドア用品 コールマン Coleman ファイアーディスク 専用 五徳 ゴトク 直径45cm用 焚き火台 焚火台 炭火グリル たき火 BBQコンロ 鉄板 焼き網 コンパクト 嵩上げ五徳",
+        "shipping_included_url": "https://hb.afl.rakuten.co.jp/hgc/g00rwwco.7cx6ma83.g00rwwco.7cx6n7d1/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fauc-teppan-hiroba%2Fco10-24%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fauc-teppan-hiroba%2Fi%2F10006515%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+        "shipping_included_price": 6260,
+        "review_count": 412,
+        "review_average": 4.72
+      }
+    ],
+    "2000038141": [
+      {
+        "product_no": "2000038141",
+        "name": "Coleman テント ツーリングドームST TOURING DOME/ST 2000038141",
+        "shipping_match_name": "【クリアランスセール！】 コールマン Coleman アウトドア ソロキャンプ 用品 コンパクト テント ツーリングドーム/ST 2000038141 【2021SS】",
+        "shipping_included_url": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40coleman-2000038141%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10314223%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+        "shipping_included_price": 15720,
+        "review_count": 196,
+        "review_average": 4.67
+      }
+    ],
+    "T5-47-TN": [],
+    "T3-623-KH": [
+      {
+        "product_no": "T3-623-KH",
+        "name": "DOD ディーオーディー ザ・テント M タン×カーキ T3-623-KH",
+        "shipping_match_name": "DOD(ディーオーディー) ザ・テントM 初心者向け 前室付きドームテント【3人用】 T3-623-KH",
+        "shipping_included_url": "https://hb.afl.rakuten.co.jp/hgc/g00url3o.7cx6m900.g00url3o.7cx6n61a/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsenses%2F20250729234514_20%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsenses%2Fi%2F10015727%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+        "shipping_included_price": 69594,
+        "review_count": 21,
+        "review_average": 4.76
+      }
+    ],
+    "T3-673-KH": []
   }
 }
