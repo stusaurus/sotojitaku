@@ -485,13 +485,12 @@
       "reviewCount": 182,
       "reviewAverage": 4.44,
       "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・型番・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
       "itemUrl": "https://item.rakuten.co.jp/cross-one/cscb93950956/",
       "specSummary": "定員5人 / 約17.0kg / 収納約φ32×74cm。",
       "identityTerms": [
         "タフスクリーン2ルームハウス",
-        "MDX",
-        "4人用"
+        "MDX"
       ]
     },
     {
