@@ -1,3 +1,4 @@
+# Fail-closed catalog refresh: publish only listings that pass exact audit gates.
 name: Refresh audited camping products
 on:
   push:
