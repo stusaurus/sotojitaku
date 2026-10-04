@@ -124,6 +124,169 @@
       "listingAudit": "型番一致、本体1点、新品通常販売、購入可能、実SKU1種類、税込単一価格を販売ページのitemInfoSkuで確認。",
       "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40col-2000037321/",
       "specSummary": "容量約26L / 約3.2kg。食材量と保冷剤も確認。"
+    },
+    {
+      "category": "fire_pit",
+      "model": "2000031235",
+      "query": "2000031235",
+      "family": "coleman-fire-disc-2000031235",
+      "name": "Coleman ファイアーディスク 2000031235",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 8690,
+      "spec": {
+        "weight": 1600,
+        "packed_size": "約φ46×8.5(h)cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/toppin/cm-2000031235/",
+        "specification": "https://ec.coleman.co.jp/item/2000031235.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2000031235.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000031235.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.95,
+        "comfort": 0.8,
+        "portability": 0.6,
+        "value": 0.82,
+        "trust": 0.92
+      },
+      "childStable": false,
+      "listingAuditedAt": "2026-10-04T10:30:00+00:00",
+      "listingAudit": "型番2000031235の焚き火台本体。メーカー公式で重量約1.6kg、収納時約φ46×8.5cm、初心者向けの簡単設営を確認。楽天の単品販売ページを固定URLで監査。",
+      "itemUrl": "https://item.rakuten.co.jp/toppin/cm-2000031235/",
+      "specSummary": "約1.6kg / 収納約φ46×8.5cm。焚き火時は耐熱シート・火ばさみ・耐熱グローブ・消火用の水も用意。"
+    },
+    {
+      "category": "led_lantern",
+      "model": "2000034245",
+      "query": "2000034245",
+      "family": "coleman-batteryguard-1000-2000034245",
+      "name": "Coleman バッテリーガードLED ランタン/1000 レッド 2000034245",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 9995,
+      "spec": {
+        "brightness_lm": 1000,
+        "runtime_hours": 14,
+        "power_type": "アルカリ単1形乾電池×4",
+        "weight": 570
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/himaraya/0000000846780/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/",
+        "fields": {
+          "brightness_lm": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/",
+          "runtime_hours": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/",
+          "power_type": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-1000%E3%83%AC%E3%83%83%E3%83%89/"
+        }
+      },
+      "scores": {
+        "fit": 0.92,
+        "beginner": 0.95,
+        "comfort": 0.9,
+        "portability": 0.72,
+        "value": 0.78,
+        "trust": 0.93
+      },
+      "listingAuditedAt": "2026-10-04T10:30:00+00:00",
+      "listingAudit": "型番2000034245のLEDランタン本体。公式でHigh 1000lm、High約14時間、単1形乾電池4本を確認。楽天の単品販売ページを固定URLで監査。",
+      "itemUrl": "https://item.rakuten.co.jp/himaraya/0000000846780/",
+      "specSummary": "High 1000lm / High約14時間 / 単1形乾電池4本 / 約570g。"
+    },
+    {
+      "category": "burner",
+      "model": "ST-310",
+      "query": "SOTO ST-310",
+      "family": "soto-regulator-stove-st310",
+      "name": "SOTO レギュレーターストーブ ST-310",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 7480,
+      "spec": {
+        "fuel_type": "CB",
+        "ignition_type": "圧電点火方式",
+        "weight": 330
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/859814/",
+        "specification": "https://shop.shinfuji.co.jp/products/st-310",
+        "fields": {
+          "fuel_type": "https://shop.shinfuji.co.jp/products/st-310",
+          "ignition_type": "https://shop.shinfuji.co.jp/products/st-310",
+          "weight": "https://shop.shinfuji.co.jp/products/st-310"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 0.9,
+        "comfort": 0.82,
+        "portability": 0.9,
+        "value": 0.86,
+        "trust": 0.95
+      },
+      "childStable": false,
+      "listingAuditedAt": "2026-10-04T10:30:00+00:00",
+      "listingAudit": "型番ST-310のシングルバーナー本体。メーカー公式で重量330g、CB缶系専用燃料、圧電点火方式、屋外専用を確認。楽天の単品販売ページを固定URLで監査。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/859814/",
+      "specSummary": "約330g / CB缶系燃料 / 圧電点火。屋外専用、ボンベ別売。"
+    },
+    {
+      "category": "hot_sandwich_maker",
+      "model": "UG-3024",
+      "query": "UG-3024",
+      "family": "captainstag-ug3024",
+      "name": "CAPTAIN STAG キャストアルミ ホットサンドトースター UG-3024",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 5500,
+      "spec": {
+        "heat_source": "direct_flame",
+        "weight": 660
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/captainstagstore/4560464254426/",
+        "specification": "https://www.captainstag.net/products/UG-3024.html",
+        "fields": {
+          "heat_source": "https://www.captainstag.net/page_images/ctlg_2018_2_14.pdf",
+          "weight": "https://www.captainstag.net/products/UG-3024.html"
+        }
+      },
+      "scores": {
+        "fit": 0.94,
+        "beginner": 0.9,
+        "comfort": 0.84,
+        "portability": 0.78,
+        "value": 0.86,
+        "trust": 0.94
+      },
+      "listingAuditedAt": "2026-10-04T10:30:00+00:00",
+      "listingAudit": "型番UG-3024のホットサンドメーカー本体。公式仕様で約660g、公式カタログでガスコンロ対応を確認。楽天公式ストアの単品販売ページを固定URLで監査。",
+      "itemUrl": "https://item.rakuten.co.jp/captainstagstore/4560464254426/",
+      "specSummary": "約660g / ガスコンロ対応 / IHにも対応。キャンプでは安定した屋外用熱源で使用。"
     }
   ]
 }
