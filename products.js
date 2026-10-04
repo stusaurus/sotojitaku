@@ -3,7 +3,7 @@ export function reject(p,category,answers,equipment,now=Date.now()){
  const c=equipment.categories.find(x=>x.id===category);if(!c||p.category!==category)return 'unknown_category';
  if(!p.name||!p.itemCode||!p.family||p.audited!==true||p.bodyConfirmed!==true)return 'unverified_body';
  const name=p.name.normalize('NFKC');if([...equipment.global_exclude_terms,...c.exclude_any,'選択式','価格から','円〜','円～','最安価格','タイプ選択'].some(x=>name.includes(x)))return 'excluded';
- if(!c.include_any.some(x=>name.replace(/\s/g,'').includes(x.replace(/\s/g,''))))return 'category_mismatch';
+ const compact=s=>String(s??'').normalize('NFKC').replace(/\s/g,'');const identity=Array.isArray(p.identityTerms)&&p.identityTerms.length>0&&p.identityTerms.every(x=>compact(name).includes(compact(x)));if(!c.include_any.some(x=>compact(name).includes(compact(x)))&&!identity)return 'category_mismatch';
  if(p.condition!=='new'||p.fixedVariant!==true||p.available!==true||p.quantityPerListing!==1)return 'listing_conditions';
  if(!safeUrl(p.itemUrl)||!safeUrl(p.affiliateUrl,'affiliate')||!safeUrl(p.image,'image'))return 'unsafe_url';
  if(new URL(new URL(p.affiliateUrl).searchParams.get('pc')).pathname!==new URL(p.itemUrl).pathname)return 'wrong_affiliate_destination';
