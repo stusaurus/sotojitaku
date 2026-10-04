@@ -1,0 +1,214 @@
+{
+  "version": 1,
+  "products": [
+    {
+      "category": "table",
+      "itemCode": "naturum:18689873",
+      "model": "2205811",
+      "query": "2205811",
+      "family": "table-2205811",
+      "name": "Coleman ナチュラルパズルテーブル/150 2205811",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15400,
+      "spec": {
+        "table_size": "約150×70×41/60/70cm",
+        "weight": 6100,
+        "packed_size": "約70×10×51.5cm",
+        "table_capacity": 6
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/3454309/",
+        "specification": "https://ec.coleman.co.jp/category/505/2205811.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/category/505/2205811.html",
+          "weight": "https://ec.coleman.co.jp/category/505/2205811.html",
+          "packed_size": "https://ec.coleman.co.jp/category/505/2205811.html"
+        }
+      },
+      "scores": {
+        "fit": 0.98,
+        "beginner": 0.94,
+        "comfort": 0.99,
+        "portability": 0.18,
+        "value": 0.78,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 16,
+      "reviewAverage": 4.69,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/3454309/",
+      "specSummary": "約150×70cm / 約6.1kg / 4〜6人でゆったり使いやすい150cmテーブル。",
+      "identityTerms": [
+        "ナチュラルパズルテーブル",
+        "150",
+        "2205811"
+      ]
+    },
+    {
+      "category": "table",
+      "itemCode": "naturum-outdoor:10744105",
+      "model": "2238333",
+      "query": "2238333",
+      "family": "table-2238333",
+      "name": "Coleman バタフライテーブルNX/120 2238333",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 19910,
+      "spec": {
+        "table_size": "約120×60×70/60/41cm",
+        "weight": 5000,
+        "packed_size": "約60×60×5.7cm",
+        "table_capacity": 4
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000078/",
+        "specification": "https://ec.coleman.co.jp/item/2238333.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/item/2238333.html",
+          "weight": "https://ec.coleman.co.jp/item/2238333.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2238333.html"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.98,
+        "comfort": 0.95,
+        "portability": 0.55,
+        "value": 0.66,
+        "trust": 0.96
+      },
+      "traits": [
+        "easy",
+        "compact"
+      ],
+      "reviewCount": 19,
+      "reviewAverage": 4.26,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000078/",
+      "specSummary": "約120×60cm / 約5kg / 収納厚約5.7cm。ワンアクションロックで設置しやすい。",
+      "identityTerms": [
+        "バタフライテーブル",
+        "120",
+        "2238333"
+      ]
+    },
+    {
+      "category": "cooler",
+      "itemCode": "naturum-outdoor:10744080",
+      "model": "2244060",
+      "query": "2244060",
+      "family": "cooler-2244060",
+      "name": "Coleman デイリークーラー/30L アイス 2244060",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 4290,
+      "spec": {
+        "capacity_l": 30,
+        "weight": 670
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000034/",
+        "specification": "https://ec.coleman.co.jp/item/2244060.html",
+        "fields": {
+          "capacity_l": "https://ec.coleman.co.jp/item/2244060.html",
+          "weight": "https://ec.coleman.co.jp/item/2244060.html"
+        }
+      },
+      "scores": {
+        "fit": 0.92,
+        "beginner": 0.97,
+        "comfort": 0.7,
+        "portability": 0.98,
+        "value": 0.99,
+        "trust": 0.95
+      },
+      "traits": [
+        "compact",
+        "value",
+        "easy"
+      ],
+      "reviewCount": 65,
+      "reviewAverage": 4.68,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000034/",
+      "specSummary": "容量約30L / 約670g / 折りたたみ可能。軽さと価格を優先する人向け。",
+      "identityTerms": [
+        "デイリークーラー",
+        "30L",
+        "2244060"
+      ]
+    },
+    {
+      "category": "cooler",
+      "itemCode": "naturestock:10016052",
+      "model": "2000037165",
+      "query": "2000037165",
+      "family": "cooler-2000037165",
+      "name": "Coleman アルティメイトアイスクーラーII/35L オリーブ 2000037165",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 9460,
+      "spec": {
+        "capacity_l": 35,
+        "weight": 1400
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturestock/aj480121742a8378/",
+        "specification": "https://ec.coleman.co.jp/category/253/2000037165.html",
+        "fields": {
+          "capacity_l": "https://ec.coleman.co.jp/category/253/2000037165.html",
+          "weight": "https://ec.coleman.co.jp/category/253/2000037165.html"
+        }
+      },
+      "scores": {
+        "fit": 0.99,
+        "beginner": 0.96,
+        "comfort": 1,
+        "portability": 0.86,
+        "value": 0.84,
+        "trust": 0.97
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 175,
+      "reviewAverage": 4.6,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturestock/aj480121742a8378/",
+      "specSummary": "容量約35L / 約1.4kg / 保冷力約49時間。1泊キャンプの保冷力を優先する人向け。",
+      "identityTerms": [
+        "アルティメイトアイスクーラーII",
+        "35L",
+        "2000037165"
+      ]
+    }
+  ]
+}
