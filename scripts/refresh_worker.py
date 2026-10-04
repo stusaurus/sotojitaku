@@ -162,7 +162,7 @@ def acquire():
                 print('SALES_EVIDENCE_FALLBACK',audit['category'],audit['model'],canonical_item_url(affiliate))
             review_count=matched.get('review_count') if isinstance(matched.get('review_count'),(int,float)) else audit.get('reviewCount')
             review_average=matched.get('review_average') if isinstance(matched.get('review_average'),(int,float)) else audit.get('reviewAverage')
-            products.append({**audit,'itemCode':code,'name':matched.get('name') or matched.get('shipping_match_name') or audit['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'reviewCount':review_count,'reviewAverage':review_average,'verifiedAt':now,'shipping':'included','verificationMode':verification_mode})
+            products.append({**audit,'itemCode':code,'name':audit.get('name') or matched.get('shipping_match_name') or matched.get('name'),'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'reviewCount':review_count,'reviewAverage':review_average,'verifiedAt':now,'shipping':'included','verificationMode':verification_mode})
         except Exception as error:
             reason=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
             item_failures[f"{audit['category']}:{audit.get('model','?')}"]=reason
