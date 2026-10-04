@@ -2,7 +2,7 @@ name: Refresh audited camping products
 on:
   push:
     branches: [main]
-    paths: ['scripts/**', 'data/audited-products.json', '.github/workflows/refresh-products.yml']
+    paths: ['scripts/**', 'data/audited-products.json']
   workflow_dispatch:
   schedule:
     - cron: '15 21 * * *'
@@ -37,13 +37,14 @@ jobs:
           git add data/products.json
           if ! git diff --cached --quiet; then
             git commit -m 'Refresh verified camping product catalog'
+            git pull --rebase origin main
             git push
           fi
       - name: Prepare static site
         run: |
           mkdir public
           cp index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml .nojekyll public/
-          cp -r assets data camp-guide public/
+          cp -r assets data guides public/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public

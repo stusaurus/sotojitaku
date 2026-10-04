@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://stusaurus.github.io/sotojitaku/</loc><lastmod>2026-10-04</lastmod></url>
-  <url><loc>https://stusaurus.github.io/sotojitaku/camp-guide/</loc><lastmod>2026-10-04</lastmod></url>
-  <url><loc>https://stusaurus.github.io/sotojitaku/camp-guide/budget/</loc><lastmod>2026-10-04</lastmod></url>
-  <url><loc>https://stusaurus.github.io/sotojitaku/camp-guide/family/</loc><lastmod>2026-10-04</lastmod></url>
-  <url><loc>https://stusaurus.github.io/sotojitaku/camp-guide/sleep/</loc><lastmod>2026-10-04</lastmod></url>
-  <url><loc>https://stusaurus.github.io/sotojitaku/camp-guide/cooking/</loc><lastmod>2026-10-04</lastmod></url>
-  <url><loc>https://stusaurus.github.io/sotojitaku/camp-guide/bonfire/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/beginner/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/gear/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/budget/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/family/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/tent/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/sleeping-bag/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/bbq/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/bonfire/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/breakfast/</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://stusaurus.github.io/sotojitaku/guides/cooking/</loc><lastmod>2026-10-04</lastmod></url>
 </urlset>
