@@ -2,7 +2,7 @@ name: Refresh audited camping products
 on:
   push:
     branches: [main]
-    paths: ['scripts/**', 'data/audited-products.json', '.github/workflows/refresh-products.yml']
+    paths: ['scripts/**', 'data/audited-products.json', 'data/equipment.json', '.github/workflows/refresh-products.yml']
   workflow_dispatch:
   schedule:
     - cron: '15 21 * * *'
@@ -29,18 +29,39 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Fingerprint catalog inputs
+        run: cat scripts/refresh_worker.py scripts/acquire.py data/audited-products.json data/equipment.json | sha256sum | cut -d ' ' -f1 > /tmp/catalog-input.sha
       - name: Retrieve verified listings (fail closed)
         run: python scripts/refresh_worker.py
       - run: npm test
       - name: Save refreshed catalog
         run: |
+          cp data/products.json /tmp/products.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/products.json
-          if ! git diff --cached --quiet; then
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            current_input="$(cat scripts/refresh_worker.py scripts/acquire.py data/audited-products.json data/equipment.json | sha256sum | cut -d ' ' -f1)"
+            if [ "$current_input" != "$(cat /tmp/catalog-input.sha)" ]; then
+              echo "Catalog inputs changed while refreshing; a newer refresh will publish them."
+              exit 0
+            fi
+            cp /tmp/products.json data/products.json
+            git add data/products.json
+            if git diff --cached --quiet; then
+              echo "Catalog already current."
+              exit 0
+            fi
             git commit -m 'Refresh verified camping product catalog'
-            git push
-          fi
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Main moved during catalog push; retrying on latest main ($attempt/3)."
+            sleep $((attempt * 2))
+          done
+          echo "Could not publish refreshed catalog after three safe retries."
+          exit 1
       - name: Prepare static site
         run: |
           mkdir public
