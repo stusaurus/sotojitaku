@@ -1,147 +1,16 @@
 {
   "version": 1,
-  "products": [
-    {
-      "category": "sleeping_bag",
-      "itemCode": "naturum-outdoor:10241000",
-      "model": "2000034774",
-      "query": "2000034774",
-      "family": "coleman-2000034774",
-      "name": "コールマン Coleman シュラフ パフォーマーIII/C5 オレンジ 2000034774",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 6380,
-      "spec": {
-        "comfort_temperature": 5,
-        "weight": 1400,
-        "packed_size": "φ24×41cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
-        "specification": "https://ec.coleman.co.jp/category/240/2000034774.html",
-        "fields": {
-          "comfort_temperature": "https://ec.coleman.co.jp/category/240/2000034774.html",
-          "weight": "https://ec.coleman.co.jp/category/240/2000034774.html",
-          "packed_size": "https://ec.coleman.co.jp/category/240/2000034774.html"
-        }
-      },
-      "scores": {
-        "fit": 0.9,
-        "beginner": 0.85,
-        "comfort": 0.85,
-        "portability": 0.55,
-        "value": 0.8,
-        "trust": 0.9
-      },
-      "listingAuditedAt": "2026-10-04T09:21:15.165851+00:00",
-      "listingAudit": "型番一致、本体1点、新品通常販売、購入可能、実SKU1種類、税込単一価格を販売ページのitemInfoSkuで確認。",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
-      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
-      "price": 5600,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=500x500",
-      "verifiedAt": "2026-10-04T09:40:35.367231+00:00",
-      "shipping": "included"
-    },
-    {
-      "category": "mat",
-      "itemCode": "rugia:10029568",
-      "model": "2000032354",
-      "query": "2000032354",
-      "family": "coleman-2000032354",
-      "name": "Coleman キャンパーインフレーターマット シングルIII エアーマット 2000032354",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 10450,
-      "spec": {
-        "length": 195,
-        "width": 63,
-        "weight": 1800
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/rugia/rg861505d84a/",
-        "specification": "https://ec.coleman.co.jp/category/243/2000032354.html",
-        "fields": {
-          "length": "https://ec.coleman.co.jp/category/243/2000032354.html",
-          "width": "https://ec.coleman.co.jp/category/243/2000032354.html",
-          "weight": "https://ec.coleman.co.jp/category/243/2000032354.html"
-        }
-      },
-      "scores": {
-        "fit": 0.9,
-        "beginner": 0.85,
-        "comfort": 0.85,
-        "portability": 0.55,
-        "value": 0.8,
-        "trust": 0.9
-      },
-      "listingAuditedAt": "2026-10-04T09:21:15.165851+00:00",
-      "listingAudit": "型番一致、本体1点、新品通常販売、購入可能、実SKU1種類、税込単一価格を販売ページのitemInfoSkuで確認。",
-      "itemUrl": "https://item.rakuten.co.jp/rugia/rg861505d84a/",
-      "specSummary": "約63×195×5cm / 約1.8kg / 1人用。",
-      "price": 8438,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00ufobo.7cx6m8c8.g00ufobo.7cx6n4db/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frugia%2Frg861505d84a%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Frugia%2Fi%2F10029568%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/rugia/cabinet/onesell136/rg861505d84a.jpg?_ex=500x500",
-      "verifiedAt": "2026-10-04T09:40:35.367231+00:00",
-      "shipping": "included"
-    },
-    {
-      "category": "cooler",
-      "itemCode": "sports-bazaar:10409672",
-      "model": "2000037321",
-      "query": "2000037321",
-      "family": "coleman-2000037321",
-      "name": "Coleman クーラーボックス エクストリームクーラー/28QT エバーグリーン 2000037321",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 7590,
-      "spec": {
-        "capacity_l": 26,
-        "weight": 3200
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/sports-bazaar/s-40col-2000037321/",
-        "specification": "https://ec.coleman.co.jp/category/208/2000037321.html",
-        "fields": {
-          "capacity_l": "https://ec.coleman.co.jp/category/208/2000037321.html",
-          "weight": "https://ec.coleman.co.jp/category/208/2000037321.html"
-        }
-      },
-      "scores": {
-        "fit": 0.9,
-        "beginner": 0.85,
-        "comfort": 0.85,
-        "portability": 0.55,
-        "value": 0.8,
-        "trust": 0.9
-      },
-      "listingAuditedAt": "2026-10-04T09:21:15.165851+00:00",
-      "listingAudit": "型番一致、本体1点、新品通常販売、購入可能、実SKU1種類、税込単一価格を販売ページのitemInfoSkuで確認。",
-      "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40col-2000037321/",
-      "specSummary": "容量約26L / 約3.2kg。食材量と保冷剤も確認。",
-      "price": 6600,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40col-2000037321%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10409672%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sports-bazaar/cabinet/spopia-87/s-40col-2000037321_1.jpg?_ex=500x500",
-      "verifiedAt": "2026-10-04T09:40:35.367231+00:00",
-      "shipping": "included"
-    }
+  "products": [],
+  "status": "partial_error",
+  "failedCategories": [
+    "sleeping_bag",
+    "mat",
+    "cooler"
   ],
-  "status": "ok",
-  "failedCategories": [],
-  "updatedAt": "2026-10-04T09:40:35.367231+00:00"
+  "failureReasons": {
+    "sleeping_bag": "missing_sales_evidence",
+    "mat": "missing_sales_evidence",
+    "cooler": "missing_sales_evidence"
+  },
+  "updatedAt": "2026-10-04T09:42:38.834175+00:00"
 }
