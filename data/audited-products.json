@@ -1701,7 +1701,581 @@
         "3025",
         "2000036439"
       ]
+    },
+    {
+      "category": "sleeping_bag",
+      "itemCode": "himarayaod:10009165",
+      "model": "2000034777",
+      "query": "2000034777",
+      "family": "sleep-2000034777",
+      "name": "Coleman マルチレイヤースリーピングバッグ 2000034777",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15950,
+      "spec": {
+        "comfort_temperature": -5,
+        "weight": 4900,
+        "packed_size": "約52×29×38cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/himarayaod/0000000846755/",
+        "specification": "https://ec.coleman.co.jp/item/2000034777.html",
+        "fields": {
+          "comfort_temperature": "https://ec.coleman.co.jp/item/2000034777.html",
+          "weight": "https://ec.coleman.co.jp/item/2000034777.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000034777.html"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.94,
+        "comfort": 0.99,
+        "portability": 0.18,
+        "value": 0.72,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "easy"
+      ],
+      "reviewCount": 385,
+      "reviewAverage": 4.37,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/himarayaod/0000000846755/",
+      "specSummary": "快適温度-5℃ / 約4.9kg / 収納約52×29×38cm。3レイヤーで温度調節しやすい4シーズン型。",
+      "identityTerms": [
+        "マルチレイヤースリーピングバッグ",
+        "2000034777"
+      ]
+    },
+    {
+      "category": "sleeping_bag",
+      "itemCode": "naturum:18516253",
+      "model": "2000038771",
+      "query": "2000038771",
+      "family": "sleep-2000038771",
+      "name": "Coleman タスマンキャンピングマミー/L-8 2000038771",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15180,
+      "spec": {
+        "comfort_temperature": -2,
+        "weight": 2800,
+        "packed_size": "約φ27×48cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/3240813/",
+        "specification": "https://ec.coleman.co.jp/item/2000038771.html",
+        "fields": {
+          "comfort_temperature": "https://ec.coleman.co.jp/sc/pickup_210114_01.html",
+          "weight": "https://ec.coleman.co.jp/item/2000038771.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000038771.html"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.9,
+        "comfort": 0.98,
+        "portability": 0.34,
+        "value": 0.74,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 9,
+      "reviewAverage": 4.33,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/3240813/",
+      "specSummary": "快適温度目安-2〜-3℃ / 約2.8kg / 収納約φ27×48cm。秋〜初冬向けマミー型。",
+      "identityTerms": [
+        "タスマンキャンピングマミー",
+        "L-8",
+        "2000038771"
+      ]
+    },
+    {
+      "category": "sleeping_bag",
+      "itemCode": "naturum:16511505",
+      "model": "2000022267",
+      "query": "2000022267",
+      "family": "sleep-2000022267",
+      "name": "Coleman タスマンキャンピングマミー/L-15 2000022267",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 17380,
+      "spec": {
+        "comfort_temperature": -9,
+        "weight": 3400,
+        "packed_size": "約φ31×49cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/2669613/",
+        "specification": "https://ec.coleman.co.jp/item/2000022267.html",
+        "fields": {
+          "comfort_temperature": "https://ec.coleman.co.jp/sc/pickup_210114_01.html",
+          "weight": "https://ec.coleman.co.jp/item/2000022267.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000022267.html"
+        }
+      },
+      "scores": {
+        "fit": 0.94,
+        "beginner": 0.86,
+        "comfort": 1,
+        "portability": 0.27,
+        "value": 0.67,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 21,
+      "reviewAverage": 4.19,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/2669613/",
+      "specSummary": "快適温度目安-9℃ / 約3.4kg / 収納約φ31×49cm。寒冷期向けマミー型。",
+      "identityTerms": [
+        "タスマンキャンピングマミー",
+        "L-15",
+        "2000022267"
+      ]
+    },
+    {
+      "category": "chair",
+      "itemCode": "naturum-outdoor:10639044",
+      "model": "2190857",
+      "query": "2190857",
+      "family": "chair-2190857",
+      "name": "Coleman ヒーリングチェアNX オリーブ 2190857",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 5280,
+      "spec": {
+        "weight": 2500,
+        "packed_size": "約25×14×65cm",
+        "load_capacity": 100
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
+        "specification": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
+          "packed_size": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
+          "load_capacity": "https://ec.coleman.co.jp/category/CAMP/2190857.html"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.96,
+        "comfort": 0.96,
+        "portability": 0.66,
+        "value": 0.88,
+        "trust": 0.96
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "reviewCount": 87,
+      "reviewAverage": 4.61,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
+      "specSummary": "約2.5kg / 収納約25×14×65cm / 耐荷重約100kg。背もたれも折れて比較的コンパクト。",
+      "identityTerms": [
+        "ヒーリングチェアNX",
+        "2190857"
+      ]
+    },
+    {
+      "category": "chair",
+      "itemCode": "naturum-outdoor:10639043",
+      "model": "2190856",
+      "query": "2190856",
+      "family": "chair-2190856",
+      "name": "Coleman リゾートチェア グレージュ 2190856",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 3300,
+      "spec": {
+        "weight": 3200,
+        "packed_size": "約14×14×87cm",
+        "load_capacity": 80
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3360728/",
+        "specification": "https://ec.coleman.co.jp/item/2190856.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2190856.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2190856.html",
+          "load_capacity": "https://ec.coleman.co.jp/item/2190856.html"
+        }
+      },
+      "scores": {
+        "fit": 0.92,
+        "beginner": 0.98,
+        "comfort": 0.84,
+        "portability": 0.42,
+        "value": 0.99,
+        "trust": 0.95
+      },
+      "traits": [
+        "easy",
+        "value"
+      ],
+      "reviewCount": 146,
+      "reviewAverage": 4.4,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3360728/",
+      "specSummary": "約3.2kg / 収納約14×14×87cm / 耐荷重約80kg。収束型で価格を抑えやすい定番。",
+      "identityTerms": [
+        "リゾートチェア",
+        "2190856"
+      ]
+    },
+    {
+      "category": "chair",
+      "itemCode": "naturum:18522279",
+      "model": "2000038838",
+      "query": "2000038838",
+      "family": "chair-2000038838",
+      "name": "Coleman コンパクトグランドチェア オリーブ 2000038838",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 4950,
+      "spec": {
+        "weight": 1300,
+        "packed_size": "約10×14×61cm",
+        "load_capacity": 80
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/3264393/",
+        "specification": "https://ec.coleman.co.jp/item/2000038838.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2000038838.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000038838.html",
+          "load_capacity": "https://ec.coleman.co.jp/item/2000038838.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.92,
+        "comfort": 0.66,
+        "portability": 0.98,
+        "value": 0.94,
+        "trust": 0.95
+      },
+      "traits": [
+        "compact",
+        "value"
+      ],
+      "reviewCount": 57,
+      "reviewAverage": 4.48,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/3264393/",
+      "specSummary": "約1.3kg / 収納約10×14×61cm / 耐荷重約80kg。荷物を小さくしたい時のグランドチェア。",
+      "identityTerms": [
+        "コンパクトグランドチェア",
+        "2000038838"
+      ]
+    },
+    {
+      "category": "chair",
+      "itemCode": "jackknife:10050627",
+      "model": "2219642",
+      "query": "2219642",
+      "family": "chair-2219642",
+      "name": "Coleman レイチェア NX グレージュ 2219642",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 12870,
+      "spec": {
+        "weight": 3900,
+        "packed_size": "約25×15×86cm",
+        "load_capacity": 80
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/jackknife/aj4737f03a6e10ad/",
+        "specification": "https://ec.coleman.co.jp/category/SALE/2219642.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/category/SALE/2219642.html",
+          "packed_size": "https://ec.coleman.co.jp/category/SALE/2219642.html",
+          "load_capacity": "https://ec.coleman.co.jp/category/SALE/2219642.html"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.93,
+        "comfort": 1,
+        "portability": 0.35,
+        "value": 0.72,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 26,
+      "reviewAverage": 4.61,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/jackknife/aj4737f03a6e10ad/",
+      "specSummary": "約3.9kg / 収納約25×15×86cm / 耐荷重約80kg。3段階リクライニングで快適性重視。",
+      "identityTerms": [
+        "レイチェア",
+        "NX",
+        "2219642"
+      ]
+    },
+    {
+      "category": "chair",
+      "itemCode": "naturum:18742942",
+      "model": "2219647",
+      "query": "2219647",
+      "family": "chair-2219647",
+      "name": "Coleman レイチェア NX 18 ヘザーグレー 2219647",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 14850,
+      "spec": {
+        "weight": 4300,
+        "packed_size": "約21×16×76cm",
+        "load_capacity": 80
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/9970017/",
+        "specification": "https://ec.coleman.co.jp/item/2219647.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2219647.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2219647.html",
+          "load_capacity": "https://ec.coleman.co.jp/item/2219647.html"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.92,
+        "comfort": 1,
+        "portability": 0.32,
+        "value": 0.62,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 90,
+      "reviewAverage": 4.43,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/9970017/",
+      "specSummary": "約4.3kg / 収納約21×16×76cm / 耐荷重約80kg。高さ×リクライニングで18スタイルに調整可能。",
+      "identityTerms": [
+        "レイチェア",
+        "NX",
+        "18",
+        "2219647"
+      ]
+    },
+    {
+      "category": "led_lantern",
+      "itemCode": "naturum:18742983",
+      "model": "2218364",
+      "query": "2218364",
+      "family": "lantern-2218364",
+      "name": "Coleman クアッドマルチパネルランタンplus グリーン 2218364",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 12870,
+      "spec": {
+        "brightness_lm": 800,
+        "runtime_hours": 20,
+        "power_type": "USB電源・アルカリ単1形乾電池",
+        "weight": 1200
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/9969972/",
+        "specification": "https://ec.coleman.co.jp/category/222/2218364.html",
+        "fields": {
+          "brightness_lm": "https://ec.coleman.co.jp/category/222/2218364.html",
+          "runtime_hours": "https://ec.coleman.co.jp/category/222/2218364.html",
+          "power_type": "https://ec.coleman.co.jp/category/222/2218364.html"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.96,
+        "comfort": 1,
+        "portability": 0.55,
+        "value": 0.76,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "easy"
+      ],
+      "reviewCount": 14,
+      "reviewAverage": 4.43,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/9969972/",
+      "specSummary": "High約800lm / 約20時間 / USB・乾電池2WAY / 約1.2kg。4枚の着脱パネルで家族サイト向け。",
+      "identityTerms": [
+        "クアッドマルチパネルランタンplus",
+        "2218364"
+      ]
+    },
+    {
+      "category": "led_lantern",
+      "itemCode": "sn-mart:10093959",
+      "model": "2218350",
+      "query": "2218350",
+      "family": "lantern-2218350",
+      "name": "Coleman 2マルチパネルランタンplus グリーン 2218350",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 7920,
+      "spec": {
+        "brightness_lm": 400,
+        "runtime_hours": 17,
+        "power_type": "USB電源・アルカリ単1形乾電池",
+        "weight": 650
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sn-mart/sn998db0f2ef/",
+        "specification": "https://ec.coleman.co.jp/category/203_14/2218350.html",
+        "fields": {
+          "brightness_lm": "https://ec.coleman.co.jp/category/203_14/2218350.html",
+          "runtime_hours": "https://ec.coleman.co.jp/category/203_14/2218350.html",
+          "power_type": "https://ec.coleman.co.jp/category/203_14/2218350.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.97,
+        "comfort": 0.88,
+        "portability": 0.88,
+        "value": 0.9,
+        "trust": 0.96
+      },
+      "traits": [
+        "compact",
+        "easy",
+        "value"
+      ],
+      "reviewCount": 3,
+      "reviewAverage": 4.67,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/sn-mart/sn998db0f2ef/",
+      "specSummary": "High約400lm / 約17時間 / USB・乾電池2WAY / 約650g。2枚の着脱パネルで持ち運びやすい。",
+      "identityTerms": [
+        "2マルチパネルランタンplus",
+        "2218350"
+      ]
+    },
+    {
+      "category": "hot_sandwich_maker",
+      "itemCode": "rafinagift:10001059",
+      "model": "2000038934",
+      "query": "2000038934",
+      "family": "cooker-2000038934",
+      "name": "Coleman ダブルパンクッカー 2000038934",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 4100,
+      "spec": {
+        "heat_source": "direct_flame",
+        "weight": 560
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/rafinagift/ha113fa5a0e1/",
+        "specification": "https://ec.coleman.co.jp/item/2000038934.html",
+        "fields": {
+          "heat_source": "https://ec.coleman.co.jp/item/2000038934.html",
+          "weight": "https://ec.coleman.co.jp/item/2000038934.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.9,
+        "comfort": 0.95,
+        "portability": 0.9,
+        "value": 0.83,
+        "trust": 0.95
+      },
+      "traits": [
+        "comfort",
+        "compact"
+      ],
+      "reviewCount": 3,
+      "reviewAverage": 4.67,
+      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
+      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "itemUrl": "https://item.rakuten.co.jp/rafinagift/ha113fa5a0e1/",
+      "specSummary": "約560g / ガス火・ガソリン器具対応。分離して2枚のフライパンとしても使用可能。",
+      "identityTerms": [
+        "ダブルパンクッカー",
+        "2000038934"
+      ]
     }
   ],
-  "refreshRequestedAt": "2026-10-04T14:35:00+00:00"
+  "refreshRequestedAt": "2026-10-04T14:47:00+00:00"
 }
