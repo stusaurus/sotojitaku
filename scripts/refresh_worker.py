@@ -60,8 +60,12 @@ def acquire():
             if not 0<=age<=365:raise ValueError('spec_audit_expired')
             req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':audit['query'],'hits':30}),headers=HEADERS)
             result=fetch_with_retry(req)
-            matched=next((p for p in result.get('products',[]) if p.get('product_no')==audit['model'] and canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
-            if not matched or audit['model'] not in matched.get('shipping_match_name',''):raise ValueError('unmatched_listing')
+            model_candidates=[p for p in result.get('products',[]) if p.get('product_no')==audit['model']]
+            matched=next((p for p in model_candidates if canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
+            if not matched or audit['model'] not in matched.get('shipping_match_name',''):
+                safe=[{'url':canonical_item_url(p.get('shipping_included_url')),'name':p.get('shipping_match_name'),'price':p.get('shipping_included_price')} for p in model_candidates[:10]]
+                print('AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
+                raise ValueError('unmatched_listing')
             price=matched.get('shipping_included_price')
             affiliate=matched.get('shipping_included_url','')
             code=live_item_code(affiliate) or audit.get('itemCode','')
@@ -70,7 +74,13 @@ def acquire():
             try: expected_id=int(code.split(':',1)[1])
             except (ValueError,IndexError): pass
             page=fetch_page(audit['itemUrl'])
-            parse_listing(page,audit['model'],price,expected_id)
+            try:
+                parse_listing(page,audit['model'],price,expected_id)
+            except ValueError as evidence_error:
+                if str(evidence_error)=='missing_sales_evidence':
+                    compact=re.sub(r'\s+',' ',page)
+                    print('SALES_EVIDENCE_MISS',audit['category'],audit['model'],'len',len(page),'model',audit['model'] in page,'price',str(price) in compact)
+                raise
             products.append({**audit,'itemCode':code,'name':matched['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included'})
         except Exception as error:
             reasons[audit['category']]=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
