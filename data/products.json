@@ -5,12 +5,20 @@
   "failedCategories": [
     "sleeping_bag",
     "mat",
-    "cooler"
+    "cooler",
+    "fire_pit",
+    "led_lantern",
+    "burner",
+    "hot_sandwich_maker"
   ],
   "failureReasons": {
     "sleeping_bag": "missing_sales_evidence",
     "mat": "missing_sales_evidence",
-    "cooler": "missing_sales_evidence"
+    "cooler": "missing_sales_evidence",
+    "fire_pit": "unmatched_listing",
+    "led_lantern": "unmatched_listing",
+    "burner": "unmatched_listing",
+    "hot_sandwich_maker": "unmatched_listing"
   },
-  "updatedAt": "2026-10-04T10:35:41.018656+00:00"
+  "updatedAt": "2026-10-04T10:37:41.959742+00:00"
 }
