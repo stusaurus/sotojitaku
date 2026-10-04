@@ -49,6 +49,12 @@ def body_gate(name, category_id, equipment):
     if any(_compact(term) in normalized for term in exclusions):return False
     return any(_compact(term) in normalized for term in category.get('include_any',[]))
 
+def identity_gate(name, audit, equipment):
+    terms=audit.get('identityTerms') or []
+    term_match=bool(terms) and all(_compact(term) in _compact(name) for term in terms)
+    model_match=_compact(audit.get('model')) in _compact(name)
+    return (body_gate(name,audit.get('category'),equipment) and model_match) or term_match
+
 def worker_fallback_allowed(audit, matched, equipment, audit_age, page):
     # The Rakuten page occasionally returns a tiny anti-bot response in Actions.
     # Never replace identity checks with fuzzy search: this path requires the exact
@@ -57,7 +63,7 @@ def worker_fallback_allowed(audit, matched, equipment, audit_age, page):
     if not all(audit.get(k) is True for k in ('audited','bodyConfirmed','fixedVariant','available','priceAudit')):return False
     if audit.get('condition')!='new' or audit.get('quantityPerListing')!=1:return False
     name=matched.get('shipping_match_name','')
-    if audit.get('model','') not in name or not body_gate(name,audit.get('category'),equipment):return False
+    if not identity_gate(name,audit,equipment):return False
     price=matched.get('shipping_included_price')
     ref=audit.get('referencePrice')
     if not isinstance(price,(int,float)) or price<=0 or not isinstance(ref,(int,float)) or ref<=0 or price<ref*.35:return False
@@ -90,7 +96,7 @@ def acquire():
             result=fetch_with_retry(req)
             model_candidates=[p for p in result.get('products',[]) if p.get('product_no')==audit['model']]
             matched=next((p for p in model_candidates if canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
-            if not matched or audit['model'] not in matched.get('shipping_match_name','') or not body_gate(matched.get('shipping_match_name',''),audit['category'],equipment):
+            if not matched or not identity_gate(matched.get('shipping_match_name',''),audit,equipment):
                 safe=[{'url':canonical_item_url(p.get('shipping_included_url')),'name':p.get('shipping_match_name'),'price':p.get('shipping_included_price')} for p in model_candidates[:10]]
                 print('AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
                 raise ValueError('unmatched_listing')
