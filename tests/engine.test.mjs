@@ -65,3 +65,14 @@ test('family tent preference choices produce distinct top picks',()=>{
   }
   assert.equal(new Set(Object.values(tops)).size,4);
 });
+
+test('family gear has multiple genuinely eligible purchase choices',()=>{
+  const catalog=JSON.parse(fs.readFileSync(new URL('../data/products.json',import.meta.url)));
+  const answers={...structuredClone(DEFAULT),party_type:'family',adults:2,children:2,season:'autumn',stay:'one_night',transport:'car',experiences:['bbq','bonfire','coffee'],budget:'100000'};
+  for(const category of ['tent','table','cooler','fire_pit']){
+    const picks=recommend(catalog.products,category,answers,data.equipment,data.rules,{preference:'comfort',quantity:category==='tent'?1:4,targetBudget:50000},Date.now());
+    assert.ok(picks.length>=2,category+': needs at least two eligible family choices');
+  }
+  const firePicks=recommend(catalog.products,'fire_pit',answers,data.equipment,data.rules,{preference:'comfort',quantity:1,targetBudget:25000},Date.now());
+  assert.ok(!firePicks.some(p=>p.model==='ST-033R'),'2-3 person fire pit must not be offered to family of four');
+});

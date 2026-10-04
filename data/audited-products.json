@@ -157,7 +157,8 @@
       "referencePrice": 8690,
       "spec": {
         "weight": 1600,
-        "packed_size": "約φ46×8.5(h)cm"
+        "packed_size": "約φ46×8.5(h)cm",
+        "capacity": 4
       },
       "evidence": {
         "listing": "https://item.rakuten.co.jp/naturum-outdoor/2824592/",
@@ -1036,7 +1037,8 @@
       "referencePrice": 4869,
       "spec": {
         "weight": 900,
-        "packed_size": "約φ32×10cm"
+        "packed_size": "約φ32×10cm",
+        "capacity": 1
       },
       "evidence": {
         "listing": "https://item.rakuten.co.jp/kanedestore/kaaaf5196875/",
@@ -2380,7 +2382,318 @@
         "フラット",
         "UG-3086"
       ]
+    },
+    {
+      "category": "table",
+      "itemCode": "naturum-outdoor:10744105",
+      "model": "2238333",
+      "query": "2238333",
+      "family": "table-2238333",
+      "name": "Coleman バタフライテーブルNX/120 2238333",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 19910,
+      "spec": {
+        "table_size": "約120×60×70/60/41cm",
+        "weight": 5000,
+        "packed_size": "約60×60×5.7cm",
+        "table_capacity": 4
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000078/",
+        "specification": "https://ec.coleman.co.jp/item/2238333.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/item/2238333.html",
+          "weight": "https://ec.coleman.co.jp/item/2238333.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2238333.html"
+        }
+      },
+      "scores": {
+        "fit": 0.98,
+        "beginner": 0.98,
+        "comfort": 0.97,
+        "portability": 0.65,
+        "value": 0.72,
+        "trust": 0.97
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "reviewCount": 19,
+      "reviewAverage": 4.26,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000078/",
+      "specSummary": "約120×60cm / 約5kg / 収納厚約5.7cm。ワンアクションロックで設営しやすい4人向けテーブル。",
+      "identityTerms": [
+        "バタフライテーブル",
+        "120",
+        "2238333"
+      ]
+    },
+    {
+      "category": "table",
+      "itemCode": "naturum:18689873",
+      "model": "2205811",
+      "query": "2205811",
+      "family": "table-2205811",
+      "name": "Coleman ナチュラルパズルテーブル/150 2205811",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15400,
+      "spec": {
+        "table_size": "約150×70×41/60/70cm",
+        "weight": 6100,
+        "packed_size": "約70×10×51.5cm",
+        "table_capacity": 4
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/3454309/",
+        "specification": "https://ec.coleman.co.jp/item/2205811.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/item/2205811.html",
+          "weight": "https://ec.coleman.co.jp/item/2205811.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2205811.html"
+        }
+      },
+      "scores": {
+        "fit": 0.99,
+        "beginner": 0.95,
+        "comfort": 0.99,
+        "portability": 0.25,
+        "value": 0.78,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 16,
+      "reviewAverage": 4.69,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/3454309/",
+      "specSummary": "約150×70cm / 約6.1kg / 3つ折り収納。家族4人でも食卓に余裕を取りたい人向け。",
+      "identityTerms": [
+        "ナチュラルパズルテーブル",
+        "150",
+        "2205811"
+      ]
+    },
+    {
+      "category": "cooler",
+      "itemCode": "naturum-outdoor:10744080",
+      "model": "2244060",
+      "query": "2244060",
+      "family": "cooler-2244060",
+      "name": "Coleman デイリークーラー/30L アイス 2244060",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 4290,
+      "spec": {
+        "capacity_l": 30,
+        "weight": 670
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000034/",
+        "specification": "https://ec.coleman.co.jp/item/2244060.html",
+        "fields": {
+          "capacity_l": "https://ec.coleman.co.jp/item/2244060.html",
+          "weight": "https://ec.coleman.co.jp/item/2244060.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.98,
+        "comfort": 0.72,
+        "portability": 0.99,
+        "value": 0.99,
+        "trust": 0.96
+      },
+      "traits": [
+        "compact",
+        "value",
+        "easy"
+      ],
+      "reviewCount": 65,
+      "reviewAverage": 4.68,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000034/",
+      "specSummary": "容量約30L / 約670g / 折りたたみ可能。家族分を軽く運びたい時のソフトクーラー。",
+      "identityTerms": [
+        "デイリークーラー",
+        "30L",
+        "2244060"
+      ]
+    },
+    {
+      "category": "cooler",
+      "itemCode": "naturum-outdoor:10744082",
+      "model": "2238145",
+      "query": "2238145",
+      "family": "cooler-2238145",
+      "name": "Coleman アルティメイトアイスクーラーII/35L アイス 2238145",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 9460,
+      "spec": {
+        "capacity_l": 35,
+        "weight": 1400
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000044/",
+        "specification": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html",
+        "fields": {
+          "capacity_l": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html",
+          "weight": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html"
+        }
+      },
+      "scores": {
+        "fit": 0.99,
+        "beginner": 0.97,
+        "comfort": 0.99,
+        "portability": 0.88,
+        "value": 0.88,
+        "trust": 0.97
+      },
+      "traits": [
+        "comfort",
+        "compact"
+      ],
+      "reviewCount": 78,
+      "reviewAverage": 4.59,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000044/",
+      "specSummary": "容量約35L / 約1.4kg / 保冷力約49時間。1泊の家族キャンプで保冷力を優先したい人向け。",
+      "identityTerms": [
+        "アルティメイトアイスクーラー",
+        "35L",
+        "2238145"
+      ]
+    },
+    {
+      "category": "fire_pit",
+      "itemCode": "sundaymountain:10001362",
+      "model": "ST-033R",
+      "query": "ST-033R",
+      "family": "snowpeak-firepit-st033r",
+      "name": "Snow Peak 焚火台 M ST-033R",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 17160,
+      "spec": {
+        "weight": 3500,
+        "packed_size": "450×515×27mm",
+        "capacity": 3
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sundaymountain/s06009/",
+        "specification": "https://ec.snowpeak.co.jp/item/SNP0114A0412",
+        "fields": {
+          "weight": "https://ec.snowpeak.co.jp/item/SNP0114A0412",
+          "packed_size": "https://ec.snowpeak.co.jp/item/SNP0114A0412"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.99,
+        "comfort": 0.94,
+        "portability": 0.35,
+        "value": 0.58,
+        "trust": 0.99
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "reviewCount": 116,
+      "reviewAverage": 4.78,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "Snow Peak公式仕様と楽天Workerの型番一致販売結果を照合。本体・収納ケース・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/sundaymountain/s06009/",
+      "specSummary": "2〜3人向け / 約3.5kg / 収納450×515×27mm。開いて置くだけのシンプルな焚火台。",
+      "identityTerms": [
+        "焚火台",
+        "ST-033R"
+      ]
+    },
+    {
+      "category": "fire_pit",
+      "itemCode": "naturum-outdoor:10524068",
+      "model": "ST-032RS",
+      "query": "ST-032RS",
+      "family": "snowpeak-firepit-st032rs",
+      "name": "Snow Peak 焚火台 L ST-032RS",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 21120,
+      "spec": {
+        "weight": 5500,
+        "packed_size": "560×640×32mm",
+        "capacity": 4
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/9935626/",
+        "specification": "https://ec.snowpeak.co.jp/item/SNP0120A0737",
+        "fields": {
+          "weight": "https://ec.snowpeak.co.jp/item/SNP0120A0737",
+          "packed_size": "https://ec.snowpeak.co.jp/item/SNP0120A0737"
+        }
+      },
+      "scores": {
+        "fit": 0.99,
+        "beginner": 0.99,
+        "comfort": 1,
+        "portability": 0.18,
+        "value": 0.5,
+        "trust": 0.99
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 63,
+      "reviewAverage": 4.81,
+      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
+      "listingAudit": "Snow Peak公式仕様と楽天Workerの型番一致販売結果を照合。本体・収納ケース・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/9935626/",
+      "specSummary": "3〜4人向け / 約5.5kg / 収納560×640×32mm。家族で焚き火をしっかり楽しむ大型モデル。",
+      "identityTerms": [
+        "焚火台",
+        "ST-032RS"
+      ]
     }
   ],
-  "refreshRequestedAt": "2026-10-04T21:56:00Z"
+  "refreshRequestedAt": "2026-10-04T22:16:00+00:00"
 }
