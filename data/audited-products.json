@@ -1286,6 +1286,115 @@
       ],
       "lookupName": true,
       "brand": "Coleman"
+    },
+    {
+      "category": "tent",
+      "itemCode": "currypan-online:10000118",
+      "model": "1122763",
+      "query": "1122763",
+      "family": "montbell-moonlight2-1122763",
+      "name": "mont-bell ムーンライト テント2 1122763",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 47975,
+      "spec": {
+        "capacity": 2,
+        "weight": 2460,
+        "packed_size": "本体約φ17×35cm / ポール約φ11×47cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/currypan-online/20221204_41580/",
+        "specification": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763",
+        "fields": {
+          "capacity": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763",
+          "weight": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763",
+          "packed_size": "https://webshop.montbell.jp/goods/disp.php?product_id=1122763"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.9,
+        "comfort": 0.82,
+        "portability": 0.99,
+        "value": 0.45,
+        "trust": 0.97
+      },
+      "traits": [
+        "compact"
+      ],
+      "reviewCount": 0,
+      "reviewAverage": 0,
+      "listingAuditedAt": "2026-10-04T12:18:23+00:00",
+      "listingAudit": "モンベル公式仕様と楽天販売ページを照合。新品・テント本体・型番1122763・春〜秋向けを確認。日次で固定販売URLと販売状態を再確認。",
+      "itemUrl": "https://item.rakuten.co.jp/currypan-online/20221204_41580/",
+      "specSummary": "2人用 / 総重量約2.46kg / 本体収納約φ17×35cm。車なし・ツーリング向けの軽量候補。",
+      "identityTerms": [
+        "ムーンライト",
+        "テント",
+        "1122763"
+      ],
+      "lookupName": true,
+      "brand": "mont-bell"
+    },
+    {
+      "category": "mat",
+      "itemCode": "import-ss-shop:10048152",
+      "model": "1124667",
+      "query": "1124667",
+      "family": "montbell-airpad180-1124667",
+      "name": "mont-bell U.L. コンフォートシステム エアパッド180 1124667",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 10800,
+      "spec": {
+        "length": 180,
+        "width": 50,
+        "weight": 514
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/import-ss-shop/1124667/",
+        "specification": "https://webshop.montbell.jp/goods/disp_fo.php?product_id=1124667",
+        "fields": {
+          "length": "https://webshop.montbell.jp/goods/disp_fo.php?product_id=1124667",
+          "width": "https://webshop.montbell.jp/goods/disp_fo.php?product_id=1124667",
+          "weight": "https://webshop.montbell.jp/goods/disp_fo.php?product_id=1124667"
+        }
+      },
+      "scores": {
+        "fit": 0.92,
+        "beginner": 0.82,
+        "comfort": 0.76,
+        "portability": 1,
+        "value": 0.72,
+        "trust": 0.95
+      },
+      "traits": [
+        "compact"
+      ],
+      "reviewCount": 0,
+      "reviewAverage": 0,
+      "listingAuditedAt": "2026-10-04T12:18:23+00:00",
+      "listingAudit": "モンベル公式仕様と楽天販売ページを照合。エアパッド本体・型番1124667・サイズ/重量を確認。日次で固定販売URLと販売状態を再確認。",
+      "itemUrl": "https://item.rakuten.co.jp/import-ss-shop/1124667/",
+      "specSummary": "約180×50×7cm / 約514g（収納袋込み） / 収納約φ11×20cm。車なし向け軽量候補。",
+      "identityTerms": [
+        "U.L.",
+        "エアパッド",
+        "180",
+        "1124667"
+      ],
+      "lookupName": true,
+      "brand": "mont-bell"
     }
   ]
 }
