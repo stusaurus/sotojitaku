@@ -1,11 +1,14 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-04T10:30:23.674362+00:00",
+  "generatedAt": "2026-10-04T23:49:15.424213+00:00",
   "status": "partial",
   "products": [],
   "failed": {
     "2000038857": "listing_rejected:missing_sales_evidence",
     "2000031235": "listing_rejected:missing_sales_evidence",
-    "2000038141": "listing_rejected:missing_sales_evidence"
+    "2000038141": "listing_rejected:no_canonical_rakuten_url",
+    "T5-47-TN": "no_exact_model",
+    "T3-623-KH": "listing_rejected:missing_sales_evidence",
+    "T3-673-KH": "no_exact_model"
   }
 }
