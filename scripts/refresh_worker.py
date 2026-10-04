@@ -77,6 +77,15 @@ def code_lookup_allowed(audit, matched, equipment):
     image=matched.get('shipping_included_image','')
     return isinstance(image,str) and image.startswith('https://thumbnail.image.rakuten.co.jp/')
 
+def name_lookup_allowed(audit, matched, equipment):
+    if matched.get('found') is not True or matched.get('lookup_method')!='product_name_specs_verified':return False
+    if canonical_item_url(matched.get('shipping_included_url'))!=audit.get('itemUrl'):return False
+    if not identity_gate(matched.get('shipping_match_name',''),audit,equipment):return False
+    price=matched.get('shipping_included_price');ref=audit.get('referencePrice')
+    if not isinstance(price,(int,float)) or price<=0 or not isinstance(ref,(int,float)) or ref<=0 or price<ref*.35:return False
+    image=matched.get('shipping_included_image','')
+    return isinstance(image,str) and image.startswith('https://thumbnail.image.rakuten.co.jp/')
+
 def worker_fallback_allowed(audit, matched, equipment, audit_age, page):
     # The Rakuten page occasionally returns a tiny anti-bot response in Actions.
     # Never replace identity checks with fuzzy search: this path requires the exact
@@ -106,7 +115,7 @@ def fetch_page(url):
             time.sleep(1+attempt*2)
 
 def acquire():
-    now=datetime.now(timezone.utc).isoformat();products=[];failed=[];reasons={}
+    now=datetime.now(timezone.utc).isoformat();products=[];item_failures={};reasons={}
     audits=json.loads((ROOT/'data/audited-products.json').read_text())['products']
     equipment=json.loads((ROOT/'data/equipment.json').read_text())
     for audit in audits:
@@ -114,13 +123,14 @@ def acquire():
             # Manufacturer audit expires after one year; sales evidence is rechecked now.
             age=(datetime.now(timezone.utc)-datetime.fromisoformat(audit['listingAuditedAt'])).days
             if not 0<=age<=365:raise ValueError('spec_audit_expired')
-            if audit.get('lookupCode'):
-                params={'code':audit['lookupCode'],'name':audit.get('name',''),'brand':audit.get('brand','')}
+            if audit.get('lookupCode') or audit.get('lookupName'):
+                params={'code':audit.get('lookupCode',''),'name':audit.get('name',''),'brand':audit.get('brand','')}
                 req=urllib.request.Request(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode(params),headers=HEADERS)
                 matched=fetch_with_retry(req)
-                if not code_lookup_allowed(audit,matched,equipment):
+                allowed=code_lookup_allowed(audit,matched,equipment) if audit.get('lookupCode') else name_lookup_allowed(audit,matched,equipment)
+                if not allowed:
                     safe={'url':canonical_item_url(matched.get('shipping_included_url')),'name':matched.get('shipping_match_name'),'price':matched.get('shipping_included_price'),'method':matched.get('lookup_method')}
-                    print('CODE_AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
+                    print('STRICT_AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
                     raise ValueError('unmatched_listing')
             else:
                 req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':audit['query'],'hits':30}),headers=HEADERS)
@@ -152,10 +162,12 @@ def acquire():
                 print('SALES_EVIDENCE_FALLBACK',audit['category'],audit['model'],canonical_item_url(affiliate))
             products.append({**audit,'itemCode':code,'name':matched.get('name') or matched.get('shipping_match_name') or audit['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included','verificationMode':verification_mode})
         except Exception as error:
-            reasons[audit['category']]=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
-            failed.append(audit['category'])
+            reason=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
+            item_failures[f"{audit['category']}:{audit.get('model','?')}"]=reason
+            reasons[audit['category']]=reason
         time.sleep(1.2)
-    return {'version':1,'products':products,'status':'partial_error' if failed else 'ok','failedCategories':failed,'failureReasons':reasons,'updatedAt':now}
+    audited_categories={a['category'] for a in audits};covered={p['category'] for p in products};failed=sorted(audited_categories-covered)
+    return {'version':1,'products':products,'status':'partial_error' if failed else 'ok','failedCategories':failed,'failureReasons':{k:v for k,v in reasons.items() if k in failed},'itemFailures':item_failures,'updatedAt':now}
 if __name__=='__main__':
     result=acquire();p=ROOT/'data/products.json';tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n');tmp.replace(p)
     print('catalog:',result['status'],'verified:',len(result['products']))
