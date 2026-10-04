@@ -916,61 +916,6 @@
       ]
     },
     {
-      "category": "led_lantern",
-      "itemCode": "naturum:18524750",
-      "model": "2000038857",
-      "query": "2000038857",
-      "family": "led_lantern-2000038857",
-      "name": "Coleman リチャージブルマルチランタン 2000038857",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 6971,
-      "spec": {
-        "brightness_lm": 800,
-        "runtime_hours": 15,
-        "power_type": "充電式リチウムイオン電池",
-        "weight": 830
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum/3264354/",
-        "specification": "https://ec.coleman.co.jp/item/2000038857.html",
-        "fields": {
-          "brightness_lm": "https://ec.coleman.co.jp/item/2000038857.html",
-          "runtime_hours": "https://ec.coleman.co.jp/item/2000038857.html",
-          "power_type": "https://ec.coleman.co.jp/item/2000038857.html",
-          "weight": "https://ec.coleman.co.jp/item/2000038857.html"
-        }
-      },
-      "scores": {
-        "fit": 0.96,
-        "beginner": 0.97,
-        "comfort": 0.94,
-        "portability": 0.82,
-        "value": 0.88,
-        "trust": 0.96
-      },
-      "traits": [
-        "easy",
-        "compact",
-        "comfort"
-      ],
-      "reviewCount": 33,
-      "reviewAverage": 4.48,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
-      "itemUrl": "https://item.rakuten.co.jp/naturum/3264354/",
-      "specSummary": "最大800lm / 中モード約15時間 / 充電式リチウムイオン電池。",
-      "identityTerms": [
-        "リチャージブルマルチランタン",
-        "2000038857"
-      ]
-    },
-    {
       "category": "cooler",
       "itemCode": "naturum-outdoor:10744073",
       "model": "2238147",
@@ -2437,5 +2382,5 @@
       ]
     }
   ],
-  "refreshRequestedAt": "2026-10-05T05:25:00+09:00"
+  "refreshRequestedAt": "2026-10-05T05:42:00+09:00"
 }
