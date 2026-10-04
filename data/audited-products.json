@@ -2016,58 +2016,6 @@
     },
     {
       "category": "chair",
-      "itemCode": "jackknife:10050627",
-      "model": "2219642",
-      "query": "2219642",
-      "family": "chair-2219642",
-      "name": "Coleman レイチェア NX グレージュ 2219642",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 12870,
-      "spec": {
-        "weight": 3900,
-        "packed_size": "約25×15×86cm",
-        "load_capacity": 80
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/jackknife/aj4737f03a6e10ad/",
-        "specification": "https://ec.coleman.co.jp/category/SALE/2219642.html",
-        "fields": {
-          "weight": "https://ec.coleman.co.jp/category/SALE/2219642.html",
-          "packed_size": "https://ec.coleman.co.jp/category/SALE/2219642.html",
-          "load_capacity": "https://ec.coleman.co.jp/category/SALE/2219642.html"
-        }
-      },
-      "scores": {
-        "fit": 0.96,
-        "beginner": 0.93,
-        "comfort": 1,
-        "portability": 0.35,
-        "value": 0.72,
-        "trust": 0.96
-      },
-      "traits": [
-        "comfort"
-      ],
-      "reviewCount": 26,
-      "reviewAverage": 4.61,
-      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
-      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
-      "itemUrl": "https://item.rakuten.co.jp/jackknife/aj4737f03a6e10ad/",
-      "specSummary": "約3.9kg / 収納約25×15×86cm / 耐荷重約80kg。3段階リクライニングで快適性重視。",
-      "identityTerms": [
-        "レイチェア",
-        "NX",
-        "2219642"
-      ]
-    },
-    {
-      "category": "chair",
       "itemCode": "naturum:18742942",
       "model": "2219647",
       "query": "2219647",
@@ -2168,17 +2116,174 @@
       "itemUrl": "https://item.rakuten.co.jp/naturum/9969972/",
       "specSummary": "High約800lm / 約20時間 / USB・乾電池2WAY / 約1.2kg。4枚の着脱パネルで家族サイト向け。",
       "identityTerms": [
-        "クアッドマルチパネルランタンplus",
-        "2218364"
+        "クアッドマルチパネルランタンplus"
+      ]
+    },
+    {
+      "category": "sleeping_bag",
+      "itemCode": "sports-bazaar:10355033",
+      "model": "2000034775",
+      "query": "2000034775",
+      "family": "sleeping-2000034775",
+      "name": "Coleman パフォーマーIII/C10 2000034775",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 4590,
+      "spec": {
+        "comfort_temperature": 10,
+        "weight": 1100,
+        "packed_size": "約φ20×40cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000034775/",
+        "specification": "https://ec.coleman.co.jp/item/2000034775.html",
+        "fields": {
+          "comfort_temperature": "https://ec.coleman.co.jp/item/2000034775.html",
+          "weight": "https://ec.coleman.co.jp/item/2000034775.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000034775.html"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 0.94,
+        "comfort": 0.78,
+        "portability": 0.82,
+        "value": 0.96,
+        "trust": 0.95
+      },
+      "traits": [
+        "value",
+        "compact",
+        "easy"
+      ],
+      "reviewCount": 52,
+      "reviewAverage": 4.54,
+      "listingAuditedAt": "2026-10-05T05:25:00+09:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000034775/",
+      "specSummary": "快適使用温度10℃以上 / 約1.1kg / 収納約φ20×40cm。暖かい時期向け。",
+      "identityTerms": [
+        "パフォーマーIII",
+        "C10",
+        "2000034775"
+      ]
+    },
+    {
+      "category": "chair",
+      "itemCode": "naturum-outdoor:10678437",
+      "model": "2199216",
+      "query": "2199216",
+      "family": "chair-2199216",
+      "name": "Coleman ヒーリングチェアNX HB 2199216",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 6600,
+      "spec": {
+        "weight": 2700,
+        "packed_size": "約20×14×65cm",
+        "load_capacity": 100
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3431914/",
+        "specification": "https://ec.coleman.co.jp/item/2199216.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2199216.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2199216.html",
+          "load_capacity": "https://ec.coleman.co.jp/item/2199216.html"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.96,
+        "comfort": 0.98,
+        "portability": 0.48,
+        "value": 0.82,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "easy"
+      ],
+      "reviewCount": 28,
+      "reviewAverage": 4.68,
+      "listingAuditedAt": "2026-10-05T05:25:00+09:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3431914/",
+      "specSummary": "約2.7kg / 収納約20×14×65cm / 耐荷重約100kg。ハイバックでくつろぎ重視。",
+      "identityTerms": [
+        "ヒーリングチェアNX",
+        "HB",
+        "2199216"
+      ]
+    },
+    {
+      "category": "chair",
+      "itemCode": "naturum-outdoor:10239960",
+      "model": "2000033139",
+      "query": "2000033139",
+      "family": "chair-2000033139",
+      "name": "Coleman インフィニティチェア 2000033139",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 11400,
+      "spec": {
+        "weight": 8800,
+        "packed_size": "約14×69×90cm",
+        "load_capacity": 100
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2890188/",
+        "specification": "https://ec.coleman.co.jp/item/2000033139.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/item/2000033139.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000033139.html",
+          "load_capacity": "https://ec.coleman.co.jp/item/2000033139.html"
+        }
+      },
+      "scores": {
+        "fit": 0.94,
+        "beginner": 0.94,
+        "comfort": 1,
+        "portability": 0.08,
+        "value": 0.68,
+        "trust": 0.97
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 943,
+      "reviewAverage": 4.63,
+      "listingAuditedAt": "2026-10-05T05:25:00+09:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2890188/",
+      "specSummary": "約8.8kg / 収納約14×69×90cm / 耐荷重約100kg。車移動でくつろぎ最優先向け。",
+      "identityTerms": [
+        "インフィニティチェア",
+        "2000033139"
       ]
     },
     {
       "category": "led_lantern",
-      "itemCode": "sn-mart:10093959",
-      "model": "2218350",
-      "query": "2218350",
-      "family": "lantern-2218350",
-      "name": "Coleman 2マルチパネルランタンplus グリーン 2218350",
+      "itemCode": "sorabostore:10004141",
+      "model": "2000038854",
+      "query": "2000038854",
+      "family": "lantern-2000038854",
+      "name": "Coleman バッテリーガードLEDランタン/600 2000038854",
       "audited": true,
       "bodyConfirmed": true,
       "condition": "new",
@@ -2186,53 +2291,54 @@
       "available": true,
       "quantityPerListing": 1,
       "priceAudit": true,
-      "referencePrice": 7920,
+      "referencePrice": 5556,
       "spec": {
-        "brightness_lm": 400,
-        "runtime_hours": 17,
-        "power_type": "USB電源・アルカリ単1形乾電池",
-        "weight": 650
+        "brightness_lm": 600,
+        "runtime_hours": 30,
+        "power_type": "アルカリ単1形乾電池×3",
+        "weight": 490
       },
       "evidence": {
-        "listing": "https://item.rakuten.co.jp/sn-mart/sn998db0f2ef/",
-        "specification": "https://ec.coleman.co.jp/category/203_14/2218350.html",
+        "listing": "https://item.rakuten.co.jp/sorabostore/b09hgm4sj8/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/",
         "fields": {
-          "brightness_lm": "https://ec.coleman.co.jp/category/203_14/2218350.html",
-          "runtime_hours": "https://ec.coleman.co.jp/category/203_14/2218350.html",
-          "power_type": "https://ec.coleman.co.jp/category/203_14/2218350.html"
+          "brightness_lm": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/",
+          "runtime_hours": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/",
+          "power_type": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/"
         }
       },
       "scores": {
         "fit": 0.95,
-        "beginner": 0.97,
+        "beginner": 0.96,
         "comfort": 0.88,
-        "portability": 0.88,
-        "value": 0.9,
-        "trust": 0.96
+        "portability": 0.9,
+        "value": 0.94,
+        "trust": 0.95
       },
       "traits": [
+        "value",
         "compact",
-        "easy",
-        "value"
+        "easy"
       ],
-      "reviewCount": 3,
-      "reviewAverage": 4.67,
-      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
-      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
-      "itemUrl": "https://item.rakuten.co.jp/sn-mart/sn998db0f2ef/",
-      "specSummary": "High約400lm / 約17時間 / USB・乾電池2WAY / 約650g。2枚の着脱パネルで持ち運びやすい。",
+      "reviewCount": 5,
+      "reviewAverage": 4.8,
+      "listingAuditedAt": "2026-10-05T05:25:00+09:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/sorabostore/b09hgm4sj8/",
+      "specSummary": "High 600lm / High約30時間 / 単1形乾電池3本 / 約490g。",
       "identityTerms": [
-        "2マルチパネルランタンplus",
-        "2218350"
+        "バッテリーガードLED",
+        "600",
+        "2000038854"
       ]
     },
     {
-      "category": "hot_sandwich_maker",
-      "itemCode": "rafinagift:10001059",
-      "model": "2000038934",
-      "query": "2000038934",
-      "family": "cooker-2000038934",
-      "name": "Coleman ダブルパンクッカー 2000038934",
+      "category": "led_lantern",
+      "itemCode": "jackknife:10059250",
+      "model": "2000037352",
+      "query": "2000037352",
+      "family": "lantern-2000037352",
+      "name": "Coleman ハンギングEライト 2000037352",
       "audited": true,
       "bodyConfirmed": true,
       "condition": "new",
@@ -2240,42 +2346,96 @@
       "available": true,
       "quantityPerListing": 1,
       "priceAudit": true,
-      "referencePrice": 4100,
+      "referencePrice": 2938,
       "spec": {
-        "heat_source": "direct_flame",
-        "weight": 560
+        "brightness_lm": 250,
+        "runtime_hours": 10,
+        "power_type": "充電式リチウムイオン電池",
+        "weight": 130
       },
       "evidence": {
-        "listing": "https://item.rakuten.co.jp/rafinagift/ha113fa5a0e1/",
-        "specification": "https://ec.coleman.co.jp/item/2000038934.html",
+        "listing": "https://item.rakuten.co.jp/jackknife/aj473720f2268939/",
+        "specification": "https://ec.coleman.co.jp/category/ITEM_LIST/2000037352.html",
         "fields": {
-          "heat_source": "https://ec.coleman.co.jp/item/2000038934.html",
-          "weight": "https://ec.coleman.co.jp/item/2000038934.html"
+          "brightness_lm": "https://ec.coleman.co.jp/category/ITEM_LIST/2000037352.html",
+          "runtime_hours": "https://ec.coleman.co.jp/category/ITEM_LIST/2000037352.html",
+          "power_type": "https://ec.coleman.co.jp/category/ITEM_LIST/2000037352.html"
         }
       },
       "scores": {
-        "fit": 0.9,
-        "beginner": 0.9,
-        "comfort": 0.95,
-        "portability": 0.9,
-        "value": 0.83,
+        "fit": 0.92,
+        "beginner": 0.97,
+        "comfort": 0.72,
+        "portability": 1,
+        "value": 0.98,
         "trust": 0.95
       },
       "traits": [
-        "comfort",
-        "compact"
+        "compact",
+        "value",
+        "easy"
       ],
-      "reviewCount": 3,
-      "reviewAverage": 4.67,
-      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
-      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
-      "itemUrl": "https://item.rakuten.co.jp/rafinagift/ha113fa5a0e1/",
-      "specSummary": "約560g / ガス火・ガソリン器具対応。分離して2枚のフライパンとしても使用可能。",
+      "reviewCount": 174,
+      "reviewAverage": 4.7,
+      "listingAuditedAt": "2026-10-05T05:25:00+09:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/jackknife/aj473720f2268939/",
+      "specSummary": "High 250lm / High約10時間 / USB充電式 / 約130g。軽量サブライトにも向く。",
       "identityTerms": [
-        "ダブルパンクッカー",
-        "2000038934"
+        "ハンギングEライト"
+      ]
+    },
+    {
+      "category": "hot_sandwich_maker",
+      "itemCode": "lb77:10003270",
+      "model": "UG-3086",
+      "query": "UG-3086",
+      "family": "hotsand-ug3086",
+      "name": "CAPTAIN STAG ホットサンドトースター フラット UG-3086",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 2737,
+      "spec": {
+        "heat_source": "direct_flame",
+        "weight": 330
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/lb77/20250412224050_33/",
+        "specification": "https://www.captainstag.net/products/UG-3086.html",
+        "fields": {
+          "heat_source": "https://www.captainstag.net/products/UG-3086.html",
+          "weight": "https://www.captainstag.net/products/UG-3086.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.95,
+        "comfort": 0.82,
+        "portability": 0.98,
+        "value": 0.92,
+        "trust": 0.94
+      },
+      "traits": [
+        "compact",
+        "easy"
+      ],
+      "reviewCount": 0,
+      "reviewAverage": 0,
+      "listingAuditedAt": "2026-10-05T05:25:00+09:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体1点・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/lb77/20250412224050_33/",
+      "specSummary": "約330g / 直火式 / フラットタイプ。軽量で持ち運び重視。",
+      "identityTerms": [
+        "ホットサンド",
+        "フラット",
+        "UG-3086"
       ]
     }
   ],
-  "refreshRequestedAt": "2026-10-04T14:47:00+00:00"
+  "refreshRequestedAt": "2026-10-05T05:25:00+09:00"
 }

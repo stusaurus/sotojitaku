@@ -51,3 +51,17 @@ test('real catalog covers core profiles and preference choices',()=>{
     }
   }
 });
+
+test('family tent preference choices produce distinct top picks',()=>{
+  const catalog=JSON.parse(fs.readFileSync(new URL('../data/products.json',import.meta.url)));
+  const answers={...structuredClone(DEFAULT),party_type:'family',adults:2,children:2,season:'autumn',stay:'one_night',transport:'car',experiences:['bbq','bonfire','coffee'],budget:'100000'};
+  const expected={easy:'2000036439',comfort:'2000039087',compact:'2185614',value:'2000038429'};
+  const tops={};
+  for(const preference of Object.keys(expected)){
+    const picks=recommend(catalog.products,'tent',answers,data.equipment,data.rules,{preference,quantity:1,targetBudget:25000},Date.now());
+    assert.ok(picks.length>0,'tent:'+preference);
+    tops[preference]=picks[0].model;
+    assert.equal(tops[preference],expected[preference],preference);
+  }
+  assert.equal(new Set(Object.values(tops)).size,4);
+});
