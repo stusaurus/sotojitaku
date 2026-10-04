@@ -3,7 +3,7 @@ name: Refresh audited camping products
 on:
   push:
     branches: [main]
-    paths: ['scripts/**', 'data/audited-products.json', 'data/audited-products-extra.json', 'data/equipment.json', '.github/workflows/refresh-products.yml']
+    paths: ['scripts/**', 'data/audited-products.json', 'data/equipment.json', '.github/workflows/refresh-products.yml']
   workflow_dispatch:
   schedule:
     - cron: '15 21 * * *'
@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: '22'
       - name: Fingerprint catalog inputs
-        run: cat scripts/refresh_worker.py scripts/acquire.py data/audited-products.json data/audited-products-extra.json data/equipment.json | sha256sum | cut -d ' ' -f1 > /tmp/catalog-input.sha
+        run: cat scripts/refresh_worker.py scripts/acquire.py data/audited-products.json data/equipment.json | sha256sum | cut -d ' ' -f1 > /tmp/catalog-input.sha
       - name: Retrieve verified listings (fail closed)
         run: python scripts/refresh_worker.py
       - run: npm test
