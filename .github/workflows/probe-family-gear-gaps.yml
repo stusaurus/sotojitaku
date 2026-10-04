@@ -1,0 +1,49 @@
+name: Probe CAMP family gear gaps
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/probe-family-gear-gaps.yml']
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe family tables coolers fire pits
+        shell: python
+        run: |
+          import json, urllib.parse, urllib.request, time
+          base='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
+          headers={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-gap-probe/1.0'}
+          queries=[
+            'Coleman バタフライテーブル 120',
+            'Coleman バタフライテーブル 90',
+            'Coleman オールインワンキッチンテーブル',
+            'Coleman テーブル 120 キャンプ',
+            'CAPTAIN STAG テーブル 120',
+            'Coleman エクストリーム ホイールクーラー',
+            'Coleman クーラーボックス 30L',
+            'Coleman クーラーボックス 40L',
+            'Coleman アルティメイトアイスクーラー 35L',
+            'UNIFLAME ファイアグリル',
+            'snow peak 焚火台 M',
+            'snow peak 焚火台 L',
+            'CAPTAIN STAG ヘキサステンレスファイアグリル',
+            'Coleman ファイアーディスク マックス'
+          ]
+          for q in queries:
+            try:
+              url=base+'?'+urllib.parse.urlencode({'q':q,'hits':15})
+              req=urllib.request.Request(url,headers=headers)
+              with urllib.request.urlopen(req,timeout=35) as r:data=json.load(r)
+              print('===QUERY',q,'COUNT',data.get('count'),'===')
+              for p in (data.get('products') or [])[:12]:
+                print(json.dumps({
+                  'product_no':p.get('product_no'),'catalog_name':p.get('name'),
+                  'ship_name':p.get('shipping_match_name'),'ship_url':p.get('shipping_included_url'),
+                  'price':p.get('shipping_included_price'),'image':p.get('shipping_included_image'),
+                  'reviewCount':p.get('review_count'),'reviewAverage':p.get('review_average')
+                },ensure_ascii=False))
+            except Exception as e:
+              print('ERROR',q,type(e).__name__,str(e)[:180])
+            time.sleep(1.0)
