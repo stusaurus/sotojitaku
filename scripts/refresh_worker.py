@@ -68,7 +68,7 @@ def identity_gate(name, audit, equipment):
 
 def code_lookup_allowed(audit, matched, equipment):
     code=str(audit.get('lookupCode',''))
-    if not re.fullmatch(r'\\d{8,14}',code):return False
+    if not re.fullmatch(r'\d{8,14}',code):return False
     if matched.get('found') is not True or matched.get('lookup_method')!='product_code_verified':return False
     if canonical_item_url(matched.get('shipping_included_url'))!=audit.get('itemUrl'):return False
     if not identity_gate(matched.get('shipping_match_name',''),audit,equipment):return False
