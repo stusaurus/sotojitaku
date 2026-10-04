@@ -1,7 +1,7 @@
 import unittest,sys,json
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, worker_fallback_allowed
+from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, worker_fallback_allowed
 class SalesAudit(unittest.TestCase):
  def info(self):
   return {'itemId':1,'sellType':'NORMAL','inventoryType':'single','sku':[],'purchaseInfo':{'purchaseBySellType':{'purchaseCondition':'enabled','normalPurchase':{'price':{'minPrice':1000}}},'variantMappedInventories':[{'quantity':1}]}}
@@ -38,6 +38,15 @@ class SalesAudit(unittest.TestCase):
  def test_fallback_expires_after_seven_days(self):
   m={'shipping_match_name':'SOTO レギュレーターストーブ ST-310','shipping_included_price':7480,'shipping_included_image':'https://thumbnail.image.rakuten.co.jp/x.jpg'}
   self.assertFalse(worker_fallback_allowed(self.audit(),m,self.equipment(),8,'blocked'))
+ def test_jan_code_lookup_requires_fixed_url_and_body(self):
+  e={'global_exclude_terms':['風防'],'categories':[{'id':'burner','include_any':['レギュレーターストーブ'],'exclude_any':['風防','アシストグリップ']}]}
+  a={'category':'burner','model':'ST-310','lookupCode':'4953571073101','identityTerms':['レギュレーターストーブ','ST-310'],'itemUrl':'https://item.rakuten.co.jp/shop/body/','referencePrice':7480}
+  m={'found':True,'lookup_method':'product_code_verified','shipping_match_name':'SOTO レギュレーターストーブ ST-310','shipping_included_url':'https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fshop%2Fbody%2F','shipping_included_price':7480,'shipping_included_image':'https://thumbnail.image.rakuten.co.jp/x.jpg'}
+  self.assertTrue(code_lookup_allowed(a,m,e))
+  bad=dict(m);bad['shipping_match_name']='SOTO ST-310 専用 風防'
+  self.assertFalse(code_lookup_allowed(a,bad,e))
+  wrong=dict(m);wrong['shipping_included_url']='https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fshop%2Fother%2F'
+  self.assertFalse(code_lookup_allowed(a,wrong,e))
  def test_exact_audit_identity_terms_handle_retailer_title_variants(self):
   e={'global_exclude_terms':[],'categories':[{'id':'sleeping_bag','include_any':['寝袋','シュラフ'],'exclude_any':['収納袋']}]}
   a={'category':'sleeping_bag','model':'2000034774','identityTerms':['パフォーマーIII/C5','2000034774']}

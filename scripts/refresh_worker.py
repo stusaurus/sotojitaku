@@ -6,6 +6,7 @@ import json, re, time, unicodedata, urllib.parse, urllib.request
 from datetime import datetime, timezone
 from acquire import ROOT, fetch_with_retry, canonical_item_url
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
+SHIPPING_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
 HEADERS={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-camp/1.0'}
 def parse_listing(page, model, expected_price, expected_id=None):
     marker='"itemInfoSku":'
@@ -65,6 +66,17 @@ def identity_gate(name, audit, equipment):
     model_match=_compact(audit.get('model')) in _compact(name)
     return (body_gate(name,category_id,equipment) and model_match) or term_match
 
+def code_lookup_allowed(audit, matched, equipment):
+    code=str(audit.get('lookupCode',''))
+    if not re.fullmatch(r'\\d{8,14}',code):return False
+    if matched.get('found') is not True or matched.get('lookup_method')!='product_code_verified':return False
+    if canonical_item_url(matched.get('shipping_included_url'))!=audit.get('itemUrl'):return False
+    if not identity_gate(matched.get('shipping_match_name',''),audit,equipment):return False
+    price=matched.get('shipping_included_price');ref=audit.get('referencePrice')
+    if not isinstance(price,(int,float)) or price<=0 or not isinstance(ref,(int,float)) or ref<=0 or price<ref*.35:return False
+    image=matched.get('shipping_included_image','')
+    return isinstance(image,str) and image.startswith('https://thumbnail.image.rakuten.co.jp/')
+
 def worker_fallback_allowed(audit, matched, equipment, audit_age, page):
     # The Rakuten page occasionally returns a tiny anti-bot response in Actions.
     # Never replace identity checks with fuzzy search: this path requires the exact
@@ -102,14 +114,23 @@ def acquire():
             # Manufacturer audit expires after one year; sales evidence is rechecked now.
             age=(datetime.now(timezone.utc)-datetime.fromisoformat(audit['listingAuditedAt'])).days
             if not 0<=age<=365:raise ValueError('spec_audit_expired')
-            req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':audit['query'],'hits':30}),headers=HEADERS)
-            result=fetch_with_retry(req)
-            model_candidates=[p for p in result.get('products',[]) if p.get('product_no')==audit['model']]
-            matched=next((p for p in model_candidates if canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
-            if not matched or not identity_gate(matched.get('shipping_match_name',''),audit,equipment):
-                safe=[{'url':canonical_item_url(p.get('shipping_included_url')),'name':p.get('shipping_match_name'),'price':p.get('shipping_included_price')} for p in model_candidates[:10]]
-                print('AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
-                raise ValueError('unmatched_listing')
+            if audit.get('lookupCode'):
+                params={'code':audit['lookupCode'],'name':audit.get('name',''),'brand':audit.get('brand','')}
+                req=urllib.request.Request(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode(params),headers=HEADERS)
+                matched=fetch_with_retry(req)
+                if not code_lookup_allowed(audit,matched,equipment):
+                    safe={'url':canonical_item_url(matched.get('shipping_included_url')),'name':matched.get('shipping_match_name'),'price':matched.get('shipping_included_price'),'method':matched.get('lookup_method')}
+                    print('CODE_AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
+                    raise ValueError('unmatched_listing')
+            else:
+                req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':audit['query'],'hits':30}),headers=HEADERS)
+                result=fetch_with_retry(req)
+                model_candidates=[p for p in result.get('products',[]) if p.get('product_no')==audit['model']]
+                matched=next((p for p in model_candidates if canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
+                if not matched or not identity_gate(matched.get('shipping_match_name',''),audit,equipment):
+                    safe=[{'url':canonical_item_url(p.get('shipping_included_url')),'name':p.get('shipping_match_name'),'price':p.get('shipping_included_price')} for p in model_candidates[:10]]
+                    print('AUDIT_MISS',audit['category'],audit['model'],json.dumps(safe,ensure_ascii=False))
+                    raise ValueError('unmatched_listing')
             price=matched.get('shipping_included_price')
             affiliate=matched.get('shipping_included_url','')
             code=live_item_code(affiliate) or audit.get('itemCode','')
@@ -129,7 +150,7 @@ def acquire():
                     raise
                 verification_mode='exact_audit_worker_fallback'
                 print('SALES_EVIDENCE_FALLBACK',audit['category'],audit['model'],canonical_item_url(affiliate))
-            products.append({**audit,'itemCode':code,'name':matched['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included','verificationMode':verification_mode})
+            products.append({**audit,'itemCode':code,'name':matched.get('name') or matched.get('shipping_match_name') or audit['name'],'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'verifiedAt':now,'shipping':'included','verificationMode':verification_mode})
         except Exception as error:
             reasons[audit['category']]=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
             failed.append(audit['category'])

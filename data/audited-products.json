@@ -148,7 +148,7 @@
         "packed_size": "約φ46×8.5(h)cm"
       },
       "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum/2824592/",
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2824592/",
         "specification": "https://ec.coleman.co.jp/item/2000031235.html",
         "fields": {
           "weight": "https://ec.coleman.co.jp/item/2000031235.html",
@@ -165,9 +165,15 @@
       },
       "childStable": false,
       "listingAuditedAt": "2026-10-04T10:30:00+00:00",
-      "listingAudit": "型番2000031235のColemanファイアーディスク本体。メーカー公式で重量約1.6kg、収納約φ46×8.5cmを確認。本体名を含む検索語と固定販売URLでアクセサリを除外。",
-      "itemUrl": "https://item.rakuten.co.jp/naturum/2824592/",
-      "specSummary": "約1.6kg / 収納約φ46×8.5cm。焚き火時は耐熱シート・火ばさみ・耐熱グローブ・消火用の水も用意。"
+      "listingAudit": "JAN 4992826711122 と型番2000031235でColemanファイアーディスク本体を確認。楽天Workerの商品コード照合・固定販売URL・本体名称・価格・画像を毎日再確認し、アクセサリは除外。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2824592/",
+      "specSummary": "約1.6kg / 収納約φ46×8.5cm。焚き火時は耐熱シート・火ばさみ・耐熱グローブ・消火用の水も用意。",
+      "lookupCode": "4992826711122",
+      "brand": "Coleman",
+      "identityTerms": [
+        "ファイアーディスク",
+        "2000031235"
+      ]
     },
     {
       "category": "led_lantern",
@@ -235,7 +241,7 @@
         "weight": 330
       },
       "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum/859814/",
+        "listing": "https://item.rakuten.co.jp/kkkkk/10000650/",
         "specification": "https://shop.shinfuji.co.jp/products/st-310",
         "fields": {
           "fuel_type": "https://shop.shinfuji.co.jp/products/st-310",
@@ -253,9 +259,15 @@
       },
       "childStable": false,
       "listingAuditedAt": "2026-10-04T10:30:00+00:00",
-      "listingAudit": "型番ST-310のSOTOレギュレーターストーブ本体。メーカー公式で重量330g、CB缶系燃料、圧電点火、屋外専用を確認。本体名を含む検索語と固定販売URLで風防・グリップ等を除外。",
-      "itemUrl": "https://item.rakuten.co.jp/naturum/859814/",
-      "specSummary": "約330g / CB缶系燃料 / 圧電点火。屋外専用、ボンベ別売。"
+      "listingAudit": "JAN 4953571073101 と型番ST-310でSOTOレギュレーターストーブ本体を確認。楽天Workerの商品コード照合・固定販売URL・本体名称・価格・画像を毎日再確認し、風防やアシスト用品は除外。",
+      "itemUrl": "https://item.rakuten.co.jp/kkkkk/10000650/",
+      "specSummary": "約330g / CB缶系燃料 / 圧電点火。屋外専用、ボンベ別売。",
+      "lookupCode": "4953571073101",
+      "brand": "SOTO",
+      "identityTerms": [
+        "レギュレーターストーブ",
+        "ST-310"
+      ]
     },
     {
       "category": "hot_sandwich_maker",
