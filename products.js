@@ -39,13 +39,13 @@ export function reject(p,category,answers,equipment,now=Date.now()){
 
 function prefBonus(p,pref){
  const s=p.scores,t=Array.isArray(p.traits)?p.traits:[];
- const map={easy:s.beginner*24+s.trust*4,comfort:s.comfort*24+s.fit*4,compact:s.portability*26+s.fit*2,value:s.value*24+s.fit*4,balanced:s.fit*5+s.beginner*3};
- return (map[pref]??map.balanced)+(t.includes(pref)?6:0);
+ const map={easy:s.beginner*36+s.trust*4,comfort:s.comfort*40+s.fit*4,compact:s.portability*42+s.fit*2,value:s.value*38+s.fit*4,balanced:s.fit*5+s.beginner*3};
+ return (map[pref]??map.balanced)+(t.includes(pref)?18:0);
 }
-function budgetBonus(p,quantity,targetBudget){
+function budgetBonus(p,quantity,targetBudget,pref='balanced'){
  if(!Number.isFinite(targetBudget)||targetBudget<=0)return 0;
- const total=p.price*Math.max(1,quantity||1),ratio=total/targetBudget;
- return ratio<=1?8-Math.max(0,ratio-.75)*8:-Math.min(24,(ratio-1)*24);
+ const personsPerUnit=Math.max(1,Number(p.spec?.persons_per_unit)||1),units=Math.max(1,Math.ceil(Math.max(1,quantity||1)/personsPerUnit)),total=p.price*units,ratio=total/targetBudget,penaltyScale={comfort:.25,easy:.7,compact:.75,value:1.25}[pref]||1;
+ return ratio<=1?8-Math.max(0,ratio-.75)*8:-Math.min(24,(ratio-1)*24)*penaltyScale;
 }
 function popularityBonus(p){
  const count=Number(p.reviewCount||p.review_count||0),avg=Number(p.reviewAverage||p.review_average||0);
@@ -82,7 +82,7 @@ export function recommend(products,category,a,equipment,rules,options={},now=Dat
  const quantity=Math.max(1,Number(options.quantity)||1),targetBudget=Number(options.targetBudget),pref=options.preference||defaultPreference(category,a);
  const distinct=new Map();for(const p of products){if(reject(p,category,a,equipment,now))continue;const key=new URL(p.itemUrl).pathname;const previous=distinct.get(key);if(!previous||previous.price>p.price)distinct.set(key,p);}
  const pool=[...distinct.values()],profile=a.transport==='no_car'?'no_car':a.experiences.includes('easy')?'easy_mode':a.budget==='comfort'?'comfort':'default',weights=rules.profiles[profile]||rules.profiles.default;
- const score=p=>baseScore(p,weights)+prefBonus(p,pref)+budgetBonus(p,quantity,targetBudget)+popularityBonus(p);
+ const score=p=>baseScore(p,weights)+prefBonus(p,pref)+budgetBonus(p,quantity,targetBudget,pref)+popularityBonus(p);
  const ranked=[...pool].sort((x,y)=>score(y)-score(x));
  if(!ranked.length)return [];
  const result=[decorate(ranked[0],'あなたなら、まずこれ',category,a,pref,quantity,targetBudget,score(ranked[0]))],families=new Set([ranked[0].family]);

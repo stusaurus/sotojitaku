@@ -1340,7 +1340,368 @@
       ],
       "lookupName": true,
       "brand": "mont-bell"
+    },
+    {
+      "category": "tent",
+      "itemCode": "naturum-outdoor:10006523",
+      "model": "2000038429",
+      "query": "2000038429",
+      "family": "tent-2000038429",
+      "name": "Coleman BCクロスドーム/270 2000038429",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 29480,
+      "spec": {
+        "capacity": 5,
+        "weight": 10000,
+        "packed_size": "約φ23×68cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2566580/",
+        "specification": "https://ec.coleman.co.jp/item/2000038429.html",
+        "fields": {
+          "capacity": "https://ec.coleman.co.jp/item/2000038429.html",
+          "weight": "https://ec.coleman.co.jp/item/2000038429.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000038429.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.9,
+        "comfort": 0.82,
+        "portability": 0.35,
+        "value": 0.97,
+        "trust": 0.95
+      },
+      "traits": [
+        "value"
+      ],
+      "reviewCount": 88,
+      "reviewAverage": 4.65,
+      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2566580/",
+      "specSummary": "定員4〜5人 / 約10kg / 収納約φ23×68cm。シンプルなフレーム構造のベーシックドーム。",
+      "identityTerms": [
+        "BCクロスドーム",
+        "2000038429"
+      ]
+    },
+    {
+      "category": "tent",
+      "itemCode": "naturum-outdoor:10712574",
+      "model": "2206745",
+      "query": "2206745",
+      "family": "tent-2206745",
+      "name": "Coleman タフドーム VI/3025 2206745",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 37680,
+      "spec": {
+        "capacity": 5,
+        "weight": 9000,
+        "packed_size": "約φ23×70cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
+        "specification": "https://ec.coleman.co.jp/item/2206745.html",
+        "fields": {
+          "capacity": "https://ec.coleman.co.jp/item/2206745.html",
+          "weight": "https://ec.coleman.co.jp/item/2206745.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2206745.html"
+        }
+      },
+      "scores": {
+        "fit": 0.98,
+        "beginner": 0.95,
+        "comfort": 0.9,
+        "portability": 0.38,
+        "value": 0.86,
+        "trust": 0.96
+      },
+      "traits": [
+        "balanced"
+      ],
+      "reviewCount": 1,
+      "reviewAverage": 5,
+      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
+      "specSummary": "定員4〜5人 / 約9kg / 収納約φ23×70cm。アルミ合金メインポールの定番ドーム。",
+      "identityTerms": [
+        "タフドーム",
+        "2206745"
+      ]
+    },
+    {
+      "category": "tent",
+      "itemCode": "naturum:18699395",
+      "model": "2000039087",
+      "query": "2000039087",
+      "family": "tent-2000039087",
+      "name": "Coleman タフドームエアー/3025+ 2000039087",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 50827,
+      "spec": {
+        "capacity": 5,
+        "weight": 9800,
+        "packed_size": "約φ24×70cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/9946265/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/",
+        "fields": {
+          "capacity": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/",
+          "weight": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/",
+          "packed_size": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.91,
+        "comfort": 0.99,
+        "portability": 0.34,
+        "value": 0.76,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 4,
+      "reviewAverage": 5,
+      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/9946265/",
+      "specSummary": "定員4〜5人 / 約9.8kg / 収納約φ24×70cm。ダークルームとワイドエアメッシュで睡眠・暑さ対策を重視。",
+      "identityTerms": [
+        "タフドームエアー",
+        "3025+",
+        "2000039087"
+      ]
+    },
+    {
+      "category": "tent",
+      "itemCode": "sn-mart:10090991",
+      "model": "2206748",
+      "query": "2206748",
+      "family": "tent-2206748",
+      "name": "Coleman タフ2ルーム/3025 2206748",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 68943,
+      "spec": {
+        "capacity": 5,
+        "weight": 16000,
+        "packed_size": "約φ34×74cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sn-mart/sn3aa91290a5/",
+        "specification": "https://ec.coleman.co.jp/item/2206748.html",
+        "fields": {
+          "capacity": "https://ec.coleman.co.jp/item/2206748.html",
+          "weight": "https://ec.coleman.co.jp/item/2206748.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2206748.html"
+        }
+      },
+      "scores": {
+        "fit": 0.98,
+        "beginner": 0.88,
+        "comfort": 1,
+        "portability": 0.12,
+        "value": 0.65,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": 7,
+      "reviewAverage": 4.57,
+      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/sn-mart/sn3aa91290a5/",
+      "specSummary": "定員4〜5人 / 約16kg / 収納約φ34×74cm。寝室とリビングを一体化した2ルーム型。",
+      "identityTerms": [
+        "タフ2ルーム",
+        "3025"
+      ]
+    },
+    {
+      "category": "tent",
+      "itemCode": "lb77:10003060",
+      "model": "2185613",
+      "query": "2185613",
+      "family": "tent-2185613",
+      "name": "Coleman ワイドティピー/3025 2185613",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 33424,
+      "spec": {
+        "capacity": 5,
+        "weight": 8000,
+        "packed_size": "約φ22×63cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/lb77/20250412200747_33/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%AF%E3%82%A4%E3%83%89%E3%83%86%E3%82%A3%E3%83%94%E3%83%BC-3025-%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B8%E3%83%A5/",
+        "fields": {
+          "capacity": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%AF%E3%82%A4%E3%83%89%E3%83%86%E3%82%A3%E3%83%94%E3%83%BC-3025-%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B8%E3%83%A5/",
+          "weight": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%AF%E3%82%A4%E3%83%89%E3%83%86%E3%82%A3%E3%83%94%E3%83%BC-3025-%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B8%E3%83%A5/",
+          "packed_size": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%AF%E3%82%A4%E3%83%89%E3%83%86%E3%82%A3%E3%83%94%E3%83%BC-3025-%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B8%E3%83%A5/"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.93,
+        "comfort": 0.86,
+        "portability": 0.58,
+        "value": 0.91,
+        "trust": 0.95
+      },
+      "traits": [
+        "compact",
+        "value"
+      ],
+      "reviewCount": 1,
+      "reviewAverage": 5,
+      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/lb77/20250412200747_33/",
+      "specSummary": "定員4〜5人 / 約8kg / 収納約φ22×63cm。ファミリーサイズながら比較的コンパクトなティピー型。",
+      "identityTerms": [
+        "ワイドティピー",
+        "3025"
+      ]
+    },
+    {
+      "category": "tent",
+      "itemCode": "sproutsllc:10034068",
+      "model": "2185614",
+      "query": "2185614",
+      "family": "tent-2185614",
+      "name": "Coleman ティピー/ST 2185614",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 30685,
+      "spec": {
+        "capacity": 4,
+        "weight": 6300,
+        "packed_size": "約φ20×60cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sproutsllc/s-b0bjpfm46y-20260602/",
+        "specification": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html",
+        "fields": {
+          "capacity": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html",
+          "weight": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html",
+          "packed_size": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.94,
+        "comfort": 0.78,
+        "portability": 0.72,
+        "value": 0.88,
+        "trust": 0.95
+      },
+      "traits": [
+        "compact"
+      ],
+      "reviewCount": 0,
+      "reviewAverage": 0,
+      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/sproutsllc/s-b0bjpfm46y-20260602/",
+      "specSummary": "定員3〜4人 / 約6.3kg / 収納約φ20×60cm。メインポール1本のシンプルなティピー型。",
+      "identityTerms": [
+        "ティピー",
+        "ST",
+        "2185614"
+      ]
+    },
+    {
+      "category": "tent",
+      "itemCode": "goose:10002974",
+      "model": "2000036439",
+      "query": "2000036439",
+      "family": "tent-2000036439",
+      "name": "Coleman パーティーキャビン/3025 2000036439",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 32800,
+      "spec": {
+        "capacity": 5,
+        "weight": 16500,
+        "packed_size": "約24×21×100cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/goose/0535-007008/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
+        "fields": {
+          "capacity": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
+          "weight": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
+          "packed_size": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 1,
+        "comfort": 0.92,
+        "portability": 0.08,
+        "value": 0.88,
+        "trust": 0.93
+      },
+      "traits": [
+        "easy"
+      ],
+      "reviewCount": 2,
+      "reviewAverage": 4,
+      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
+      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "itemUrl": "https://item.rakuten.co.jp/goose/0535-007008/",
+      "specSummary": "定員4〜5人 / 約16.5kg / 収納約24×21×100cm。広げるだけの簡単組立を重視したロッジ型。",
+      "identityTerms": [
+        "パーティーキャビン",
+        "3025",
+        "2000036439"
+      ]
     }
   ],
-  "refreshRequestedAt": "2026-10-04T13:06:00Z"
+  "refreshRequestedAt": "2026-10-04T14:20:00+00:00"
 }
