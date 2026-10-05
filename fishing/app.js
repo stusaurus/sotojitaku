@@ -6,6 +6,8 @@ const hero=$("#hero"),planner=$("#planner"),panel=$("#panel"),progress=$("#progr
 const resetBtn=$("#resetBtn"),stepText=$("#stepText"),miniPlan=$("#miniPlan"),visualMessage=$("#visualMessage"),visualTags=$("#visualTags");
 
 let questionsData,plansData,gearData,catalog;
+let catalogSource="none";
+const SHARED_CATALOG_URL="https://stusaurus.github.io/daily-cost-jp/shared/fishing-products.json";
 let index=0;
 let answers={owned:[]};
 let localRulesConfirmed=false;
@@ -13,14 +15,35 @@ let localRulesConfirmed=false;
 const labels={party:"だれと",fun:"楽しみ方",bait:"エサ",take_home:"持ち帰り",carry:"荷物",budget:"予算",owned:"手持ち"};
 const track=(name,params={})=>{try{window.gtag?.("event",name,{conversion_source:"fishing",...params})}catch{}};
 
+async function loadCatalog(){
+  const sources=[
+    {source:"shared",url:SHARED_CATALOG_URL},
+    {source:"local",url:"./data/audited-products.json"},
+  ];
+  for(const entry of sources){
+    try{
+      const response=await fetch(entry.url,{cache:"no-store"});
+      if(!response.ok)continue;
+      const data=await response.json();
+      if(Array.isArray(data?.products)&&data.products.length){
+        catalogSource=entry.source;
+        return data;
+      }
+    }catch{}
+  }
+  catalogSource="none";
+  return {products:[],status:"unavailable"};
+}
+
 async function load(){
   const [q,p,g,c]=await Promise.all([
     fetch("./data/questions.json").then(r=>r.json()),
     fetch("./data/plans.json").then(r=>r.json()),
     fetch("./data/gear.json").then(r=>r.json()),
-    fetch("./data/audited-products.json").then(r=>r.json()).catch(()=>({products:[]}))
+    loadCatalog()
   ]);
   questionsData=q;plansData=p;gearData=g;catalog=c;
+  track("fishing_catalog_loaded",{catalog_source:catalogSource,product_count:c.products?.length||0});
 }
 
 function start(){
