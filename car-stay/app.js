@@ -44,7 +44,7 @@ function vehicleConfigComplete(){
 }
 function rules(){return {...DEFAULT_RULES,...db.rules};}
 function inputForEngine(){
-  return {people:state.people,tripStyle:state.tripStyle,placeType:state.placeType,weather:state.weather,gear:selectedGear(),devices:state.devices,floorObservation:state.floorObservation,measurements:state.measurements,sleepEngineOn:state.sleepEngineOn,openFlameInside:state.openFlameInside};
+  return {people:state.people,tripStyle:state.tripStyle,placeType:state.placeType,weather:state.weather,gear:selectedGear(),devices:state.devices,floorObservation:state.floorObservation,measurements:state.measurements,config:state.config,sleepEngineOn:state.sleepEngineOn,openFlameInside:state.openFlameInside};
 }
 async function loadData(){
   const names=["vehicles.json","gear.json","rules.json","audited-products.json"];
