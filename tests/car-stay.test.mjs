@@ -71,3 +71,20 @@ test("affiliate link targeting another Rakuten item is rejected",()=>{
   const p={productId:"x",gapIds:["privacy_full"],verifiedAt:"2026-10-05T00:00:00Z",audit:{status:"verified_live"},price:12000,image:"https://thumbnail.image.rakuten.co.jp/x.jpg",itemUrl:item,affiliateUrl:aff,vehicleFit:[{vehicleId:nbox.vehicleId,status:"verified"}]};
   assert.equal(productEligible(p,{vehicleId:nbox.vehicleId,gapId:"privacy_full",now:Date.parse("2026-10-05T12:00:00Z")}),false);
 });
+
+
+test("unknown-floor vehicle only gets a floor gap after the user observes one",()=>{
+  const vehicle={vehicleId:"test-unknown-floor",geometry:{usableLengthMm:1900,usableWidthMm:1200},floorGrade:"unknown"};
+  const common={...base,people:[{type:"adult",height:171}],placeType:"rv_park",measurements:{},gear:[{gearId:"mobile_battery",capabilities:["usb_power"]}]};
+  const unknown=evaluate({...common,floorObservation:"unknown"},vehicle,DEFAULT_RULES);
+  assert.equal(unknown.gaps.some(g=>g.id==="floor_step"),false);
+  const observed=evaluate({...common,floorObservation:"noticeable"},vehicle,DEFAULT_RULES);
+  assert.equal(observed.gaps.some(g=>g.id==="floor_step"),true);
+});
+
+test("flat floor observation never creates a mat-selling gap on unknown floor data",()=>{
+  const vehicle={vehicleId:"test-flat-floor",geometry:{usableLengthMm:1900,usableWidthMm:1200},floorGrade:"unknown"};
+  const r=evaluate({...base,people:[{type:"adult",height:171}],floorObservation:"flat"},vehicle,DEFAULT_RULES);
+  assert.equal(r.gaps.some(g=>g.id==="floor_step"),false);
+  assert.equal(r.floor.state,"flat");
+});

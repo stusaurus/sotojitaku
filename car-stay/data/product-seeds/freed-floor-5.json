@@ -1,0 +1,61 @@
+{
+  "productId": "freed-gt-crosstar-5-presidente-xy0723202",
+  "name": "FREED CROSSTAR GT2/GT4/GT6/GT8 5人乗り 折りたたみ車中泊マット",
+  "brand": "CARVANTA",
+  "query": "フリード クロスター GT2 GT4 GT6 GT8 5人乗り 車中泊マット 折りたたみ",
+  "itemUrl": "https://item.rakuten.co.jp/shoppresidente/xy0723202/",
+  "gapIds": [
+    "floor_step"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 88,
+  "identityGroups": [
+    [
+      "フリード",
+      "FREED"
+    ],
+    [
+      "クロスター",
+      "CROSSTAR"
+    ],
+    [
+      "GT2",
+      "GT4",
+      "GT6",
+      "GT8"
+    ],
+    [
+      "5人乗り"
+    ],
+    [
+      "車中泊マット"
+    ],
+    [
+      "段差解消",
+      "ベッドキット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "6人乗り",
+    "7人乗り"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/shoppresidente/xy0723202/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-freed-gt",
+      "status": "verified",
+      "seatCounts": [
+        5
+      ],
+      "trims": [
+        "CROSSTAR"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "フリード クロスター 5人乗り 車中泊マット GT2",
+    "フリード GT2 GT4 GT6 GT8 5人乗り 段差解消",
+    "xy0723202"
+  ]
+}

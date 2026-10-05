@@ -1,0 +1,52 @@
+{
+  "productId": "nvan-jj1-jj2-levolva-mr11",
+  "name": "Levolva N-VAN JJ1/JJ2 専用 車中泊マット＆ラゲッジマット",
+  "brand": "Levolva",
+  "query": "Levolva JJ1 JJ2 N-VAN 専用 車中泊マット LVMR-11",
+  "itemUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-11/",
+  "gapIds": [
+    "floor_step"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 92,
+  "identityGroups": [
+    [
+      "Levolva"
+    ],
+    [
+      "N-VAN",
+      "NVAN",
+      "N VAN"
+    ],
+    [
+      "JJ1"
+    ],
+    [
+      "JJ2"
+    ],
+    [
+      "車中泊マット",
+      "マットレス"
+    ],
+    [
+      "LVMR-11",
+      "ラゲッジマット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "N-WGN"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-11/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "status": "verified"
+    }
+  ],
+  "searchQueries": [
+    "N-VAN JJ1 JJ2 車中泊マット Levolva",
+    "LVMR-11",
+    "N-VAN 専用 マットレス"
+  ]
+}

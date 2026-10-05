@@ -49,3 +49,14 @@ test('CAR STAY SEO pages measure landing views and Builder CTA clicks',()=>{
     assert.match(read(page),/seo\.js/,page+' should load SEO analytics');
   }
 });
+
+
+test('CAR STAY only monetizes unknown vehicle floors after an observed floor gap',()=>{
+  const app=read('car-stay/app.js');
+  const engine=read('car-stay/engine.js');
+  assert.match(app,/floorObservation/);
+  assert.match(app,/floor_observation/);
+  assert.match(app,/data-floor/);
+  assert.match(engine,/floorObservation=input\.floorObservation/);
+  assert.ok(engine.includes('["noticeable","large"].includes(floorObservation)'));
+});
