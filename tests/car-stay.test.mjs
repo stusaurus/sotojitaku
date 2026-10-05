@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {evaluate,productEligible,DEFAULT_RULES,resolvedVehicleProfile} from "../car-stay/engine.js";
+import {recommendations} from "../car-stay/products.js";
 
 const nbox={vehicleId:"honda-nbox-jf5-jf6",geometry:{usableLengthMm:1800,usableWidthMm:null},floorGrade:"C"};
 const base={
@@ -136,4 +137,26 @@ test("floor-step gap absorbs sleep-surface need instead of duplicating it",()=>{
   const r=evaluate({...base,people:[{type:"adult",height:171}],gear:[],floorObservation:"unknown"},vehicle,DEFAULT_RULES);
   assert.equal(r.gaps.filter(g=>g.id==="floor_step").length,1);
   assert.equal(r.gaps.some(g=>g.id==="sleep_surface"),false);
+});
+
+
+test("beginner results suppress frequent-user upgrades unless explicitly allowed",()=>{
+  const item=id=>"https://item.rakuten.co.jp/shop/"+id+"/";
+  const product=(id,role,score)=>({
+    productId:id,gapIds:["sleep_surface"],recommendationRole:role,score,
+    verifiedAt:"2026-10-05T00:00:00Z",audit:{status:"verified_live"},
+    price:10000,image:"https://thumbnail.image.rakuten.co.jp/"+id+".jpg",
+    itemUrl:item(id),affiliateUrl:"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+encodeURIComponent(item(id)),
+    vehicleFit:[{vehicleId:nbox.vehicleId,status:"verified"}]
+  });
+  const products=[
+    product("default","beginner_default",80),
+    product("alternative","beginner_alternative",99),
+    product("upgrade","frequent_user_upgrade",100)
+  ];
+  const baseContext={gaps:[{id:"sleep_surface"}],vehicleId:nbox.vehicleId,config:{},status:"ALMOST_READY",now:Date.parse("2026-10-05T12:00:00Z")};
+  const beginner=recommendations(products,baseContext).sleep_surface;
+  assert.deepEqual(beginner.map(p=>p.productId),["default","alternative"]);
+  const withUpgrade=recommendations(products,{...baseContext,allowUpgrades:true}).sleep_surface;
+  assert.deepEqual(withUpgrade.map(p=>p.productId),["default","alternative","upgrade"]);
 });
