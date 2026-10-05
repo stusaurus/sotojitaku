@@ -1,8 +1,8 @@
 {
   "productId": "promarine-wakuwaku-sabiki-dx270",
-  "name": "プロマリン PGわくわくサビキ釣りセットDX 270",
+  "name": "プロマリン PGわくわくサビキ釣りセットSG 270(BLC3000R)",
   "brand": "PRO MARINE",
-  "itemUrl": "https://item.rakuten.co.jp/r-bunbun/4997223330518/",
+  "itemUrl": "https://item.rakuten.co.jp/naturum/3512540/",
   "categoryId": "rod_reel",
   "methodIds": [
     "sabiki"
@@ -15,14 +15,15 @@
     "family"
   ],
   "coverCategoryIds": [
-    "rod_reel"
+    "rod_reel",
+    "rig"
   ],
   "recommendationRole": "budget",
   "score": 86,
   "searchQueries": [
-    "わくわくサビキ釣りセットDX 270",
-    "PGわくわくサビキ釣りセットDX 270",
-    "4997223330518"
+    "PG わくわくサビキ釣りセットSG 270 BLC3000R",
+    "わくわくサビキ釣りセットSG 270",
+    "BLC3000R"
   ],
   "identityGroups": [
     [
@@ -33,13 +34,19 @@
       "わくわくサビキ"
     ],
     [
+      "SG"
+    ],
+    [
       "270"
+    ],
+    [
+      "BLC3000R"
     ]
   ],
   "forbiddenTerms": [
     "中古",
     "ジャンク"
   ],
-  "specCheckedAt": "2026-10-05",
-  "specEvidenceUrl": "https://item.rakuten.co.jp/r-bunbun/4997223330518/"
+  "specCheckedAt": "2026-10-06",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/naturum/3512540/"
 }
