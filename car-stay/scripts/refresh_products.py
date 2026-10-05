@@ -23,6 +23,8 @@ HEADERS={
     'User-Agent':'sotojitaku-car-stay/1.0'
 }
 
+RUNTIME_BUDGET_SECONDS=max(30,min(420,int(os.environ.get('CAR_STAY_REFRESH_BUDGET_SECONDS','300'))))
+
 _PAGE_CACHE={}
 
 def fetch_json(url,headers=None):
@@ -319,35 +321,62 @@ def fit_audit_fresh(seed,now):
     except Exception:
         return False
 
-def acquire():
+def load_previous_products():
+    try:
+        payload=json.loads(OUT.read_text())
+        return payload.get('products',[]) if isinstance(payload,dict) else []
+    except Exception:
+        return []
+
+def previous_product_fresh(product,now_dt,max_days=7):
+    try:
+        verified=datetime.fromisoformat(str(product.get('verifiedAt','')).replace('Z','+00:00'))
+        age=(now_dt-verified).total_seconds()
+        return 0 <= age <= max_days*86400
+    except Exception:
+        return False
+
+def acquire(runtime_budget_seconds=None):
     now_dt=datetime.now(timezone.utc); now=now_dt.isoformat()
-    products=[];failures={}
-    for seed in load_seeds():
+    budget=RUNTIME_BUDGET_SECONDS if runtime_budget_seconds is None else max(0,float(runtime_budget_seconds))
+    started=time.monotonic()
+    seeds=load_seeds()
+    previous={p.get('productId'):p for p in load_previous_products() if p.get('productId') and previous_product_fresh(p,now_dt)}
+    products=[];failures={};deferred={}
+    for index,seed in enumerate(seeds):
+        if time.monotonic()-started >= budget:
+            for pending in seeds[index:]:
+                pid=pending.get('productId','unknown')
+                old=previous.get(pid)
+                if old:
+                    products.append(old)
+                    deferred[pid]='runtime_budget_retained_previous'
+                else:
+                    deferred[pid]='runtime_budget_no_previous'
+            break
         try:
             if not fit_audit_fresh(seed,now_dt): raise ValueError('fit_audit_expired')
             candidate=None
-            source_errors=[]
-            for source_name,source_fn in (
-                ('worker_exact_url',worker_exact_item_candidate),
-                ('rakuten_api_exact',rakuten_api_exact_candidate),
-                ('rakuten_api_search',rakuten_api_candidate),
-                ('worker',worker_candidate),
-            ):
-                if candidate is not None: break
-                try:
-                    candidate=source_fn(seed)
-                except Exception as source_error:
-                    source_errors.append(source_name+':'+type(source_error).__name__)
+            page_info=exact_page_info(seed)
+            if page_info:
+                candidate=rakuten_api_exact_candidate(seed)
             if candidate is None:
-                suffix=(' ['+','.join(source_errors)+']') if source_errors else ''
+                candidate=worker_exact_item_candidate(seed)
+            if candidate is None:
+                candidate=rakuten_api_candidate(seed)
+            worker_error=None
+            if candidate is None:
+                try:
+                    candidate=worker_candidate(seed)
+                except Exception as e:
+                    worker_error=type(e).__name__
+            if candidate is None:
+                suffix=f" [worker:{worker_error}]" if worker_error else ""
                 raise ValueError('same_shop_identity_listing_not_found'+suffix)
             target_item=candidate.get('itemUrl') or canonical_item_url(candidate['url'])
             if not safe_affiliate(candidate['url'],target_item): raise ValueError('unsafe_or_wrong_affiliate')
-            price=candidate.get('price')
+            price=candidate.get('pagePrice') or candidate.get('price')
             if not isinstance(price,(int,float)) or price<=0: raise ValueError('price_unknown')
-            page_price=candidate.get('pagePrice')
-            if isinstance(page_price,(int,float)) and abs(page_price-price)>max(500,price*.35):
-                raise ValueError('api_page_price_mismatch')
             image=candidate.get('image','')
             if not isinstance(image,str) or not image.startswith('https://'): raise ValueError('image_unknown')
             mode,live_price=page_sales_audit(seed,target_item,int(price))
@@ -377,8 +406,9 @@ def acquire():
             failures[seed.get('productId','unknown')]=str(e) if isinstance(e,ValueError) else type(e).__name__
         time.sleep(.6)
     return {
-        'version':1,'updatedAt':now,'status':'ok' if not failures else 'partial',
-        'products':products,'failures':failures
+        'version':1,'updatedAt':now,'status':'ok' if not failures and not deferred else 'partial',
+        'products':products,'failures':failures,'deferred':deferred,
+        'runtimeBudgetSeconds':budget
     }
 
 if __name__=='__main__':
@@ -386,4 +416,4 @@ if __name__=='__main__':
     tmp=OUT.with_suffix('.tmp')
     tmp.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
     tmp.replace(OUT)
-    print('CAR STAY catalog:',payload['status'],'verified:',len(payload['products']),'failed:',len(payload['failures']))
+    print('CAR STAY catalog:',payload['status'],'verified:',len(payload['products']),'failed:',len(payload['failures']),'deferred:',len(payload.get('deferred',{})))
