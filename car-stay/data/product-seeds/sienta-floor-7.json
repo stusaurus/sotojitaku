@@ -1,0 +1,52 @@
+{
+  "productId": "sienta10-7-suwariba-o017",
+  "name": "シエンタ 3代目 7人乗り 全席用 車中泊フラットマットレス",
+  "brand": "CELLUTANE / NOMAD BASE",
+  "query": "シエンタ MXPC10G MXPL10G MXPL15G 7人乗り 全席用 車中泊 フラットマットレス",
+  "itemUrl": "https://item.rakuten.co.jp/suwariba/o017/",
+  "gapIds": [
+    "floor_step"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 90,
+  "identityGroups": [
+    [
+      "シエンタ"
+    ],
+    [
+      "MXPC10G",
+      "MXPL10G",
+      "MXPL15G"
+    ],
+    [
+      "7人乗り"
+    ],
+    [
+      "全席用"
+    ],
+    [
+      "車中泊",
+      "フラットマットレス"
+    ]
+  ],
+  "forbiddenTerms": [
+    "5人乗り",
+    "助手席用"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/suwariba/o017/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "status": "verified",
+      "seatCounts": [
+        7
+      ]
+    }
+  ],
+  "searchQueries": [
+    "シエンタ 7人乗り 車中泊 フラットマットレス",
+    "シエンタ MXPC10G 7人乗り 車中泊",
+    "suwariba o017"
+  ]
+}
