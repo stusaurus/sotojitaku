@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "party",
+      "label": "だれと行く？",
+      "type": "single",
+      "options": [
+        {
+          "value": "solo",
+          "label": "ひとりで"
+        },
+        {
+          "value": "pair",
+          "label": "大人2人で"
+        },
+        {
+          "value": "family_child",
+          "label": "子どもと家族で"
+        },
+        {
+          "value": "group",
+          "label": "大人3人以上で"
+        }
+      ]
+    },
+    {
+      "id": "fun",
+      "label": "どんな釣りが楽しそう？",
+      "type": "single",
+      "options": [
+        {
+          "value": "easy_catch",
+          "label": "まずは魚が釣れる体験をしたい"
+        },
+        {
+          "value": "cast_wait",
+          "label": "投げて、アタリを待ってみたい"
+        },
+        {
+          "value": "choose_for_me",
+          "label": "よく分からないから選んでほしい"
+        }
+      ]
+    },
+    {
+      "id": "bait",
+      "label": "エサはどこまで平気？",
+      "type": "single",
+      "options": [
+        {
+          "value": "okay",
+          "label": "普通のエサでも大丈夫"
+        },
+        {
+          "value": "no_worm",
+          "label": "虫エサは使いたくない"
+        },
+        {
+          "value": "low_mess",
+          "label": "におい・汚れをできるだけ減らしたい"
+        }
+      ]
+    },
+    {
+      "id": "take_home",
+      "label": "釣れた魚はどうしたい？",
+      "type": "single",
+      "options": [
+        {
+          "value": "yes",
+          "label": "持ち帰って食べたい"
+        },
+        {
+          "value": "no",
+          "label": "持ち帰らない"
+        },
+        {
+          "value": "undecided",
+          "label": "まだ決めていない"
+        }
+      ]
+    },
+    {
+      "id": "carry",
+      "label": "荷物の量は？",
+      "type": "single",
+      "options": [
+        {
+          "value": "compact",
+          "label": "できるだけ少なく"
+        },
+        {
+          "value": "normal",
+          "label": "必要なものはきちんと"
+        },
+        {
+          "value": "comfort",
+          "label": "快適さを優先"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "label": "足りないものにかける予算感は？",
+      "type": "single",
+      "options": [
+        {
+          "value": "low",
+          "label": "まずは安く始めたい"
+        },
+        {
+          "value": "balanced",
+          "label": "価格と使いやすさのバランス"
+        },
+        {
+          "value": "long_term",
+          "label": "長く使えるものを選びたい"
+        }
+      ]
+    },
+    {
+      "id": "owned",
+      "label": "もう持っているものは？",
+      "type": "multi",
+      "options": [
+        {
+          "value": "rod_reel",
+          "label": "竿・リール"
+        },
+        {
+          "value": "life_jacket_adult",
+          "label": "大人全員分のライフジャケット"
+        },
+        {
+          "value": "life_jacket_child",
+          "label": "子ども全員分のライフジャケット"
+        },
+        {
+          "value": "cooler",
+          "label": "クーラーボックス"
+        },
+        {
+          "value": "bucket",
+          "label": "水くみバケツ"
+        },
+        {
+          "value": "fish_grip",
+          "label": "魚つかみ"
+        },
+        {
+          "value": "scissors",
+          "label": "ハサミ"
+        },
+        {
+          "value": "pliers",
+          "label": "プライヤー・針外し"
+        },
+        {
+          "value": "towel",
+          "label": "タオル"
+        },
+        {
+          "value": "bag",
+          "label": "道具をまとめるバッグ"
+        }
+      ]
+    }
+  ]
+}

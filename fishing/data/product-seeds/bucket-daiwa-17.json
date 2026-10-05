@@ -1,0 +1,45 @@
+{
+  "productId": "daiwa-portable-water-bucket-17a",
+  "name": "ダイワ ポータブル活かし水くみ 17(A)",
+  "brand": "DAIWA",
+  "itemUrl": "https://item.rakuten.co.jp/fishing-you/4550133223082-a/",
+  "categoryId": "bucket",
+  "methodIds": [
+    "sabiki"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "bucket"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 93,
+  "searchQueries": [
+    "ダイワ ポータブル活かし水くみ 17(A) 4550133223082",
+    "ポータブル活かし水くみ 17"
+  ],
+  "identityGroups": [
+    [
+      "ダイワ",
+      "DAIWA"
+    ],
+    [
+      "ポータブル活かし水くみ"
+    ],
+    [
+      "17"
+    ]
+  ],
+  "forbiddenTerms": [
+    "15(A)"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fishing-you/4550133223082-a/"
+}

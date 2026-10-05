@@ -1,0 +1,46 @@
+{
+  "productId": "daiwa-fish-holder-240c",
+  "name": "ダイワ フィッシュホルダー 240C",
+  "brand": "DAIWA",
+  "itemUrl": "https://item.rakuten.co.jp/fto-r/4960652332378/",
+  "categoryId": "fish_grip",
+  "methodIds": [
+    "sabiki",
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "fish_grip"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 94,
+  "searchQueries": [
+    "ダイワ フィッシュホルダー 240C 4960652332378",
+    "フィッシュホルダー240C"
+  ],
+  "identityGroups": [
+    [
+      "ダイワ",
+      "DAIWA"
+    ],
+    [
+      "フィッシュホルダー"
+    ],
+    [
+      "240C"
+    ]
+  ],
+  "forbiddenTerms": [
+    "SC285"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fto-r/4960652332378/"
+}

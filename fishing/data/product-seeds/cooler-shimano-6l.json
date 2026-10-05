@@ -1,0 +1,50 @@
+{
+  "productId": "shimano-holiday-cool-60-6l",
+  "name": "シマノ ホリデークール 60 6L",
+  "brand": "SHIMANO",
+  "itemUrl": "https://item.rakuten.co.jp/fto-r/4969363520005/",
+  "categoryId": "cooler",
+  "methodIds": [
+    "sabiki",
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "cooler"
+  ],
+  "recommendationRole": "budget",
+  "score": 88,
+  "searchQueries": [
+    "シマノ NJ-406U ホリデークール 60 4969363520005",
+    "ホリデークール 60 6L"
+  ],
+  "identityGroups": [
+    [
+      "シマノ",
+      "SHIMANO"
+    ],
+    [
+      "ホリデークール",
+      "HOLIDAY COOL"
+    ],
+    [
+      "60"
+    ],
+    [
+      "6L",
+      "容量(L)：6"
+    ]
+  ],
+  "forbiddenTerms": [
+    "200",
+    "20L"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fto-r/4969363520005/"
+}

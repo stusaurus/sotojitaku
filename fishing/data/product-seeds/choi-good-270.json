@@ -1,0 +1,50 @@
+{
+  "productId": "choi-good-270-daiwa-joinus",
+  "name": "ちょっといいちょい投げセット 270",
+  "brand": "TOTO / DAIWA / HAYABUSA",
+  "itemUrl": "https://item.rakuten.co.jp/fishing-you/4909858061873-a/",
+  "categoryId": "rod_reel",
+  "methodIds": [
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "rod_reel",
+    "rig"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 94,
+  "searchQueries": [
+    "ちょっといいちょい投げセット 270 4909858061873",
+    "ビーチサーフ2 270 ジョイナス2500"
+  ],
+  "identityGroups": [
+    [
+      "ちょっといいちょい投げ",
+      "ビーチサーフ2"
+    ],
+    [
+      "270"
+    ],
+    [
+      "ジョイナス",
+      "JOINUS"
+    ],
+    [
+      "2500"
+    ]
+  ],
+  "forbiddenTerms": [
+    "中古",
+    "ジャンク"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fishing-you/4909858061873-a/"
+}

@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "safety": [
+    {
+      "id": "child_life_jacket",
+      "when": {
+        "party": "family_child"
+      },
+      "require": [
+        "life_jacket_child"
+      ],
+      "severity": "hard"
+    },
+    {
+      "id": "life_jacket_all",
+      "when": {
+        "method": [
+          "sabiki",
+          "choi_nage"
+        ]
+      },
+      "require": [
+        "life_jacket_adult"
+      ],
+      "severity": "hard"
+    },
+    {
+      "id": "local_rules",
+      "always": true,
+      "message": "釣り禁止区域・採捕ルール・利用時間などは釣行前に現地の公式情報で確認する。"
+    },
+    {
+      "id": "unsafe_context",
+      "always": true,
+      "message": "テトラ上、磯、夜釣り、荒天、立入禁止場所を初心者向けMVPの推奨プランに含めない。"
+    }
+  ],
+  "recommendation": [
+    {
+      "id": "owned_remove",
+      "rule": "owned_key が選択済みなら購入対象から外す"
+    },
+    {
+      "id": "required_before_optional",
+      "rule": "必須カテゴリの未充足を先に埋める"
+    },
+    {
+      "id": "exact_fit_only",
+      "rule": "釣法・仕様・予算に適合しない商品は表示しない"
+    },
+    {
+      "id": "max_choices",
+      "rule": "各カテゴリの主推薦は1件、アップグレードは最大1件"
+    }
+  ]
+}

@@ -1,1 +1,11 @@
-{"name":"sotojitaku","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs","serve":"python -m http.server 4173","check":"node --check app.js && node --check engine.js && node --check products.js && node --check car-stay/app.js && node --check car-stay/engine.js && node --check car-stay/products.js"}}
+{
+  "name": "sotojitaku",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "serve": "python -m http.server 4173",
+    "check": "node --check app.js && node --check engine.js && node --check products.js && node --check car-stay/app.js && node --check car-stay/engine.js && node --check car-stay/products.js && node --check fishing/engine.js && node --check fishing/products.js && node --check fishing/app.js"
+  }
+}

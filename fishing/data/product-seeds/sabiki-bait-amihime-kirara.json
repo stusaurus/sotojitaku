@@ -1,0 +1,50 @@
+{
+  "productId": "marukyu-amihime-kirara-600",
+  "name": "マルキュー アミ姫キララ 600g",
+  "brand": "MARUKYU",
+  "itemUrl": "https://item.rakuten.co.jp/marunishi/4905789005870/",
+  "categoryId": "bait",
+  "methodIds": [
+    "sabiki"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "preferenceTags": [
+    "low_mess",
+    "no_worm"
+  ],
+  "coverCategoryIds": [
+    "bait"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 97,
+  "searchQueries": [
+    "マルキュー アミ姫キララ 600g 4905789005870",
+    "アミ姫キララ 600g"
+  ],
+  "identityGroups": [
+    [
+      "マルキュー",
+      "MARUKYU"
+    ],
+    [
+      "アミ姫",
+      "アミ姫キララ"
+    ],
+    [
+      "600"
+    ]
+  ],
+  "forbiddenTerms": [
+    "爆寄せ"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/marunishi/4905789005870/"
+}

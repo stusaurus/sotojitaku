@@ -1,0 +1,45 @@
+{
+  "productId": "daiwa-pe-scissors-125rf",
+  "name": "ダイワ PEシザー 125R+F",
+  "brand": "DAIWA",
+  "itemUrl": "https://item.rakuten.co.jp/fishing-you/4550133153884-a/",
+  "categoryId": "scissors",
+  "methodIds": [
+    "sabiki",
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "scissors"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 91,
+  "searchQueries": [
+    "ダイワ PEシザー 125R+F 4550133153884",
+    "PEシザー 125R+F"
+  ],
+  "identityGroups": [
+    [
+      "ダイワ",
+      "DAIWA"
+    ],
+    [
+      "PEシザー"
+    ],
+    [
+      "125R+F",
+      "125R"
+    ]
+  ],
+  "forbiddenTerms": [],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fishing-you/4550133153884-a/"
+}

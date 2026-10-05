@@ -1,0 +1,53 @@
+{
+  "productId": "sabiki-shimano-complete-500528",
+  "name": "シマノで揃える サビキ釣り完全釣り入門セット",
+  "brand": "SHIMANO / つり具TEN",
+  "itemUrl": "https://item.rakuten.co.jp/tsurigu-ten/500528/",
+  "categoryId": "rod_reel",
+  "methodIds": [
+    "sabiki"
+  ],
+  "budgetTiers": [
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "rod_reel",
+    "rig",
+    "bait",
+    "bucket",
+    "fish_grip"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 96,
+  "searchQueries": [
+    "シマノ サビキ 完全釣り入門セット 500528",
+    "ホリデーパック FX C3000 サビキ セット"
+  ],
+  "identityGroups": [
+    [
+      "シマノ",
+      "SHIMANO"
+    ],
+    [
+      "サビキ"
+    ],
+    [
+      "ホリデーパック"
+    ],
+    [
+      "FX",
+      "C3000"
+    ]
+  ],
+  "forbiddenTerms": [
+    "中古",
+    "ジャンク"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/tsurigu-ten/500528/"
+}

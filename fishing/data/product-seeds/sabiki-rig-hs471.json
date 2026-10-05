@@ -1,0 +1,45 @@
+{
+  "productId": "hayabusa-sabiki-hs471",
+  "name": "ハヤブサ カンタンサビキ仕掛 ピンク＆ケイムラ HS471",
+  "brand": "HAYABUSA",
+  "itemUrl": "https://item.rakuten.co.jp/fishing-you/4993722988939-a/",
+  "categoryId": "rig",
+  "methodIds": [
+    "sabiki"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "rig"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 92,
+  "searchQueries": [
+    "ハヤブサ HS471 カンタンサビキ",
+    "4993722988939"
+  ],
+  "identityGroups": [
+    [
+      "ハヤブサ",
+      "HAYABUSA"
+    ],
+    [
+      "HS471"
+    ],
+    [
+      "サビキ"
+    ]
+  ],
+  "forbiddenTerms": [
+    "中古"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fishing-you/4993722988939-a/"
+}

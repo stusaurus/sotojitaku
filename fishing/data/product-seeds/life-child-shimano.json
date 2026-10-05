@@ -1,0 +1,47 @@
+{
+  "productId": "shimano-vf098v-kids-m",
+  "name": "シマノ VF-098V キッズフロートベスト M",
+  "brand": "SHIMANO",
+  "itemUrl": "https://item.rakuten.co.jp/naturum/3277862/",
+  "categoryId": "life_jacket_child",
+  "methodIds": [
+    "sabiki",
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "child"
+  ],
+  "coverCategoryIds": [
+    "life_jacket_child"
+  ],
+  "recommendationRole": "child_safety",
+  "score": 99,
+  "searchQueries": [
+    "シマノ VF-098V キッズフロートベスト M 811257",
+    "VF-098V M"
+  ],
+  "identityGroups": [
+    [
+      "シマノ",
+      "SHIMANO"
+    ],
+    [
+      "VF-098V"
+    ],
+    [
+      "キッズ",
+      "M"
+    ]
+  ],
+  "forbiddenTerms": [
+    "Lサイズ",
+    "大人"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://fish.shimano.com/ja-JP/product/wear_footwear/lifevest_vest/floatingvestsolidtype/a155f00000cb4xzqar.html"
+}
