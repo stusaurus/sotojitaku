@@ -75,7 +75,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(seen[0]["shopCode"],["hobbyman"])
             self.assertEqual(seen[0]["field"],["0"])
         finally:
-            refresh.fetch_json_quick=original_fetch
+            refresh.fetch_json=original_fetch
             for k,v in old.items():
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
@@ -114,7 +114,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             candidate=refresh.rakuten_api_candidate(seed)
             self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
         finally:
-            refresh.fetch_json_quick=original
+            refresh.fetch_json=original
             for k,v in old.items():
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
@@ -135,7 +135,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertIn("first+query",product_calls[0])
             self.assertIn("second+query",product_calls[1])
         finally:
-            refresh.fetch_json_quick=original
+            refresh.fetch_json=original
 
     def test_exact_page_info_reads_live_item_id_and_price(self):
         import json
@@ -171,7 +171,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(candidate["pagePrice"],12980)
         finally:
             refresh.exact_page_info=original_info
-            refresh.fetch_json_quick=original_fetch
+            refresh.fetch_json=original_fetch
             for k,v in old.items():
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
@@ -298,7 +298,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
             self.assertEqual(candidate["source"],"worker_exact_url")
 
-            refresh.fetch_json=lambda url,headers=None:{
+            refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{
                 "found":True,
                 "name":"N-VAN JJ1 サンシェード フルセット",
                 "price":5980,
