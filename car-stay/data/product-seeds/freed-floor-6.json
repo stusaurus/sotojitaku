@@ -1,0 +1,61 @@
+{
+  "productId": "freed-gt-crosstar-6-cellutane-a1612",
+  "name": "FREED CROSSTAR GT2/GT4/GT6/GT8 6人乗り 全席用 車中泊マットレス",
+  "brand": "CELLUTANE",
+  "query": "CELLUTANE A1612a-2-602BK フリードクロスター 6人乗り 全席用 車中泊マットレス",
+  "itemUrl": "https://item.rakuten.co.jp/a-price/4982323271052/",
+  "gapIds": [
+    "floor_step"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 92,
+  "identityGroups": [
+    [
+      "CELLUTANE"
+    ],
+    [
+      "フリード",
+      "FREED"
+    ],
+    [
+      "クロスター",
+      "CROSSTAR"
+    ],
+    [
+      "6人乗り"
+    ],
+    [
+      "全席用"
+    ],
+    [
+      "車中泊マットレス",
+      "車中泊マット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "5人乗り",
+    "GB5",
+    "GB6",
+    "GB7",
+    "GB8"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/a-price/4982323271052/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-freed-gt",
+      "status": "verified",
+      "seatCounts": [
+        6
+      ],
+      "trims": [
+        "CROSSTAR"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "フリードクロスター 6人乗り 全席用 車中泊マットレス",
+    "A1612a-2-602BK",
+    "4982323271052"
+  ]
+}
