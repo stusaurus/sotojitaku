@@ -1,15 +1,15 @@
 {
-  "productId": "nvan-jj1-jj2-nomad-nb-nvan",
-  "name": "N-VAN JJ1/JJ2専用 NOMAD BASE 全席用フラットマット",
+  "productId": "nvan-jj1-jj2-suwariba-o023",
+  "name": "N-VAN JJ1/JJ2専用 全席用フラットマット 車中泊マット",
   "brand": "NOMAD BASE / CELLUTANE",
-  "query": "nb-nvan",
-  "itemUrl": "https://item.rakuten.co.jp/hakuturu/nb-nvan/",
+  "query": "N-VAN JJ1 JJ2 全席用 車中泊マット",
+  "itemUrl": "https://item.rakuten.co.jp/suwariba/o023/",
   "gapIds": [
     "floor_step",
     "sleep_surface"
   ],
   "recommendationRole": "beginner_default",
-  "score": 95,
+  "score": 96,
   "identityGroups": [
     [
       "N-VAN",
@@ -27,19 +27,14 @@
     [
       "フラットマット",
       "車中泊マット"
-    ],
-    [
-      "NOMAD BASE",
-      "セルタン",
-      "CELLUTANE"
     ]
   ],
   "forbiddenTerms": [
     "EVモデル",
     "N-VAN e:"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/hakuturu/nb-nvan/",
-  "fitCheckedAt": "2026-10-05",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/suwariba/o023/",
+  "fitCheckedAt": "2026-10-06",
   "vehicleFit": [
     {
       "vehicleId": "honda-nvan-jj1-jj2",
@@ -47,8 +42,8 @@
     }
   ],
   "searchQueries": [
-    "nb-nvan",
-    "N-VAN JJ1 JJ2 全席用 フラットマット",
-    "N-VAN NOMAD BASE 車中泊マット"
+    "o023",
+    "N-VAN JJ1 JJ2 全席用 車中泊マット",
+    "N-VAN 全席用 フラットマット"
   ]
 }
