@@ -26,6 +26,16 @@ test('CAR STAY measures gaps, free solutions, product views and exact affiliate 
   assert.match(app,/eligible_product_count/);
 });
 
+
+test('CAR STAY clearly discloses affiliate advertising',()=>{
+  const index=read('car-stay/index.html');
+  const app=read('car-stay/app.js');
+  assert.match(index,/PR/);
+  assert.match(index,/アフィリエイト広告/);
+  assert.match(app,/pr-badge/);
+  assert.match(app,/>PR</);
+});
+
 test('all vehicle SEO CTAs carry an entry key',()=>{
   for(const slug of ['n-box','sienta','freed','hustler','n-van','every']){
     const page=read('car-stay/car/'+slug+'/index.html');
