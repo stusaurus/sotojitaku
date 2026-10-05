@@ -283,9 +283,9 @@ class CarStayProductRefreshTests(unittest.TestCase):
             "forbiddenTerms":[]
         }
         affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(seed["itemUrl"],safe="")
-        original=refresh.fetch_json
+        original=refresh.fetch_json_quick
         try:
-            refresh.fetch_json=lambda url,headers=None:{
+            refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{
                 "found":True,
                 "name":"N-VAN JJ1 サンシェード フルセット",
                 "price":5980,
@@ -298,7 +298,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
             self.assertEqual(candidate["source"],"worker_exact_url")
 
-            refresh.fetch_json=lambda url,headers=None:{
+            refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{
                 "found":True,
                 "name":"N-VAN JJ1 サンシェード フルセット",
                 "price":5980,
@@ -308,7 +308,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             }
             self.assertIsNone(refresh.worker_exact_item_candidate(seed))
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
 
     def test_worker_exact_item_candidate_returns_none_when_endpoint_has_no_exact_item(self):
         seed={
@@ -317,14 +317,14 @@ class CarStayProductRefreshTests(unittest.TestCase):
             "identityGroups":[["N-VAN"]],
             "forbiddenTerms":[]
         }
-        original=refresh.fetch_json
+        original=refresh.fetch_json_quick
         try:
-            refresh.fetch_json=lambda url,headers=None:{"found":False,"reason":"exact_item_not_found"}
+            refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{"found":False,"reason":"exact_item_not_found"}
             self.assertIsNone(refresh.worker_exact_item_candidate(seed))
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
 
-    def test_worker_exact_url_lookup_runs_once_with_first_query(self):
+    def test_worker_exact_url_lookup_runs_once_with_first_query_and_four_second_budget(self):
         import urllib.parse
         seed={
             "itemUrl":"https://item.rakuten.co.jp/shop/exact/",
@@ -333,17 +333,18 @@ class CarStayProductRefreshTests(unittest.TestCase):
             "identityGroups":[["N-BOX"],["JF5"]],"forbiddenTerms":[]
         }
         seen=[]
-        original=refresh.fetch_json
+        original=refresh.fetch_json_quick
         try:
-            def fake(url,headers=None):
-                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+            def fake(url,headers=None,timeout=4):
+                seen.append((urllib.parse.parse_qs(urllib.parse.urlparse(url).query),timeout))
                 return {"found":False}
-            refresh.fetch_json=fake
+            refresh.fetch_json_quick=fake
             self.assertIsNone(refresh.worker_exact_item_candidate(seed))
             self.assertEqual(len(seen),1)
-            self.assertEqual(seen[0]["q"],["exact-model-code"])
+            self.assertEqual(seen[0][0]["q"],["exact-model-code"])
+            self.assertEqual(seen[0][1],4)
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
 
 if __name__=="__main__":
     unittest.main()
