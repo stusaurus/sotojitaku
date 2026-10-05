@@ -1,0 +1,67 @@
+{
+  "productId": "every-da17-da18-cartist-jr14971498",
+  "name": "Cartist エブリイ バン DA17V/DA18V 車中泊マット",
+  "brand": "Cartist",
+  "query": "jr-car14971498",
+  "itemUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 95,
+  "identityGroups": [
+    [
+      "Cartist"
+    ],
+    [
+      "エブリイ",
+      "EVERY"
+    ],
+    [
+      "DA17V"
+    ],
+    [
+      "DA18V"
+    ],
+    [
+      "車中泊"
+    ],
+    [
+      "マット",
+      "ベッド"
+    ]
+  ],
+  "forbiddenTerms": [
+    "DA17W",
+    "DA18W",
+    "ワゴン"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "status": "verified",
+      "trims": [
+        "JOIN / JOIN Turbo",
+        "PC",
+        "PA"
+      ]
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "status": "verified",
+      "trims": [
+        "JOIN / JOIN Turbo",
+        "PC",
+        "PA"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "jr-car14971498",
+    "Cartist エブリイ DA18V 車中泊マット",
+    "エブリイ DA17V DA18V 車中泊マット"
+  ]
+}
