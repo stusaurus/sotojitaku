@@ -8,6 +8,7 @@ refresh=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class CarStayProductRefreshTests(unittest.TestCase):
+    # CAR STAY privacy-source resilience is regression-tested below.
     def setUp(self):
         refresh._PAGE_CACHE.clear()
 
@@ -462,6 +463,26 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(result["failures"]["remove-me"],"unavailable")
         finally:
             (refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)=originals
+
+
+    def test_privacy_seeds_are_not_single_shop_dependencies_for_nbox_and_hustler(self):
+        import json
+        from pathlib import Path
+        seed_dir=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"
+        seeds=[json.loads(p.read_text()) for p in seed_dir.glob("*.json")]
+        cases={
+            "honda-nbox-jf5-jf6":set(),
+            "suzuki-hustler-mr52s-mr92s":set(),
+        }
+        for seed in seeds:
+            if "privacy_full" not in seed.get("gapIds",[]): continue
+            shop=refresh.rakuten_shop(seed.get("itemUrl",""))
+            for fit in seed.get("vehicleFit",[]):
+                vehicle_id=fit.get("vehicleId")
+                if vehicle_id in cases and fit.get("status")=="verified" and shop:
+                    cases[vehicle_id].add(shop)
+        self.assertGreaterEqual(len(cases["honda-nbox-jf5-jf6"]),2)
+        self.assertGreaterEqual(len(cases["suzuki-hustler-mr52s-mr92s"]),2)
 
 if __name__=="__main__":
     unittest.main()
