@@ -336,6 +336,17 @@ def previous_product_fresh(product,now_dt,max_days=7):
     except Exception:
         return False
 
+def transient_audit_failure(reason):
+    """Only preserve a previous fresh item for clear infrastructure/source failures.
+    Explicit product/sales/fit failures must remove the item immediately.
+    """
+    text=str(reason or '')
+    transient_tokens=(
+        'HTTPError','URLError','TimeoutError','ConnectionError',
+        'ConnectionResetError','RemoteDisconnected','JSONDecodeError'
+    )
+    return any(token in text for token in transient_tokens)
+
 def acquire(runtime_budget_seconds=None):
     now_dt=datetime.now(timezone.utc); now=now_dt.isoformat()
     budget=RUNTIME_BUDGET_SECONDS if runtime_budget_seconds is None else max(0,float(runtime_budget_seconds))
@@ -405,7 +416,13 @@ def acquire(runtime_budget_seconds=None):
                 }
             })
         except Exception as e:
-            failures[seed.get('productId','unknown')]=str(e) if isinstance(e,ValueError) else type(e).__name__
+            pid=seed.get('productId','unknown')
+            reason=str(e) if isinstance(e,ValueError) else type(e).__name__
+            failures[pid]=reason
+            old=previous.get(pid)
+            if old and transient_audit_failure(reason):
+                products.append(old)
+                deferred[pid]='transient_source_failure_retained_previous'
         time.sleep(.6)
     return {
         'version':1,'updatedAt':now,'status':'ok' if not failures and not deferred else 'partial',
