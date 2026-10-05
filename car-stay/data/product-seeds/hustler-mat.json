@@ -43,5 +43,7 @@
     "ハスラー MR52S 車中泊マット",
     "Levolva MR52S マット",
     "LVMR-13"
-  ]
+  ],
+  "enabled": false,
+  "disabledReason": "Current listing availability could not be confirmed; keep out of purchase recommendations."
 }
