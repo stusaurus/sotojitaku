@@ -295,7 +295,9 @@ def page_sales_audit(seed,item_url,expected_price):
     try:
         page=fetch_text_cached(item_url)
     except Exception:
-        return 'exact_feed_fallback',expected_price
+        if canonical_item_url(item_url)==canonical_item_url(seed['itemUrl']):
+            return 'exact_feed_fallback',expected_price
+        raise ValueError('sales_page_unreachable')
     marker='"itemInfoSku":'
     if marker not in page:
         # Challenge/interstitial fallback is allowed only for the exact manually
