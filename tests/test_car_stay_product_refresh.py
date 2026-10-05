@@ -542,5 +542,28 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertEqual(seed["searchQueries"][0],"02k-a005-ca")
         self.assertEqual(seed["itemUrl"],"https://item.rakuten.co.jp/hobbyman/n-van-kurumat/")
 
+    def test_same_shop_replacement_cannot_fallback_when_sales_page_is_unreachable(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/","identityGroups":[["N-VAN"],["JJ1"]]}
+        original=refresh.fetch_text_cached
+        try:
+            def boom(_): raise RuntimeError("blocked")
+            refresh.fetch_text_cached=boom
+            with self.assertRaisesRegex(ValueError,"sales_page_unreachable"):
+                refresh.page_sales_audit(seed,"https://item.rakuten.co.jp/hobbyman/replacement/",12345)
+        finally:
+            refresh.fetch_text_cached=original
+
+    def test_exact_seed_listing_may_use_feed_fallback_when_sales_page_is_unreachable(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/","identityGroups":[["N-VAN"],["JJ1"]]}
+        original=refresh.fetch_text_cached
+        try:
+            def boom(_): raise RuntimeError("blocked")
+            refresh.fetch_text_cached=boom
+            mode,price=refresh.page_sales_audit(seed,seed["itemUrl"],12345)
+            self.assertEqual(mode,"exact_feed_fallback")
+            self.assertEqual(price,12345)
+        finally:
+            refresh.fetch_text_cached=original
+
 if __name__=="__main__":
     unittest.main()
