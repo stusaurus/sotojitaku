@@ -119,23 +119,24 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
 
-    def test_worker_fallback_tries_all_search_queries_before_giving_up(self):
+    def test_worker_fallback_tries_all_search_queries_with_short_probes(self):
         seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/item123/","searchQueries":["first query","second query"],"identityGroups":[["N-VAN"]],"forbiddenTerms":[]}
         seen=[]
-        original=refresh.fetch_json
+        original=refresh.fetch_json_quick
         try:
-            def fake(url,headers=None):
-                seen.append(url)
+            def fake(url,headers=None,timeout=4):
+                seen.append((url,timeout))
                 if "product-search" in url: return {"products":[]}
                 return {"found":False}
-            refresh.fetch_json=fake
+            refresh.fetch_json_quick=fake
             refresh.worker_candidate(seed)
-            product_calls=[u for u in seen if "product-search" in u]
+            product_calls=[pair for pair in seen if "product-search" in pair[0]]
             self.assertEqual(len(product_calls),2)
-            self.assertIn("first+query",product_calls[0])
-            self.assertIn("second+query",product_calls[1])
+            self.assertIn("first+query",product_calls[0][0])
+            self.assertIn("second+query",product_calls[1][0])
+            self.assertTrue(all(timeout==5 for _,timeout in seen))
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
 
     def test_exact_page_info_reads_live_item_id_and_price(self):
         import json
