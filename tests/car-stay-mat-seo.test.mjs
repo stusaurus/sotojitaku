@@ -22,5 +22,6 @@ test("verified geometry is surfaced only on pages with confirmed source data",()
   assert.match(read("car-stay/car/freed/mat/index.html"),/2\.5cm/);
   assert.match(read("car-stay/car/n-van/mat/index.html"),/230cm/);
   assert.match(read("car-stay/car/sienta/mat/index.html"),/2,045mm/);
-  assert.doesNotMatch(read("car-stay/car/hustler/mat/index.html"),/197cm|230cm|2,045mm/);\n  assert.doesNotMatch(read("car-stay/car/every/mat/index.html"),/197cm|230cm|2,045mm/);
+  assert.doesNotMatch(read("car-stay/car/hustler/mat/index.html"),/197cm|230cm|2,045mm/);
+  assert.doesNotMatch(read("car-stay/car/every/mat/index.html"),/197cm|230cm|2,045mm/);
 });
