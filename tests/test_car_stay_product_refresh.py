@@ -522,5 +522,25 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             (refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.time.sleep)=originals
 
+    def test_freed_gt_six_seat_atmys_seed_is_conservative_and_current_generation_only(self):
+        import json
+        from pathlib import Path
+        path=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"/"freed-floor-6-atmys.json"
+        seed=json.loads(path.read_text())
+        fit=seed["vehicleFit"][0]
+        self.assertEqual(fit["vehicleId"],"honda-freed-gt")
+        self.assertEqual(fit["seatCounts"],[6])
+        self.assertEqual(seed["recommendationRole"],"beginner_alternative")
+        self.assertTrue(refresh.identity_ok("新型 フリード GT1/8 AIR CROSSTAR シートフラットクッション 段差解消 車中泊マット",seed))
+        self.assertFalse(refresh.identity_ok("フリード GB5 GT1/8 段差解消 車中泊マット",seed))
+
+    def test_nvan_dedicated_bed_search_starts_with_exact_product_number(self):
+        import json
+        from pathlib import Path
+        path=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"/"nvan-floor-hobbyman.json"
+        seed=json.loads(path.read_text())
+        self.assertEqual(seed["searchQueries"][0],"02k-a005-ca")
+        self.assertEqual(seed["itemUrl"],"https://item.rakuten.co.jp/hobbyman/n-van-kurumat/")
+
 if __name__=="__main__":
     unittest.main()
