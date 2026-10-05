@@ -353,6 +353,49 @@ def previous_product_fresh(product,now_dt,max_days=7):
     except Exception:
         return False
 
+def previous_recovery_allowed(reason):
+    """Carry a still-fresh previous item only when there is no explicit hard failure."""
+    text=str(reason or '')
+    hard_tokens=(
+        'unavailable','wrong_sell_type','feed_page_price_mismatch','api_page_price_mismatch',
+        'unsafe_or_wrong_affiliate','fit_audit_expired','price_unknown','page_identity_mismatch'
+    )
+    return not any(token in text for token in hard_tokens)
+
+def recover_previous_product(seed,old,now):
+    """Recheck the last verified item directly before dropping it because search failed.
+    Returns (product, state, hard_failure_reason).
+    """
+    if not old or old.get('audit',{}).get('status')!='verified_live':
+        return None,None,None
+    item_url=old.get('itemUrl','')
+    affiliate=old.get('affiliateUrl','')
+    price=old.get('price')
+    image=old.get('image','')
+    if not safe_affiliate(affiliate,item_url):
+        return None,None,'unsafe_or_wrong_affiliate'
+    if not isinstance(price,(int,float)) or price<=0:
+        return None,None,'price_unknown'
+    if not isinstance(image,str) or not image.startswith('https://'):
+        return None,None,'image_unknown'
+    try:
+        mode,live_price=page_sales_audit(seed,item_url,int(price))
+    except Exception as e:
+        reason=str(e) if isinstance(e,ValueError) else type(e).__name__
+        if previous_recovery_allowed(reason):
+            return dict(old),'previous_fresh_page_inconclusive',None
+        return None,None,reason
+    recovered=dict(old)
+    recovered['price']=int(live_price)
+    if mode=='sales_page':
+        recovered['verifiedAt']=now
+        audit=dict(recovered.get('audit') or {})
+        audit.update({'status':'verified_live','mode':'previous_page_reverified','salesSource':'previous_page'})
+        recovered['audit']=audit
+        return recovered,'previous_page_reverified',None
+    # Interstitial/challenge: keep the original timestamp so browser freshness still expires it.
+    return recovered,'previous_fresh_page_inconclusive',None
+
 def acquire(runtime_budget_seconds=None):
     now_dt=datetime.now(timezone.utc); now=now_dt.isoformat()
     budget=RUNTIME_BUDGET_SECONDS if runtime_budget_seconds is None else max(0,float(runtime_budget_seconds))
@@ -388,6 +431,15 @@ def acquire(runtime_budget_seconds=None):
                 except Exception as source_error:
                     source_errors.append(source_name+':'+type(source_error).__name__)
             if candidate is None:
+                pid=seed.get('productId','unknown')
+                recovered,recovery_state,recovery_hard_failure=recover_previous_product(seed,previous.get(pid),now)
+                if recovered is not None:
+                    products.append(recovered)
+                    if recovery_state!='previous_page_reverified':
+                        deferred[pid]=recovery_state
+                    continue
+                if recovery_hard_failure:
+                    source_errors.append('previous_page:'+recovery_hard_failure)
                 suffix=(' ['+','.join(source_errors)+']') if source_errors else ''
                 raise ValueError('same_shop_identity_listing_not_found'+suffix)
             target_item=candidate.get('itemUrl') or canonical_item_url(candidate['url'])
