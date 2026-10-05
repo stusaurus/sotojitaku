@@ -26,7 +26,7 @@ def fetch_json(url,headers=None):
     req=urllib.request.Request(url,headers=headers or HEADERS)
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(req,timeout=25) as r:
+            with urllib.request.urlopen(req,timeout=12) as r:
                 return json.loads(r.read().decode('utf-8'))
         except urllib.error.HTTPError as e:
             if e.code not in (429,500,502,503,504) or attempt==2: raise
@@ -37,19 +37,14 @@ def fetch_json(url,headers=None):
 
 def fetch_text(url):
     req=urllib.request.Request(url,headers=HEADERS)
-    for attempt in range(3):
-        try:
-            with urllib.request.urlopen(req,timeout=25) as r:
-                raw=r.read()
-            match=re.search(br'charset\s*=\s*["\']?([\w-]+)',raw[:10000],re.I)
-            enc=match.group(1).decode() if match else 'utf-8'
-            return raw.decode(enc,errors='replace')
-        except urllib.error.HTTPError as e:
-            if e.code not in (429,500,502,503,504) or attempt==2: raise
-            time.sleep(1+attempt*2)
-        except (urllib.error.URLError,TimeoutError):
-            if attempt==2: raise
-            time.sleep(1+attempt*2)
+    try:
+        with urllib.request.urlopen(req,timeout=8) as r:
+            raw=r.read()
+        match=re.search(br'charset\s*=\s*["\']?([\w-]+)',raw[:10000],re.I)
+        enc=match.group(1).decode() if match else 'utf-8'
+        return raw.decode(enc,errors='replace')
+    except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError):
+        raise
 
 def canonical_item_url(value):
     value=str(value or '')
@@ -119,7 +114,7 @@ def seed_queries(seed):
 def worker_candidate(seed):
     previews=[]
     matches=[]
-    for search_query in seed_queries(seed):
+    for search_query in seed_queries(seed)[:1]:
         query=urllib.parse.urlencode({'q':search_query,'hits':30})
         payload=fetch_json(WORKER+'?'+query)
         for raw in payload.get('products',[]):
@@ -137,7 +132,7 @@ def worker_candidate(seed):
         matches.sort(key=lambda x:(-x[0],0 if safe_affiliate(x[1]['url'],x[1]['itemUrl']) else 1))
         return matches[0][1]
     print('CAR_STAY_DIAG',seed.get('productId'),json.dumps(previews[:8],ensure_ascii=False))
-    for search_query in seed_queries(seed):
+    for search_query in seed_queries(seed)[:1]:
         lookup=fetch_json(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':search_query,'brand':seed.get('brand','')}))
         if lookup.get('found') is True:
             c=normalize_worker_candidate(lookup)
