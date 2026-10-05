@@ -5,7 +5,8 @@
   "query": "o010 フリードクロスター 5人乗り 車中泊",
   "itemUrl": "https://item.rakuten.co.jp/suwariba/o010/",
   "gapIds": [
-    "floor_step"
+    "floor_step",
+    "sleep_surface"
   ],
   "recommendationRole": "beginner_alternative",
   "score": 90,
