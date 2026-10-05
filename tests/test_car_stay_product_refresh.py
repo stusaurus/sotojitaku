@@ -360,5 +360,30 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertFalse(refresh.identity_ok(good+" 5人乗り",seed))
         self.assertFalse(refresh.identity_ok(good+" 助手席用",seed))
 
+    def test_runtime_budget_retains_only_fresh_unprocessed_previous_items(self):
+        from datetime import datetime, timezone, timedelta
+        now=datetime.now(timezone.utc)
+        fresh={"productId":"fresh","verifiedAt":(now-timedelta(days=2)).isoformat()}
+        stale={"productId":"stale","verifiedAt":(now-timedelta(days=8)).isoformat()}
+        self.assertTrue(refresh.previous_product_fresh(fresh,now))
+        self.assertFalse(refresh.previous_product_fresh(stale,now))
+
+    def test_zero_runtime_budget_keeps_fresh_previous_without_network_calls(self):
+        from datetime import datetime, timezone
+        now=datetime.now(timezone.utc).isoformat()
+        seed={"productId":"keep","fitCheckedAt":"2026-10-05"}
+        old={"productId":"keep","verifiedAt":now,"audit":{"status":"verified_live"}}
+        originals=(refresh.load_seeds,refresh.load_previous_products,refresh.time.monotonic)
+        try:
+            refresh.load_seeds=lambda:[seed]
+            refresh.load_previous_products=lambda:[old]
+            refresh.time.monotonic=lambda:0
+            result=refresh.acquire(runtime_budget_seconds=0)
+            self.assertEqual([p["productId"] for p in result["products"]],["keep"])
+            self.assertEqual(result["deferred"]["keep"],"runtime_budget_retained_previous")
+            self.assertEqual(result["failures"],{})
+        finally:
+            refresh.load_seeds,refresh.load_previous_products,refresh.time.monotonic=originals
+
 if __name__=="__main__":
     unittest.main()
