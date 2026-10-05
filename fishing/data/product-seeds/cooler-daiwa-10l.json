@@ -1,0 +1,48 @@
+{
+  "productId": "daiwa-cool-line-alpha-s1000x-ls",
+  "name": "ダイワ クールラインα S1000X LS 10L",
+  "brand": "DAIWA",
+  "itemUrl": "https://item.rakuten.co.jp/fishing-you/4550133302862-a/",
+  "categoryId": "cooler",
+  "methodIds": [
+    "sabiki",
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "cooler"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 93,
+  "searchQueries": [
+    "ダイワ クールラインアルファ S1000X LS 4550133302862",
+    "S1000X LS 10L"
+  ],
+  "identityGroups": [
+    [
+      "ダイワ",
+      "DAIWA"
+    ],
+    [
+      "クールライン"
+    ],
+    [
+      "1000X"
+    ],
+    [
+      "LS"
+    ]
+  ],
+  "forbiddenTerms": [
+    "1500"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fishing-you/4550133302862-a/"
+}

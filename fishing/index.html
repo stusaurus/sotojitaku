@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>SOTOJITAKU FISHING｜はじめての釣りを、あなた仕立てに。</title>
+  <meta name="description" content="誰と、どう楽しみたいかから、はじめての釣り方と必要な道具を組み立てます。持っている物を除き、足りない物だけを具体商品まで案内する初心者向け釣り支度サービス。">
+  <link rel="canonical" href="https://stusaurus.github.io/sotojitaku/fishing/">
+  <meta property="og:title" content="SOTOJITAKU FISHING">
+  <meta property="og:description" content="はじめての釣りを、あなた仕立てに。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://stusaurus.github.io/sotojitaku/fishing/">
+  <meta name="theme-color" content="#0b2630">
+  <link rel="stylesheet" href="./style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFVSZ8YDQ5"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GFVSZ8YDQ5',{send_page_view:true});</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"SOTOJITAKU FISHING","url":"https://stusaurus.github.io/sotojitaku/fishing/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","description":"初心者向け釣り支度プランナー"}</script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../"><span>SOTOJITAKU</span><b>FISHING</b></a>
+    <button id="resetBtn" class="ghost" type="button" hidden>最初から</button>
+  </header>
+
+  <main>
+    <section id="hero" class="hero">
+      <div class="hero-water" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow">FIRST CAST · FIRST FISH</p>
+        <h1>はじめての釣りを、<br><em>あなた仕立てに。</em></h1>
+        <p class="lead">魚の名前も、竿の種類も知らなくて大丈夫。<br>だれと、どう楽しみたいかから、最初の一匹までの支度をつくります。</p>
+        <button id="startBtn" class="primary" type="button">最初の一匹をつくる <span>→</span></button>
+        <p class="micro">約2〜3分・登録不要 · 持っている物は買い直しません</p>
+        <p class="pr"><strong>PR</strong> 楽天アフィリエイト等の広告を利用しています。購入により運営者に成果報酬が入る場合があります。</p>
+      </div>
+      <div class="hero-scene" aria-hidden="true">
+        <div class="sun"></div>
+        <div class="horizon"></div>
+        <svg viewBox="0 0 700 520">
+          <path class="pier" d="M0 390h470l46 28H0z"/>
+          <path class="person" d="M426 226c18 0 31 14 31 31 0 14-9 25-21 29l7 74h-42l8-75c-9-6-15-16-15-28 0-17 14-31 32-31z"/>
+          <path class="rod" d="M438 284 Q535 183 645 156"/>
+          <path class="line" d="M645 156 Q668 244 630 354"/>
+          <circle class="float" cx="630" cy="354" r="5"/>
+          <path class="fish" d="M585 390c23-19 54-19 75 0-21 19-52 19-75 0zm0 0-24-16v32z"/>
+        </svg>
+        <div class="scene-caption"><span></span>知識より先に、行ける形をつくる。</div>
+      </div>
+    </section>
+
+    <section id="planner" class="planner" hidden>
+      <aside class="plan-visual">
+        <div class="visual-top"><span id="stepText">01 / 07</span><b id="miniPlan">まだ何も決めなくて大丈夫</b></div>
+        <div class="water-card">
+          <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+          <div class="hook-line"></div>
+          <div id="visualMessage" class="visual-message">答えるほど、あなたの最初の釣りが見えてきます。</div>
+          <div id="visualTags" class="visual-tags"></div>
+        </div>
+      </aside>
+
+      <section class="question-side">
+        <div class="progress"><i id="progressBar"></i></div>
+        <div id="panel" class="panel" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <div><b>SOTOJITAKU FISHING</b><span>最初から、全部そろえなくていい。</span></div>
+    <nav><a href="./guides/">釣り入門ガイド</a><a href="../">CAMP</a><a href="../car-stay/">CAR STAY</a></nav>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

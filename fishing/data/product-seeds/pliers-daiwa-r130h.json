@@ -1,0 +1,43 @@
+{
+  "productId": "daiwa-field-pliers-r130h",
+  "name": "ダイワ フィールドプライヤーR 130H",
+  "brand": "DAIWA",
+  "itemUrl": "https://item.rakuten.co.jp/fto-r/4960652728225/",
+  "categoryId": "pliers",
+  "methodIds": [
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "pliers"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 90,
+  "searchQueries": [
+    "ダイワ フィールドプライヤーR 130H 4960652728225",
+    "フィールドプライヤーR130H"
+  ],
+  "identityGroups": [
+    [
+      "ダイワ",
+      "DAIWA"
+    ],
+    [
+      "フィールドプライヤー"
+    ],
+    [
+      "130H"
+    ]
+  ],
+  "forbiddenTerms": [],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fto-r/4960652728225/"
+}

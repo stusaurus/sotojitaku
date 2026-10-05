@@ -1,0 +1,45 @@
+{
+  "productId": "hayabusa-choi-ha178",
+  "name": "ハヤブサ かんたん投げ釣りセット HA178",
+  "brand": "HAYABUSA",
+  "itemUrl": "https://item.rakuten.co.jp/aquabeach/ha178/",
+  "categoryId": "rig",
+  "methodIds": [
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "rig"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 94,
+  "searchQueries": [
+    "ハヤブサ HA178 かんたん投げ釣りセット",
+    "HA178 堤防用 投げ釣り"
+  ],
+  "identityGroups": [
+    [
+      "ハヤブサ",
+      "HAYABUSA"
+    ],
+    [
+      "HA178"
+    ],
+    [
+      "投げ釣り"
+    ]
+  ],
+  "forbiddenTerms": [
+    "中古"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/aquabeach/ha178/"
+}

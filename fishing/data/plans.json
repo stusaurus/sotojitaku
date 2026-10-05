@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "methods": [
+    {
+      "id": "sabiki",
+      "name": "サビキ釣り",
+      "headline": "足元に落として、最初の一匹をねらう。",
+      "beginner_score": 5,
+      "targets": [
+        "アジ",
+        "イワシ",
+        "サバ"
+      ],
+      "best_for": [
+        "easy_catch",
+        "family_child",
+        "choose_for_me"
+      ],
+      "base_score": 40,
+      "scoring": [
+        {
+          "question": "fun",
+          "value": "easy_catch",
+          "delta": 35
+        },
+        {
+          "question": "fun",
+          "value": "choose_for_me",
+          "delta": 20
+        },
+        {
+          "question": "party",
+          "value": "family_child",
+          "delta": 20
+        },
+        {
+          "question": "bait",
+          "value": "low_mess",
+          "delta": 10
+        },
+        {
+          "question": "carry",
+          "value": "compact",
+          "delta": 5
+        }
+      ],
+      "variants": {
+        "low_mess": {
+          "when": {
+            "bait": "low_mess"
+          },
+          "name": "手を汚しにくいサビキ",
+          "modifier": "tube_chum"
+        },
+        "standard": {
+          "when": {
+            "bait": [
+              "okay",
+              "no_worm"
+            ]
+          },
+          "name": "はじめてのサビキ",
+          "modifier": "standard"
+        }
+      }
+    },
+    {
+      "id": "choi_nage",
+      "name": "ちょい投げ釣り",
+      "headline": "軽く投げて、海底からのアタリを待つ。",
+      "beginner_score": 4,
+      "targets": [
+        "シロギス",
+        "ハゼ",
+        "カレイ"
+      ],
+      "best_for": [
+        "cast_wait",
+        "solo",
+        "pair"
+      ],
+      "base_score": 35,
+      "scoring": [
+        {
+          "question": "fun",
+          "value": "cast_wait",
+          "delta": 40
+        },
+        {
+          "question": "party",
+          "value": "solo",
+          "delta": 10
+        },
+        {
+          "question": "party",
+          "value": "pair",
+          "delta": 10
+        },
+        {
+          "question": "bait",
+          "value": "okay",
+          "delta": 10
+        },
+        {
+          "question": "bait",
+          "value": "no_worm",
+          "delta": 5
+        }
+      ],
+      "variants": {
+        "artificial_bait": {
+          "when": {
+            "bait": [
+              "no_worm",
+              "low_mess"
+            ]
+          },
+          "name": "虫エサを使わないちょい投げ",
+          "modifier": "artificial_bait"
+        },
+        "standard": {
+          "when": {
+            "bait": "okay"
+          },
+          "name": "はじめてのちょい投げ",
+          "modifier": "standard"
+        }
+      }
+    }
+  ],
+  "tie_breaker": [
+    "sabiki",
+    "choi_nage"
+  ]
+}

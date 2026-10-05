@@ -1,0 +1,46 @@
+{
+  "productId": "bluestorm-bs-j201ars-adult",
+  "name": "Bluestorm トカラウ BSJ-201ARS",
+  "brand": "BLUESTORM",
+  "itemUrl": "https://item.rakuten.co.jp/aquabeach/bsj201arsca/",
+  "categoryId": "life_jacket_adult",
+  "methodIds": [
+    "sabiki",
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult"
+  ],
+  "coverCategoryIds": [
+    "life_jacket_adult"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 95,
+  "searchQueries": [
+    "Bluestorm BSJ-201ARS トカラウ",
+    "BSJ-201ARS カモ"
+  ],
+  "identityGroups": [
+    [
+      "Bluestorm",
+      "ブルーストーム"
+    ],
+    [
+      "BSJ-201ARS"
+    ],
+    [
+      "トカラウ"
+    ]
+  ],
+  "forbiddenTerms": [
+    "子供用",
+    "キッズ"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/aquabeach/bsj201arsca/"
+}

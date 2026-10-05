@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "rod_reel",
+      "label": "竿・リール",
+      "monetizable": true,
+      "required": [
+        "sabiki",
+        "choi_nage"
+      ],
+      "owned_key": "rod_reel"
+    },
+    {
+      "id": "rig",
+      "label": "仕掛け",
+      "monetizable": true,
+      "required": [
+        "sabiki",
+        "choi_nage"
+      ],
+      "owned_key": null
+    },
+    {
+      "id": "bait",
+      "label": "エサ",
+      "monetizable": true,
+      "required": [
+        "sabiki",
+        "choi_nage"
+      ],
+      "owned_key": null
+    },
+    {
+      "id": "life_jacket_adult",
+      "label": "大人用ライフジャケット（全員分）",
+      "monetizable": true,
+      "required": [
+        "sabiki",
+        "choi_nage"
+      ],
+      "owned_key": "life_jacket_adult",
+      "safety": true
+    },
+    {
+      "id": "life_jacket_child",
+      "label": "子ども用ライフジャケット（全員分）",
+      "monetizable": true,
+      "required_when": {
+        "party": [
+          "family_child"
+        ]
+      },
+      "owned_key": "life_jacket_child",
+      "safety": true
+    },
+    {
+      "id": "bucket",
+      "label": "水くみバケツ",
+      "monetizable": true,
+      "required": [
+        "sabiki"
+      ],
+      "owned_key": "bucket"
+    },
+    {
+      "id": "fish_grip",
+      "label": "魚つかみ",
+      "monetizable": true,
+      "required": [
+        "sabiki",
+        "choi_nage"
+      ],
+      "owned_key": "fish_grip"
+    },
+    {
+      "id": "scissors",
+      "label": "ハサミ",
+      "monetizable": true,
+      "required": [
+        "sabiki",
+        "choi_nage"
+      ],
+      "owned_key": "scissors"
+    },
+    {
+      "id": "pliers",
+      "label": "プライヤー・針外し",
+      "monetizable": true,
+      "required": [
+        "choi_nage"
+      ],
+      "owned_key": "pliers"
+    },
+    {
+      "id": "towel",
+      "label": "タオル",
+      "monetizable": false,
+      "required": [
+        "sabiki",
+        "choi_nage"
+      ],
+      "owned_key": "towel"
+    },
+    {
+      "id": "cooler",
+      "label": "クーラーボックス",
+      "monetizable": true,
+      "required_when": {
+        "take_home": [
+          "yes",
+          "undecided"
+        ]
+      },
+      "owned_key": "cooler"
+    },
+    {
+      "id": "ice",
+      "label": "氷・保冷剤",
+      "monetizable": false,
+      "required_when": {
+        "take_home": [
+          "yes",
+          "undecided"
+        ]
+      },
+      "owned_key": null
+    },
+    {
+      "id": "bag",
+      "label": "道具バッグ",
+      "monetizable": true,
+      "optional_when": {
+        "carry": [
+          "normal",
+          "comfort"
+        ]
+      },
+      "owned_key": "bag"
+    },
+    {
+      "id": "chair",
+      "label": "折りたたみチェア",
+      "monetizable": true,
+      "optional_when": {
+        "carry": "comfort"
+      },
+      "owned_key": null
+    }
+  ],
+  "modifiers": {
+    "tube_chum": {
+      "bait": {
+        "type": "tube_chum",
+        "notes": "におい・汚れを抑えやすい常温チューブ型を優先"
+      }
+    },
+    "artificial_bait": {
+      "bait": {
+        "type": "artificial_worm",
+        "notes": "虫エサを避けたい初心者向け。対象魚・仕掛けとの適合を必ず確認"
+      }
+    }
+  }
+}

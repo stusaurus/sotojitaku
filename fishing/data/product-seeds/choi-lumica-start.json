@@ -1,0 +1,45 @@
+{
+  "productId": "lumica-choi-start-g09224",
+  "name": "LUMICA ちょい投げスタートセット G09224",
+  "brand": "LUMICA",
+  "itemUrl": "https://item.rakuten.co.jp/aquabeach/g09224/",
+  "categoryId": "rod_reel",
+  "methodIds": [
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "rod_reel",
+    "rig"
+  ],
+  "recommendationRole": "budget",
+  "score": 84,
+  "searchQueries": [
+    "LUMICA G09224 ちょい投げスタートセット",
+    "G09224"
+  ],
+  "identityGroups": [
+    [
+      "LUMICA",
+      "ルミカ"
+    ],
+    [
+      "G09224"
+    ],
+    [
+      "ちょい投げ"
+    ]
+  ],
+  "forbiddenTerms": [
+    "中古",
+    "ジャンク"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/aquabeach/g09224/"
+}

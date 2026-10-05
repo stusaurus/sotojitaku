@@ -1,0 +1,49 @@
+{
+  "productId": "marukyu-power-mini-isome-medium",
+  "name": "マルキュー パワーミニイソメ 中",
+  "brand": "MARUKYU",
+  "itemUrl": "https://item.rakuten.co.jp/fishing-you/4905789005597-a/",
+  "categoryId": "bait",
+  "methodIds": [
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "low",
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "preferenceTags": [
+    "no_worm",
+    "low_mess"
+  ],
+  "coverCategoryIds": [
+    "bait"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 96,
+  "searchQueries": [
+    "パワーミニイソメ 中 4905789005597",
+    "マルキュー パワーミニイソメ"
+  ],
+  "identityGroups": [
+    [
+      "マルキュー",
+      "MARUKYU"
+    ],
+    [
+      "パワーミニイソメ"
+    ],
+    [
+      "中"
+    ]
+  ],
+  "forbiddenTerms": [
+    "生イソメ"
+  ],
+  "specCheckedAt": "2026-10-05",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/fishing-you/4905789005597-a/"
+}
