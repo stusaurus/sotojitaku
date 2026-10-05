@@ -1,0 +1,55 @@
+{
+  "productId": "choi-shimano-complete-500527",
+  "name": "シマノで揃える ちょい投げ釣り完全釣り入門セット",
+  "brand": "SHIMANO / つり具TEN",
+  "itemUrl": "https://item.rakuten.co.jp/tsurigu-ten/500527/",
+  "categoryId": "rod_reel",
+  "methodIds": [
+    "choi_nage"
+  ],
+  "budgetTiers": [
+    "balanced",
+    "long_term"
+  ],
+  "audiences": [
+    "adult",
+    "family"
+  ],
+  "coverCategoryIds": [
+    "rod_reel",
+    "rig",
+    "bait",
+    "fish_grip"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 97,
+  "searchQueries": [
+    "シマノ ちょい投げ釣り完全釣り入門セット",
+    "ちょい投げ 完全釣り入門セット 10点",
+    "500527"
+  ],
+  "identityGroups": [
+    [
+      "シマノ",
+      "SHIMANO"
+    ],
+    [
+      "ちょい投げ"
+    ],
+    [
+      "完全釣り入門",
+      "完全入門",
+      "入門セット"
+    ],
+    [
+      "10点",
+      "全10点"
+    ]
+  ],
+  "forbiddenTerms": [
+    "中古",
+    "ジャンク"
+  ],
+  "specCheckedAt": "2026-10-06",
+  "specEvidenceUrl": "https://item.rakuten.co.jp/tsurigu-ten/500527/"
+}
