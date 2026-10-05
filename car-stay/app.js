@@ -155,7 +155,10 @@ function renderResult(){
     const gapKey=v.vehicleId+":"+g.id;
     if(!viewedGaps.has(gapKey)){
       viewedGaps.add(gapKey);
-      track("gap_generated",{vehicle_id:v.vehicleId,gap_id:g.id,severity:g.severity||"",free_solution:g.free?1:0});
+      track("gap_generated",{vehicle_id:v.vehicleId,gap_id:g.id,severity:g.severity||"",free_solution:g.free?1:0,seat_count:state.config.seatCount||0,trim:state.config.trim||""});
+      if(result.status!=="CHANGE_PLAN"&&(recs[g.id]||[]).length===0){
+        track("gap_product_missing",{vehicle_id:v.vehicleId,gap_id:g.id,severity:g.severity||"",seat_count:state.config.seatCount||0,trim:state.config.trim||""});
+      }
     }
     if(g.free&&!viewedFreeSolutions.has(gapKey)){
       viewedFreeSolutions.add(gapKey);
