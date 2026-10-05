@@ -405,5 +405,55 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertEqual([x["productId"] for x in day1],["a","b","c"])
         self.assertEqual([x["productId"] for x in day2],["b","c","a"])
 
+    def test_previous_live_product_can_be_reverified_directly_when_search_misses(self):
+        import urllib.parse
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/seed/","identityGroups":[["N-BOX"]]}
+        item="https://item.rakuten.co.jp/hobbyman/live-item/"
+        affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(item,safe="")
+        old={"productId":"x","itemUrl":item,"affiliateUrl":affiliate,"price":7980,"image":"https://example.com/x.jpg","verifiedAt":"2026-10-04T00:00:00+00:00","audit":{"status":"verified_live","mode":"old","salesSource":"worker"}}
+        original=refresh.page_sales_audit
+        try:
+            refresh.page_sales_audit=lambda _seed,_url,_price:("sales_page",8280)
+            product,state,hard=refresh.recover_previous_product(seed,old,"2026-10-05T14:00:00+00:00")
+            self.assertEqual(state,"previous_page_reverified")
+            self.assertIsNone(hard)
+            self.assertEqual(product["price"],8280)
+            self.assertEqual(product["verifiedAt"],"2026-10-05T14:00:00+00:00")
+            self.assertEqual(product["audit"]["salesSource"],"previous_page")
+        finally:
+            refresh.page_sales_audit=original
+
+    def test_inconclusive_previous_page_keeps_original_freshness_timestamp(self):
+        import urllib.parse
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/seed/","identityGroups":[["N-BOX"]]}
+        item="https://item.rakuten.co.jp/hobbyman/live-item/"
+        affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(item,safe="")
+        old={"productId":"x","itemUrl":item,"affiliateUrl":affiliate,"price":7980,"image":"https://example.com/x.jpg","verifiedAt":"2026-10-04T00:00:00+00:00","audit":{"status":"verified_live"}}
+        original=refresh.page_sales_audit
+        try:
+            refresh.page_sales_audit=lambda *_args:(_ for _ in ()).throw(ValueError("sales_evidence_missing"))
+            product,state,hard=refresh.recover_previous_product(seed,old,"2026-10-05T14:00:00+00:00")
+            self.assertEqual(state,"previous_fresh_page_inconclusive")
+            self.assertIsNone(hard)
+            self.assertEqual(product["verifiedAt"],"2026-10-04T00:00:00+00:00")
+        finally:
+            refresh.page_sales_audit=original
+
+    def test_explicit_unavailable_previous_page_is_dropped(self):
+        import urllib.parse
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/seed/","identityGroups":[["N-BOX"]]}
+        item="https://item.rakuten.co.jp/hobbyman/live-item/"
+        affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(item,safe="")
+        old={"productId":"x","itemUrl":item,"affiliateUrl":affiliate,"price":7980,"image":"https://example.com/x.jpg","verifiedAt":"2026-10-04T00:00:00+00:00","audit":{"status":"verified_live"}}
+        original=refresh.page_sales_audit
+        try:
+            refresh.page_sales_audit=lambda *_args:(_ for _ in ()).throw(ValueError("unavailable"))
+            product,state,hard=refresh.recover_previous_product(seed,old,"2026-10-05T14:00:00+00:00")
+            self.assertIsNone(product)
+            self.assertIsNone(state)
+            self.assertEqual(hard,"unavailable")
+        finally:
+            refresh.page_sales_audit=original
+
 if __name__=="__main__":
     unittest.main()
