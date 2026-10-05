@@ -54,5 +54,27 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_text=original
 
+    def test_rakuten_api_search_is_scoped_to_seed_shop(self):
+        import os, urllib.parse
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/item123/","query":"N-VAN JJ1","identityGroups":[["N-VAN"],["JJ1"]],"forbiddenTerms":[]}
+        seen=[]
+        original_fetch=refresh.fetch_json
+        old={k:os.environ.get(k) for k in ["RAKUTEN_APPLICATION_ID","RAKUTEN_ACCESS_KEY","RAKUTEN_AFFILIATE_ID"]}
+        try:
+            os.environ["RAKUTEN_APPLICATION_ID"]="app"
+            os.environ["RAKUTEN_ACCESS_KEY"]="key"
+            os.environ["RAKUTEN_AFFILIATE_ID"]="aff"
+            def fake(url,headers=None):
+                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+                return {"items":[]}
+            refresh.fetch_json=fake
+            refresh.rakuten_api_candidate(seed)
+            self.assertEqual(seen[0]["shopCode"],["hobbyman"])
+        finally:
+            refresh.fetch_json=original_fetch
+            for k,v in old.items():
+                if v is None: os.environ.pop(k,None)
+                else: os.environ[k]=v
+
 if __name__=="__main__":
     unittest.main()
