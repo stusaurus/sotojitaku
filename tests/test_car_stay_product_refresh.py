@@ -8,6 +8,9 @@ refresh=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class CarStayProductRefreshTests(unittest.TestCase):
+    def setUp(self):
+        refresh._PAGE_CACHE.clear()
+
     def test_canonical_direct_item(self):
         self.assertEqual(
             refresh.canonical_item_url("https://item.rakuten.co.jp/shop/item123/"),
@@ -131,6 +134,62 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertIn("first+query",product_calls[0])
         finally:
             refresh.fetch_json=original
+
+    def test_exact_page_info_reads_live_item_id_and_price(self):
+        import json
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/"}
+        payload={
+            "itemId":12345678,
+            "sellType":"NORMAL",
+            "purchaseInfo":{"purchaseBySellType":{"purchaseCondition":"enabled","normalPurchase":{"price":{"minPrice":12980}}}}
+        }
+        original=refresh.fetch_text
+        try:
+            refresh.fetch_text=lambda _:'<html>"itemInfoSku":'+json.dumps(payload)+'</html>'
+            info=refresh.exact_page_info(seed)
+            self.assertEqual(info,{"itemId":12345678,"price":12980})
+        finally:
+            refresh.fetch_text=original
+
+    def test_exact_api_candidate_uses_shop_itemcode(self):
+        import os, urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["サンシェード"]],
+            "forbiddenTerms":[]
+        }
+        old={k:os.environ.get(k) for k in ["RAKUTEN_APPLICATION_ID","RAKUTEN_ACCESS_KEY","RAKUTEN_AFFILIATE_ID"]}
+        original_info=refresh.exact_page_info
+        original_fetch=refresh.fetch_json
+        seen=[]
+        try:
+            os.environ["RAKUTEN_APPLICATION_ID"]="app"
+            os.environ["RAKUTEN_ACCESS_KEY"]="key"
+            os.environ["RAKUTEN_AFFILIATE_ID"]="aff"
+            refresh.exact_page_info=lambda _:{"itemId":12345678,"price":12980}
+            def fake(url,headers=None):
+                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+                return {"items":[{
+                    "itemName":"N-VAN JJ1 JJ2 サンシェード フルセット",
+                    "itemCode":"hobbyman:12345678",
+                    "itemPrice":12980,
+                    "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+                    "affiliateUrl":"https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fexact%2F",
+                    "mediumImageUrls":["https://example.com/p.jpg"]
+                }]}
+            refresh.fetch_json=fake
+            candidate=refresh.rakuten_api_exact_candidate(seed)
+            self.assertEqual(seen[0]["itemCode"],["hobbyman:12345678"])
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+            self.assertEqual(candidate["source"],"rakuten_api_exact")
+            self.assertEqual(candidate["pagePrice"],12980)
+        finally:
+            refresh.exact_page_info=original_info
+            refresh.fetch_json=original_fetch
+            for k,v in old.items():
+                if v is None: os.environ.pop(k,None)
+                else: os.environ[k]=v
+
 
 if __name__=="__main__":
     unittest.main()
