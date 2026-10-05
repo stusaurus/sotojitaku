@@ -7,6 +7,7 @@ const STORAGE_KEY="sotojitaku_car_stay_v1";
 const qs=new URLSearchParams(location.search);
 const operatorTest=qs.get("test")==="1";
 let analyticsEnabled=localStorage.getItem("sotojitaku_analytics_optout")!=="1";
+const viewedProducts=new Set();
 const $=s=>document.querySelector(s);
 const panel=$("#panel"),builder=$("#builder"),hero=$("#hero"),cabin=$("#cabin"),cabinMessage=$("#cabinMessage"),progressBar=$("#progressBar"),stepLabel=$("#stepLabel"),vehicleMini=$("#vehicleMini"),buildChips=$("#buildChips"),resetTop=$("#resetTop");
 
@@ -135,9 +136,13 @@ function renderResult(){
 }
 function gapLabel(id){return {privacy_full:"窓の目隠し",floor_step:"寝床の段差",thermal_unknown:"夜の気温・防寒",thermal_warmth:"防寒",authorized_place_unconfirmed:"泊まる場所",sleep_space:"寝床サイズ",sleep_comfort:"寝心地",power_capacity:"電源容量"}[id]||id;}
 function tripLabel(id){return {sleep_only:"寝るだけ",onsen:"温泉の夜",stars:"星を見る夜",morning:"朝を楽しむ",outdoor:"アウトドア"}[id]||"一泊";}
+function yen(value){return new Intl.NumberFormat("ja-JP",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value);}
 function renderProducts(items){
   if(!items.length)return "";
-  return "<div>"+items.map(p=>"<a href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"'>"+esc(p.name)+"</a>").join("")+"</div>";
+  for(const p of items){
+    if(!viewedProducts.has(p.productId)){viewedProducts.add(p.productId);track("product_view",{product_id:p.productId,vehicle_id:state.vehicleId,gap_id:(p.gapIds||[])[0]||""});}
+  }
+  return "<div class='product-stack'>"+items.map(p=>"<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><span class='fit-badge'>車種適合・販売確認済み</span><b>"+esc(p.name)+"</b><div class='product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"'>楽天で見る <span>→</span></a></div></article>").join("")+"</div>";
 }
 function render(){
   stepLabel.textContent=state.step<5?"STEP "+(state.step+1)+" / 5":"YOUR CAR STAY";
