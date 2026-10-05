@@ -49,3 +49,22 @@ test("N-BOX Slope never receives trim-excluded shade or floor items",()=>{
     }
   }
 });
+
+
+test("CHANGE PLAN suppresses all product recommendations",()=>{
+  const sample=(catalog.products||[])[0];
+  if(!sample)return;
+  const fit=sample.vehicleFit?.[0];
+  const config={};
+  if(fit?.seatCounts?.length)config.seatCount=fit.seatCounts[0];
+  if(fit?.trims?.length)config.trim=fit.trims[0];
+  const now=Date.parse(sample.verifiedAt)+60*60*1000;
+  const out=recommendations(catalog.products,{
+    vehicleId:fit.vehicleId,
+    config,
+    gaps:[{id:(sample.gapIds||[])[0]}],
+    status:"CHANGE_PLAN",
+    now
+  });
+  assert.deepEqual(out,{});
+});

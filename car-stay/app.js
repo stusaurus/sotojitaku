@@ -140,11 +140,11 @@ function quickMeasure(result){
 }
 function renderResult(){
   const v=currentVehicle();const result=evaluate(inputForEngine(),v,rules());state.lastResult=result;save();
-  const recs=recommendations(db.products,{gaps:result.gaps,vehicleId:v.vehicleId,config:state.config});
+  const recs=recommendations(db.products,{gaps:result.gaps,vehicleId:v.vehicleId,config:state.config,status:result.status});
   const gaps=result.gaps.map((g,i)=>"<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+renderProducts(recs[g.id]||[],g.id)+"</div>").join("");
   const noNeed=result.notNeeded.length?"<div class='no-need'><h3>今回は、買わなくていいもの</h3><div class='no-need-tags'>"+result.notNeeded.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p class='micro'>はじめての一泊に、全部はいりません。</p></div>":"";
   const issueHtml=result.issues.length?"<div class='note "+(result.status==="CHANGE_PLAN"?"warning":"")+"'>"+result.issues.map(x=>"<b>"+esc(x.title)+"</b><br>"+esc(x.text)).join("<br><br>")+"</div>":"";
-  panel.innerHTML="<div class='result-head'><span class='status'>"+statusLabel(result.status)+"</span><h2>"+esc(resultHeadline(result))+"</h2><p>"+esc(v.shortLabel)+" × "+state.people.length+"人 × "+esc(tripLabel(state.tripStyle))+"</p></div>"+issueHtml+resultCards(result)+quickMeasure(result)+(gaps?"<div class='gap-list'><p class='step-kicker'>今回、整えるところ</p>"+gaps+"</div>":"<div class='note'>大きな不足は見つかりませんでした。出発前に施設ルールと最新天気をもう一度確認してください。</div>")+noNeed+"<div class='shopping-empty'>監査済み商品が0件でも計画は完成します。商品CTAは、車種適合・販売状態・価格・リンク先を7日以内に確認できた商品だけ表示します。</div><div class='source-box'>安全判定は初心者向けの保守的な支度支援で、法令・医療上の保証ではありません。出発前に施設公式情報と最新天気を確認してください。</div><div class='actions'><button class='secondary' data-edit>条件を直す</button><button class='primary' data-new>もう一度つくる</button></div>";
+  panel.innerHTML="<div class='result-head'><span class='status'>"+statusLabel(result.status)+"</span><h2>"+esc(resultHeadline(result))+"</h2><p>"+esc(v.shortLabel)+" × "+state.people.length+"人 × "+esc(tripLabel(state.tripStyle))+"</p></div>"+issueHtml+resultCards(result)+quickMeasure(result)+(gaps?"<div class='gap-list'><p class='step-kicker'>今回、整えるところ</p>"+gaps+"</div>":"<div class='note'>大きな不足は見つかりませんでした。出発前に施設ルールと最新天気をもう一度確認してください。</div>")+noNeed+"<div class='shopping-empty'>"+(result.status==="CHANGE_PLAN"?"今回は安全条件の変更が先です。購入候補は表示しません。":"監査済み商品が0件でも計画は完成します。商品CTAは、車種適合・販売状態・価格・リンク先を7日以内に確認できた商品だけ表示します。")+"</div><div class='source-box'>安全判定は初心者向けの保守的な支度支援で、法令・医療上の保証ではありません。出発前に施設公式情報と最新天気を確認してください。</div><div class='actions'><button class='secondary' data-edit>条件を直す</button><button class='primary' data-new>もう一度つくる</button></div>";
   const eligibleProductCount=Object.values(recs).reduce((sum,items)=>sum+(items?.length||0),0);
   for(const g of result.gaps){
     const gapKey=v.vehicleId+":"+g.id;
@@ -157,7 +157,9 @@ function renderResult(){
       track("free_solution_view",{vehicle_id:v.vehicleId,gap_id:g.id});
     }
   }
-  if(eligibleProductCount===0){
+  if(result.status==="CHANGE_PLAN"){
+    track("shopping_suppressed",{vehicle_id:v.vehicleId,reason:"change_plan"});
+  }else if(eligibleProductCount===0){
     const noProductKey=v.vehicleId+":"+result.status+":"+result.gaps.map(g=>g.id).sort().join(",");
     if(!completedNoProduct.has(noProductKey)){
       completedNoProduct.add(noProductKey);

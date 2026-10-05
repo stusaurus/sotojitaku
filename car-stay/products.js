@@ -1,6 +1,7 @@
 import {productEligible} from "./engine.js";
 export function recommendations(products,context){
   const byGap={};
+  if(context.status==="CHANGE_PLAN")return byGap;
   for(const gap of context.gaps||[]){
     byGap[gap.id]=(products||[])
       .filter(p=>productEligible(p,{vehicleId:context.vehicleId,config:context.config,gapId:gap.id,now:context.now??Date.now()}))
