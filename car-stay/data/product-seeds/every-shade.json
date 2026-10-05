@@ -1,0 +1,52 @@
+{
+  "productId": "every-da17-da18-hobbyman-shade",
+  "name": "エブリイ DA17/DA18 シームレスライト サンシェード フルセット",
+  "brand": "趣味職人",
+  "query": "エブリイ DA18 DA17 サンシェード シームレスライト フルセット",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/every-17-lit/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 94,
+  "identityGroups": [
+    [
+      "エブリイ"
+    ],
+    [
+      "DA17"
+    ],
+    [
+      "DA18"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット"
+    ]
+  ],
+  "forbiddenTerms": [],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/every-17-lit/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "status": "verified",
+      "trims": [
+        "JOIN / JOIN Turbo",
+        "PC",
+        "PA"
+      ]
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "status": "verified",
+      "trims": [
+        "JOIN / JOIN Turbo",
+        "PC",
+        "PA"
+      ]
+    }
+  ]
+}
