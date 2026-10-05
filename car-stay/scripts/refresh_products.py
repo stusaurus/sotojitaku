@@ -1,8 +1,8 @@
 """Fail-closed CAR STAY Rakuten refresh.
 
 Only a manually fit-audited exact listing can become a live recommendation.
-Current sales data comes from the existing Rakuten Worker first and, when repository
-credentials are available, the Rakuten Ichiba API as a fallback. Any mismatch removes
+Current sales data comes from the Rakuten Ichiba API scoped to the manually audited shop first,
+then the existing Rakuten Worker as a fallback. Any mismatch removes
 that product from the public catalog rather than retaining stale data.
 """
 from __future__ import annotations
@@ -152,8 +152,10 @@ def rakuten_api_candidate(seed):
         params={
             'applicationId':env['RAKUTEN_APPLICATION_ID'],
             'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
+            'shopCode':rakuten_shop(seed['itemUrl']),
             'keyword':search_query,
-            'hits':30,'formatVersion':2,'availability':1
+            'hits':30,'formatVersion':2,'availability':1,
+            'elements':'itemName,itemCode,itemPrice,itemUrl,affiliateUrl,mediumImageUrls,availability,shopCode'
         }
         payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
         for raw in payload.get('items') or payload.get('Items') or []:
@@ -217,9 +219,9 @@ def acquire():
     for seed in load_seeds():
         try:
             if not fit_audit_fresh(seed,now_dt): raise ValueError('fit_audit_expired')
-            candidate=worker_candidate(seed)
+            candidate=rakuten_api_candidate(seed)
             if candidate is None:
-                candidate=rakuten_api_candidate(seed)
+                candidate=worker_candidate(seed)
             if candidate is None: raise ValueError('same_shop_identity_listing_not_found')
             target_item=candidate.get('itemUrl') or canonical_item_url(candidate['url'])
             if not safe_affiliate(candidate['url'],target_item): raise ValueError('unsafe_or_wrong_affiliate')
