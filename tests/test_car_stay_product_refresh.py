@@ -115,7 +115,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
 
-    def test_worker_fallback_uses_only_first_broad_query(self):
+    def test_worker_fallback_tries_all_search_queries_before_giving_up(self):
         seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/item123/","searchQueries":["first query","second query"],"identityGroups":[["N-VAN"]],"forbiddenTerms":[]}
         seen=[]
         original=refresh.fetch_json
@@ -127,8 +127,9 @@ class CarStayProductRefreshTests(unittest.TestCase):
             refresh.fetch_json=fake
             refresh.worker_candidate(seed)
             product_calls=[u for u in seen if "product-search" in u]
-            self.assertEqual(len(product_calls),1)
+            self.assertEqual(len(product_calls),2)
             self.assertIn("first+query",product_calls[0])
+            self.assertIn("second+query",product_calls[1])
         finally:
             refresh.fetch_json=original
 
