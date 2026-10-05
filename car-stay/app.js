@@ -180,13 +180,15 @@ function tripLabel(id){return {sleep_only:"寝るだけ",onsen:"温泉の夜",st
 function yen(value){return new Intl.NumberFormat("ja-JP",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value);}
 function renderProducts(items,gapId=""){
   if(!items.length)return "";
-  for(const p of items){
-    if(!viewedProducts.has(p.productId)){
-      viewedProducts.add(p.productId);
-      track("product_view",{product_id:p.productId,vehicle_id:state.vehicleId,gap_id:gapId,price:p.price||0,recommendation_role:p.recommendationRole||""});
+  items.forEach((p,index)=>{
+    const rank=index+1;
+    const viewKey=gapId+":"+p.productId;
+    if(!viewedProducts.has(viewKey)){
+      viewedProducts.add(viewKey);
+      track("product_view",{product_id:p.productId,vehicle_id:state.vehicleId,gap_id:gapId,price:p.price||0,recommendation_role:p.recommendationRole||"",product_rank:rank,conversion_source:"car_stay_"+gapId});
     }
-  }
-  return "<div class='product-stack'>"+items.map(p=>"<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><span class='fit-badge'>車種適合・販売確認済み</span><b>"+esc(p.name)+"</b><div class='product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc(p.price||0)+"' data-role='"+esc(p.recommendationRole||"")+"'>楽天で見る <span>→</span></a></div></article>").join("")+"</div>";
+  });
+  return "<div class='product-stack'>"+items.map((p,index)=>"<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><span class='fit-badge'>車種適合・販売確認済み</span><b>"+esc(p.name)+"</b><div class='product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc(p.price||0)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"'>楽天で見る <span>→</span></a></div></article>").join("")+"</div>";
 }
 function render(){
   stepLabel.textContent=state.step<5?"STEP "+(state.step+1)+" / 5":"YOUR CAR STAY";
@@ -217,7 +219,7 @@ panel.addEventListener("click",e=>{
   else if(t.matches("[data-recalc]")){renderResult();}
   else if(t.matches("[data-edit]")){state.step=3;save();render();}
   else if(t.matches("[data-new]"))reset();
-  else if(t.dataset.product){track("affiliate_click",{product_id:t.dataset.product,vehicle_id:state.vehicleId,gap_id:t.dataset.gap||"",price:Number(t.dataset.price)||0,recommendation_role:t.dataset.role||""});}
+  else if(t.dataset.product){track("affiliate_click",{product_id:t.dataset.product,vehicle_id:state.vehicleId,gap_id:t.dataset.gap||"",price:Number(t.dataset.price)||0,recommendation_role:t.dataset.role||"",product_rank:Number(t.dataset.rank)||0,conversion_source:t.dataset.source||"car_stay"});}
 });
 panel.addEventListener("input",e=>{
   const t=e.target;
