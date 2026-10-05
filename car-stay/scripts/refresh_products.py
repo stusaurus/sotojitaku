@@ -108,52 +108,67 @@ def candidate_match_level(candidate,seed):
     if item and rakuten_shop(item)==rakuten_shop(expected): return 1
     return 0
 
+def seed_queries(seed):
+    queries=seed.get('searchQueries') or [seed.get('query','')]
+    out=[]
+    for value in queries:
+        value=str(value or '').strip()
+        if value and value not in out: out.append(value)
+    return out
+
 def worker_candidate(seed):
-    query=urllib.parse.urlencode({'q':seed['query'],'hits':30})
-    payload=fetch_json(WORKER+'?'+query)
+    previews=[]
     matches=[]
-    for raw in payload.get('products',[]):
-        c=normalize_worker_candidate(raw)
-        level=candidate_match_level(c,seed)
-        if level: matches.append((level,c))
+    for search_query in seed_queries(seed):
+        query=urllib.parse.urlencode({'q':search_query,'hits':30})
+        payload=fetch_json(WORKER+'?'+query)
+        for raw in payload.get('products',[]):
+            c=normalize_worker_candidate(raw)
+            level=candidate_match_level(c,seed)
+            if level: matches.append((level,c))
+        previews.extend({
+            'q':search_query,
+            'shop':rakuten_shop(normalize_worker_candidate(raw).get('itemUrl','')),
+            'name':normalize_worker_candidate(raw).get('name','')[:120],
+            'itemUrl':normalize_worker_candidate(raw).get('itemUrl','')
+        } for raw in (payload.get('products',[])[:3]))
+        if matches: break
     if matches:
         matches.sort(key=lambda x:(-x[0],0 if safe_affiliate(x[1]['url'],x[1]['itemUrl']) else 1))
         return matches[0][1]
-    preview=[]
-    for raw in (payload.get('products',[])[:6]):
-        c=normalize_worker_candidate(raw)
-        preview.append({'shop':rakuten_shop(c.get('itemUrl','')),'name':c.get('name','')[:120],'itemUrl':c.get('itemUrl','')})
-    print('CAR_STAY_DIAG',seed.get('productId'),json.dumps(preview,ensure_ascii=False))
-    lookup=fetch_json(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':seed['query'],'brand':seed.get('brand','')}))
-    if lookup.get('found') is True:
-        c=normalize_worker_candidate(lookup)
-        if candidate_match_level(c,seed): return c
+    print('CAR_STAY_DIAG',seed.get('productId'),json.dumps(previews[:8],ensure_ascii=False))
+    for search_query in seed_queries(seed):
+        lookup=fetch_json(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':search_query,'brand':seed.get('brand','')}))
+        if lookup.get('found') is True:
+            c=normalize_worker_candidate(lookup)
+            if candidate_match_level(c,seed): return c
     return None
 
 def rakuten_api_candidate(seed):
     env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
     if not all(env.values()): return None
-    params={
-        'applicationId':env['RAKUTEN_APPLICATION_ID'],
-        'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
-        'keyword':seed['query'],
-        'hits':30,'formatVersion':2,'availability':1
-    }
     headers={**HEADERS,'accessKey':env['RAKUTEN_ACCESS_KEY']}
-    payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
-    for raw in payload.get('items') or payload.get('Items') or []:
-        item=raw.get('Item',raw)
-        item_url=canonical_item_url(item.get('itemUrl',''))
-        name=item.get('itemName','')
-        candidate={'name':name,'itemUrl':item_url}
-        if not candidate_match_level(candidate,seed): continue
-        imgs=item.get('mediumImageUrls') or []
-        image=imgs[0] if imgs else ''
-        if isinstance(image,dict): image=image.get('imageUrl','')
-        return {
-            'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
-            'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode',''),'source':'rakuten_api'
+    for search_query in seed_queries(seed):
+        params={
+            'applicationId':env['RAKUTEN_APPLICATION_ID'],
+            'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
+            'keyword':search_query,
+            'hits':30,'formatVersion':2,'availability':1
         }
+        payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
+        for raw in payload.get('items') or payload.get('Items') or []:
+            item=raw.get('Item',raw)
+            item_url=canonical_item_url(item.get('itemUrl',''))
+            name=item.get('itemName','')
+            candidate={'name':name,'itemUrl':item_url}
+            if not candidate_match_level(candidate,seed): continue
+            imgs=item.get('mediumImageUrls') or []
+            image=imgs[0] if imgs else ''
+            if isinstance(image,dict): image=image.get('imageUrl','')
+            return {
+                'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
+                'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode',''),'source':'rakuten_api'
+            }
     return None
 
 def page_sales_audit(seed,item_url,expected_price):
@@ -165,11 +180,13 @@ def page_sales_audit(seed,item_url,expected_price):
         page=fetch_text(item_url)
     except Exception:
         return 'exact_feed_fallback',expected_price
-    if not required_groups_ok(page,seed):
-        # Candidate-name filtering already excludes wrong generations. A sales page may
-        # mention older related products, so the full page only needs every required group.
-        raise ValueError('page_identity_mismatch')
     marker='"itemInfoSku":'
+    if not required_groups_ok(page,seed):
+        # Rakuten may return a challenge/interstitial instead of the product page in Actions.
+        # Only an exact manually audited item URL may fall back when no sales payload exists.
+        if marker not in page and canonical_item_url(item_url)==canonical_item_url(seed['itemUrl']):
+            return 'exact_feed_fallback',expected_price
+        raise ValueError('page_identity_mismatch')
     if marker not in page:
         if len(page)<1024: return 'exact_feed_fallback',expected_price
         return 'page_identity_only',expected_price
