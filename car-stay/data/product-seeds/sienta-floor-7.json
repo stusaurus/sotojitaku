@@ -1,14 +1,15 @@
 {
-  "productId": "sienta10-7-suwariba-o017",
-  "name": "シエンタ 3代目 7人乗り 全席用 車中泊フラットマットレス",
+  "productId": "sienta10-7-cellutane-hakuturu",
+  "name": "シエンタ 3代目 7人乗り 全席用 車中泊フラットマット",
   "brand": "CELLUTANE / NOMAD BASE",
-  "query": "シエンタ MXPC10G MXPL10G MXPL15G 7人乗り 全席用 車中泊 フラットマットレス",
-  "itemUrl": "https://item.rakuten.co.jp/suwariba/o017/",
+  "query": "nb-sienta-gen3-7all",
+  "itemUrl": "https://item.rakuten.co.jp/hakuturu/nb-sienta-gen3-7all/",
   "gapIds": [
-    "floor_step"
+    "floor_step",
+    "sleep_surface"
   ],
-  "recommendationRole": "beginner_alternative",
-  "score": 90,
+  "recommendationRole": "beginner_default",
+  "score": 94,
   "identityGroups": [
     [
       "シエンタ"
@@ -26,14 +27,16 @@
     ],
     [
       "車中泊",
-      "フラットマットレス"
+      "フラットマット"
     ]
   ],
   "forbiddenTerms": [
     "5人乗り",
-    "助手席用"
+    "6人乗り",
+    "助手席用",
+    "福祉仕様"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/suwariba/o017/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hakuturu/nb-sienta-gen3-7all/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
@@ -45,9 +48,8 @@
     }
   ],
   "searchQueries": [
-    "o017",
-    "シエンタ 7人乗り 車中泊 フラットマットレス",
-    "シエンタ MXPC10G 7人乗り 車中泊",
-    "シエンタ"
+    "nb-sienta-gen3-7all",
+    "シエンタ 7人乗り 全席用 車中泊フラットマット",
+    "MXPC10G 7人乗り 車中泊"
   ]
 }
