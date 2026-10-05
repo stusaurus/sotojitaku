@@ -1,0 +1,55 @@
+{
+  "productId": "freed-gt-crosstar-5-suwariba-o010",
+  "name": "FREED CROSSTAR GT系 5人乗り 車中泊フラットマットレス",
+  "brand": "NOMAD BASE / CELLUTANE",
+  "query": "o010 フリードクロスター 5人乗り 車中泊",
+  "itemUrl": "https://item.rakuten.co.jp/suwariba/o010/",
+  "gapIds": [
+    "floor_step"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 90,
+  "identityGroups": [
+    [
+      "フリード",
+      "FREED"
+    ],
+    [
+      "クロスター",
+      "CROSSTAR"
+    ],
+    [
+      "GT"
+    ],
+    [
+      "5人乗り"
+    ],
+    [
+      "車中泊",
+      "フラットマットレス"
+    ]
+  ],
+  "forbiddenTerms": [
+    "6人乗り",
+    "7人乗り"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/suwariba/o010/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-freed-gt",
+      "status": "verified",
+      "seatCounts": [
+        5
+      ],
+      "trims": [
+        "CROSSTAR"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "o010",
+    "フリードクロスター 5人乗り フラットマットレス",
+    "FREED CROSSTAR 5人乗り 車中泊"
+  ]
+}
