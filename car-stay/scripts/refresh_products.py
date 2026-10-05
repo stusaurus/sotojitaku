@@ -12,7 +12,10 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
 SEED_DIR=ROOT/'car-stay'/'data'/'product-seeds'
-OUT=ROOT/'car-stay'/'data'/'audited-products.json'
+CATALOG=ROOT/'car-stay'/'data'/'audited-products.json'
+OUT=Path(os.environ.get('CAR_STAY_REFRESH_OUTPUT',str(CATALOG)))
+SHARD_TOTAL=max(1,int(os.environ.get('CAR_STAY_REFRESH_SHARD_TOTAL','1')))
+SHARD_INDEX=max(0,int(os.environ.get('CAR_STAY_REFRESH_SHARD_INDEX','0')))%SHARD_TOTAL
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
 SHIPPING_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
 ITEM_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/item-lookup'
@@ -312,7 +315,10 @@ def page_sales_audit(seed,item_url,expected_price):
     return 'sales_page',int(live)
 
 def load_seeds():
-    return [json.loads(p.read_text()) for p in sorted(SEED_DIR.glob('*.json'))]
+    seeds=[json.loads(p.read_text()) for p in sorted(SEED_DIR.glob('*.json'))]
+    if SHARD_TOTAL>1:
+        seeds=[seed for index,seed in enumerate(seeds) if index%SHARD_TOTAL==SHARD_INDEX]
+    return seeds
 
 def order_seeds_for_refresh(seeds,previous_all,now_dt):
     """Protect live revenue first, then rotate unresolved discovery across days."""
@@ -340,7 +346,7 @@ def fit_audit_fresh(seed,now):
 
 def load_previous_products():
     try:
-        payload=json.loads(OUT.read_text())
+        payload=json.loads(CATALOG.read_text())
         return payload.get('products',[]) if isinstance(payload,dict) else []
     except Exception:
         return []
@@ -443,7 +449,7 @@ def acquire(runtime_budget_seconds=None):
     return {
         'version':1,'updatedAt':now,'status':'ok' if not failures and not deferred else 'partial',
         'products':products,'failures':failures,'deferred':deferred,
-        'runtimeBudgetSeconds':budget
+        'runtimeBudgetSeconds':budget,'shardIndex':SHARD_INDEX,'shardTotal':SHARD_TOTAL
     }
 
 if __name__=='__main__':
