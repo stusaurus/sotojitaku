@@ -233,7 +233,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
 
     def test_freed_crosstar_5_cellutane_title_matches_without_old_gb_models(self):
         seed={
-            "identityGroups":[["CELLUTANE"],["フリード","FREED"],["クロスター","CROSSTAR"],["5人乗り"],["車中泊マット","車中泊マットレス"]],
+            "identityGroups":[["CELLUTANE"],["フリード","FREED"],["クロスター","クロスタ","CROSSTAR"],["5人乗り"],["車中泊マット","車中泊マットレス"]],
             "forbiddenTerms":["6人乗り","7人乗り","GB5","GB6","GB7","GB8"]
         }
         title="CELLUTANE A1609a-5-602BK [車中泊マット フリードクロスタGT6/8/2/4 5人乗り用]"
