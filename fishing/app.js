@@ -3,12 +3,13 @@ import {buildProductRecommendations,applyProductCoverage} from "./products.js";
 
 const $=s=>document.querySelector(s);
 const hero=$("#hero"),planner=$("#planner"),panel=$("#panel"),progress=$("#progressBar");
-const resetBtn=$("#resetBtn"),stepText=$("#stepText"),miniPlan=$("#miniPlan"),visualMessage=$("#visualMessage"),visualTags=$("#visualTags");
+const resetBtn=$("#resetBtn"),savedBtn=$("#savedBtn"),stepText=$("#stepText"),miniPlan=$("#miniPlan"),visualMessage=$("#visualMessage"),visualTags=$("#visualTags");
 
 let questionsData,plansData,gearData,catalog;
 let index=0;
 let answers={owned:[]};
 let localRulesConfirmed=false;
+let currentResultKey="";
 const viewedProducts=new Set();
 
 const labels={party:"だれと",fun:"楽しみ方",bait:"エサ",take_home:"持ち帰り",carry:"荷物",budget:"予算",owned:"手持ち"};
@@ -26,7 +27,7 @@ async function load(){
 
 function start(){
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
-  index=0;answers={owned:[]};localRulesConfirmed=false;viewedProducts.clear();
+  index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
   track("fishing_diagnosis_start");
   renderQuestion();
   scrollTo({top:0,behavior:"smooth"});
@@ -102,8 +103,12 @@ function renderQuestion(){
   });
 }
 
-function renderResult(){
-  track("fishing_diagnosis_complete",{budget_tier:answers.budget,party_type:answers.party,bait_preference:answers.bait});
+function renderResult({trackDiagnosis=true}={}){
+  const resultKey=JSON.stringify(answers);
+  const isNewResult=resultKey!==currentResultKey;
+  if(trackDiagnosis&&isNewResult){
+    track("fishing_diagnosis_complete",{budget_tier:answers.budget,party_type:answers.party,bait_preference:answers.bait});
+  }
   const plan=selectPlan(answers,plansData);
   const rawChecklist=buildGearChecklist(answers,plan,gearData);
   const readiness=evaluateReadiness({input:answers,plan,gearData,context:{localRulesConfirmed}});
@@ -163,13 +168,20 @@ function renderResult(){
     </div>
   `;
   progress.style.width="100%";
-  track("fishing_plan_selected",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
-  $("#rulesCheck").addEventListener("change",e=>{localRulesConfirmed=e.target.checked;renderResult()});
+  if(trackDiagnosis&&isNewResult){
+    track("fishing_plan_selected",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
+    currentResultKey=resultKey;
+  }
+  $("#rulesCheck").addEventListener("change",e=>{localRulesConfirmed=e.target.checked;renderResult({trackDiagnosis:false})});
   $("#saveBtn").addEventListener("click",()=>{
-    localStorage.setItem("sotojitakuFishingPlan",JSON.stringify({answers,plan,at:new Date().toISOString()}));
-    $("#saveBtn").textContent="保存しました";
+    try{
+      localStorage.setItem("sotojitakuFishingPlan",JSON.stringify({version:1,answers,at:new Date().toISOString()}));
+      $("#saveBtn").textContent="保存しました";
+      savedBtn.hidden=false;
+      track("fishing_plan_saved",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
+    }catch{}
   });
-  $("#againBtn").addEventListener("click",()=>{index=0;renderQuestion()});
+  $("#againBtn").addEventListener("click",()=>{index=0;currentResultKey="";renderQuestion()});
   trackProductViews(productResult.selected,plan);
   bindAffiliateClicks();
 }
@@ -263,14 +275,46 @@ function bindAffiliateClicks(){
     track("affiliate_click",payload);
   }));
 }
+function readSavedPlan(){
+  try{
+    const raw=localStorage.getItem("sotojitakuFishingPlan");
+    if(!raw)return null;
+    const saved=JSON.parse(raw);
+    const a=saved?.answers;
+    const required=["party","fun","bait","take_home","carry","budget"];
+    if(!a||required.some(k=>typeof a[k]!=="string")||!Array.isArray(a.owned))return null;
+    return saved;
+  }catch{return null}
+}
+
+function refreshSavedButton(){
+  savedBtn.hidden=!readSavedPlan();
+}
+
+function openSavedPlan(){
+  const saved=readSavedPlan();
+  if(!saved)return refreshSavedButton();
+  answers={...saved.answers,owned:[...saved.answers.owned]};
+  hero.hidden=true;
+  planner.hidden=false;
+  resetBtn.hidden=false;
+  localRulesConfirmed=false;
+  currentResultKey="";
+  viewedProducts.clear();
+  track("fishing_saved_plan_open",{saved_age_days:Math.max(0,Math.floor((Date.now()-Date.parse(saved.at||0))/86400000))||0});
+  renderResult({trackDiagnosis:false});
+  scrollTo({top:0,behavior:"smooth"});
+}
+
 function stateLabel(s){return {owned:"持っている",needed:"必要",optional:"あると快適",covered_by_product:"セットで揃う"}[s]||s}
 function cleanName(s){return String(s||"").replace(/〖[^〗]*〗/g,"").replace(/\s+/g," ").trim().slice(0,95)}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function escapeAttr(s){return escapeHtml(s)}
 
 $("#startBtn").addEventListener("click",start);
+savedBtn.addEventListener("click",openSavedPlan);
 resetBtn.addEventListener("click",reset);
-load().then(()=>track("fishing_view")).catch(err=>{
+load().then(()=>{refreshSavedButton();track("fishing_view")}).catch(err=>{
   console.error(err);
   $("#startBtn").disabled=true;
   $("#startBtn").textContent="読み込みに失敗しました";
