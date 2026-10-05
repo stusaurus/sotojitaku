@@ -75,7 +75,7 @@ test("affiliate link targeting another Rakuten item is rejected",()=>{
 
 test("unknown-floor vehicle only gets a floor gap after the user observes one",()=>{
   const vehicle={vehicleId:"test-unknown-floor",geometry:{usableLengthMm:1900,usableWidthMm:1200},floorGrade:"unknown"};
-  const common={...base,people:[{type:"adult",height:171}],placeType:"rv_park",measurements:{},gear:base.gear};
+  const common={...base,people:[{type:"adult",height:171}],placeType:"rv_park",measurements:{},gear:[{gearId:"mobile_battery",capabilities:["usb_power"]}]};
   const unknown=evaluate({...common,floorObservation:"unknown"},vehicle,DEFAULT_RULES);
   assert.equal(unknown.gaps.some(g=>g.id==="floor_step"),false);
   const observed=evaluate({...common,floorObservation:"noticeable"},vehicle,DEFAULT_RULES);
