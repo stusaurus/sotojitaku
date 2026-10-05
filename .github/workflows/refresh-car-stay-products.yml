@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'car-stay/scripts/refresh_products.py'
+      - 'car-stay/scripts/merge_product_shards.py'
       - 'car-stay/data/product-seeds/**'
       - '.github/workflows/refresh-car-stay-products.yml'
   workflow_dispatch:
@@ -12,12 +13,43 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: sotojitaku-car-stay-products-v2
+  group: sotojitaku-car-stay-products-v3
   cancel-in-progress: true
+
 jobs:
-  refresh:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2]
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit CAR STAY shard
+        env:
+          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          CAR_STAY_REFRESH_SHARD_TOTAL: '3'
+          CAR_STAY_REFRESH_SHARD_INDEX: ${{ matrix.shard }}
+          CAR_STAY_REFRESH_BUDGET_SECONDS: '300'
+          CAR_STAY_REFRESH_OUTPUT: /tmp/car-stay-products-${{ matrix.shard }}.json
+        run: python car-stay/scripts/refresh_products.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: car-stay-products-${{ matrix.shard }}
+          path: /tmp/car-stay-products-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,23 +58,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Confirm Rakuten credential scope
-        env:
-          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
-          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
-          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
-        run: |
-          python - <<'PY'
-          import os
-          keys=['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']
-          print('Rakuten credentials:', 'available' if all(os.environ.get(k,'').strip() for k in keys) else 'missing')
-          PY
-      - name: Refresh exact CAR STAY listings
-        env:
-          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
-          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
-          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
-        run: python car-stay/scripts/refresh_products.py
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: car-stay-products-*
+          path: /tmp/car-stay-shards
+          merge-multiple: true
+      - name: Merge CAR STAY shard catalogs
+        run: python car-stay/scripts/merge_product_shards.py /tmp/car-stay-shards car-stay/data/audited-products.json
       - name: Validate CAMP and CAR STAY
         run: |
           npm run check
