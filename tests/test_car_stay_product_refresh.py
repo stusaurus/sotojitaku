@@ -346,5 +346,18 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_json_quick=original
 
+    def test_every_cartist_van_seed_rejects_wagon(self):
+        seed={"identityGroups":[["Cartist"],["エブリイ","EVERY"],["DA17V"],["DA18V"],["車中泊"],["マット","ベッド"]],"forbiddenTerms":["DA17W","DA18W","ワゴン"]}
+        good="Cartist スズキ エブリイ バン DA17V DA18V 車中泊 マット ベッド"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok(good+" DA18W ワゴン",seed))
+
+    def test_sienta_seven_seat_full_mat_seed_rejects_other_seat_counts(self):
+        seed={"identityGroups":[["シエンタ"],["MXPC10G","MXPL10G","MXPL15G"],["7人乗り"],["全席用"],["車中泊","フラットマット"]],"forbiddenTerms":["5人乗り","6人乗り","助手席用","福祉仕様"]}
+        good="シエンタ MXPC10G MXPL10G MXPL15G 7人乗り 全席用 車中泊フラットマット"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok(good+" 5人乗り",seed))
+        self.assertFalse(refresh.identity_ok(good+" 助手席用",seed))
+
 if __name__=="__main__":
     unittest.main()
