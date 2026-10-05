@@ -73,6 +73,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             refresh.fetch_json=fake
             refresh.rakuten_api_candidate(seed)
             self.assertEqual(seen[0]["shopCode"],["hobbyman"])
+            self.assertEqual(seen[0]["field"],["0"])
         finally:
             refresh.fetch_json=original_fetch
             for k,v in old.items():
