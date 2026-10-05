@@ -109,6 +109,7 @@ function renderResult(){
   const readiness=evaluateReadiness({input:answers,plan,gearData,context:{localRulesConfirmed}});
   const productResult=buildProductRecommendations(catalog.products||[],{input:answers,plan,checklist:rawChecklist,now:Date.now()});
   const checklist=applyProductCoverage(rawChecklist,productResult.selected);
+  const basket=basketSummary(rawChecklist,productResult.selected);
   const methodLabel=plan.variant?.name||plan.methodName;
   stepText.textContent="YOUR FIRST PLAN";
   miniPlan.textContent=methodLabel;
@@ -146,6 +147,7 @@ function renderResult(){
 
       <div class="section">
         <h3 class="section-title">足りないものは、これで揃える</h3>
+        ${renderBasketSummary(basket)}
         ${renderProducts(productResult,rawChecklist)}
       </div>
 
@@ -184,10 +186,48 @@ function renderProducts(productResult,checklist){
       <div class="product-copy">
         <div class="product-label">${productLabel(p,neededIds)}</div>
         <h3>${escapeHtml(cleanName(p.name))}</h3>
-        <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>確認済み</span></div>
+        <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
+        ${renderCoverage(p,checklist)}
         <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}">楽天で見る →</a>
       </div>
     </article>`).join("")}</div>`;
+}
+
+function basketSummary(checklist,selected){
+  const requiredIds=new Set((checklist||[])
+    .filter(x=>x.monetizable&&x.priority==="required"&&x.state!=="owned")
+    .map(x=>x.id));
+  const requiredProducts=(selected||[]).filter(p=>
+    (p.coverCategoryIds||[p.categoryId]).some(id=>requiredIds.has(id))
+  );
+  const unique=[...new Map(requiredProducts.map(p=>[p.productId,p])).values()];
+  return {
+    count:unique.length,
+    total:unique.reduce((sum,p)=>sum+(Number(p.price)||0),0),
+    optionalCount:Math.max(0,(selected||[]).length-unique.length)
+  };
+}
+
+function renderBasketSummary(basket){
+  if(!basket.count)return "";
+  return `<div class="basket-summary">
+    <div><span>必須の購入候補</span><strong>${basket.count}点</strong></div>
+    <div><span>商品価格の合計目安</span><strong>¥${basket.total.toLocaleString("ja-JP")}</strong></div>
+    <p>送料・ポイント・価格変動は楽天の商品ページで確認してください。${basket.optionalCount?" 「あると快適」な任意品はこの合計に含めていません。":""}</p>
+  </div>`;
+}
+
+function renderCoverage(product,checklist){
+  const byId=new Map((checklist||[]).map(x=>[x.id,x]));
+  const covers=(product.coverCategoryIds||[product.categoryId])
+    .map(id=>byId.get(id))
+    .filter(Boolean);
+  const fills=covers.filter(x=>x.state!=="owned").map(x=>x.label);
+  const overlaps=covers.filter(x=>x.state==="owned").map(x=>x.label);
+  return `<div class="coverage-block">
+    ${fills.length?`<div class="coverage-row"><span>これで揃う</span><div>${fills.map(x=>`<b>${escapeHtml(x)}</b>`).join("")}</div></div>`:""}
+    ${overlaps.length?`<div class="coverage-row overlap"><span>手持ちと重複</span><div>${overlaps.map(x=>`<b>${escapeHtml(x)}</b>`).join("")}</div></div>`:""}
+  </div>`;
 }
 
 function productLabel(p,neededIds){
