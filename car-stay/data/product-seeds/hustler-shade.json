@@ -2,8 +2,8 @@
   "productId": "hustler-mr52-92-hobbyman-full",
   "name": "ハスラー MR52S/MR92S プライバシーサンシェード フルセット",
   "brand": "趣味職人",
-  "query": "ハスラー MR52S MR92S サンシェード フルセット",
-  "itemUrl": "https://item.rakuten.co.jp/hobbyman/hustler-mr52s-set/",
+  "query": "hustler-mr52s-cradp",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/hustler-mr52s-cradp/",
   "gapIds": [
     "privacy_full"
   ],
@@ -31,7 +31,7 @@
     "MR31S",
     "MR41S"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/hustler-mr52s-set/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/hustler-mr52s-cradp/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
@@ -40,8 +40,8 @@
     }
   ],
   "searchQueries": [
-    "ハスラー MR52S サンシェード",
-    "ハスラー MR92S サンシェード",
+    "hustler-mr52s-cradp",
+    "ハスラー MR52S MR92S サンシェード",
     "ハスラー MR52S フルセット"
   ]
 }
