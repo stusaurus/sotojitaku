@@ -20,7 +20,7 @@ test('CAR STAY vehicle SEO pages are substantive, canonical and Builder-linked',
     assert.match(p,/rel="canonical"/);
     assert.match(p,/FAQPage/);
     assert.match(p,/QUICK MEASURE/);
-    assert.match(p,/?vehicle=/);
+    assert.match(p,/\?vehicle=/);
     assert.ok(!/TODO|ダミー|lorem ipsum/i.test(p));
     assert.ok(sitemap.includes('/car-stay/car/'+slug+'/'));
   }
