@@ -385,5 +385,83 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.load_seeds,refresh.load_previous_products,refresh.time.monotonic=originals
 
+    def test_refresh_order_prioritizes_previous_live_products_oldest_first(self):
+        from datetime import datetime, timezone, timedelta
+        now=datetime(2026,10,5,tzinfo=timezone.utc)
+        seeds=[{"productId":"new-a"},{"productId":"live-newer"},{"productId":"live-older"},{"productId":"new-b"}]
+        previous={
+            "live-newer":{"productId":"live-newer","verifiedAt":(now-timedelta(days=1)).isoformat()},
+            "live-older":{"productId":"live-older","verifiedAt":(now-timedelta(days=5)).isoformat()}
+        }
+        ordered=refresh.order_seeds_for_refresh(seeds,previous,now)
+        self.assertEqual([x["productId"] for x in ordered[:2]],["live-older","live-newer"])
+        self.assertEqual(set(x["productId"] for x in ordered[2:]),{"new-a","new-b"})
+
+    def test_unresolved_refresh_order_rotates_by_day(self):
+        from datetime import datetime, timezone
+        seeds=[{"productId":"a"},{"productId":"b"},{"productId":"c"}]
+        day1=refresh.order_seeds_for_refresh(seeds,{},datetime(2026,1,1,tzinfo=timezone.utc))
+        day2=refresh.order_seeds_for_refresh(seeds,{},datetime(2026,1,2,tzinfo=timezone.utc))
+        self.assertEqual([x["productId"] for x in day1],["a","b","c"])
+        self.assertEqual([x["productId"] for x in day2],["b","c","a"])
+
+    def test_transient_source_failure_keeps_previous_fresh_product_without_refreshing_timestamp(self):
+        from datetime import datetime, timezone
+        import urllib.error
+        seed={
+            "productId":"keep-me","name":"N-VAN shade","brand":"Test",
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "gapIds":["privacy_full"],"fitCheckedAt":datetime.now(timezone.utc).date().isoformat(),
+            "vehicleFit":[{"vehicleId":"honda-nvan-jj1-jj2","status":"verified"}]
+        }
+        verified=datetime.now(timezone.utc).isoformat()
+        previous={"productId":"keep-me","name":"old verified item","price":5980,"verifiedAt":verified,"audit":{"status":"verified_live"}}
+        originals=(refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.time.sleep)
+        try:
+            refresh.load_seeds=lambda:[seed]
+            refresh.load_previous_products=lambda:[previous]
+            def down(_seed):
+                raise urllib.error.URLError("temporary source outage")
+            refresh.worker_exact_item_candidate=down
+            refresh.rakuten_api_exact_candidate=down
+            refresh.rakuten_api_candidate=down
+            refresh.worker_candidate=down
+            refresh.time.sleep=lambda _seconds:None
+            result=refresh.acquire(runtime_budget_seconds=30)
+            self.assertEqual([p["productId"] for p in result["products"]],["keep-me"])
+            self.assertEqual(result["products"][0]["verifiedAt"],verified)
+            self.assertEqual(result["deferred"]["keep-me"],"transient_source_failure_retained_previous")
+        finally:
+            (refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.time.sleep)=originals
+
+    def test_explicit_unavailable_product_is_not_carried_forward(self):
+        from datetime import datetime, timezone
+        import urllib.parse
+        seed={
+            "productId":"remove-me","name":"N-VAN shade","brand":"Test",
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "gapIds":["privacy_full"],"fitCheckedAt":datetime.now(timezone.utc).date().isoformat(),
+            "vehicleFit":[{"vehicleId":"honda-nvan-jj1-jj2","status":"verified"}]
+        }
+        previous={"productId":"remove-me","name":"old verified item","price":5980,"verifiedAt":datetime.now(timezone.utc).isoformat(),"audit":{"status":"verified_live"}}
+        affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(seed["itemUrl"],safe="")
+        candidate={"name":"N-VAN shade","price":5980,"url":affiliate,"itemUrl":seed["itemUrl"],"image":"https://example.com/item.jpg","itemCode":"hobbyman:1","source":"worker_exact_url"}
+        originals=(refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)
+        try:
+            refresh.load_seeds=lambda:[seed]
+            refresh.load_previous_products=lambda:[previous]
+            refresh.worker_exact_item_candidate=lambda _seed:candidate
+            refresh.rakuten_api_exact_candidate=lambda _seed:None
+            refresh.rakuten_api_candidate=lambda _seed:None
+            refresh.worker_candidate=lambda _seed:None
+            refresh.page_sales_audit=lambda *_args:(_ for _ in ()).throw(ValueError("unavailable"))
+            refresh.time.sleep=lambda _seconds:None
+            result=refresh.acquire(runtime_budget_seconds=30)
+            self.assertEqual(result["products"],[])
+            self.assertNotIn("remove-me",result["deferred"])
+            self.assertEqual(result["failures"]["remove-me"],"unavailable")
+        finally:
+            (refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)=originals
+
 if __name__=="__main__":
     unittest.main()
