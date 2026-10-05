@@ -1,0 +1,62 @@
+{
+  "productId": "freed-gt5-cartist-jr00280029",
+  "name": "Cartist FREED GT系 5人乗り専用 車中泊マット",
+  "brand": "Cartist",
+  "query": "jr00280029",
+  "itemUrl": "https://item.rakuten.co.jp/jroad/jr00280029/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 95,
+  "identityGroups": [
+    [
+      "Cartist"
+    ],
+    [
+      "フリード",
+      "FREED"
+    ],
+    [
+      "GT",
+      "GT2",
+      "GT4",
+      "GT6",
+      "GT8"
+    ],
+    [
+      "5人乗り"
+    ],
+    [
+      "車中泊"
+    ],
+    [
+      "マット",
+      "ベッド"
+    ]
+  ],
+  "forbiddenTerms": [
+    "6人乗り",
+    "7人乗り"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/jroad/jr00280029/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-freed-gt",
+      "status": "verified",
+      "seatCounts": [
+        5
+      ],
+      "trims": [
+        "CROSSTAR"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "jr00280029",
+    "Cartist フリード GT 5人乗り 車中泊マット",
+    "フリード GT CROSSTAR 5人乗り 車中泊マット"
+  ]
+}
