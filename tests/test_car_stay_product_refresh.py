@@ -495,5 +495,32 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.identity_ok(good,seed))
         self.assertFalse(refresh.identity_ok(bad,seed))
 
+    def test_fresh_previous_product_is_retained_when_current_search_only_misses(self):
+        from datetime import datetime, timezone
+        seed={
+            "productId":"keep-on-search-miss","name":"FREED floor","brand":"Test",
+            "itemUrl":"https://item.rakuten.co.jp/jroad/exact/",
+            "gapIds":["sleep_surface"],"fitCheckedAt":datetime.now(timezone.utc).date().isoformat(),
+            "vehicleFit":[{"vehicleId":"honda-freed-gt","status":"verified","seatCounts":[5],"trims":["CROSSTAR"]}]
+        }
+        verified=datetime.now(timezone.utc).isoformat()
+        previous={"productId":"keep-on-search-miss","name":"previous verified","price":9580,"verifiedAt":verified,"audit":{"status":"verified_live"}}
+        originals=(refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.time.sleep)
+        try:
+            refresh.load_seeds=lambda:[seed]
+            refresh.load_previous_products=lambda:[previous]
+            refresh.worker_exact_item_candidate=lambda _seed:None
+            refresh.rakuten_api_exact_candidate=lambda _seed:None
+            refresh.rakuten_api_candidate=lambda _seed:None
+            refresh.worker_candidate=lambda _seed:None
+            refresh.time.sleep=lambda _seconds:None
+            result=refresh.acquire(runtime_budget_seconds=30)
+            self.assertEqual([p["productId"] for p in result["products"]],["keep-on-search-miss"])
+            self.assertEqual(result["products"][0]["verifiedAt"],verified)
+            self.assertEqual(result["deferred"]["keep-on-search-miss"],"transient_source_failure_retained_previous")
+            self.assertEqual(result["failures"]["keep-on-search-miss"],"same_shop_identity_listing_not_found")
+        finally:
+            (refresh.load_seeds,refresh.load_previous_products,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.time.sleep)=originals
+
 if __name__=="__main__":
     unittest.main()
