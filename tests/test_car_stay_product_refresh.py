@@ -248,5 +248,29 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.identity_ok(title,seed))
         self.assertFalse(refresh.identity_ok(title+" 7人乗り",seed))
 
+    def test_hustler_atmys_current_floor_seed_rejects_old_generation(self):
+        seed={"identityGroups":[["ハスラー","HUSTLER"],["MR52S"],["MR92S"],["段差解消","シートフラットクッション"],["車中泊","マット"]],"forbiddenTerms":["MR31S","MR41S"]}
+        good="車マット 新型 ハスラー MR52S MR92S Jスタイル 対応 シートフラットクッション 段差解消 車中泊 マット"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok(good+" MR41S",seed))
+
+    def test_nvan_hobbyman_floor_seed_requires_current_jj_fit(self):
+        seed={"identityGroups":[["N-VAN","NVAN","N VAN"],["JJ1/2","JJ1","JJ2"],["車中泊ベッド","車中泊"],["マット","ベッドキット"]],"forbiddenTerms":["N-WGN"]}
+        good="N-VAN JJ1/2系 N-VAN+スタイル JJ1/2系対応 車中泊ベッド マット ベッドキット"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok("N-WGN JJ1 車中泊ベッド マット",seed))
+
+    def test_every_levolva_floor_seed_rejects_wagon_fit(self):
+        seed={"identityGroups":[["Levolva"],["エブリイ","EVERY"],["DA17V"],["DA18V"],["車中泊マット","専用マットレス"]],"forbiddenTerms":["DA17W","DA18W"]}
+        good="Levolva DA17V DA18V エブリイ バン 専用マットレス 車中泊マット"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok(good+" DA18W",seed))
+
+    def test_freed_cartist_five_seat_seed_never_crosses_to_six_or_seven_seat(self):
+        seed={"identityGroups":[["Cartist"],["フリード","FREED"],["GT","GT2","GT4","GT6","GT8"],["5人乗り"],["車中泊"],["マット","ベッド"]],"forbiddenTerms":["6人乗り","7人乗り"]}
+        good="Cartist ホンダ 新型 フリード GT系 5人乗り 専用 車中泊 マット 車用ベッド"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok(good+" 7人乗り",seed))
+
 if __name__=="__main__":
     unittest.main()
