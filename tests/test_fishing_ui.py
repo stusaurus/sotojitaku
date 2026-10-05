@@ -42,5 +42,17 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("項目まとめて揃う", self.app)
         self.assertIn("rawChecklist", self.app)
 
+    def test_saved_plan_return_flow(self):
+        self.assertIn('id="savedBtn"', self.index)
+        self.assertIn("readSavedPlan", self.app)
+        self.assertIn("openSavedPlan", self.app)
+        self.assertIn("fishing_saved_plan_open", self.app)
+        self.assertIn("fishing_plan_saved", self.app)
+        self.assertIn("renderResult({trackDiagnosis:false})", self.app)
+
+    def test_rule_toggle_does_not_duplicate_diagnosis_completion(self):
+        self.assertIn('renderResult({trackDiagnosis:false})', self.app)
+        self.assertIn('if(trackDiagnosis&&isNewResult)', self.app)
+
 if __name__=="__main__":
     unittest.main()
