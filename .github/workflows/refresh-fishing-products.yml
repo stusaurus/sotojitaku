@@ -3,7 +3,6 @@ on:
   push:
     branches: [main]
     paths:
-      - 'fishing/scripts/refresh_products.py'
       - 'fishing/data/product-seeds/**'
       - 'fishing/scripts/check_catalog.py'
       - '.github/workflows/refresh-fishing-products.yml'
@@ -16,8 +15,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '20 22 * * *'
+
 permissions:
   contents: write
+
 concurrency:
   group: sotojitaku-fishing-products-${{ github.event_name }}
   cancel-in-progress: true
@@ -43,8 +44,7 @@ jobs:
   refresh-main:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -53,50 +53,68 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Confirm Rakuten credential scope
-        env:
-          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
-          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
-          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+
+      - name: Download shared verified FISHING catalog
         run: |
-          python - <<'PY'
-          import os
-          keys=['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']
-          ok=all(os.environ.get(k,'').strip() for k in keys)
-          print('Rakuten credentials:', 'available' if ok else 'missing; continuing with Worker fallback')
-          PY
-      - name: Refresh exact FISHING listings
-        env:
-          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
-          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
-          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
-        run: python fishing/scripts/refresh_products.py
-      - name: Show fail-closed coverage
+          curl --fail --silent --show-error --location             --retry 3 --retry-delay 2             https://raw.githubusercontent.com/stusaurus/daily-cost-jp/main/shared-data/sotojitaku-fishing-products.json             -o /tmp/fishing-products.json
+
+      - name: Validate shared catalog freshness and shape
         run: |
           python - <<'PY'
           import json
-          p=json.load(open('fishing/data/audited-products.json'))
-          print('verified', len(p.get('products',[])))
-          print('failed', len(p.get('failures',{})))
-          for k,v in p.get('failures',{}).items():
-              print('FAIL', k, v)
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          p=Path('/tmp/fishing-products.json')
+          data=json.loads(p.read_text())
+          updated=data.get('updatedAt')
+          if not updated:
+              raise SystemExit('shared catalog missing updatedAt')
+          ts=datetime.fromisoformat(str(updated).replace('Z','+00:00'))
+          age=(datetime.now(timezone.utc)-ts).total_seconds()
+          if age < 0 or age > 48*3600:
+              raise SystemExit(f'shared catalog stale: {age/3600:.1f}h')
+
+          products=data.get('products')
+          if not isinstance(products,list) or not products:
+              raise SystemExit('shared catalog has no verified products')
+
+          for item in products:
+              if item.get('audit',{}).get('status')!='verified_live':
+                  raise SystemExit('unverified product present')
+              if not str(item.get('affiliateUrl','')).startswith('https://hb.afl.rakuten.co.jp/'):
+                  raise SystemExit('invalid affiliate URL present')
+              if not str(item.get('itemUrl','')).startswith('https://item.rakuten.co.jp/'):
+                  raise SystemExit('invalid Rakuten item URL present')
+              if not isinstance(item.get('price'),int) or item['price']<=0:
+                  raise SystemExit('invalid price present')
+              if not str(item.get('image','')).startswith('https://'):
+                  raise SystemExit('invalid image present')
+
+          print('shared catalog verified:',len(products),'failed seeds:',len(data.get('failures',{})))
           PY
+
+      - name: Stage shared catalog for coverage validation
+        run: cp /tmp/fishing-products.json fishing/data/audited-products.json
+
       - name: Validate repository
         run: |
           npm run check
           npm test
           python -m unittest discover -s tests -p 'test_*.py' -v
+
       - name: Require core live product coverage
         run: python fishing/scripts/check_catalog.py
-      - name: Publish refreshed FISHING catalog safely
+
+      - name: Publish verified FISHING catalog safely
         run: |
-          cp fishing/data/audited-products.json /tmp/fishing-products.json
+          cp fishing/data/audited-products.json /tmp/fishing-products-ready.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           for attempt in 1 2 3; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/fishing-products.json fishing/data/audited-products.json
+            cp /tmp/fishing-products-ready.json fishing/data/audited-products.json
             git add fishing/data/audited-products.json
             if git diff --cached --quiet; then
               echo "FISHING catalog already current."
