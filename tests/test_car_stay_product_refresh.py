@@ -54,5 +54,18 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_text=original
 
+    def test_sales_payload_does_not_need_fit_words_after_candidate_identity_passed(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/shop/item123/","identityGroups":[["N-BOX"],["JF5"]]}
+        payload={"sellType":"NORMAL","purchaseInfo":{"purchaseBySellType":{"purchaseCondition":"enabled","normalPurchase":{"price":{"minPrice":12345}}}}}
+        page='<html><script>"itemInfoSku":'+__import__("json").dumps(payload)+'</script></html>'
+        original=refresh.fetch_text
+        try:
+            refresh.fetch_text=lambda _:page
+            mode,price=refresh.page_sales_audit(seed,seed["itemUrl"],12345)
+            self.assertEqual(mode,"sales_page")
+            self.assertEqual(price,12345)
+        finally:
+            refresh.fetch_text=original
+
 if __name__=="__main__":
     unittest.main()
