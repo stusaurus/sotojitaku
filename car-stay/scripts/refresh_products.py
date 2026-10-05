@@ -360,11 +360,17 @@ def previous_product_fresh(product,now_dt,max_days=7):
         return False
 
 def transient_audit_failure(reason):
-    """Retain a previous fresh item only for clear network/infrastructure failures."""
+    """Retain a previous fresh item when the current refresh lacks positive negative evidence.
+
+    A source/search miss is not proof that a listing stopped selling. Fresh products
+    already verified within seven days stay live until a later refresh proves
+    unavailability, wrong listing, bad price, or another explicit fail-closed condition.
+    """
     text=str(reason or '')
     transient_tokens=(
         'HTTPError','URLError','TimeoutError','ConnectionError',
-        'ConnectionResetError','RemoteDisconnected','JSONDecodeError'
+        'ConnectionResetError','RemoteDisconnected','JSONDecodeError',
+        'same_shop_identity_listing_not_found'
     )
     return any(token in text for token in transient_tokens)
 
