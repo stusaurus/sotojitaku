@@ -1,9 +1,9 @@
 {
   "productId": "every-da17-da18-hobbyman-shade",
-  "name": "エブリイ DA17/DA18 シームレスライト サンシェード フルセット",
+  "name": "エブリイ DA17/DA18 サンシェード フルセット",
   "brand": "趣味職人",
   "query": "エブリイ DA18 DA17 サンシェード シームレスライト フルセット",
-  "itemUrl": "https://item.rakuten.co.jp/hobbyman/every-17-lit/",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/",
   "gapIds": [
     "privacy_full"
   ],
@@ -27,7 +27,7 @@
     ]
   ],
   "forbiddenTerms": [],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/every-17-lit/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
@@ -48,5 +48,10 @@
         "PA"
       ]
     }
+  ],
+  "searchQueries": [
+    "エブリイ DA18 サンシェード",
+    "エブリイ DA17 DA18 サンシェード",
+    "エブリイ DA18 フルセット"
   ]
 }

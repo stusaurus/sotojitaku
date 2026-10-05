@@ -39,5 +39,20 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertEqual(refresh.candidate_match_level(same,seed),1)
         self.assertEqual(refresh.candidate_match_level(other,seed),0)
 
+    def test_seed_queries_keep_search_broad_but_deduplicated(self):
+        seed={"query":"very specific","searchQueries":["NBOX JF5 サンシェード","NBOX JF5 サンシェード","NBOX JF5"]}
+        self.assertEqual(refresh.seed_queries(seed),["NBOX JF5 サンシェード","NBOX JF5"])
+
+    def test_exact_url_can_fallback_when_rakuten_returns_interstitial(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/shop/item123/","identityGroups":[["N-BOX"],["JF5"]]}
+        original=refresh.fetch_text
+        try:
+            refresh.fetch_text=lambda _:"<html><title>Rakuten</title></html>"
+            mode,price=refresh.page_sales_audit(seed,seed["itemUrl"],12345)
+            self.assertEqual(mode,"exact_feed_fallback")
+            self.assertEqual(price,12345)
+        finally:
+            refresh.fetch_text=original
+
 if __name__=="__main__":
     unittest.main()

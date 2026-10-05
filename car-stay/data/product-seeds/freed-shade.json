@@ -3,7 +3,7 @@
   "name": "FREED GT1-GT8 シームレスライト サンシェード フルセット",
   "brand": "趣味職人",
   "query": "フリード GT1 GT2 GT3 GT4 GT5 GT6 GT7 GT8 サンシェード フルセット",
-  "itemUrl": "https://item.rakuten.co.jp/hobbyman/freed-gt18-lit-6/",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/freed-gt18-lit/",
   "gapIds": [
     "privacy_full"
   ],
@@ -37,7 +37,7 @@
     "GB7",
     "GB8"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/freed-gt18-lit-6/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/freed-gt18-lit/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
@@ -54,5 +54,10 @@
         "CROSSTAR"
       ]
     }
+  ],
+  "searchQueries": [
+    "フリード GT1 サンシェード",
+    "フリード GT1 GT8 サンシェード",
+    "FREED GT1 サンシェード"
   ]
 }
