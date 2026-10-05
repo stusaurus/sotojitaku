@@ -26,8 +26,8 @@
   "recommendationRole": "beginner_default",
   "score": 97,
   "searchQueries": [
-    "アミ姫 キララ 600g",
-    "マルキュー アミ姫キララ",
+    "マルキュー アミ姫 キララ",
+    "アミ姫 キララ",
     "4905789006570"
   ],
   "identityGroups": [
@@ -36,16 +36,15 @@
       "MARUKYU"
     ],
     [
-      "アミ姫",
-      "アミ姫キララ"
+      "アミ姫"
     ],
     [
-      "600"
+      "キララ"
     ]
   ],
   "forbiddenTerms": [
     "爆寄せ"
   ],
-  "specCheckedAt": "2026-10-05",
+  "specCheckedAt": "2026-10-06",
   "specEvidenceUrl": "https://item.rakuten.co.jp/fto-r/4905789006570/"
 }
