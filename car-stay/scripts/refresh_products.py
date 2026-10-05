@@ -26,17 +26,19 @@ HEADERS={
 _PAGE_CACHE={}
 
 def fetch_json(url,headers=None):
+    """Bounded retry path for Rakuten API calls. Nightly refresh can retry tomorrow."""
     req=urllib.request.Request(url,headers=headers or HEADERS)
-    for attempt in range(3):
+    attempts=2
+    for attempt in range(attempts):
         try:
-            with urllib.request.urlopen(req,timeout=12) as r:
+            with urllib.request.urlopen(req,timeout=8) as r:
                 return json.loads(r.read().decode('utf-8'))
         except urllib.error.HTTPError as e:
-            if e.code not in (429,500,502,503,504) or attempt==2: raise
-            time.sleep(1+attempt*2)
+            if e.code not in (429,500,502,503,504) or attempt==attempts-1: raise
+            time.sleep(1+attempt)
         except (urllib.error.URLError,TimeoutError):
-            if attempt==2: raise
-            time.sleep(1+attempt*2)
+            if attempt==attempts-1: raise
+            time.sleep(1+attempt)
 
 def fetch_json_quick(url,headers=None,timeout=4):
     """Single-attempt probe for optional fast paths. Failure falls through immediately."""
@@ -153,11 +155,12 @@ def worker_exact_item_candidate(seed):
     }
 
 def worker_candidate(seed):
+    """Best-effort Worker fallback: one short request per query, never a retry bottleneck."""
     previews=[]
     matches=[]
     for search_query in seed_queries(seed):
         query=urllib.parse.urlencode({'q':search_query,'hits':30})
-        payload=fetch_json(WORKER+'?'+query)
+        payload=fetch_json_quick(WORKER+'?'+query,timeout=5) or {}
         for raw in payload.get('products',[]):
             c=normalize_worker_candidate(raw)
             level=candidate_match_level(c,seed)
@@ -174,7 +177,10 @@ def worker_candidate(seed):
         return matches[0][1]
     print('CAR_STAY_DIAG',seed.get('productId'),json.dumps(previews[:8],ensure_ascii=False))
     for search_query in seed_queries(seed):
-        lookup=fetch_json(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':search_query,'brand':seed.get('brand','')}))
+        lookup=fetch_json_quick(
+            SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':search_query,'brand':seed.get('brand','')}),
+            timeout=5
+        ) or {}
         if lookup.get('found') is True:
             c=normalize_worker_candidate(lookup)
             if candidate_match_level(c,seed): return c
