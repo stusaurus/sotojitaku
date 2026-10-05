@@ -42,5 +42,10 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("項目まとめて揃う", self.app)
         self.assertIn("rawChecklist", self.app)
 
+    def test_shared_catalog_is_primary_with_local_fallback(self):
+        self.assertIn("https://stusaurus.github.io/daily-cost-jp/shared/fishing-products.json", self.app)
+        self.assertIn("./data/audited-products.json", self.app)
+        self.assertIn("fishing_catalog_loaded", self.app)
+
 if __name__=="__main__":
     unittest.main()
