@@ -74,3 +74,25 @@ test('Sienta and FREED shade intent pages are substantive and Builder-attributed
     assert.ok(parent.includes('./shade/'));
   }
 });
+
+
+test('Hustler, N-VAN and Every shade intent pages are substantive and Builder-attributed',()=>{
+  const sitemap=read('sitemap.xml');
+  const cases=[
+    {slug:'hustler',vehicle:'suzuki-hustler-mr52s-mr92s'},
+    {slug:'n-van',vehicle:'honda-nvan-jj1-jj2'},
+    {slug:'every',vehicle:'suzuki-every-da17v',also:'suzuki-every-da18v'}
+  ];
+  for(const x of cases){
+    const p=read('car-stay/car/'+x.slug+'/shade/index.html');
+    const parent=read('car-stay/car/'+x.slug+'/index.html');
+    assert.ok(p.length>4700,x.slug+' shade page should not be thin');
+    assert.match(p,/rel="canonical"/);
+    assert.match(p,/FAQPage/);
+    assert.ok(p.includes('vehicle='+x.vehicle));
+    if(x.also)assert.ok(p.includes('vehicle='+x.also));
+    assert.ok(p.includes('entry='+x.slug+'-shade'));
+    assert.ok(sitemap.includes('/car-stay/car/'+x.slug+'/shade/'));
+    assert.ok(parent.includes('./shade/'));
+  }
+});
