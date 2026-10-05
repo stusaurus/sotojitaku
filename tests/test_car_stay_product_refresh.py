@@ -223,5 +223,21 @@ class CarStayProductRefreshTests(unittest.TestCase):
         seed={"query":"nboxjf5-flatc","searchQueries":["nboxjf5-flatc","NBOX JF5 JF6 4個セット"]}
         self.assertEqual(refresh.seed_queries(seed)[0],"nboxjf5-flatc")
 
+    def test_nvan_jj1_slash_2_title_is_valid_for_jj1_jj2_fit(self):
+        seed={
+            "identityGroups":[["Levolva"],["N-VAN","NVAN","N VAN"],["JJ1/2","JJ1/2系","JJ1/JJ2","JJ1系","JJ2系"],["車中泊マット","専用マットレス"],["LVMR-11","ラゲッジマット"]],
+            "forbiddenTerms":["N-WGN"]
+        }
+        title="Levolva JJ1/2系 NVAN NVAN＋STYLE 専用マットレス 車中泊マット＆ラゲッジマット"
+        self.assertTrue(refresh.identity_ok(title,seed))
+
+    def test_freed_crosstar_5_cellutane_title_matches_without_old_gb_models(self):
+        seed={
+            "identityGroups":[["CELLUTANE"],["フリード","FREED"],["クロスター","CROSSTAR"],["5人乗り"],["車中泊マット","車中泊マットレス"]],
+            "forbiddenTerms":["6人乗り","7人乗り","GB5","GB6","GB7","GB8"]
+        }
+        title="CELLUTANE A1609a-5-602BK [車中泊マット フリードクロスタGT6/8/2/4 5人乗り用]"
+        self.assertTrue(refresh.identity_ok(title,seed))
+
 if __name__=="__main__":
     unittest.main()
