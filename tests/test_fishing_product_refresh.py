@@ -83,7 +83,7 @@ class FishingProductRefreshTests(unittest.TestCase):
                 },
             ]
         }
-        with mock.patch.object(refresh,"fetch_json",return_value=payload):
+        with mock.patch.object(refresh,"fetch_json_quick",return_value=payload):
             candidate=refresh.worker_search_candidate(seed)
         self.assertIsNotNone(candidate)
         self.assertEqual(
