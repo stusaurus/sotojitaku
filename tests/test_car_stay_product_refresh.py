@@ -8,6 +8,7 @@ refresh=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class CarStayProductRefreshTests(unittest.TestCase):
+    # CAR STAY privacy-source resilience is regression-tested below.
     def setUp(self):
         refresh._PAGE_CACHE.clear()
 
