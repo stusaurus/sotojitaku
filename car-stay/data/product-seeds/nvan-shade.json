@@ -44,5 +44,7 @@
     "N-VAN JJ1 サンシェード",
     "N-VAN JJ1 JJ2 サンシェード",
     "N-VAN サンシェード フルセット"
-  ]
+  ],
+  "enabled": false,
+  "disabledReason": "Second-row window specification is not yet collected by the builder; avoid false fit."
 }
