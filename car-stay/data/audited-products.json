@@ -47,36 +47,6 @@
       }
     },
     {
-      "productId": "hustler-mr52-92-levolva-lvmr13",
-      "name": "【秋SALE P5倍】Levolva MR52S MR92S ハスラー 専用ラゲッジルームカバー 防水ラゲッジマット 日本製【スズキ HUSTLER 52 92 ハイブリッド アクセサリー カスタムパーツ 荷室 リア 非ラバーマット フロアマット 便利グッズ 汚れ防止マット トレイ ラゲージ】【SOVIE】",
-      "brand": "Levolva",
-      "gapIds": [
-        "floor_step",
-        "sleep_surface"
-      ],
-      "recommendationRole": "beginner_default",
-      "score": 94,
-      "price": 13300,
-      "itemCode": "",
-      "itemUrl": "https://item.rakuten.co.jp/auc-sovie-store/lrc-46/",
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qwu4o.7cx6mcba.g00qwu4o.7cx6n76d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fauc-sovie-store%2Flrc-46%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fauc-sovie-store%2Fi%2F10000651%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/auc-sovie-store/cabinet/rmt/sgv01_lvlc-46.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T11:40:00.495771+00:00",
-      "fitVerifiedAt": "2026-10-05",
-      "vehicleFit": [
-        {
-          "vehicleId": "suzuki-hustler-mr52s-mr92s",
-          "status": "verified"
-        }
-      ],
-      "audit": {
-        "status": "verified_live",
-        "mode": "exact_feed_fallback",
-        "salesSource": "worker",
-        "fitEvidence": "https://store.shopping.yahoo.co.jp/sovie-store/lvmr-13.html"
-      }
-    },
-    {
       "productId": "hustler-mr52-92-hobbyman-full",
       "name": "【日本売上No.1】最大全額3,800円引 新型 ハスラー MR52S MR92S Jスタイル 対応 サンシェード カーテン 車中泊 防災 グッズ フルセット 車用カーテン カーシェード サイド カーテン セット シェード セット【日本製】Lot No.02",
       "brand": "趣味職人",
@@ -206,6 +176,7 @@
   ],
   "failures": {
     "freed-gt-hobbyman-shade": "same_shop_identity_listing_not_found",
-    "nbox-jf56-di-flat4": "same_shop_identity_listing_not_found"
+    "nbox-jf56-di-flat4": "same_shop_identity_listing_not_found",
+    "hustler-mr52-92-levolva-lvmr13": "manual_safety_hold_wrong_product_type"
   }
 }
