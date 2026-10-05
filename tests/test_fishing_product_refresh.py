@@ -1,3 +1,4 @@
+# Regression coverage for strict product-model matching across Rakuten shops.
 import importlib.util
 import pathlib
 import unittest
