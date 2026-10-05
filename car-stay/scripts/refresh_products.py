@@ -38,6 +38,15 @@ def fetch_json(url,headers=None):
             if attempt==2: raise
             time.sleep(1+attempt*2)
 
+def fetch_json_quick(url,headers=None,timeout=4):
+    """Single-attempt probe for optional fast paths. Failure falls through immediately."""
+    req=urllib.request.Request(url,headers=headers or HEADERS)
+    try:
+        with urllib.request.urlopen(req,timeout=timeout) as r:
+            return json.loads(r.read().decode('utf-8'))
+    except Exception:
+        return None
+
 def fetch_text(url):
     req=urllib.request.Request(url,headers=HEADERS)
     with urllib.request.urlopen(req,timeout=8) as r:
@@ -118,30 +127,30 @@ def seed_queries(seed):
     return out
 
 def worker_exact_item_candidate(seed):
-    """Resolve only the manually audited Rakuten item URL through the shared Worker.
-    If the endpoint is unavailable or cannot confirm the exact item, return None and let
-    the existing API/search fallbacks continue unchanged.
-    """
-    for search_query in seed_queries(seed):
-        payload=fetch_json(ITEM_LOOKUP+'?'+urllib.parse.urlencode({'url':seed['itemUrl'],'q':search_query}))
-        if payload.get('found') is not True:
-            continue
-        item_url=canonical_item_url(payload.get('item_url',''))
-        if item_url!=canonical_item_url(seed['itemUrl']):
-            continue
-        name=str(payload.get('name') or '')
-        if not identity_ok(name,seed):
-            continue
-        return {
-            'name':name,
-            'price':payload.get('price'),
-            'url':payload.get('affiliate_url',''),
-            'itemUrl':item_url,
-            'image':payload.get('image',''),
-            'itemCode':payload.get('item_code',''),
-            'source':'worker_exact_url'
-        }
-    return None
+    """Fast optional exact-URL probe. Never let Worker latency stall the whole audit."""
+    queries=seed_queries(seed)
+    search_query=queries[0] if queries else seed.get('query','')
+    payload=fetch_json_quick(
+        ITEM_LOOKUP+'?'+urllib.parse.urlencode({'url':seed['itemUrl'],'q':search_query}),
+        timeout=4
+    )
+    if not payload or payload.get('found') is not True:
+        return None
+    item_url=canonical_item_url(payload.get('item_url',''))
+    if item_url!=canonical_item_url(seed['itemUrl']):
+        return None
+    name=str(payload.get('name') or '')
+    if not identity_ok(name,seed):
+        return None
+    return {
+        'name':name,
+        'price':payload.get('price'),
+        'url':payload.get('affiliate_url',''),
+        'itemUrl':item_url,
+        'image':payload.get('image',''),
+        'itemCode':payload.get('item_code',''),
+        'source':'worker_exact_url'
+    }
 
 def worker_candidate(seed):
     previews=[]
