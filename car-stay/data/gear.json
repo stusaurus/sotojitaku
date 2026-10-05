@@ -1,0 +1,13 @@
+{"gear":[
+{"gearId":"home_duvet","label":"掛け布団","capabilities":["warmth","padding"]},
+{"gearId":"blanket","label":"毛布","capabilities":["warmth","padding","gap_fill"]},
+{"gearId":"pillow","label":"枕","capabilities":["sleep_comfort"]},
+{"gearId":"towel","label":"タオル","capabilities":["gap_fill","drying"]},
+{"gearId":"camp_mat","label":"車中泊/キャンプマット","capabilities":["padding","floor_step_partial"]},
+{"gearId":"led_light","label":"LEDライト","capabilities":["lighting"]},
+{"gearId":"mobile_battery","label":"モバイルバッテリー","capabilities":["usb_power"]},
+{"gearId":"privacy_full","label":"全面の目隠し","capabilities":["privacy_full"]},
+{"gearId":"fan","label":"扇風機","capabilities":["air_movement"]},
+{"gearId":"electric_blanket","label":"電気毛布","capabilities":["strong_warmth"]},
+{"gearId":"portable_power","label":"ポータブル電源","capabilities":["portable_power"]}
+]}
