@@ -357,26 +357,28 @@ def acquire(runtime_budget_seconds=None):
         try:
             if not fit_audit_fresh(seed,now_dt): raise ValueError('fit_audit_expired')
             candidate=None
-            page_info=exact_page_info(seed)
-            if page_info:
-                candidate=rakuten_api_exact_candidate(seed)
-            if candidate is None:
-                candidate=worker_exact_item_candidate(seed)
-            if candidate is None:
-                candidate=rakuten_api_candidate(seed)
-            worker_error=None
-            if candidate is None:
+            source_errors=[]
+            for source_name,source_fn in (
+                ('worker_exact_url',worker_exact_item_candidate),
+                ('rakuten_api_exact',rakuten_api_exact_candidate),
+                ('rakuten_api_search',rakuten_api_candidate),
+                ('worker',worker_candidate),
+            ):
+                if candidate is not None: break
                 try:
-                    candidate=worker_candidate(seed)
-                except Exception as e:
-                    worker_error=type(e).__name__
+                    candidate=source_fn(seed)
+                except Exception as source_error:
+                    source_errors.append(source_name+':'+type(source_error).__name__)
             if candidate is None:
-                suffix=f" [worker:{worker_error}]" if worker_error else ""
+                suffix=(' ['+','.join(source_errors)+']') if source_errors else ''
                 raise ValueError('same_shop_identity_listing_not_found'+suffix)
             target_item=candidate.get('itemUrl') or canonical_item_url(candidate['url'])
             if not safe_affiliate(candidate['url'],target_item): raise ValueError('unsafe_or_wrong_affiliate')
-            price=candidate.get('pagePrice') or candidate.get('price')
+            price=candidate.get('price')
             if not isinstance(price,(int,float)) or price<=0: raise ValueError('price_unknown')
+            page_price=candidate.get('pagePrice')
+            if isinstance(page_price,(int,float)) and abs(page_price-price)>max(500,price*.35):
+                raise ValueError('api_page_price_mismatch')
             image=candidate.get('image','')
             if not isinstance(image,str) or not image.startswith('https://'): raise ValueError('image_unknown')
             mode,live_price=page_sales_audit(seed,target_item,int(price))
