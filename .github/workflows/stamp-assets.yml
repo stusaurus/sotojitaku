@@ -1,0 +1,46 @@
+name: Stamp static asset fingerprints
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app.js'
+      - 'style.css'
+      - 'engine.js'
+      - 'products.js'
+      - 'scripts/stamp_assets.py'
+      - '.github/workflows/stamp-assets.yml'
+permissions:
+  contents: write
+concurrency:
+  group: sotojitaku-asset-stamp
+  cancel-in-progress: true
+jobs:
+  stamp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Stamp latest main safely
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/stamp_assets.py
+            git add app.js index.html
+            if git diff --cached --quiet; then
+              echo "Asset fingerprints already current."
+              exit 0
+            fi
+            git commit -m 'Stamp static asset fingerprints'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Main moved during asset stamp; retrying ($attempt/3)."
+            sleep $((attempt * 2))
+          done
+          echo "Could not publish asset fingerprints after three retries."
+          exit 1
