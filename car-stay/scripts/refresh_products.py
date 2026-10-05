@@ -283,12 +283,23 @@ def acquire():
     for seed in load_seeds():
         try:
             if not fit_audit_fresh(seed,now_dt): raise ValueError('fit_audit_expired')
-            candidate=rakuten_api_exact_candidate(seed)
+            candidate=None
+            source_errors=[]
+            for source_name,source_fn in (
+                ('rakuten_api_exact',rakuten_api_exact_candidate),
+                ('rakuten_api_search',rakuten_api_candidate),
+                ('worker',worker_candidate),
+            ):
+                if candidate is not None: break
+                try:
+                    candidate=source_fn(seed)
+                except Exception as source_error:
+                    # Keep fail-closed product validation, but do not let one transport/API
+                    # outage prevent the next independent verified source from being tried.
+                    source_errors.append(source_name+':'+type(source_error).__name__)
             if candidate is None:
-                candidate=rakuten_api_candidate(seed)
-            if candidate is None:
-                candidate=worker_candidate(seed)
-            if candidate is None: raise ValueError('same_shop_identity_listing_not_found')
+                suffix=(' ['+','.join(source_errors)+']') if source_errors else ''
+                raise ValueError('same_shop_identity_listing_not_found'+suffix)
             target_item=candidate.get('itemUrl') or canonical_item_url(candidate['url'])
             if not safe_affiliate(candidate['url'],target_item): raise ValueError('unsafe_or_wrong_affiliate')
             price=candidate.get('price')
