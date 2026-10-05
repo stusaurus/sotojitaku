@@ -58,5 +58,5 @@ test('CAR STAY only monetizes unknown vehicle floors after an observed floor gap
   assert.match(app,/floor_observation/);
   assert.match(app,/data-floor/);
   assert.match(engine,/floorObservation=input\.floorObservation/);
-  assert.match(engine,/\\["noticeable","large"\\]\\.includes\\(floorObservation\\)/);
+  assert.ok(engine.includes('["noticeable","large"].includes(floorObservation)'));
 });
