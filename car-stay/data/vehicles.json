@@ -1,12 +1,178 @@
 {
-  "checkedAt":"2026-10-05",
-  "vehicles":[
-    {"vehicleId":"honda-nbox-jf5-jf6","shortLabel":"N-BOX","label":"Honda N-BOX JF5/JF6","generation":"2023年10月〜 / JF5・JF6","config":{"trims":["N-BOX","N-BOX Custom","N-BOX JOY","N-BOX Slope"]},"geometry":{"usableLengthMm":1800,"usableWidthMm":null,"confidence":"B","note":"Honda 2023年検証の後席〜ダッシュボード約180cm参考値。横幅は未確認。"},"floorGrade":"C"},
-    {"vehicleId":"toyota-sienta-10-15","shortLabel":"シエンタ","label":"Toyota Sienta 10/15系","generation":"2022年8月〜 / MXPC10G・MXPL10G・MXPL15G","config":{"seatCounts":[5,7]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
-    {"vehicleId":"honda-freed-gt","shortLabel":"FREED","label":"Honda FREED GT1-GT8","generation":"2024年6月〜 / GT1-GT8","config":{"seatCounts":[5,6,7],"trims":["AIR","AIR EX","CROSSTAR"]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
-    {"vehicleId":"suzuki-hustler-mr52s-mr92s","shortLabel":"ハスラー","label":"Suzuki Hustler MR52S/MR92S","generation":"2020年〜 / MR52S・MR92S","geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
-    {"vehicleId":"honda-nvan-jj1-jj2","shortLabel":"N-VAN","label":"Honda N-VAN JJ1/JJ2","generation":"JJ1・JJ2","geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
-    {"vehicleId":"suzuki-every-da17v","shortLabel":"エブリイ DA17V","label":"Suzuki Every Van DA17V","generation":"2015年〜 / DA17V","config":{"trims":["JOIN / JOIN Turbo","PC","PA"]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
-    {"vehicleId":"suzuki-every-da18v","shortLabel":"エブリイ DA18V","label":"Suzuki Every Van DA18V","generation":"2026年5月〜 / DA18V","config":{"trims":["JOIN / JOIN Turbo","PC","PA"]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"}
+  "checkedAt": "2026-10-05",
+  "vehicles": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "shortLabel": "N-BOX",
+      "label": "Honda N-BOX JF5/JF6",
+      "generation": "2023年10月〜 / JF5・JF6",
+      "config": {
+        "trims": [
+          "N-BOX",
+          "N-BOX Custom",
+          "N-BOX JOY",
+          "N-BOX Slope"
+        ]
+      },
+      "geometry": {
+        "usableLengthMm": 1800,
+        "usableWidthMm": null,
+        "confidence": "B",
+        "note": "Honda 2023年検証の後席〜ダッシュボード約180cm参考値。横幅は未確認。"
+      },
+      "floorGrade": "C"
+    },
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "shortLabel": "シエンタ",
+      "label": "Toyota Sienta 10/15系",
+      "generation": "2022年8月〜 / MXPC10G・MXPL10G・MXPL15G",
+      "config": {
+        "seatCounts": [
+          5,
+          7
+        ]
+      },
+      "geometry": {
+        "usableLengthMm": null,
+        "usableWidthMm": null,
+        "confidence": "D"
+      },
+      "floorGrade": "unknown",
+      "sleepProfiles": [
+        {
+          "when": {
+            "seatCount": 5
+          },
+          "geometry": {
+            "usableLengthMm": 2045,
+            "usableWidthMm": null,
+            "confidence": "A",
+            "note": "Toyota official catalogue: 2-row-seat flat luggage mode cargo length 2,045mm."
+          },
+          "floorGrade": "B",
+          "source": {
+            "url": "https://toyota.jp/pages/contents/request/webcatalog/sienta/sienta_main_202512.pdf",
+            "checkedAt": "2026-10-05"
+          }
+        }
+      ]
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "shortLabel": "FREED",
+      "label": "Honda FREED GT1-GT8",
+      "generation": "2024年6月〜 / GT1-GT8",
+      "config": {
+        "seatCounts": [
+          5,
+          6,
+          7
+        ],
+        "trims": [
+          "AIR",
+          "AIR EX",
+          "CROSSTAR"
+        ]
+      },
+      "geometry": {
+        "usableLengthMm": null,
+        "usableWidthMm": null,
+        "confidence": "D"
+      },
+      "floorGrade": "unknown",
+      "sleepProfiles": [
+        {
+          "when": {
+            "seatCount": 5,
+            "trim": "CROSSTAR"
+          },
+          "geometry": {
+            "usableLengthMm": 1970,
+            "usableWidthMm": null,
+            "confidence": "B",
+            "note": "Honda Camp measured reference: CROSSTAR 2-row 5-seat 'oyasumi mode' about 197cm."
+          },
+          "floorGrade": "C",
+          "floorStepMm": 25,
+          "source": {
+            "url": "https://www.honda.co.jp/outdoor/stay-car/freed.html",
+            "checkedAt": "2026-10-05"
+          }
+        }
+      ]
+    },
+    {
+      "vehicleId": "suzuki-hustler-mr52s-mr92s",
+      "shortLabel": "ハスラー",
+      "label": "Suzuki Hustler MR52S/MR92S",
+      "generation": "2020年〜 / MR52S・MR92S",
+      "geometry": {
+        "usableLengthMm": null,
+        "usableWidthMm": null,
+        "confidence": "D"
+      },
+      "floorGrade": "unknown"
+    },
+    {
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "shortLabel": "N-VAN",
+      "label": "Honda N-VAN JJ1/JJ2",
+      "generation": "JJ1・JJ2",
+      "geometry": {
+        "usableLengthMm": 2300,
+        "usableWidthMm": null,
+        "confidence": "B",
+        "note": "Honda Camp measured reference: passenger-side flat surface about 230cm in passenger & cargo flat mode."
+      },
+      "floorGrade": "A",
+      "source": {
+        "url": "https://www.honda.co.jp/outdoor/stay-car/n-van.html",
+        "checkedAt": "2026-10-05"
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "shortLabel": "エブリイ DA17V",
+      "label": "Suzuki Every Van DA17V",
+      "generation": "2015年〜 / DA17V",
+      "config": {
+        "trims": [
+          "JOIN / JOIN Turbo",
+          "PC",
+          "PA"
+        ]
+      },
+      "geometry": {
+        "usableLengthMm": 1955,
+        "usableWidthMm": null,
+        "confidence": "A",
+        "note": "Suzuki official release: cargo floor length 1,955mm with two occupants; used as a conservative length reference, not a sleep-width guarantee."
+      },
+      "floorGrade": "B",
+      "source": {
+        "url": "https://www.suzuki.co.jp/release/a/2014/0218/index.html",
+        "checkedAt": "2026-10-05"
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "shortLabel": "エブリイ DA18V",
+      "label": "Suzuki Every Van DA18V",
+      "generation": "2026年5月〜 / DA18V",
+      "config": {
+        "trims": [
+          "JOIN / JOIN Turbo",
+          "PC",
+          "PA"
+        ]
+      },
+      "geometry": {
+        "usableLengthMm": null,
+        "usableWidthMm": null,
+        "confidence": "D"
+      },
+      "floorGrade": "unknown"
+    }
   ]
 }

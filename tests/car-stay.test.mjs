@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {evaluate,productEligible,DEFAULT_RULES} from "../car-stay/engine.js";
+import {evaluate,productEligible,DEFAULT_RULES,resolvedVehicleProfile} from "../car-stay/engine.js";
 
 const nbox={vehicleId:"honda-nbox-jf5-jf6",geometry:{usableLengthMm:1800,usableWidthMm:null},floorGrade:"C"};
 const base={
@@ -87,4 +87,31 @@ test("flat floor observation never creates a mat-selling gap on unknown floor da
   const r=evaluate({...base,people:[{type:"adult",height:171}],floorObservation:"flat"},vehicle,DEFAULT_RULES);
   assert.equal(r.gaps.some(g=>g.id==="floor_step"),false);
   assert.equal(r.floor.state,"flat");
+});
+
+
+test("Sienta 5-seat uses verified 2045mm profile while 7-seat remains unknown",()=>{
+  const v={vehicleId:"toyota-sienta-10-15",geometry:{usableLengthMm:null,usableWidthMm:null},floorGrade:"unknown",sleepProfiles:[
+    {when:{seatCount:5},geometry:{usableLengthMm:2045,usableWidthMm:null},floorGrade:"B"}
+  ]};
+  assert.equal(resolvedVehicleProfile(v,{seatCount:5}).geometry.usableLengthMm,2045);
+  assert.equal(resolvedVehicleProfile(v,{seatCount:7}).geometry.usableLengthMm,null);
+});
+
+test("FREED CROSSTAR 5-seat resolves Honda measured 1970mm and 25mm step",()=>{
+  const v={vehicleId:"honda-freed-gt",geometry:{usableLengthMm:null,usableWidthMm:null},floorGrade:"unknown",sleepProfiles:[
+    {when:{seatCount:5,trim:"CROSSTAR"},geometry:{usableLengthMm:1970,usableWidthMm:null},floorGrade:"C",floorStepMm:25}
+  ]};
+  const p=resolvedVehicleProfile(v,{seatCount:5,trim:"CROSSTAR"});
+  assert.equal(p.geometry.usableLengthMm,1970);
+  assert.equal(p.floorGrade,"C");
+  assert.equal(p.floorStepMm,25);
+  assert.equal(resolvedVehicleProfile(v,{seatCount:6,trim:"CROSSTAR"}).geometry.usableLengthMm,null);
+});
+
+test("verified vehicle geometry removes only the confirmed length QUICK MEASURE",()=>{
+  const v={vehicleId:"honda-nvan-jj1-jj2",geometry:{usableLengthMm:2300,usableWidthMm:null},floorGrade:"A"};
+  const r=evaluate({...base,people:[{type:"adult",height:171}],config:{}},v,DEFAULT_RULES);
+  assert.equal(r.sleep.needsQuickMeasure.includes("length"),false);
+  assert.equal(r.sleep.lengthState,"comfort");
 });
