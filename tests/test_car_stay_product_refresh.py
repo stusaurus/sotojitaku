@@ -385,5 +385,25 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.load_seeds,refresh.load_previous_products,refresh.time.monotonic=originals
 
+    def test_refresh_order_prioritizes_previous_live_products_oldest_first(self):
+        from datetime import datetime, timezone, timedelta
+        now=datetime(2026,10,5,tzinfo=timezone.utc)
+        seeds=[{"productId":"new-a"},{"productId":"live-newer"},{"productId":"live-older"},{"productId":"new-b"}]
+        previous={
+            "live-newer":{"productId":"live-newer","verifiedAt":(now-timedelta(days=1)).isoformat()},
+            "live-older":{"productId":"live-older","verifiedAt":(now-timedelta(days=5)).isoformat()}
+        }
+        ordered=refresh.order_seeds_for_refresh(seeds,previous,now)
+        self.assertEqual([x["productId"] for x in ordered[:2]],["live-older","live-newer"])
+        self.assertEqual(set(x["productId"] for x in ordered[2:]),{"new-a","new-b"})
+
+    def test_unresolved_refresh_order_rotates_by_day(self):
+        from datetime import datetime, timezone
+        seeds=[{"productId":"a"},{"productId":"b"},{"productId":"c"}]
+        day1=refresh.order_seeds_for_refresh(seeds,{},datetime(2026,1,1,tzinfo=timezone.utc))
+        day2=refresh.order_seeds_for_refresh(seeds,{},datetime(2026,1,2,tzinfo=timezone.utc))
+        self.assertEqual([x["productId"] for x in day1],["a","b","c"])
+        self.assertEqual([x["productId"] for x in day2],["b","c","a"])
+
 if __name__=="__main__":
     unittest.main()
