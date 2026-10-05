@@ -27,6 +27,7 @@ HEADERS={
 }
 
 RUNTIME_BUDGET_SECONDS=max(30,min(420,int(os.environ.get('CAR_STAY_REFRESH_BUDGET_SECONDS','300'))))
+AUDIT_POLICY_VERSION='carstay-2026-10-06-live-replacement-v1'
 
 _PAGE_CACHE={}
 
@@ -456,6 +457,7 @@ def acquire(runtime_budget_seconds=None):
         time.sleep(.6)
     return {
         'version':1,'updatedAt':now,'status':'ok' if not failures and not deferred else 'partial',
+        'auditPolicyVersion':AUDIT_POLICY_VERSION,
         'products':products,'failures':failures,'deferred':deferred,
         'runtimeBudgetSeconds':budget,'shardIndex':SHARD_INDEX,'shardTotal':SHARD_TOTAL
     }
