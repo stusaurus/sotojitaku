@@ -15,6 +15,7 @@ SEED_DIR=ROOT/'car-stay'/'data'/'product-seeds'
 OUT=ROOT/'car-stay'/'data'/'audited-products.json'
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
 SHIPPING_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
+ITEM_BY_URL='https://daily-cost-api.kiyo0625puma.workers.dev/api/item-by-url'
 RAKUTEN_API='https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701'
 HEADERS={
     'Origin':'https://stusaurus.github.io',
@@ -115,6 +116,36 @@ def seed_queries(seed):
         value=str(value or '').strip()
         if value and value not in out: out.append(value)
     return out
+
+def worker_exact_candidate(seed):
+    item_url=canonical_item_url(seed.get('itemUrl',''))
+    if not item_url:
+        return None
+    payload=fetch_json(ITEM_BY_URL+'?'+urllib.parse.urlencode({'url':item_url}))
+    if payload.get('found') is not True:
+        return None
+    name=payload.get('name','')
+    returned_url=canonical_item_url(payload.get('itemUrl',''))
+    affiliate=payload.get('affiliateUrl','')
+    price=payload.get('price')
+    image=payload.get('image','')
+    if returned_url!=item_url or not identity_ok(name,seed):
+        return None
+    if not safe_affiliate(affiliate,item_url):
+        return None
+    if not isinstance(price,(int,float)) or price<=0:
+        return None
+    if not isinstance(image,str) or not image.startswith('https://'):
+        return None
+    return {
+        'name':name,
+        'price':price,
+        'url':affiliate,
+        'itemUrl':returned_url,
+        'image':image,
+        'itemCode':payload.get('itemCode',''),
+        'source':'worker_exact_url'
+    }
 
 def worker_candidate(seed):
     previews=[]
@@ -286,6 +317,7 @@ def acquire():
             candidate=None
             source_errors=[]
             for source_name,source_fn in (
+                ('worker_exact_url',worker_exact_candidate),
                 ('rakuten_api_exact',rakuten_api_exact_candidate),
                 ('rakuten_api_search',rakuten_api_candidate),
                 ('worker',worker_candidate),
