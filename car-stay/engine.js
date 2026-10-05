@@ -2,12 +2,31 @@ export const DEFAULT_RULES={heatBlockMinC:25,heatBlockMaxC:35,coldChallengeC:5,c
 
 const hasCapability=(gear,capability)=>gear.some(g=>Array.isArray(g.capabilities)&&g.capabilities.includes(capability));
 
-export function sleepAssessment({vehicle,people,measurements={},rules=DEFAULT_RULES}){
+function profileMatches(profile,config={}){
+  const when=profile?.when||{};
+  if(when.seatCount!==undefined&&Number(config.seatCount)!==Number(when.seatCount))return false;
+  if(when.trim!==undefined&&config.trim!==when.trim)return false;
+  if(Array.isArray(when.seatCounts)&&!when.seatCounts.includes(Number(config.seatCount)))return false;
+  if(Array.isArray(when.trims)&&!when.trims.includes(config.trim))return false;
+  return true;
+}
+export function resolvedVehicleProfile(vehicle,config={}){
+  const profile=(vehicle.sleepProfiles||[]).find(p=>profileMatches(p,config))||null;
+  return {
+    geometry:{...(vehicle.geometry||{}),...(profile?.geometry||{})},
+    floorGrade:profile?.floorGrade||vehicle.floorGrade||"unknown",
+    floorStepMm:profile?.floorStepMm??vehicle.floorStepMm??null,
+    source:profile?.source||vehicle.source||null
+  };
+}
+
+export function sleepAssessment({vehicle,people,measurements={},config={},rules=DEFAULT_RULES}){
+  const profile=resolvedVehicleProfile(vehicle,config);
   const adults=people.filter(p=>p.type!=="child");
   const children=people.filter(p=>p.type==="child");
   const tallest=Math.max(0,...people.map(p=>(Number(p.height)||0)*10));
-  const length=Number(measurements.lengthMm)||vehicle.geometry?.usableLengthMm||null;
-  const width=Number(measurements.widthMm)||vehicle.geometry?.usableWidthMm||null;
+  const length=Number(measurements.lengthMm)||profile.geometry?.usableLengthMm||null;
+  const width=Number(measurements.widthMm)||profile.geometry?.usableWidthMm||null;
   const targetWidth=adults.length*rules.adultWidthMm+children.length*rules.childWidthMm;
   const needs=[];let lengthState="unknown",widthState="unknown";
   if(!length)needs.push("length");
@@ -18,12 +37,12 @@ export function sleepAssessment({vehicle,people,measurements={},rules=DEFAULT_RU
   if(people.length>=2&&!width)needs.push("width");
   else if(width){const ratio=width/Math.max(1,targetWidth);widthState=ratio>=1?"just_right":ratio>=.85?"snug":"not_recommended";}
   else if(people.length===1)widthState="solo_unchecked";
-  return {tallest,length,width,targetWidth,lengthState,widthState,needsQuickMeasure:needs};
+  return {tallest,length,width,targetWidth,lengthState,widthState,needsQuickMeasure:needs,profile};
 }
 
 export function evaluate(input,vehicle,rules=DEFAULT_RULES){
   const gear=input.gear||[];
-  const sleep=sleepAssessment({vehicle,people:input.people||[],measurements:input.measurements,rules});
+  const sleep=sleepAssessment({vehicle,people:input.people||[],measurements:input.measurements,config:input.config||{},rules});
   const issues=[],gaps=[],resolved=[],notNeeded=[];let blocked=false,challenge=false;
 
   if(input.sleepEngineOn){
@@ -79,7 +98,7 @@ export function evaluate(input,vehicle,rules=DEFAULT_RULES){
     gaps.push({id:"sleep_comfort",severity:"should",free:"枕位置や荷物位置を先に自宅で試しておく。"});
   }
 
-  const floor=vehicle.floorGrade||"unknown";
+  const floor=sleep.profile?.floorGrade||vehicle.floorGrade||"unknown";
   const floorObservation=input.floorObservation||"unknown";
   let floorState="unknown";
   const floorNeedsFix=["C","D"].includes(floor)||["noticeable","large"].includes(floorObservation);
@@ -107,7 +126,7 @@ export function evaluate(input,vehicle,rules=DEFAULT_RULES){
 
   const unresolved=gaps.filter(g=>["must","should"].includes(g.severity));
   const status=blocked?"CHANGE_PLAN":challenge?"CHALLENGE":unresolved.length?"ALMOST_READY":"READY";
-  return {status,issues,gaps,resolved,notNeeded:[...new Set(notNeeded)],sleep,floor:{grade:floor,observation:floorObservation,state:floorState},vehicleId:vehicle.vehicleId};
+  return {status,issues,gaps,resolved,notNeeded:[...new Set(notNeeded)],sleep,floor:{grade:floor,stepMm:sleep.profile?.floorStepMm??null,observation:floorObservation,state:floorState},vehicleId:vehicle.vehicleId};
 }
 
 export function resultHeadline(result){
