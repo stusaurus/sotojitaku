@@ -1,0 +1,42 @@
+{
+  "productId": "hustler-mr52-92-levolva-lvmr13",
+  "name": "Levolva ハスラー MR52S/MR92S スマート車中泊マットDX",
+  "brand": "Levolva",
+  "query": "Levolva ハスラー MR52S MR92S 車中泊マット LVMR-13",
+  "itemUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-13/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 94,
+  "identityGroups": [
+    [
+      "Levolva"
+    ],
+    [
+      "ハスラー"
+    ],
+    [
+      "MR52S"
+    ],
+    [
+      "MR92S"
+    ],
+    [
+      "マット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "MR31S",
+    "MR41S"
+  ],
+  "fitEvidenceUrl": "https://store.shopping.yahoo.co.jp/sovie-store/lvmr-13.html",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "suzuki-hustler-mr52s-mr92s",
+      "status": "verified"
+    }
+  ]
+}
