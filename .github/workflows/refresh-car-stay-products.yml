@@ -77,6 +77,14 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           for attempt in 1 2 3; do
             git fetch origin main
+            if ! git diff --quiet "$GITHUB_SHA" origin/main -- \
+              car-stay/scripts/refresh_products.py \
+              car-stay/scripts/merge_product_shards.py \
+              car-stay/data/product-seeds \
+              .github/workflows/refresh-car-stay-products.yml; then
+              echo "A newer CAR STAY audit definition exists on main; skip stale catalog publish."
+              exit 0
+            fi
             git reset --hard origin/main
             cp /tmp/car-stay-products.json car-stay/data/audited-products.json
             git add car-stay/data/audited-products.json
