@@ -186,5 +186,30 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.identity_ok(good,seed))
         self.assertFalse(refresh.identity_ok(bad,seed))
 
+    def test_acquire_falls_back_to_worker_when_rakuten_api_raises(self):
+        import urllib.parse
+        seed={
+            "productId":"fallback-item","name":"N-VAN shade","brand":"Test",
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "gapIds":["privacy_full"],"fitCheckedAt":"2026-10-05",
+            "vehicleFit":[{"vehicleId":"honda-nvan-jj1-jj2","status":"verified"}]
+        }
+        item=seed["itemUrl"]
+        affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(item,safe="")
+        candidate={"name":"N-VAN shade","price":10000,"url":affiliate,"itemUrl":item,"image":"https://example.com/x.jpg","itemCode":"hobbyman:1","source":"worker"}
+        originals=(refresh.load_seeds,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)
+        try:
+            refresh.load_seeds=lambda:[seed]
+            refresh.rakuten_api_exact_candidate=lambda _seed:(_ for _ in ()).throw(RuntimeError("api down"))
+            refresh.rakuten_api_candidate=lambda _seed:(_ for _ in ()).throw(RuntimeError("api down"))
+            refresh.worker_candidate=lambda _seed:candidate
+            refresh.page_sales_audit=lambda _seed,_url,_price:("exact_feed_fallback",_price)
+            refresh.time.sleep=lambda _seconds:None
+            result=refresh.acquire()
+            self.assertEqual(len(result["products"]),1)
+            self.assertEqual(result["products"][0]["audit"]["salesSource"],"worker")
+        finally:
+            (refresh.load_seeds,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)=originals
+
 if __name__=="__main__":
     unittest.main()
