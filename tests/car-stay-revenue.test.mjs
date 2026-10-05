@@ -28,3 +28,24 @@ test('all vehicle SEO CTAs carry an entry key',()=>{
     assert.ok(page.includes('&from=seo&entry='+slug),slug);
   }
 });
+
+
+test('CAR STAY SEO pages measure landing views and Builder CTA clicks',()=>{
+  const seo=read('car-stay/seo.js');
+  assert.match(seo,/sotojitaku_car_stay_seo/);
+  assert.match(seo,/seo_cta_click/);
+  assert.match(seo,/vehicle_slug/);
+  assert.match(seo,/intent_slug/);
+  assert.match(seo,/entry_key/);
+
+  const pages=[
+    'car-stay/car/index.html',
+    ...['n-box','sienta','freed','hustler','n-van','every'].map(slug=>'car-stay/car/'+slug+'/index.html'),
+    'car-stay/car/n-box/mat/index.html',
+    'car-stay/car/n-box/shade/index.html',
+    ...['sienta','freed','hustler','n-van','every'].map(slug=>'car-stay/car/'+slug+'/shade/index.html')
+  ];
+  for(const page of pages){
+    assert.match(read(page),/seo\.js/,page+' should load SEO analytics');
+  }
+});
