@@ -1,0 +1,57 @@
+{
+  "productId": "nbox-jf56-aurauto-at-tx878",
+  "name": "Aurauto N-BOX JF5/JF6 車種専用 全窓サンシェード フルセット",
+  "brand": "Aurauto",
+  "query": "at-tx878",
+  "itemUrl": "https://item.rakuten.co.jp/aurauto/at-tx878/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 92,
+  "identityGroups": [
+    [
+      "N-BOX",
+      "NBOX"
+    ],
+    [
+      "JF5"
+    ],
+    [
+      "JF6"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット",
+      "全窓",
+      "1台分"
+    ]
+  ],
+  "forbiddenTerms": [
+    "JF3",
+    "JF4"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/aurauto/at-tx878/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "status": "verified",
+      "trims": [
+        "N-BOX",
+        "N-BOX Custom"
+      ],
+      "exclusions": [
+        "N-BOX JOY",
+        "N-BOX Slope"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "at-tx878",
+    "N-BOX JF5 JF6 全窓 サンシェード",
+    "NBOX JF5 JF6 サンシェード フルセット"
+  ]
+}
