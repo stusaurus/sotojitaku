@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T11:40:00.495771+00:00",
+  "updatedAt": "2026-10-05T11:44:43.747969+00:00",
   "status": "partial",
   "products": [
     {
@@ -17,7 +17,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fevery-17-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10046485%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-g004-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T11:40:00.495771+00:00",
+      "verifiedAt": "2026-10-05T11:44:43.747969+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -60,7 +60,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/hustler-mr52s-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fhustler-mr52s-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10046461%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-g022-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T11:40:00.495771+00:00",
+      "verifiedAt": "2026-10-05T11:44:43.747969+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -89,7 +89,7 @@
       "itemUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-lsb-40/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00q9r1o.7cx6m14e.g00q9r1o.7cx6nf71/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fzenpou22%2Fza-syzp-lsb-40%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fzenpou22%2Fi%2F10044619%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/zenpou22/cabinet/07142215/lsb-40.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T11:40:00.495771+00:00",
+      "verifiedAt": "2026-10-05T11:44:43.747969+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -125,7 +125,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/n-van-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fn-van-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10045189%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-c025-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T11:40:00.495771+00:00",
+      "verifiedAt": "2026-10-05T11:44:43.747969+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -154,7 +154,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-lit/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fsienta-mxpl-lit%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10032882%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/05s-sam/05s-a070-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T11:40:00.495771+00:00",
+      "verifiedAt": "2026-10-05T11:44:43.747969+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -176,7 +176,7 @@
   ],
   "failures": {
     "freed-gt-hobbyman-shade": "same_shop_identity_listing_not_found",
-    "nbox-jf56-di-flat4": "same_shop_identity_listing_not_found",
-    "hustler-mr52-92-levolva-lvmr13": "manual_safety_hold_wrong_product_type"
+    "hustler-mr52-92-levolva-lvmr13": "same_shop_identity_listing_not_found",
+    "nbox-jf56-di-flat4": "same_shop_identity_listing_not_found"
   }
 }
