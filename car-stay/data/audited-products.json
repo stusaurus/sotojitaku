@@ -1,37 +1,34 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T22:07:50.871777+00:00",
+  "updatedAt": "2026-10-05T22:11:55.198953+00:00",
   "auditPolicyVersion": "carstay-2026-10-06-live-replacement-v1",
   "status": "partial",
   "products": [
     {
-      "productId": "freed-gt-hobbyman-lit6",
-      "name": "【日本売上No.1】最大全額3,800円引 新型 フリード GT 1/8 系 対応 サンシェード カーテン 車中泊 防災 グッズ フルセット AIR CROSSTAR 車用カーテン カーシェード サイド カーテン セット シェード セット【日本製】Lot No.02",
-      "brand": "趣味職人",
+      "productId": "freed-gt5-cartist-jr00280029",
+      "name": "＼9日迄・限定5％OFF＋P2倍／【楽天1位】Cartist ホンダ 新型 フリード GT系 GB系 5人乗り 専用 フリード+ 車中泊 マット キャンプ マット 子供用 ペット用 犬用 折りたたみ 後部座席 車用ベッド ベットキッド 車中泊ベッド マットレス 高反発 防水",
+      "brand": "Cartist",
       "gapIds": [
-        "privacy_full"
+        "floor_step",
+        "sleep_surface"
       ],
       "recommendationRole": "beginner_default",
-      "score": 94,
-      "price": 6980,
+      "score": 95,
+      "price": 9580,
       "itemCode": "",
-      "itemUrl": "https://item.rakuten.co.jp/hobbyman/freed-gt18-cradp/",
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Ffreed-gt18-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10045161%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-c036-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T21:51:41.090349+00:00",
+      "itemUrl": "https://item.rakuten.co.jp/jroad/jr00280029/",
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00280029%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000843%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640901/jr00280029_01.jpg?_ex=128x128",
+      "verifiedAt": "2026-10-05T22:11:53.171788+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
           "vehicleId": "honda-freed-gt",
           "status": "verified",
           "seatCounts": [
-            5,
-            6,
-            7
+            5
           ],
           "trims": [
-            "AIR",
-            "AIR EX",
             "CROSSTAR"
           ]
         }
@@ -40,7 +37,7 @@
         "status": "verified_live",
         "mode": "exact_feed_fallback",
         "salesSource": "worker",
-        "fitEvidence": "https://item.rakuten.co.jp/hobbyman/freed-gt18-lit-6/"
+        "fitEvidence": "https://item.rakuten.co.jp/jroad/jr00280029/"
       }
     },
     {
@@ -57,7 +54,7 @@
       "itemUrl": "https://item.rakuten.co.jp/autorder/au1175/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u1rfo.7cx6m2b8.g00u1rfo.7cx6n238/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fautorder%2Fau1175%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fautorder%2Fi%2F10001966%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/autorder/cabinet/au1175/au1175_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T21:51:41.090349+00:00",
+      "verifiedAt": "2026-10-05T22:11:53.012959+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -97,7 +94,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/kurumat-black-n-box-jf56/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fkurumat-black-n-box-jf56%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10035501%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/01k-sam/01k-c027-ca.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T22:07:49.328306+00:00",
+      "verifiedAt": "2026-10-05T22:11:53.171788+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -134,7 +131,7 @@
       "itemUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-lsb-40/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00q9r1o.7cx6m14e.g00q9r1o.7cx6nf71/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fzenpou22%2Fza-syzp-lsb-40%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fzenpou22%2Fi%2F10044619%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/zenpou22/cabinet/07142215/lsb-40.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T21:51:41.090349+00:00",
+      "verifiedAt": "2026-10-05T22:11:53.372884+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -200,7 +197,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr-car14971498%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000437%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12594710/car14971498_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T22:07:49.119075+00:00",
+      "verifiedAt": "2026-10-05T22:11:52.687465+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -243,7 +240,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fevery-17-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10046485%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-g004-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T22:07:50.871777+00:00",
+      "verifiedAt": "2026-10-05T22:11:55.198953+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -286,7 +283,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/hustler-mr52s-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fhustler-mr52s-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10046461%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-g022-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T22:07:47.973197+00:00",
+      "verifiedAt": "2026-10-05T22:11:53.012959+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -299,35 +296,6 @@
         "mode": "exact_feed_fallback",
         "salesSource": "worker",
         "fitEvidence": "https://item.rakuten.co.jp/hobbyman/hustler-mr52s-cradp/"
-      }
-    },
-    {
-      "productId": "hustler-mr52-92-atmys-shade",
-      "name": "【日本売上No.1】最大全額3,800円引 新型 ハスラー MR52S MR92S Jスタイル 対応 サンシェード カーテン 車中泊 防災 グッズ フルセット 車用カーテン カーシェード サイド カーテン セット シェード セット【日本製】Lot No.02",
-      "brand": "アトマイズ",
-      "gapIds": [
-        "privacy_full"
-      ],
-      "recommendationRole": "beginner_alternative",
-      "score": 94,
-      "price": 5980,
-      "itemCode": "",
-      "itemUrl": "https://item.rakuten.co.jp/atmys/hustler-mr52s-cradp/",
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qzcdo.7cx6mdfc.g00qzcdo.7cx6nd5a/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fatmys%2Fhustler-mr52s-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fatmys%2Fi%2F10047687%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/atmys/cabinet/07683010/09s-sam1/09s-g022-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T21:51:41.548971+00:00",
-      "fitVerifiedAt": "2026-10-05",
-      "vehicleFit": [
-        {
-          "vehicleId": "suzuki-hustler-mr52s-mr92s",
-          "status": "verified"
-        }
-      ],
-      "audit": {
-        "status": "verified_live",
-        "mode": "exact_feed_fallback",
-        "salesSource": "worker",
-        "fitEvidence": "https://item.rakuten.co.jp/atmys/hustler-mr52s-set/"
       }
     },
     {
@@ -345,7 +313,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr00310032/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00310032%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000845%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640914/jr00310032_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-05T22:07:49.119075+00:00",
+      "verifiedAt": "2026-10-05T22:11:52.687465+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -366,22 +334,23 @@
   ],
   "failures": {
     "every-da17-da18-levolva-mr09": "same_shop_identity_listing_not_found",
-    "freed-gt-crosstar-5-cellutane-a1609": "same_shop_identity_listing_not_found",
+    "freed-gt-crosstar-5-cellutane-premo-a1609": "fit_audit_expired",
     "freed-gt-crosstar-5-presidente-xy0723202": "same_shop_identity_listing_not_found",
     "freed-gt-crosstar-5-suwariba-o010": "same_shop_identity_listing_not_found",
     "freed-gt-crosstar-6-cellutane-a1612": "same_shop_identity_listing_not_found",
+    "freed-gt-hobbyman-lit6": "sales_page_unreachable",
     "freed-gt-sunvic-shade": "same_shop_identity_listing_not_found",
-    "freed-gt5-cartist-jr00280029": "same_shop_identity_listing_not_found",
     "freed-gt6-atmys-kurumat": "fit_audit_expired",
     "hustler-mr52-92-atmys-kurumat4": "sales_page_unreachable",
+    "hustler-mr52-92-atmys-shade": "sales_page_unreachable",
     "hustler-mr52-92-levolva-lvmr13": "same_shop_identity_listing_not_found",
     "nbox-jf56-aurauto-at-tx878": "same_shop_identity_listing_not_found",
     "nbox-jf56-di-flat4": "same_shop_identity_listing_not_found",
     "nvan-jj1-jj2-hobbyman-kurumat": "same_shop_identity_listing_not_found",
     "nvan-jj1-jj2-levolva-mr11": "same_shop_identity_listing_not_found",
-    "nvan-jj1-jj2-nomad-nb-nvan": "same_shop_identity_listing_not_found",
-    "sienta10-7-cellutane-hakuturu": "same_shop_identity_listing_not_found",
-    "sienta10-hobbyman-shade": "sales_page_unreachable"
+    "nvan-jj1-jj2-suwariba-o023": "fit_audit_expired",
+    "sienta10-7-suwariba-o017": "fit_audit_expired",
+    "sienta10-hobbyman-shade": "same_shop_identity_listing_not_found"
   },
   "deferred": {},
   "runtimeBudgetSeconds": 1440.0,
