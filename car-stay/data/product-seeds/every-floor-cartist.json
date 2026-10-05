@@ -1,18 +1,18 @@
 {
-  "productId": "every-da17-da18-levolva-mr09",
-  "name": "Levolva エブリイ DA17V/DA18V 専用 車中泊マットレス",
-  "brand": "Levolva",
-  "query": "LVMR-9",
-  "itemUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-09_1/",
+  "productId": "every-da17-da18-cartist-jr14971498",
+  "name": "Cartist エブリイ バン DA17V/DA18V 車中泊マット",
+  "brand": "Cartist",
+  "query": "jr-car14971498",
+  "itemUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
   "gapIds": [
     "floor_step",
     "sleep_surface"
   ],
-  "recommendationRole": "beginner_alternative",
-  "score": 94,
+  "recommendationRole": "beginner_default",
+  "score": 95,
   "identityGroups": [
     [
-      "Levolva"
+      "Cartist"
     ],
     [
       "エブリイ",
@@ -25,15 +25,19 @@
       "DA18V"
     ],
     [
-      "車中泊マット",
-      "専用マットレス"
+      "車中泊"
+    ],
+    [
+      "マット",
+      "ベッド"
     ]
   ],
   "forbiddenTerms": [
     "DA17W",
-    "DA18W"
+    "DA18W",
+    "ワゴン"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-09_1/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
@@ -56,9 +60,8 @@
     }
   ],
   "searchQueries": [
-    "LVMR-9",
-    "mr-09_1",
-    "Levolva DA17V DA18V エブリイ 車中泊マット",
-    "エブリイ DA18V 専用マットレス"
+    "jr-car14971498",
+    "Cartist エブリイ DA18V 車中泊マット",
+    "エブリイ DA17V DA18V 車中泊マット"
   ]
 }
