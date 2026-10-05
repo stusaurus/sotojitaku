@@ -1,8 +1,8 @@
 """Fail-closed CAR STAY Rakuten refresh.
 
 Only a manually fit-audited exact listing can become a live recommendation.
-Current sales data comes from the Rakuten Ichiba API scoped to the manually audited shop first,
-then the existing Rakuten Worker as a fallback. Any mismatch removes
+Current sales data first asks the shared Rakuten Worker to resolve the exact manually audited item URL,
+then falls back to direct Rakuten API/search paths without relaxing fit gates. Any mismatch removes
 that product from the public catalog rather than retaining stale data.
 """
 from __future__ import annotations
@@ -15,6 +15,7 @@ SEED_DIR=ROOT/'car-stay'/'data'/'product-seeds'
 OUT=ROOT/'car-stay'/'data'/'audited-products.json'
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
 SHIPPING_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
+ITEM_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/item-lookup'
 RAKUTEN_API='https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701'
 HEADERS={
     'Origin':'https://stusaurus.github.io',
@@ -115,6 +116,32 @@ def seed_queries(seed):
         value=str(value or '').strip()
         if value and value not in out: out.append(value)
     return out
+
+def worker_exact_item_candidate(seed):
+    """Resolve only the manually audited Rakuten item URL through the shared Worker.
+    If the endpoint is unavailable or cannot confirm the exact item, return None and let
+    the existing API/search fallbacks continue unchanged.
+    """
+    for search_query in seed_queries(seed):
+        payload=fetch_json(ITEM_LOOKUP+'?'+urllib.parse.urlencode({'url':seed['itemUrl'],'q':search_query}))
+        if payload.get('found') is not True:
+            continue
+        item_url=canonical_item_url(payload.get('item_url',''))
+        if item_url!=canonical_item_url(seed['itemUrl']):
+            continue
+        name=str(payload.get('name') or '')
+        if not identity_ok(name,seed):
+            continue
+        return {
+            'name':name,
+            'price':payload.get('price'),
+            'url':payload.get('affiliate_url',''),
+            'itemUrl':item_url,
+            'image':payload.get('image',''),
+            'itemCode':payload.get('item_code',''),
+            'source':'worker_exact_url'
+        }
+    return None
 
 def worker_candidate(seed):
     previews=[]
@@ -286,6 +313,7 @@ def acquire():
             candidate=None
             source_errors=[]
             for source_name,source_fn in (
+                ('worker_exact_url',worker_exact_item_candidate),
                 ('rakuten_api_exact',rakuten_api_exact_candidate),
                 ('rakuten_api_search',rakuten_api_candidate),
                 ('worker',worker_candidate),
