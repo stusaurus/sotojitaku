@@ -119,3 +119,16 @@ test('Sienta, FREED, N-VAN and Hustler mat intent pages are substantive and Buil
     assert.ok(parent.includes('./mat/'));
   }
 });
+
+test('CAR STAY sitemap has no literal escaped newline text',()=>{
+  const sitemap=read('sitemap.xml');
+  assert.equal(sitemap.includes('\\n  <url>'),false);
+});
+
+test('FREED SEO page reflects verified Honda 5-seat CROSSTAR measurements',()=>{
+  const p=read('car-stay/car/freed/index.html');
+  assert.match(p,/約197cm/);
+  assert.match(p,/約2\.5cm/);
+  assert.match(p,/CROSSTAR 5人乗り/);
+  assert.match(p,/https:\/\/www\.honda\.co\.jp\/outdoor\/stay-car\/freed\.html/);
+});
