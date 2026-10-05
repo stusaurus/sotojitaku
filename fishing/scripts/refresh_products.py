@@ -53,6 +53,16 @@ def fetch_json(url: str, headers: dict[str, str] | None = None) -> dict:
     return {}
 
 
+def fetch_json_quick(url: str, headers: dict[str, str] | None = None, timeout: int = 5) -> dict | None:
+    """Single-attempt Worker probe. A failed probe simply falls through."""
+    req = urllib.request.Request(url, headers=headers or HEADERS)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+
+
 def fetch_text(url: str) -> str:
     req = urllib.request.Request(url, headers=HEADERS)
     with urllib.request.urlopen(req, timeout=10) as response:
@@ -119,11 +129,12 @@ def seed_queries(seed: dict) -> list[str]:
 def worker_exact_candidate(seed: dict) -> dict | None:
     expected = canonical_item_url(seed["itemUrl"])
     for query in seed_queries(seed)[:1]:
-        payload = fetch_json(
+        payload = fetch_json_quick(
             ITEM_LOOKUP
             + "?"
-            + urllib.parse.urlencode({"url": seed["itemUrl"], "q": query})
-        )
+            + urllib.parse.urlencode({"url": seed["itemUrl"], "q": query}),
+            timeout=4,
+        ) or {}
         if payload.get("found") is not True:
             continue
         item_url = canonical_item_url(payload.get("item_url", ""))
@@ -168,9 +179,10 @@ def worker_search_candidate(seed: dict) -> dict | None:
     seen: set[str] = set()
 
     for query in seed_queries(seed):
-        payload = fetch_json(
-            WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30})
-        )
+        payload = fetch_json_quick(
+            WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30}),
+            timeout=5,
+        ) or {}
         for raw in payload.get("products", []):
             candidate = normalize_worker_payload(raw)
             item_url = candidate.get("itemUrl", "")
@@ -199,11 +211,12 @@ def worker_search_candidate(seed: dict) -> dict | None:
 
     shipping_matches: list[tuple[int, dict]] = []
     for query in seed_queries(seed):
-        payload = fetch_json(
+        payload = fetch_json_quick(
             SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
                 {"name": query, "brand": seed.get("brand", "")}
-            )
-        )
+            ),
+            timeout=5,
+        ) or {}
         if payload.get("found") is not True:
             continue
         candidate = normalize_worker_payload(payload)
@@ -487,7 +500,7 @@ def acquire() -> dict:
     products: list[dict] = []
     failures: dict[str, str] = {}
 
-    workers = min(4, max(1, len(seeds)))
+    workers = min(6, max(1, len(seeds)))
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_map = {
             executor.submit(audit_one, seed, now_dt, now): seed
