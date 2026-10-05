@@ -211,5 +211,17 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             (refresh.load_seeds,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)=originals
 
+    def test_freed_gt_current_seed_identity(self):
+        seed={
+            "identityGroups":[["フリード","FREED"],["GT系","GT1","GT2","GT3","GT4","GT5","GT6","GT7","GT8"],["サンシェード"],["8PCS","8枚","全窓","フルセット"]],
+            "forbiddenTerms":["GB5","GB6","GB7","GB8"]
+        }
+        self.assertTrue(refresh.identity_ok("SUNVIC フリード GT系 サンシェード 8PCS",seed))
+        self.assertFalse(refresh.identity_ok("フリード GB5 サンシェード 8PCS",seed))
+
+    def test_nbox_exact_product_identifier_is_first_query(self):
+        seed={"query":"nboxjf5-flatc","searchQueries":["nboxjf5-flatc","NBOX JF5 JF6 4個セット"]}
+        self.assertEqual(refresh.seed_queries(seed)[0],"nboxjf5-flatc")
+
 if __name__=="__main__":
     unittest.main()
