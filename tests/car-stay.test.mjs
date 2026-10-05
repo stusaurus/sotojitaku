@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import {evaluate,productEligible,DEFAULT_RULES,resolvedVehicleProfile} from "../car-stay/engine.js";
 import {recommendations} from "../car-stay/products.js";
 
@@ -159,4 +160,15 @@ test("beginner results suppress frequent-user upgrades unless explicitly allowed
   assert.deepEqual(beginner.map(p=>p.productId),["default","alternative"]);
   const withUpgrade=recommendations(products,{...baseContext,allowUpgrades:true}).sleep_surface;
   assert.deepEqual(withUpgrade.map(p=>p.productId),["default","alternative","upgrade"]);
+});
+
+test("CAR STAY audit shards keep the current seed load at five items or fewer per shard",()=>{
+  const seeds=fs.readdirSync(new URL("../car-stay/data/product-seeds/",import.meta.url)).filter(name=>name.endsWith(".json"));
+  const workflow=fs.readFileSync(new URL("../.github/workflows/refresh-car-stay-products.yml",import.meta.url),"utf8");
+  const matrix=workflow.match(/shard:\s*\[([^\]]+)\]/);
+  assert.ok(matrix,"shard matrix must exist");
+  const shardCount=matrix[1].split(",").map(x=>x.trim()).filter(Boolean).length;
+  const envTotal=Number(workflow.match(/CAR_STAY_REFRESH_SHARD_TOTAL:\s*\'(\d+)\'/)?.[1]);
+  assert.equal(envTotal,shardCount);
+  assert.ok(Math.ceil(seeds.length/shardCount)<=5,seeds.length+" seeds across "+shardCount+" shards is too dense");
 });
