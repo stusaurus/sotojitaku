@@ -57,3 +57,17 @@ test("seat-count mismatch rejects vehicle-specific item",()=>{
   const p={productId:"x",gapIds:["floor_step"],verifiedAt:"2026-10-05T00:00:00Z",audit:{status:"verified_live"},vehicleFit:[{vehicleId:"toyota-sienta-10-15",status:"verified",seatCounts:[5]}]};
   assert.equal(productEligible(p,{vehicleId:"toyota-sienta-10-15",gapId:"floor_step",config:{seatCount:7},now:Date.parse("2026-10-05T12:00:00Z")}),false);
 });
+
+test("fresh exact-fit Rakuten affiliate item can pass the product gate",()=>{
+  const item="https://item.rakuten.co.jp/shop/item1/";
+  const aff="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+encodeURIComponent(item);
+  const p={productId:"x",gapIds:["privacy_full"],verifiedAt:"2026-10-05T00:00:00Z",audit:{status:"verified_live"},price:12000,image:"https://thumbnail.image.rakuten.co.jp/x.jpg",itemUrl:item,affiliateUrl:aff,vehicleFit:[{vehicleId:nbox.vehicleId,status:"verified"}]};
+  assert.equal(productEligible(p,{vehicleId:nbox.vehicleId,gapId:"privacy_full",now:Date.parse("2026-10-05T12:00:00Z")}),true);
+});
+
+test("affiliate link targeting another Rakuten item is rejected",()=>{
+  const item="https://item.rakuten.co.jp/shop/item1/";
+  const aff="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+encodeURIComponent("https://item.rakuten.co.jp/shop/item2/");
+  const p={productId:"x",gapIds:["privacy_full"],verifiedAt:"2026-10-05T00:00:00Z",audit:{status:"verified_live"},price:12000,image:"https://thumbnail.image.rakuten.co.jp/x.jpg",itemUrl:item,affiliateUrl:aff,vehicleFit:[{vehicleId:nbox.vehicleId,status:"verified"}]};
+  assert.equal(productEligible(p,{vehicleId:nbox.vehicleId,gapId:"privacy_full",now:Date.parse("2026-10-05T12:00:00Z")}),false);
+});

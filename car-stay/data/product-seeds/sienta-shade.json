@@ -1,0 +1,46 @@
+{
+  "productId": "sienta10-hobbyman-shade",
+  "name": "シエンタ 10/15系 サンシェード フルセット",
+  "brand": "趣味職人",
+  "query": "シエンタ 10 15 MXPL10 MXPL15 MXPC10 サンシェード フルセット",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-set/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 95,
+  "identityGroups": [
+    [
+      "シエンタ"
+    ],
+    [
+      "MXPL10",
+      "MXPC10"
+    ],
+    [
+      "MXPL15",
+      "15系"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "170系"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-set/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "status": "verified",
+      "seatCounts": [
+        5,
+        7
+      ]
+    }
+  ]
+}

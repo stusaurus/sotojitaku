@@ -1,0 +1,52 @@
+{
+  "productId": "nbox-jf56-zenpo-shade",
+  "name": "N-BOX JF5/JF6 専用 サンシェード 1台分フルセット",
+  "brand": "ゼンポー",
+  "query": "N-BOX JF5 JF6 サンシェード 1台分 フルセット",
+  "itemUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-nbox56set/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 95,
+  "identityGroups": [
+    [
+      "N-BOX",
+      "NBOX"
+    ],
+    [
+      "JF5"
+    ],
+    [
+      "JF6"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット",
+      "1台分"
+    ]
+  ],
+  "forbiddenTerms": [
+    "JF1",
+    "JF2",
+    "JF3",
+    "JF4"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-nbox56set/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "status": "verified",
+      "trims": [
+        "N-BOX",
+        "N-BOX Custom"
+      ],
+      "exclusions": [
+        "N-BOX Slope"
+      ]
+    }
+  ]
+}

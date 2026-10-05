@@ -108,10 +108,30 @@ export function resultHeadline(result){
   return "今回は、道具より条件を変えましょう。";
 }
 
+function canonicalRakutenItem(value){
+  try{
+    let u=new URL(value);
+    if(u.hostname==="hb.afl.rakuten.co.jp"){
+      const pc=u.searchParams.get("pc"); if(!pc)return "";
+      u=new URL(pc);
+    }
+    if(u.protocol!=="https:"||u.hostname!=="item.rakuten.co.jp")return "";
+    return u.origin+u.pathname.replace(/\/+$/,"")+"/";
+  }catch{return "";}
+}
+function safeAffiliate(product){
+  try{
+    const u=new URL(product.affiliateUrl||"");
+    if(u.protocol!=="https:"||u.hostname!=="hb.afl.rakuten.co.jp")return false;
+    return canonicalRakutenItem(product.affiliateUrl)===canonicalRakutenItem(product.itemUrl);
+  }catch{return false;}
+}
 export function productEligible(product,{vehicleId,config={},gapId,now=Date.now()}){
   if(product.audit?.status!=="verified_live")return false;
-  if(!product.verifiedAt||now-Date.parse(product.verifiedAt)>7*86400000)return false;
+  if(!product.verifiedAt||!Number.isFinite(Date.parse(product.verifiedAt))||now-Date.parse(product.verifiedAt)>7*86400000)return false;
   if(!product.gapIds?.includes(gapId))return false;
+  if(!Number.isFinite(product.price)||product.price<=0||!safeAffiliate(product))return false;
+  if(typeof product.image!=="string"||!product.image.startsWith("https://"))return false;
   const fit=product.vehicleFit?.find(v=>v.vehicleId===vehicleId);
   if(!fit||fit.status!=="verified")return false;
   if(fit.seatCounts?.length&&!fit.seatCounts.includes(Number(config.seatCount)))return false;
