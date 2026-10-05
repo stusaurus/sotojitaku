@@ -148,6 +148,7 @@ def rakuten_api_candidate(seed):
     env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
     if not all(env.values()): return None
     headers={**HEADERS,'accessKey':env['RAKUTEN_ACCESS_KEY']}
+    candidates=[]
     for search_query in seed_queries(seed):
         params={
             'applicationId':env['RAKUTEN_APPLICATION_ID'],
@@ -162,16 +163,19 @@ def rakuten_api_candidate(seed):
             item=raw.get('Item',raw)
             item_url=canonical_item_url(item.get('itemUrl',''))
             name=item.get('itemName','')
-            candidate={'name':name,'itemUrl':item_url}
-            if not candidate_match_level(candidate,seed): continue
+            level=candidate_match_level({'name':name,'itemUrl':item_url},seed)
+            if not level: continue
             imgs=item.get('mediumImageUrls') or []
             image=imgs[0] if imgs else ''
             if isinstance(image,dict): image=image.get('imageUrl','')
-            return {
+            candidates.append((level,{
                 'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
                 'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode',''),'source':'rakuten_api'
-            }
-    return None
+            }))
+        if any(level==2 for level,_ in candidates): break
+    if not candidates: return None
+    candidates.sort(key=lambda pair:(-pair[0],0 if safe_affiliate(pair[1]['url'],pair[1]['itemUrl']) else 1))
+    return candidates[0][1]
 
 def page_sales_audit(seed,item_url,expected_price):
     """Return (mode, live_price).
