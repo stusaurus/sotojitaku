@@ -4,7 +4,7 @@ import {evaluate,productEligible,DEFAULT_RULES} from "../car-stay/engine.js";
 
 const nbox={vehicleId:"honda-nbox-jf5-jf6",geometry:{usableLengthMm:1800,usableWidthMm:null},floorGrade:"C"};
 const base={
-  people:[{type:"adult",height:1710},{type:"adult",height:1600}],
+  people:[{type:"adult",height:171},{type:"adult",height:160}],
   tripStyle:"onsen",
   placeType:"rv_park",
   weather:{status:"known",minC:8,maxC:18},

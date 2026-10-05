@@ -5,7 +5,7 @@ const hasCapability=(gear,capability)=>gear.some(g=>Array.isArray(g.capabilities
 export function sleepAssessment({vehicle,people,measurements={},rules=DEFAULT_RULES}){
   const adults=people.filter(p=>p.type!=="child");
   const children=people.filter(p=>p.type==="child");
-  const tallest=Math.max(0,...people.map(p=>Number(p.height)||0));
+  const tallest=Math.max(0,...people.map(p=>(Number(p.height)||0)*10));
   const length=Number(measurements.lengthMm)||vehicle.geometry?.usableLengthMm||null;
   const width=Number(measurements.widthMm)||vehicle.geometry?.usableWidthMm||null;
   const targetWidth=adults.length*rules.adultWidthMm+children.length*rules.childWidthMm;
