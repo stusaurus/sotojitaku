@@ -2,8 +2,8 @@
   "productId": "nbox-jf56-zenpo-shade",
   "name": "N-BOX JF5/JF6 専用 サンシェード 1台分フルセット",
   "brand": "ゼンポー",
-  "query": "N-BOX JF5 JF6 サンシェード 1台分 フルセット",
-  "itemUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-nbox56set/",
+  "query": "za-syzp-lsb-40",
+  "itemUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-lsb-40/",
   "gapIds": [
     "privacy_full"
   ],
@@ -34,7 +34,7 @@
     "JF3",
     "JF4"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-nbox56set/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-lsb-40/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
@@ -50,8 +50,8 @@
     }
   ],
   "searchQueries": [
+    "za-syzp-lsb-40",
     "NBOX JF5 JF6 サンシェード",
-    "N-BOX JF5 JF6 フルセット",
-    "NBOX JF5 サンシェード"
+    "N-BOX JF5 JF6 フルセット"
   ]
 }
