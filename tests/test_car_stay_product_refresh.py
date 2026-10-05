@@ -75,7 +75,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(seen[0]["shopCode"],["hobbyman"])
             self.assertEqual(seen[0]["field"],["0"])
         finally:
-            refresh.fetch_json=original_fetch
+            refresh.fetch_json_quick=original_fetch
             for k,v in old.items():
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
@@ -114,7 +114,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             candidate=refresh.rakuten_api_candidate(seed)
             self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
             for k,v in old.items():
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
@@ -135,7 +135,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertIn("first+query",product_calls[0])
             self.assertIn("second+query",product_calls[1])
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
 
     def test_exact_page_info_reads_live_item_id_and_price(self):
         import json
@@ -171,7 +171,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(candidate["pagePrice"],12980)
         finally:
             refresh.exact_page_info=original_info
-            refresh.fetch_json=original_fetch
+            refresh.fetch_json_quick=original_fetch
             for k,v in old.items():
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
@@ -283,9 +283,9 @@ class CarStayProductRefreshTests(unittest.TestCase):
             "forbiddenTerms":[]
         }
         affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(seed["itemUrl"],safe="")
-        original=refresh.fetch_json
+        original=refresh.fetch_json_quick
         try:
-            refresh.fetch_json=lambda url,headers=None:{
+            refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{
                 "found":True,
                 "name":"N-VAN JJ1 サンシェード フルセット",
                 "price":5980,
@@ -308,7 +308,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             }
             self.assertIsNone(refresh.worker_exact_item_candidate(seed))
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
 
     def test_worker_exact_item_candidate_returns_none_when_endpoint_has_no_exact_item(self):
         seed={
@@ -317,12 +317,34 @@ class CarStayProductRefreshTests(unittest.TestCase):
             "identityGroups":[["N-VAN"]],
             "forbiddenTerms":[]
         }
-        original=refresh.fetch_json
+        original=refresh.fetch_json_quick
         try:
-            refresh.fetch_json=lambda url,headers=None:{"found":False,"reason":"exact_item_not_found"}
+            refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{"found":False,"reason":"exact_item_not_found"}
             self.assertIsNone(refresh.worker_exact_item_candidate(seed))
         finally:
-            refresh.fetch_json=original
+            refresh.fetch_json_quick=original
+
+    def test_worker_exact_item_candidate_only_uses_one_fast_probe(self):
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "searchQueries":["first query","second query","third query"],
+            "identityGroups":[["N-VAN"]],
+            "forbiddenTerms":[]
+        }
+        calls=[]
+        original=refresh.fetch_json_quick
+        try:
+            def fake(url,headers=None,timeout=4):
+                calls.append((url,timeout))
+                return {"found":False}
+            refresh.fetch_json_quick=fake
+            self.assertIsNone(refresh.worker_exact_item_candidate(seed))
+            self.assertEqual(len(calls),1)
+            self.assertEqual(calls[0][1],4)
+            self.assertIn("first+query",calls[0][0])
+            self.assertNotIn("second+query",calls[0][0])
+        finally:
+            refresh.fetch_json_quick=original
 
 if __name__=="__main__":
     unittest.main()
