@@ -89,5 +89,22 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_text=original
 
+    def test_worker_fallback_uses_only_first_broad_query(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/item123/","searchQueries":["first query","second query"],"identityGroups":[["N-VAN"]],"forbiddenTerms":[]}
+        seen=[]
+        original=refresh.fetch_json
+        try:
+            def fake(url,headers=None):
+                seen.append(url)
+                if "product-search" in url: return {"products":[]}
+                return {"found":False}
+            refresh.fetch_json=fake
+            refresh.worker_candidate(seed)
+            product_calls=[u for u in seen if "product-search" in u]
+            self.assertEqual(len(product_calls),1)
+            self.assertIn("first+query",product_calls[0])
+        finally:
+            refresh.fetch_json=original
+
 if __name__=="__main__":
     unittest.main()
