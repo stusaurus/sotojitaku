@@ -7,6 +7,7 @@ Any failure removes the item instead of preserving stale product data.
 """
 from __future__ import annotations
 
+import concurrent.futures
 import json
 import os
 import re
@@ -339,93 +340,106 @@ def spec_audit_fresh(seed: dict, now: datetime) -> bool:
         return False
 
 
+def audit_one(seed: dict, now_dt: datetime, now: str) -> tuple[dict | None, str | None]:
+    product_id = seed.get("productId", "unknown")
+    try:
+        if not spec_audit_fresh(seed, now_dt):
+            raise ValueError("spec_audit_expired")
+
+        candidate = None
+        source_errors: list[str] = []
+        for source_name, source_fn in (
+            ("rakuten_api_search", api_search_candidate),
+            ("worker_search_exact_url", worker_search_candidate),
+            ("rakuten_api_exact", api_exact_candidate),
+        ):
+            if candidate is not None:
+                break
+            try:
+                candidate = source_fn(seed)
+            except Exception as exc:
+                source_errors.append(f"{source_name}:{type(exc).__name__}")
+
+        if candidate is None:
+            detail = f" [{' '.join(source_errors)}]" if source_errors else ""
+            raise ValueError("exact_listing_not_resolved" + detail)
+
+        target = canonical_item_url(candidate["itemUrl"])
+        if not identity_ok(candidate.get("name", ""), seed):
+            raise ValueError("identity_mismatch")
+        if not safe_affiliate(candidate.get("affiliateUrl", ""), target):
+            raise ValueError("unsafe_or_wrong_affiliate")
+        image = candidate.get("image", "")
+        if not isinstance(image, str) or not image.startswith("https://"):
+            raise ValueError("image_unknown")
+
+        mode, live_price = sales_audit(seed, candidate)
+
+        product = {
+            "productId": seed["productId"],
+            "name": candidate.get("name") or seed["name"],
+            "brand": seed.get("brand", ""),
+            "categoryId": seed["categoryId"],
+            "methodIds": seed.get("methodIds", []),
+            "budgetTiers": seed.get("budgetTiers", []),
+            "audiences": seed.get("audiences", []),
+            "preferenceTags": seed.get("preferenceTags", []),
+            "coverCategoryIds": seed.get("coverCategoryIds", [seed["categoryId"]]),
+            "recommendationRole": seed.get("recommendationRole", "beginner_default"),
+            "score": seed.get("score", 80),
+            "price": int(live_price),
+            "itemCode": candidate.get("itemCode", ""),
+            "itemUrl": target,
+            "affiliateUrl": candidate["affiliateUrl"],
+            "image": image,
+            "verifiedAt": now,
+            "specVerifiedAt": seed["specCheckedAt"],
+            "audit": {
+                "status": "verified_live",
+                "mode": mode,
+                "salesSource": candidate["source"],
+                "specEvidence": seed.get("specEvidenceUrl", ""),
+            },
+        }
+        return product, None
+    except Exception as exc:
+        reason = str(exc) if isinstance(exc, ValueError) else type(exc).__name__
+        return None, reason
+
+
 def acquire() -> dict:
     now_dt = datetime.now(timezone.utc)
     now = now_dt.isoformat()
+    seeds = load_seeds()
     products: list[dict] = []
     failures: dict[str, str] = {}
 
-    for seed in load_seeds():
-        product_id = seed.get("productId", "unknown")
-        try:
-            if not spec_audit_fresh(seed, now_dt):
-                raise ValueError("spec_audit_expired")
+    workers = min(4, max(1, len(seeds)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        future_map = {
+            executor.submit(audit_one, seed, now_dt, now): seed
+            for seed in seeds
+        }
+        for future in concurrent.futures.as_completed(future_map):
+            seed = future_map[future]
+            product_id = seed.get("productId", "unknown")
+            try:
+                product, failure = future.result()
+            except Exception as exc:
+                product, failure = None, type(exc).__name__
+            if product is not None:
+                products.append(product)
+            else:
+                failures[product_id] = failure or "audit_failed"
 
-            candidate = None
-            source_errors: list[str] = []
-            for source_name, source_fn in (
-                ("rakuten_api_search", api_search_candidate),
-                ("worker_search_exact_url", worker_search_candidate),
-                ("rakuten_api_exact", api_exact_candidate),
-            ):
-                if candidate is not None:
-                    break
-                try:
-                    candidate = source_fn(seed)
-                except Exception as exc:
-                    source_errors.append(f"{source_name}:{type(exc).__name__}")
-
-            if candidate is None:
-                detail = f" [{' '.join(source_errors)}]" if source_errors else ""
-                raise ValueError("exact_listing_not_resolved" + detail)
-
-            target = canonical_item_url(candidate["itemUrl"])
-            if not identity_ok(candidate.get("name", ""), seed):
-                raise ValueError("identity_mismatch")
-            if not safe_affiliate(candidate.get("affiliateUrl", ""), target):
-                raise ValueError("unsafe_or_wrong_affiliate")
-            image = candidate.get("image", "")
-            if not isinstance(image, str) or not image.startswith("https://"):
-                raise ValueError("image_unknown")
-
-            mode, live_price = sales_audit(seed, candidate)
-
-            products.append(
-                {
-                    "productId": seed["productId"],
-                    "name": candidate.get("name") or seed["name"],
-                    "brand": seed.get("brand", ""),
-                    "categoryId": seed["categoryId"],
-                    "methodIds": seed.get("methodIds", []),
-                    "budgetTiers": seed.get("budgetTiers", []),
-                    "audiences": seed.get("audiences", []),
-                    "preferenceTags": seed.get("preferenceTags", []),
-                    "coverCategoryIds": seed.get(
-                        "coverCategoryIds", [seed["categoryId"]]
-                    ),
-                    "recommendationRole": seed.get(
-                        "recommendationRole", "beginner_default"
-                    ),
-                    "score": seed.get("score", 80),
-                    "price": int(live_price),
-                    "itemCode": candidate.get("itemCode", ""),
-                    "itemUrl": target,
-                    "affiliateUrl": candidate["affiliateUrl"],
-                    "image": image,
-                    "verifiedAt": now,
-                    "specVerifiedAt": seed["specCheckedAt"],
-                    "audit": {
-                        "status": "verified_live",
-                        "mode": mode,
-                        "salesSource": candidate["source"],
-                        "specEvidence": seed.get("specEvidenceUrl", ""),
-                    },
-                }
-            )
-        except Exception as exc:
-            failures[product_id] = (
-                str(exc) if isinstance(exc, ValueError) else type(exc).__name__
-            )
-        time.sleep(0.45)
-
+    products.sort(key=lambda item: item.get("productId", ""))
     return {
         "version": 1,
         "updatedAt": now,
         "status": "ok" if not failures else "partial",
         "products": products,
-        "failures": failures,
+        "failures": dict(sorted(failures.items())),
     }
-
 
 if __name__ == "__main__":
     payload = acquire()
