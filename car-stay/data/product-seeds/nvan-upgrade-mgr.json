@@ -1,0 +1,52 @@
+{
+  "productId": "nvan-jj1-jj2-mgr-mbk4742",
+  "name": "N-VAN JJ1/JJ2 m.flat ベッドキット レザー25mm",
+  "brand": "MGR Customs",
+  "query": "MBK4742",
+  "itemUrl": "https://item.rakuten.co.jp/mgr-customs/mbk4742/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "frequent_user_upgrade",
+  "score": 90,
+  "identityGroups": [
+    [
+      "N-VAN",
+      "NVAN",
+      "N VAN"
+    ],
+    [
+      "JJ1"
+    ],
+    [
+      "JJ2"
+    ],
+    [
+      "ベッドキット"
+    ],
+    [
+      "m.flat",
+      "mflat",
+      "レザー"
+    ]
+  ],
+  "forbiddenTerms": [
+    "JJ3",
+    "N-VAN e:",
+    "NVAN e"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/mgr-customs/mbk4742/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "status": "verified"
+    }
+  ],
+  "searchQueries": [
+    "MBK4742",
+    "N-VAN MBK4742",
+    "N-VAN JJ1 JJ2 m.flat ベッドキット"
+  ]
+}
