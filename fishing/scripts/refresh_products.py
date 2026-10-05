@@ -25,6 +25,7 @@ OUT = ROOT / "fishing" / "data" / "audited-products.json"
 
 ITEM_LOOKUP = "https://daily-cost-api.kiyo0625puma.workers.dev/api/item-lookup"
 WORKER_SEARCH = "https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search"
+SHIPPING_LOOKUP = "https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup"
 RAKUTEN_API = "https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701"
 HEADERS = {
     "Origin": "https://stusaurus.github.io",
@@ -141,27 +142,44 @@ def worker_exact_candidate(seed: dict) -> dict | None:
 
 
 
+def normalize_worker_payload(raw: dict) -> dict:
+    url = raw.get("shipping_included_url") or raw.get("url") or ""
+    return {
+        "name": str(raw.get("shipping_match_name") or raw.get("name") or ""),
+        "price": raw.get("shipping_included_price") or raw.get("price"),
+        "affiliateUrl": url,
+        "itemUrl": canonical_item_url(url),
+        "image": raw.get("shipping_included_image") or raw.get("image") or "",
+        "itemCode": raw.get("item_code") or raw.get("itemCode") or "",
+    }
+
+
 def worker_search_candidate(seed: dict) -> dict | None:
     expected = canonical_item_url(seed["itemUrl"])
-    for query in seed_queries(seed)[:1]:
+    for query in seed_queries(seed):
         payload = fetch_json(
             WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30})
         )
         for raw in payload.get("products", []):
-            url = raw.get("shipping_included_url") or raw.get("url") or ""
-            item_url = canonical_item_url(url)
-            name = str(raw.get("shipping_match_name") or raw.get("name") or "")
-            if item_url != expected or not identity_ok(name, seed):
+            candidate = normalize_worker_payload(raw)
+            if candidate["itemUrl"] != expected or not identity_ok(candidate["name"], seed):
                 continue
-            return {
-                "name": name,
-                "price": raw.get("shipping_included_price") or raw.get("price"),
-                "affiliateUrl": url,
-                "itemUrl": item_url,
-                "image": raw.get("shipping_included_image") or raw.get("image") or "",
-                "itemCode": raw.get("item_code") or raw.get("itemCode") or "",
-                "source": "worker_search_exact_url",
-            }
+            candidate["source"] = "worker_search_exact_url"
+            return candidate
+
+    for query in seed_queries(seed):
+        payload = fetch_json(
+            SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
+                {"name": query, "brand": seed.get("brand", "")}
+            )
+        )
+        if payload.get("found") is not True:
+            continue
+        candidate = normalize_worker_payload(payload)
+        if candidate["itemUrl"] != expected or not identity_ok(candidate["name"], seed):
+            continue
+        candidate["source"] = "worker_shipping_exact_url"
+        return candidate
     return None
 
 
@@ -349,6 +367,7 @@ def audit_one(seed: dict, now_dt: datetime, now: str) -> tuple[dict | None, str 
         candidate = None
         source_errors: list[str] = []
         for source_name, source_fn in (
+            ("worker_exact_url", worker_exact_candidate),
             ("rakuten_api_search", api_search_candidate),
             ("worker_search_exact_url", worker_search_candidate),
             ("rakuten_api_exact", api_exact_candidate),
