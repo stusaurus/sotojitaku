@@ -239,5 +239,14 @@ class CarStayProductRefreshTests(unittest.TestCase):
         title="CELLUTANE A1609a-5-602BK [車中泊マット フリードクロスタGT6/8/2/4 5人乗り用]"
         self.assertTrue(refresh.identity_ok(title,seed))
 
+    def test_sienta_10_five_seat_cartist_title_matches_without_seven_seat(self):
+        seed={
+            "identityGroups":[["Cartist"],["シエンタ","SIENTA"],["10系"],["5人乗り"],["車中泊"],["マット","ベッド","ベット"]],
+            "forbiddenTerms":["7人乗り","170系"]
+        }
+        title="Cartist トヨタ 新型 シエンタ 10系 5人乗り 専用 車中泊 マット 折りたたみ 車用ベッド"
+        self.assertTrue(refresh.identity_ok(title,seed))
+        self.assertFalse(refresh.identity_ok(title+" 7人乗り",seed))
+
 if __name__=="__main__":
     unittest.main()
