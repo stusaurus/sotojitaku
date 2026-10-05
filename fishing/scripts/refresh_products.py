@@ -154,33 +154,54 @@ def normalize_worker_payload(raw: dict) -> dict:
     }
 
 
-def worker_search_candidate(seed: dict) -> dict | None:
+def candidate_match_level(candidate: dict, seed: dict) -> int:
+    if not candidate or not identity_ok(candidate.get("name", ""), seed):
+        return 0
+    item_url = canonical_item_url(candidate.get("itemUrl") or candidate.get("affiliateUrl") or "")
     expected = canonical_item_url(seed["itemUrl"])
+    if item_url == expected:
+        return 2
+    if item_url and rakuten_shop(item_url) == rakuten_shop(expected):
+        return 1
+    return 0
+
+
+def worker_search_candidate(seed: dict) -> dict | None:
+    matches = []
     for query in seed_queries(seed):
         payload = fetch_json(
             WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30})
         )
         for raw in payload.get("products", []):
             candidate = normalize_worker_payload(raw)
-            if candidate["itemUrl"] != expected or not identity_ok(candidate["name"], seed):
+            level = candidate_match_level(candidate, seed)
+            if not level:
                 continue
-            candidate["source"] = "worker_search_exact_url"
-            return candidate
+            candidate["source"] = "worker_search_exact_url" if level == 2 else "worker_search_same_shop_identity"
+            matches.append((level, candidate))
+        if any(level == 2 for level, _ in matches):
+            break
 
-    for query in seed_queries(seed):
-        payload = fetch_json(
-            SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
-                {"name": query, "brand": seed.get("brand", "")}
+    if not matches:
+        for query in seed_queries(seed):
+            payload = fetch_json(
+                SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
+                    {"name": query, "brand": seed.get("brand", "")}
+                )
             )
-        )
-        if payload.get("found") is not True:
-            continue
-        candidate = normalize_worker_payload(payload)
-        if candidate["itemUrl"] != expected or not identity_ok(candidate["name"], seed):
-            continue
-        candidate["source"] = "worker_shipping_exact_url"
-        return candidate
-    return None
+            if payload.get("found") is not True:
+                continue
+            candidate = normalize_worker_payload(payload)
+            level = candidate_match_level(candidate, seed)
+            if not level:
+                continue
+            candidate["source"] = "worker_shipping_exact_url" if level == 2 else "worker_shipping_same_shop_identity"
+            matches.append((level, candidate))
+
+    if not matches:
+        return None
+    matches.sort(key=lambda pair: -pair[0])
+    return matches[0][1]
 
 
 def page_info(seed: dict) -> dict | None:
@@ -323,19 +344,47 @@ def api_search_candidate(seed: dict) -> dict | None:
     return None
 
 
+def candidate_page_info(item_url: str) -> dict | None:
+    target = canonical_item_url(item_url)
+    if not target:
+        return None
+    if target not in _PAGE_CACHE:
+        try:
+            _PAGE_CACHE[target] = fetch_text(target)
+        except Exception:
+            return None
+    page = _PAGE_CACHE[target]
+    marker = '"itemInfoSku":'
+    if marker not in page:
+        return None
+    info, _ = json.JSONDecoder().raw_decode(page.split(marker, 1)[1])
+    if info.get("sellType") != "NORMAL":
+        raise ValueError("wrong_sell_type")
+    purchase = info.get("purchaseInfo", {}).get("purchaseBySellType", {})
+    if purchase.get("purchaseCondition") != "enabled":
+        raise ValueError("unavailable")
+    live_price = purchase.get("normalPurchase", {}).get("price", {}).get("minPrice")
+    if not isinstance(live_price, (int, float)) or live_price <= 0:
+        raise ValueError("price_unknown")
+    return {"price": int(live_price)}
+
+
 def sales_audit(seed: dict, candidate: dict) -> tuple[str, int]:
     expected = canonical_item_url(seed["itemUrl"])
     target = canonical_item_url(candidate.get("itemUrl", ""))
-    if target != expected:
-        raise ValueError("wrong_exact_listing")
+    level = candidate_match_level(candidate, seed)
+    if level == 0:
+        raise ValueError("wrong_listing")
 
     feed_price = candidate.get("price")
     if not isinstance(feed_price, (int, float)) or feed_price <= 0:
         raise ValueError("price_unknown")
 
-    info = page_info(seed)
+    info = candidate_page_info(target)
     if info is None:
-        return "exact_feed_fallback", int(feed_price)
+        if target == expected:
+            return "exact_feed_fallback", int(feed_price)
+        raise ValueError("same_shop_sales_evidence_missing")
 
     live_price = info["price"]
     if abs(live_price - feed_price) > max(500, feed_price * 0.35):
