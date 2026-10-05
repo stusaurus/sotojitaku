@@ -314,6 +314,23 @@ def page_sales_audit(seed,item_url,expected_price):
 def load_seeds():
     return [json.loads(p.read_text()) for p in sorted(SEED_DIR.glob('*.json'))]
 
+def order_seeds_for_refresh(seeds,previous_all,now_dt):
+    """Protect live revenue first, then rotate unresolved discovery across days."""
+    def verified_ts(seed):
+        product=previous_all.get(seed.get('productId'))
+        if not product: return float('inf')
+        try:
+            return datetime.fromisoformat(str(product.get('verifiedAt','')).replace('Z','+00:00')).timestamp()
+        except Exception:
+            return 0
+    live=[seed for seed in seeds if seed.get('productId') in previous_all]
+    unresolved=[seed for seed in seeds if seed.get('productId') not in previous_all]
+    live.sort(key=verified_ts)  # oldest verified products get refreshed first
+    if unresolved:
+        offset=(now_dt.timetuple().tm_yday-1)%len(unresolved)
+        unresolved=unresolved[offset:]+unresolved[:offset]
+    return live+unresolved
+
 def fit_audit_fresh(seed,now):
     try:
         checked=datetime.fromisoformat(seed['fitCheckedAt']+'T00:00:00+00:00')
@@ -340,8 +357,9 @@ def acquire(runtime_budget_seconds=None):
     now_dt=datetime.now(timezone.utc); now=now_dt.isoformat()
     budget=RUNTIME_BUDGET_SECONDS if runtime_budget_seconds is None else max(0,float(runtime_budget_seconds))
     started=time.monotonic()
-    seeds=load_seeds()
-    previous={p.get('productId'):p for p in load_previous_products() if p.get('productId') and previous_product_fresh(p,now_dt)}
+    previous_all={p.get('productId'):p for p in load_previous_products() if p.get('productId')}
+    previous={pid:p for pid,p in previous_all.items() if previous_product_fresh(p,now_dt)}
+    seeds=order_seeds_for_refresh(load_seeds(),previous_all,now_dt)
     products=[];failures={};deferred={}
     for index,seed in enumerate(seeds):
         if time.monotonic()-started >= budget:
