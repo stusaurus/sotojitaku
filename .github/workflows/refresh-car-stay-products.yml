@@ -1,0 +1,61 @@
+name: Refresh CAR STAY products
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'car-stay/scripts/refresh_products.py'
+      - 'car-stay/data/product-seeds/**'
+      - '.github/workflows/refresh-car-stay-products.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '45 21 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: sotojitaku-car-stay-products
+  cancel-in-progress: true
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Refresh exact CAR STAY listings
+        env:
+          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+        run: python car-stay/scripts/refresh_products.py
+      - name: Validate CAMP and CAR STAY
+        run: |
+          npm run check
+          npm test
+          python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Publish refreshed CAR STAY catalog safely
+        run: |
+          cp car-stay/data/audited-products.json /tmp/car-stay-products.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/car-stay-products.json car-stay/data/audited-products.json
+            git add car-stay/data/audited-products.json
+            if git diff --cached --quiet; then
+              echo "CAR STAY catalog already current."
+              exit 0
+            fi
+            git commit -m 'Refresh verified CAR STAY product catalog'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Main moved during CAR STAY catalog push; retrying ($attempt/3)."
+            sleep $((attempt * 2))
+          done
+          echo "Could not publish CAR STAY catalog after three safe retries."
+          exit 1
