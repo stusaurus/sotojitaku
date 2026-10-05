@@ -119,29 +119,28 @@ def seed_queries(seed):
 
 def worker_exact_item_candidate(seed):
     """Resolve only the manually audited Rakuten item URL through the shared Worker.
-    If the endpoint is unavailable or cannot confirm the exact item, return None and let
-    the existing API/search fallbacks continue unchanged.
+    One exact-URL request is enough; broader recovery belongs to API/search fallbacks.
     """
-    for search_query in seed_queries(seed):
-        payload=fetch_json(ITEM_LOOKUP+'?'+urllib.parse.urlencode({'url':seed['itemUrl'],'q':search_query}))
-        if payload.get('found') is not True:
-            continue
-        item_url=canonical_item_url(payload.get('item_url',''))
-        if item_url!=canonical_item_url(seed['itemUrl']):
-            continue
-        name=str(payload.get('name') or '')
-        if not identity_ok(name,seed):
-            continue
-        return {
-            'name':name,
-            'price':payload.get('price'),
-            'url':payload.get('affiliate_url',''),
-            'itemUrl':item_url,
-            'image':payload.get('image',''),
-            'itemCode':payload.get('item_code',''),
-            'source':'worker_exact_url'
-        }
-    return None
+    queries=seed_queries(seed)
+    search_query=queries[0] if queries else seed.get('query','')
+    payload=fetch_json(ITEM_LOOKUP+'?'+urllib.parse.urlencode({'url':seed['itemUrl'],'q':search_query}))
+    if payload.get('found') is not True:
+        return None
+    item_url=canonical_item_url(payload.get('item_url',''))
+    if item_url!=canonical_item_url(seed['itemUrl']):
+        return None
+    name=str(payload.get('name') or '')
+    if not identity_ok(name,seed):
+        return None
+    return {
+        'name':name,
+        'price':payload.get('price'),
+        'url':payload.get('affiliate_url',''),
+        'itemUrl':item_url,
+        'image':payload.get('image',''),
+        'itemCode':payload.get('item_code',''),
+        'source':'worker_exact_url'
+    }
 
 def worker_candidate(seed):
     previews=[]
