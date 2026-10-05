@@ -5,7 +5,7 @@ const $=s=>document.querySelector(s);
 const hero=$("#hero"),planner=$("#planner"),panel=$("#panel"),progress=$("#progressBar");
 const resetBtn=$("#resetBtn"),savedBtn=$("#savedBtn"),stepText=$("#stepText"),miniPlan=$("#miniPlan"),visualMessage=$("#visualMessage"),visualTags=$("#visualTags");
 
-let questionsData,plansData,gearData,catalog;
+let questionsData,plansData,gearData,howtoData,catalog;
 let index=0;
 let answers={owned:[]};
 let localRulesConfirmed=false;
@@ -16,13 +16,14 @@ const labels={party:"だれと",fun:"楽しみ方",bait:"エサ",take_home:"持�
 const track=(name,params={})=>{try{window.gtag?.("event",name,{conversion_source:"fishing",...params})}catch{}};
 
 async function load(){
-  const [q,p,g,c]=await Promise.all([
+  const [q,p,g,h,c]=await Promise.all([
     fetch("./data/questions.json").then(r=>r.json()),
     fetch("./data/plans.json").then(r=>r.json()),
     fetch("./data/gear.json").then(r=>r.json()),
+    fetch("./data/howto.json").then(r=>r.json()),
     fetch("./data/audited-products.json").then(r=>r.json()).catch(()=>({products:[]}))
   ]);
-  questionsData=q;plansData=p;gearData=g;catalog=c;
+  questionsData=q;plansData=p;gearData=g;howtoData=h;catalog=c;
 }
 
 function start(){
@@ -131,6 +132,11 @@ function renderResult({trackDiagnosis=true}={}){
       </div>
 
       <div class="section">
+        <h3 class="section-title">この釣りが、あなたに合う理由</h3>
+        ${renderFitReasons(plan)}
+      </div>
+
+      <div class="section">
         <h3 class="section-title">いまの支度</h3>
         <div class="checklist">
           ${checklist.filter(x=>x.priority==="required").map(x=>`
@@ -154,6 +160,11 @@ function renderResult({trackDiagnosis=true}={}){
         <h3 class="section-title">足りないものは、これで揃える</h3>
         ${renderBasketSummary(basket)}
         ${renderProducts(productResult,rawChecklist)}
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">3分セットアップ</h3>
+        ${renderFirstTripGuide(plan)}
       </div>
 
       <div class="section">
@@ -203,6 +214,43 @@ function renderProducts(productResult,checklist){
         <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}">楽天で見る →</a>
       </div>
     </article>`).join("")}</div>`;
+}
+
+function renderFitReasons(plan){
+  const reasons=[];
+  if(answers.party==="family_child")reasons.push("子どもと一緒でも、最初の動作をシンプルにしやすい");
+  else if(answers.party==="solo")reasons.push("ひとりでも準備の手順を組み立てやすい");
+  else reasons.push("同行者と役割を分けながら始めやすい");
+
+  if(answers.fun==="easy_catch")reasons.push("まずは魚の反応を感じる体験を優先している");
+  if(answers.fun==="cast_wait")reasons.push("投げる楽しさと、アタリを待つ時間を味わえる");
+  if(answers.fun==="choose_for_me")reasons.push("専門用語を知らなくても成立しやすい入口を選んでいる");
+
+  if(answers.bait==="no_worm")reasons.push(plan.methodId==="sabiki"?"虫エサを使わず始めやすい":"人工エサで虫エサを避けられる");
+  if(answers.bait==="low_mess")reasons.push("におい・汚れを抑えやすい支度に寄せている");
+  if(answers.carry==="compact")reasons.push("荷物を増やしすぎない構成にしている");
+
+  return `<div class="reason-grid">${reasons.slice(0,3).map((reason,i)=>`
+    <div class="reason-card"><span>0${i+1}</span><p>${escapeHtml(reason)}</p></div>
+  `).join("")}</div>`;
+}
+
+function renderFirstTripGuide(plan){
+  const guide=howtoData?.methods?.[plan.methodId];
+  if(!guide)return "";
+  const extra=answers.take_home!=="no"
+    ?'<li>持ち帰るなら、クーラーボックスと保冷手段を出発前に準備する</li>'
+    :"";
+  return `<div class="first-trip-guide">
+    <div class="setup-steps">
+      ${guide.setup.map((step,i)=>`<div class="setup-step"><b>${i+1}</b><p>${escapeHtml(step)}</p></div>`).join("")}
+    </div>
+    <div class="dayof-card">
+      <h4>当日の持ち出しチェック</h4>
+      <ul>${guide.dayOf.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}${extra}</ul>
+      <p class="first-bite"><strong>反応がないとき：</strong>${escapeHtml(guide.firstBite)}</p>
+    </div>
+  </div>`;
 }
 
 function basketSummary(checklist,selected){
