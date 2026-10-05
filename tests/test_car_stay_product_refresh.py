@@ -176,5 +176,15 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 else: os.environ[k]=v
 
 
+    def test_hustler_vehicle_mattress_does_not_accept_luggage_mat(self):
+        seed={
+            "identityGroups":[["Levolva"],["ハスラー"],["MR52S"],["MR92S"],["LVMR-13","車中泊マット"]],
+            "forbiddenTerms":["ラゲッジマット","ラゲッジルームカバー"]
+        }
+        good="Levolva ハスラー MR52S MR92S スマート車中泊マットDX LVMR-13"
+        bad="Levolva MR52S MR92S ハスラー 専用ラゲッジルームカバー 防水ラゲッジマット"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok(bad,seed))
+
 if __name__=="__main__":
     unittest.main()
