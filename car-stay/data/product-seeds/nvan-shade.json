@@ -1,9 +1,9 @@
 {
-  "productId": "nvan-jj1-jj2-hobbyman-craft",
-  "name": "N-VAN JJ1/JJ2 クラフトサンシェード 1台フルセット",
+  "productId": "nvan-jj1-jj2-hobbyman-lit",
+  "name": "N-VAN JJ1/JJ2 シームレスライト サンシェード フルセット",
   "brand": "趣味職人",
   "query": "N-VAN JJ1 JJ2 クラフト サンシェード フルセット",
-  "itemUrl": "https://item.rakuten.co.jp/hobbyman/n-van-cra/",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/n-van-lit/",
   "gapIds": [
     "privacy_full"
   ],
@@ -19,24 +19,30 @@
       "JJ1"
     ],
     [
-      "JJ2"
+      "JJ2",
+      "JJ1/2"
     ],
     [
       "サンシェード"
     ],
     [
-      "クラフト"
+      "フルセット"
     ]
   ],
   "forbiddenTerms": [
     "N-WGN"
   ],
-  "fitEvidenceUrl": "https://www.hobbyman.jp/shopdetail/000000006440/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/n-van-lit/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
       "vehicleId": "honda-nvan-jj1-jj2",
       "status": "verified"
     }
+  ],
+  "searchQueries": [
+    "N-VAN JJ1 サンシェード",
+    "N-VAN JJ1 JJ2 サンシェード",
+    "N-VAN サンシェード フルセット"
   ]
 }
