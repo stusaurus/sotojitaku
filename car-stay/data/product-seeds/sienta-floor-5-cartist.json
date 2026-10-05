@@ -1,0 +1,56 @@
+{
+  "productId": "sienta10-5-cartist-jr00310032",
+  "name": "シエンタ 10系 5人乗り専用 Cartist 車中泊マット",
+  "brand": "Cartist",
+  "query": "jr00310032",
+  "itemUrl": "https://item.rakuten.co.jp/jroad/jr00310032/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 93,
+  "identityGroups": [
+    [
+      "Cartist"
+    ],
+    [
+      "シエンタ",
+      "SIENTA"
+    ],
+    [
+      "10系"
+    ],
+    [
+      "5人乗り"
+    ],
+    [
+      "車中泊"
+    ],
+    [
+      "マット",
+      "ベッド",
+      "ベット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "7人乗り",
+    "170系"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/jroad/jr00310032/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "status": "verified",
+      "seatCounts": [
+        5
+      ]
+    }
+  ],
+  "searchQueries": [
+    "jr00310032",
+    "Cartist シエンタ 10系 5人乗り 車中泊マット",
+    "シエンタ 10系 5人乗り 車中泊マット"
+  ]
+}
