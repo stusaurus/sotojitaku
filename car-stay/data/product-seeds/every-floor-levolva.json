@@ -1,0 +1,63 @@
+{
+  "productId": "every-da17-da18-levolva-mr09",
+  "name": "Levolva エブリイ DA17V/DA18V 専用 車中泊マットレス",
+  "brand": "Levolva",
+  "query": "Levolva DA17V DA18V エブリイ 車中泊マット MR-09",
+  "itemUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-09_1/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 94,
+  "identityGroups": [
+    [
+      "Levolva"
+    ],
+    [
+      "エブリイ",
+      "EVERY"
+    ],
+    [
+      "DA17V"
+    ],
+    [
+      "DA18V"
+    ],
+    [
+      "車中泊マット",
+      "専用マットレス"
+    ]
+  ],
+  "forbiddenTerms": [
+    "DA17W",
+    "DA18W"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-09_1/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "status": "verified",
+      "trims": [
+        "JOIN / JOIN Turbo",
+        "PC",
+        "PA"
+      ]
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "status": "verified",
+      "trims": [
+        "JOIN / JOIN Turbo",
+        "PC",
+        "PA"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "mr-09_1",
+    "Levolva DA17V DA18V エブリイ 車中泊マット",
+    "エブリイ DA18V 専用マットレス"
+  ]
+}
