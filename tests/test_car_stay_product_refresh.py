@@ -176,5 +176,20 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 else: os.environ[k]=v
 
 
+    def test_disabled_product_seeds_are_not_audited(self):
+        import tempfile, json
+        from pathlib import Path
+        original=refresh.SEED_DIR
+        try:
+            with tempfile.TemporaryDirectory() as d:
+                p=Path(d)
+                (p/"a.json").write_text(json.dumps({"productId":"a","enabled":False}))
+                (p/"b.json").write_text(json.dumps({"productId":"b"}))
+                refresh.SEED_DIR=p
+                seeds=refresh.load_seeds()
+                self.assertEqual([x["productId"] for x in seeds],["b"])
+        finally:
+            refresh.SEED_DIR=original
+
 if __name__=="__main__":
     unittest.main()
