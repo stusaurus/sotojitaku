@@ -115,3 +115,25 @@ test("verified vehicle geometry removes only the confirmed length QUICK MEASURE"
   assert.equal(r.sleep.needsQuickMeasure.includes("length"),false);
   assert.equal(r.sleep.lengthState,"comfort");
 });
+
+
+test("flat verified floor with no padding creates a sleep-surface gap",()=>{
+  const vehicle={vehicleId:"flat-car",geometry:{usableLengthMm:1900,usableWidthMm:1200},floorGrade:"A"};
+  const r=evaluate({...base,people:[{type:"adult",height:171}],gear:[{gearId:"mobile_battery",capabilities:["usb_power"]}],floorObservation:"flat"},vehicle,DEFAULT_RULES);
+  assert.equal(r.gaps.some(g=>g.id==="sleep_surface"),true);
+  assert.equal(r.gaps.some(g=>g.id==="floor_step"),false);
+});
+
+test("home padding resolves the sleep-surface gap without shopping",()=>{
+  const vehicle={vehicleId:"flat-car",geometry:{usableLengthMm:1900,usableWidthMm:1200},floorGrade:"A"};
+  const r=evaluate({...base,people:[{type:"adult",height:171}],gear:[{gearId:"blanket",capabilities:["warmth","padding","gap_fill"]}],floorObservation:"flat"},vehicle,DEFAULT_RULES);
+  assert.equal(r.gaps.some(g=>g.id==="sleep_surface"),false);
+  assert.ok(r.resolved.includes("sleep_surface"));
+});
+
+test("floor-step gap absorbs sleep-surface need instead of duplicating it",()=>{
+  const vehicle={vehicleId:"step-car",geometry:{usableLengthMm:1900,usableWidthMm:1200},floorGrade:"C"};
+  const r=evaluate({...base,people:[{type:"adult",height:171}],gear:[],floorObservation:"unknown"},vehicle,DEFAULT_RULES);
+  assert.equal(r.gaps.filter(g=>g.id==="floor_step").length,1);
+  assert.equal(r.gaps.some(g=>g.id==="sleep_surface"),false);
+});
