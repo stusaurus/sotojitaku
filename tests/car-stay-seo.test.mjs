@@ -38,3 +38,19 @@ test('SEO vehicle query can preselect Builder and is tracked separately',()=>{
   assert.match(app,/seo_builder_entry/);
   assert.match(app,/db\.vehicles\.some\(v=>v\.vehicleId===presetVehicle\)/);
 });
+
+
+test('N-BOX high-intent SEO pages are substantive and connected to Builder',()=>{
+  const sitemap=read('sitemap.xml');
+  const parent=read('car-stay/car/n-box/index.html');
+  for(const slug of ['mat','shade']){
+    const p=read('car-stay/car/n-box/'+slug+'/index.html');
+    assert.ok(p.length>4800,slug+' intent page should not be thin');
+    assert.match(p,/rel="canonical"/);
+    assert.match(p,/FAQPage/);
+    assert.ok(p.includes('vehicle=honda-nbox-jf5-jf6'));
+    assert.ok(p.includes('entry=n-box-'+slug));
+    assert.ok(sitemap.includes('/car-stay/car/n-box/'+slug+'/'));
+    assert.ok(parent.includes('./'+slug+'/'));
+  }
+});
