@@ -54,3 +54,23 @@ test('N-BOX high-intent SEO pages are substantive and connected to Builder',()=>
     assert.ok(parent.includes('./'+slug+'/'));
   }
 });
+
+
+test('Sienta and FREED shade intent pages are substantive and Builder-attributed',()=>{
+  const sitemap=read('sitemap.xml');
+  const cases=[
+    {slug:'sienta',vehicle:'toyota-sienta-10-15'},
+    {slug:'freed',vehicle:'honda-freed-gt'}
+  ];
+  for(const x of cases){
+    const p=read('car-stay/car/'+x.slug+'/shade/index.html');
+    const parent=read('car-stay/car/'+x.slug+'/index.html');
+    assert.ok(p.length>4700,x.slug+' shade page should not be thin');
+    assert.match(p,/rel="canonical"/);
+    assert.match(p,/FAQPage/);
+    assert.ok(p.includes('vehicle='+x.vehicle));
+    assert.ok(p.includes('entry='+x.slug+'-shade'));
+    assert.ok(sitemap.includes('/car-stay/car/'+x.slug+'/shade/'));
+    assert.ok(parent.includes('./shade/'));
+  }
+});
