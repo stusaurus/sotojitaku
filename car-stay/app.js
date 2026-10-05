@@ -6,6 +6,7 @@ const VERSION=1;
 const STORAGE_KEY="sotojitaku_car_stay_v1";
 const qs=new URLSearchParams(location.search);
 const operatorTest=qs.get("test")==="1";
+const presetVehicle=qs.get("vehicle");
 let analyticsEnabled=localStorage.getItem("sotojitaku_analytics_optout")!=="1";
 const viewedProducts=new Set();
 const $=s=>document.querySelector(s);
@@ -205,7 +206,18 @@ $("#analyticsOpt").addEventListener("click",()=>{
 });
 loadSaved();
 loadData().then(()=>{
-  if(state.vehicleId||state.step>0){showBuilder();}else{setCabin();}
+  if(presetVehicle&&db.vehicles.some(v=>v.vehicleId===presetVehicle)){
+    state.vehicleId=presetVehicle;
+    state.config={};
+    state.step=0;
+    save();
+    track("seo_builder_entry",{vehicle_id:presetVehicle});
+    showBuilder();
+  }else if(state.vehicleId||state.step>0){
+    showBuilder();
+  }else{
+    setCabin();
+  }
 }).catch(()=>{
   hero.hidden=true;builder.hidden=false;panel.innerHTML="<div class='fatal'><b>読み込みに失敗しました。</b><p>ページを再読み込みしてください。</p></div>";
 });
