@@ -323,19 +323,46 @@ def api_search_candidate(seed: dict) -> dict | None:
     return None
 
 
+def candidate_page_info(item_url: str) -> dict | None:
+    target = canonical_item_url(item_url)
+    if not target:
+        return None
+    if target not in _PAGE_CACHE:
+        try:
+            _PAGE_CACHE[target] = fetch_text(target)
+        except Exception:
+            return None
+    page = _PAGE_CACHE[target]
+    marker = '"itemInfoSku":'
+    if marker not in page:
+        return None
+    info, _ = json.JSONDecoder().raw_decode(page.split(marker, 1)[1])
+    if info.get("sellType") != "NORMAL":
+        raise ValueError("wrong_sell_type")
+    purchase = info.get("purchaseInfo", {}).get("purchaseBySellType", {})
+    if purchase.get("purchaseCondition") != "enabled":
+        raise ValueError("unavailable")
+    live_price = purchase.get("normalPurchase", {}).get("price", {}).get("minPrice")
+    if not isinstance(live_price, (int, float)) or live_price <= 0:
+        raise ValueError("price_unknown")
+    return {"price": int(live_price)}
+
+
 def sales_audit(seed: dict, candidate: dict) -> tuple[str, int]:
     expected = canonical_item_url(seed["itemUrl"])
     target = canonical_item_url(candidate.get("itemUrl", ""))
-    if target != expected:
-        raise ValueError("wrong_exact_listing")
+    if candidate_match_level(target, candidate.get("name", ""), seed) == 0:
+        raise ValueError("wrong_listing")
 
     feed_price = candidate.get("price")
     if not isinstance(feed_price, (int, float)) or feed_price <= 0:
         raise ValueError("price_unknown")
 
-    info = page_info(seed)
+    info = candidate_page_info(target)
     if info is None:
-        return "exact_feed_fallback", int(feed_price)
+        if target == expected:
+            return "exact_feed_fallback", int(feed_price)
+        raise ValueError("same_shop_sales_evidence_missing")
 
     live_price = info["price"]
     if abs(live_price - feed_price) > max(500, feed_price * 0.35):
@@ -369,7 +396,7 @@ def audit_one(seed: dict, now_dt: datetime, now: str) -> tuple[dict | None, str 
         for source_name, source_fn in (
             ("worker_exact_url", worker_exact_candidate),
             ("rakuten_api_search", api_search_candidate),
-            ("worker_search_exact_url", worker_search_candidate),
+            ("worker_search_identity", worker_search_candidate),
             ("rakuten_api_exact", api_exact_candidate),
         ):
             if candidate is not None:
