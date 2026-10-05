@@ -12,7 +12,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: sotojitaku-car-stay-products
+  group: sotojitaku-car-stay-products-v2
   cancel-in-progress: true
 jobs:
   refresh:
