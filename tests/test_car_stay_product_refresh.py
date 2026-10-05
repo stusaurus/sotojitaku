@@ -76,5 +76,31 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
 
+    def test_rakuten_api_prefers_exact_seed_url_over_similar_same_shop_item(self):
+        import os
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "query":"N-VAN JJ1 サンシェード",
+            "identityGroups":[["N-VAN"],["JJ1"],["サンシェード"]],
+            "forbiddenTerms":[]
+        }
+        old={k:os.environ.get(k) for k in ["RAKUTEN_APPLICATION_ID","RAKUTEN_ACCESS_KEY","RAKUTEN_AFFILIATE_ID"]}
+        original=refresh.fetch_json
+        try:
+            os.environ["RAKUTEN_APPLICATION_ID"]="app"
+            os.environ["RAKUTEN_ACCESS_KEY"]="key"
+            os.environ["RAKUTEN_AFFILIATE_ID"]="aff"
+            refresh.fetch_json=lambda url,headers=None:{"items":[
+                {"itemName":"N-VAN JJ1 サンシェード フロント","itemUrl":"https://item.rakuten.co.jp/hobbyman/similar/","itemPrice":9000,"affiliateUrl":"https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fsimilar%2F","mediumImageUrls":["https://example.com/a.jpg"]},
+                {"itemName":"N-VAN JJ1 サンシェード フルセット","itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/","itemPrice":12000,"affiliateUrl":"https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fexact%2F","mediumImageUrls":["https://example.com/b.jpg"]}
+            ]}
+            candidate=refresh.rakuten_api_candidate(seed)
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+        finally:
+            refresh.fetch_json=original
+            for k,v in old.items():
+                if v is None: os.environ.pop(k,None)
+                else: os.environ[k]=v
+
 if __name__=="__main__":
     unittest.main()
