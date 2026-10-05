@@ -84,6 +84,11 @@ def rakuten_shop(value):
     parts=[p for p in u.path.split('/') if p]
     return parts[0] if parts else ''
 
+def rakuten_item_slug(value):
+    u=urllib.parse.urlparse(canonical_item_url(value))
+    parts=[p for p in u.path.split('/') if p]
+    return parts[1] if len(parts)>=2 else ''
+
 def compact(value):
     return re.sub(r'\s+','',unicodedata.normalize('NFKC',str(value or ''))).lower()
 
@@ -223,33 +228,46 @@ def rakuten_api_exact_candidate(seed):
     env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
     if not all(env.values()):
         return None
-    page_info=exact_page_info(seed)
-    if not page_info:
-        return None
-    item_code=f"{rakuten_shop(seed['itemUrl'])}:{page_info['itemId']}"
-    params={
-        'applicationId':env['RAKUTEN_APPLICATION_ID'],
-        'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
-        'itemCode':item_code,
-        'hits':1,'formatVersion':2,'availability':1,
-        'elements':'itemName,itemCode,itemPrice,itemUrl,affiliateUrl,mediumImageUrls,availability,shopCode'
-    }
     headers={**HEADERS,'accessKey':env['RAKUTEN_ACCESS_KEY']}
-    payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
-    for raw in payload.get('items') or payload.get('Items') or []:
-        item=raw.get('Item',raw)
-        item_url=canonical_item_url(item.get('itemUrl',''))
-        name=item.get('itemName','')
-        if item_url!=canonical_item_url(seed['itemUrl']) or not identity_ok(name,seed):
-            continue
-        imgs=item.get('mediumImageUrls') or []
-        image=imgs[0] if imgs else ''
-        if isinstance(image,dict): image=image.get('imageUrl','')
-        return {
-            'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
-            'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode') or item_code,
-            'source':'rakuten_api_exact','pagePrice':page_info['price']
+    shop=rakuten_shop(seed['itemUrl'])
+    item_codes=[]
+    slug=rakuten_item_slug(seed['itemUrl'])
+    if shop and slug:
+        item_codes.append(f"{shop}:{slug}")
+    page_info=exact_page_info(seed)
+    if page_info:
+        numeric_code=f"{shop}:{page_info['itemId']}"
+        if numeric_code not in item_codes:
+            item_codes.append(numeric_code)
+    for item_code in item_codes:
+        params={
+            'applicationId':env['RAKUTEN_APPLICATION_ID'],
+            'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
+            'itemCode':item_code,
+            'hits':1,'formatVersion':2,'availability':1,
+            'elements':'itemName,itemCode,itemPrice,itemUrl,affiliateUrl,mediumImageUrls,availability,shopCode'
         }
+        try:
+            payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
+        except Exception:
+            continue
+        for raw in payload.get('items') or payload.get('Items') or []:
+            item=raw.get('Item',raw)
+            item_url=canonical_item_url(item.get('itemUrl',''))
+            name=item.get('itemName','')
+            if item_url!=canonical_item_url(seed['itemUrl']) or not identity_ok(name,seed):
+                continue
+            imgs=item.get('mediumImageUrls') or []
+            image=imgs[0] if imgs else ''
+            if isinstance(image,dict): image=image.get('imageUrl','')
+            result={
+                'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
+                'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode') or item_code,
+                'source':'rakuten_api_exact'
+            }
+            if page_info:
+                result['pagePrice']=page_info['price']
+            return result
     return None
 
 def rakuten_api_candidate(seed):

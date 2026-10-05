@@ -150,7 +150,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_text=original
 
-    def test_exact_api_candidate_uses_shop_itemcode(self):
+    def test_exact_api_candidate_tries_url_slug_then_numeric_page_item_id(self):
         import os, urllib.parse
         seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/","identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["サンシェード"]],"forbiddenTerms":[]}
         old={k:os.environ.get(k) for k in ["RAKUTEN_APPLICATION_ID","RAKUTEN_ACCESS_KEY","RAKUTEN_AFFILIATE_ID"]}
@@ -163,11 +163,14 @@ class CarStayProductRefreshTests(unittest.TestCase):
             os.environ["RAKUTEN_AFFILIATE_ID"]="aff"
             refresh.exact_page_info=lambda _:{"itemId":12345678,"price":12980}
             def fake(url,headers=None):
-                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+                params=urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+                seen.append(params)
+                if params["itemCode"]==["hobbyman:exact"]:
+                    return {"items":[]}
                 return {"items":[{"itemName":"N-VAN JJ1 JJ2 サンシェード フルセット","itemCode":"hobbyman:12345678","itemPrice":12980,"itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/","affiliateUrl":"https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fexact%2F","mediumImageUrls":["https://example.com/p.jpg"]}]}
             refresh.fetch_json=fake
             candidate=refresh.rakuten_api_exact_candidate(seed)
-            self.assertEqual(seen[0]["itemCode"],["hobbyman:12345678"])
+            self.assertEqual([q["itemCode"][0] for q in seen],["hobbyman:exact","hobbyman:12345678"])
             self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
             self.assertEqual(candidate["source"],"rakuten_api_exact")
             self.assertEqual(candidate["pagePrice"],12980)
@@ -574,6 +577,47 @@ class CarStayProductRefreshTests(unittest.TestCase):
     def test_sales_page_unreachable_is_treated_as_transient_for_fresh_previous_item(self):
         self.assertTrue(refresh.transient_audit_failure("sales_page_unreachable"))
         self.assertFalse(refresh.transient_audit_failure("unavailable"))
+
+    def test_rakuten_item_slug_comes_from_audited_item_url(self):
+        self.assertEqual(refresh.rakuten_item_slug("https://item.rakuten.co.jp/suwariba/o023/"),"o023")
+        self.assertEqual(refresh.rakuten_item_slug("https://item.rakuten.co.jp/premoa/4982323269905/"),"4982323269905")
+
+    def test_exact_api_lookup_tries_shop_and_url_slug_without_sales_page_item_id(self):
+        import os, urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/suwariba/o023/",
+            "identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["全席用"],["車中泊マット"]],
+            "forbiddenTerms":[]
+        }
+        old={k:os.environ.get(k) for k in ["RAKUTEN_APPLICATION_ID","RAKUTEN_ACCESS_KEY","RAKUTEN_AFFILIATE_ID"]}
+        original_fetch,original_page=refresh.fetch_json,refresh.exact_page_info
+        seen=[]
+        try:
+            os.environ["RAKUTEN_APPLICATION_ID"]="app"
+            os.environ["RAKUTEN_ACCESS_KEY"]="key"
+            os.environ["RAKUTEN_AFFILIATE_ID"]="aff"
+            refresh.exact_page_info=lambda _seed:None
+            def fake(url,headers=None):
+                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+                return {"items":[{
+                    "itemName":"N-VAN JJ1 JJ2 全席用 車中泊マット",
+                    "itemCode":"suwariba:o023",
+                    "itemPrice":19900,
+                    "itemUrl":"https://item.rakuten.co.jp/suwariba/o023/",
+                    "affiliateUrl":"https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsuwariba%2Fo023%2F",
+                    "mediumImageUrls":["https://example.com/o023.jpg"],
+                    "shopCode":"suwariba"
+                }]}
+            refresh.fetch_json=fake
+            candidate=refresh.rakuten_api_exact_candidate(seed)
+            self.assertEqual(seen[0]["itemCode"],["suwariba:o023"])
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+            self.assertEqual(candidate["itemCode"],"suwariba:o023")
+        finally:
+            refresh.fetch_json,refresh.exact_page_info=original_fetch,original_page
+            for k,v in old.items():
+                if v is None: os.environ.pop(k,None)
+                else: os.environ[k]=v
 
 if __name__=="__main__":
     unittest.main()
