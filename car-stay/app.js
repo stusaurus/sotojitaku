@@ -29,6 +29,13 @@ function selectedGear(){
   return db.gear.filter(g=>state.ownedGear.includes(g.gearId));
 }
 function currentVehicle(){return db.vehicles.find(v=>v.vehicleId===state.vehicleId);}
+function vehicleConfigComplete(){
+  const v=currentVehicle();
+  if(!v)return false;
+  if(v.config?.seatCounts?.length&&!v.config.seatCounts.includes(Number(state.config.seatCount)))return false;
+  if(v.config?.trims?.length&&!v.config.trims.includes(state.config.trim))return false;
+  return true;
+}
 function rules(){return {...DEFAULT_RULES,...db.rules};}
 function inputForEngine(){
   return {people:state.people,tripStyle:state.tripStyle,placeType:state.placeType,weather:state.weather,gear:selectedGear(),devices:state.devices,measurements:state.measurements,sleepEngineOn:state.sleepEngineOn,openFlameInside:state.openFlameInside};
@@ -84,7 +91,7 @@ function renderVehicle(){
   const v=currentVehicle();
   if(v?.config?.seatCounts?.length)config+="<div class='field'><label>乗車定員</label><select data-config='seatCount'><option value=''>選択</option>"+v.config.seatCounts.map(x=>"<option value='"+x+"' "+(Number(state.config.seatCount)===x?"selected":"")+">"+x+"人乗り</option>").join("")+"</select></div>";
   if(v?.config?.trims?.length)config+="<div class='field'><label>グレード / 仕様</label><select data-config='trim'><option value=''>選択</option>"+v.config.trims.map(x=>"<option value='"+esc(x)+"' "+(state.config.trim===x?"selected":"")+">"+esc(x)+"</option>").join("")+"</select></div>";
-  panel.innerHTML=wrap("どのクルマで泊まる？","まずは愛車を選びます。未確認寸法は推測せず、必要ならあとで2か所だけ測ります。","<div class='grid'>"+cards+"</div>"+(config?"<div class='form-row' style='margin-top:18px'>"+config+"</div>":"")+"<div class='note'>登録がない車種でも、寝床の長さと幅を測れば判定できる設計です。</div><div class='actions'>"+backButton()+"<button class='primary' data-next type='button' "+(!state.vehicleId?"disabled":"")+">誰と泊まる？ <span>→</span></button></div>","STEP 1 · 愛車");
+  panel.innerHTML=wrap("どのクルマで泊まる？","まずは愛車を選びます。未確認寸法は推測せず、必要ならあとで2か所だけ測ります。","<div class='grid'>"+cards+"</div>"+(config?"<div class='form-row' style='margin-top:18px'>"+config+"</div>":"")+"<div class='note'>"+(v&&!vehicleConfigComplete()&&config?"適合商品を正確に出すため、乗車定員・グレードなどを選んでください。":"登録がない車種でも、寝床の長さと幅を測れば判定できる設計です。")+"</div><div class='actions'>"+backButton()+"<button class='primary' data-next type='button' "+(!state.vehicleId||!vehicleConfigComplete()?"disabled":"")+">誰と泊まる？ <span>→</span></button></div>","STEP 1 · 愛車");
 }
 function renderPeople(){
   const count=state.people.length;
@@ -155,7 +162,7 @@ function render(){
   else renderResult();
 }
 function advance(){
-  if(state.step===0&&!state.vehicleId)return;
+  if(state.step===0&&(!state.vehicleId||!vehicleConfigComplete()))return;
   if(state.step===2&&!state.tripStyle)return;
   if(state.step===3&&!state.placeType)return;
   if(state.step<4){state.step++;save();render();window.scrollTo({top:0,behavior:"smooth"});}
