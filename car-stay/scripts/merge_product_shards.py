@@ -19,10 +19,13 @@ def merge(directory):
     deferred={}
     newest=datetime.fromtimestamp(0,timezone.utc)
     runtime=0
+    policy_versions=set()
     for path in files:
         payload=json.loads(path.read_text())
         newest=max(newest,parse_time(payload.get("updatedAt")))
         runtime+=float(payload.get("runtimeBudgetSeconds") or 0)
+        if payload.get("auditPolicyVersion"):
+            policy_versions.add(str(payload.get("auditPolicyVersion")))
         for product in payload.get("products",[]):
             pid=product.get("productId")
             if not pid:
@@ -38,6 +41,7 @@ def merge(directory):
     result={
         "version":1,
         "updatedAt":newest.isoformat(),
+        "auditPolicyVersion": next(iter(policy_versions)) if len(policy_versions)==1 else ("mixed" if policy_versions else None),
         "status":"ok" if not failures and not deferred else "partial",
         "products":sorted(products.values(),key=lambda p:(p.get("vehicleFit",[{}])[0].get("vehicleId",""),p.get("gapIds",[""])[0],-(p.get("score") or 0))),
         "failures":dict(sorted(failures.items())),
