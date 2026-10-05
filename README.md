@@ -48,3 +48,10 @@ CAR STAY is a mobile-first first-night builder for ordinary passenger vehicles. 
 Purchase CTAs are allowed only for exact vehicle-fit products that are live-audited and verified within seven days. Zero products is a valid state; the plan must still complete with free/home alternatives.
 
 Measurement reuses GA4 ID `G-GFVSZ8YDQ5` with `site_id=sotojitaku_car_stay` and the same `?test=1` operator flag.
+
+
+### CAR STAY product pipeline
+
+`car-stay/data/product-seeds/` contains manually fit-audited exact Rakuten listing seeds. `car-stay/scripts/refresh_products.py` rechecks the exact listing daily using the existing Rakuten Worker and optionally repository Rakuten credentials. A product is published to `car-stay/data/audited-products.json` only when the fixed Rakuten item URL, vehicle/model identity, current price, live availability, image, affiliate redirect destination, and fit-audit freshness all pass. Any mismatch removes the item; stale products are also rejected in the browser after seven days.
+
+The CAR STAY refresh runs daily and after seed/pipeline changes. The CAMP product deployment also copies `car-stay/` so CAMP catalog refreshes cannot remove the second experience from GitHub Pages.
