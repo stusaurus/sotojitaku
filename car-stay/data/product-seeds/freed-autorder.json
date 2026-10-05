@@ -1,0 +1,59 @@
+{
+  "productId": "freed-gt-autorder-au1175",
+  "name": "autorder FREED GT サンシェード 1台分フルセット",
+  "brand": "autorder",
+  "query": "autorder フリード GT サンシェード フルセット au1175",
+  "itemUrl": "https://item.rakuten.co.jp/autorder/au1175/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 91,
+  "identityGroups": [
+    [
+      "フリード",
+      "FREED"
+    ],
+    [
+      "GT"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット",
+      "1台分"
+    ]
+  ],
+  "forbiddenTerms": [
+    "GB5",
+    "GB6",
+    "GB7",
+    "GB8",
+    "フロントのみ",
+    "フロントサンシェード"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/autorder/au1175/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-freed-gt",
+      "status": "verified",
+      "seatCounts": [
+        5,
+        6,
+        7
+      ],
+      "trims": [
+        "AIR",
+        "AIR EX",
+        "CROSSTAR"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "au1175",
+    "autorder フリード GT サンシェード",
+    "フリード GT サンシェード フルセット"
+  ]
+}
