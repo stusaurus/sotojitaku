@@ -324,5 +324,26 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_json=original
 
+    def test_worker_exact_url_lookup_runs_once_with_first_query(self):
+        import urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/shop/exact/",
+            "query":"fallback",
+            "searchQueries":["exact-model-code","broad vehicle phrase"],
+            "identityGroups":[["N-BOX"],["JF5"]],"forbiddenTerms":[]
+        }
+        seen=[]
+        original=refresh.fetch_json
+        try:
+            def fake(url,headers=None):
+                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+                return {"found":False}
+            refresh.fetch_json=fake
+            self.assertIsNone(refresh.worker_exact_item_candidate(seed))
+            self.assertEqual(len(seen),1)
+            self.assertEqual(seen[0]["q"],["exact-model-code"])
+        finally:
+            refresh.fetch_json=original
+
 if __name__=="__main__":
     unittest.main()
