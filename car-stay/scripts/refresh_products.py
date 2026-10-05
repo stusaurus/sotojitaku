@@ -362,6 +362,65 @@ def transient_audit_failure(reason):
     )
     return any(token in text for token in transient_tokens)
 
+def recover_previous_product(seed,old,now):
+    """Re-audit the same manually approved listing before dropping it for search miss.
+
+    Recovery is allowed only when the previous item's canonical Rakuten URL still
+    exactly matches the current seed URL. A confirmed live sales page refreshes price
+    and verifiedAt. An interstitial keeps the original timestamp so the browser's
+    seven-day freshness gate still expires it naturally.
+    """
+    if not old or old.get('audit',{}).get('status')!='verified_live':
+        return None,None,None
+    item_url=old.get('itemUrl','')
+    if canonical_item_url(item_url)!=canonical_item_url(seed.get('itemUrl','')):
+        return None,None,None
+    affiliate=old.get('affiliateUrl','')
+    price=old.get('price')
+    image=old.get('image','')
+    if not safe_affiliate(affiliate,item_url):
+        return None,None,'unsafe_or_wrong_affiliate'
+    if not isinstance(price,(int,float)) or price<=0:
+        return None,None,'price_unknown'
+    if not isinstance(image,str) or not image.startswith('https://'):
+        return None,None,'image_unknown'
+    try:
+        mode,live_price=page_sales_audit(seed,item_url,int(price))
+    except Exception as e:
+        reason=str(e) if isinstance(e,ValueError) else type(e).__name__
+        hard_tokens=(
+            'unavailable','wrong_sell_type','feed_page_price_mismatch',
+            'unsafe_or_wrong_affiliate','price_unknown'
+        )
+        if any(token in reason for token in hard_tokens):
+            return None,None,reason
+        # Network/challenge/parse uncertainty: retain only with the old timestamp.
+        return dict(old),'previous_fresh_page_inconclusive',None
+
+    recovered=dict(old)
+    recovered.update({
+        'productId':seed['productId'],
+        'brand':seed.get('brand',old.get('brand','')),
+        'gapIds':seed['gapIds'],
+        'recommendationRole':seed.get('recommendationRole',old.get('recommendationRole','beginner_default')),
+        'score':seed.get('score',old.get('score',80)),
+        'fitVerifiedAt':seed['fitCheckedAt'],
+        'vehicleFit':seed['vehicleFit'],
+        'price':int(live_price),
+    })
+    if mode=='sales_page':
+        recovered['verifiedAt']=now
+        audit=dict(recovered.get('audit') or {})
+        audit.update({
+            'status':'verified_live',
+            'mode':'previous_page_reverified',
+            'salesSource':'previous_page',
+            'fitEvidence':seed.get('fitEvidenceUrl','')
+        })
+        recovered['audit']=audit
+        return recovered,'previous_page_reverified',None
+    return recovered,'previous_fresh_page_inconclusive',None
+
 def acquire(runtime_budget_seconds=None):
     now_dt=datetime.now(timezone.utc); now=now_dt.isoformat()
     budget=RUNTIME_BUDGET_SECONDS if runtime_budget_seconds is None else max(0,float(runtime_budget_seconds))
@@ -397,6 +456,15 @@ def acquire(runtime_budget_seconds=None):
                 except Exception as source_error:
                     source_errors.append(source_name+':'+type(source_error).__name__)
             if candidate is None:
+                pid=seed.get('productId','unknown')
+                recovered,recovery_state,recovery_hard_failure=recover_previous_product(seed,previous.get(pid),now)
+                if recovered is not None:
+                    products.append(recovered)
+                    if recovery_state!='previous_page_reverified':
+                        deferred[pid]=recovery_state
+                    continue
+                if recovery_hard_failure:
+                    source_errors.append('previous_page:'+recovery_hard_failure)
                 suffix=(' ['+','.join(source_errors)+']') if source_errors else ''
                 raise ValueError('same_shop_identity_listing_not_found'+suffix)
             target_item=candidate.get('itemUrl') or canonical_item_url(candidate['url'])
