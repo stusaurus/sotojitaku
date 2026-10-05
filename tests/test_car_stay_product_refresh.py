@@ -484,5 +484,16 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertGreaterEqual(len(cases["honda-nbox-jf5-jf6"]),2)
         self.assertGreaterEqual(len(cases["suzuki-hustler-mr52s-mr92s"]),2)
 
+
+    def test_nvan_nomad_all_seat_seed_requires_jj_and_rejects_ev(self):
+        seed={
+            "identityGroups":[["N-VAN","NVAN","N VAN"],["JJ1/JJ2","JJ1","JJ2"],["全席用"],["フラットマット","車中泊マット"],["NOMAD BASE","セルタン","CELLUTANE"]],
+            "forbiddenTerms":["EVモデル","N-VAN e:"]
+        }
+        good="N-VAN エヌバン JJ1/JJ2専用 フラットマット 車中泊マット 全席用 NOMAD BASE セルタン"
+        bad=good+" EVモデル"
+        self.assertTrue(refresh.identity_ok(good,seed))
+        self.assertFalse(refresh.identity_ok(bad,seed))
+
 if __name__=="__main__":
     unittest.main()
