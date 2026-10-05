@@ -172,3 +172,10 @@ test("CAR STAY audit shards keep the current seed load at five items or fewer pe
   assert.equal(envTotal,shardCount);
   assert.ok(Math.ceil(seeds.length/shardCount)<=5,seeds.length+" seeds across "+shardCount+" shards is too dense");
 });
+
+test("CAR STAY product workflow blocks stale audit definitions from publishing",()=>{
+  const workflow=fs.readFileSync(new URL("../.github/workflows/refresh-car-stay-products.yml",import.meta.url),"utf8");
+  assert.match(workflow,/git diff --quiet "\$GITHUB_SHA" origin\/main/);
+  assert.match(workflow,/skip stale catalog publish/);
+  assert.match(workflow,/car-stay\/data\/product-seeds/);
+});
