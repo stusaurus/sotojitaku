@@ -5,7 +5,8 @@
   "query": "LVMR-11",
   "itemUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-11/",
   "gapIds": [
-    "floor_step"
+    "floor_step",
+    "sleep_surface"
   ],
   "recommendationRole": "beginner_alternative",
   "score": 92,
