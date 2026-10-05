@@ -1,0 +1,54 @@
+{
+  "productId": "nvan-jj1-jj2-nomad-nb-nvan",
+  "name": "N-VAN JJ1/JJ2専用 NOMAD BASE 全席用フラットマット",
+  "brand": "NOMAD BASE / CELLUTANE",
+  "query": "nb-nvan",
+  "itemUrl": "https://item.rakuten.co.jp/hakuturu/nb-nvan/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 95,
+  "identityGroups": [
+    [
+      "N-VAN",
+      "NVAN",
+      "N VAN"
+    ],
+    [
+      "JJ1/JJ2",
+      "JJ1",
+      "JJ2"
+    ],
+    [
+      "全席用"
+    ],
+    [
+      "フラットマット",
+      "車中泊マット"
+    ],
+    [
+      "NOMAD BASE",
+      "セルタン",
+      "CELLUTANE"
+    ]
+  ],
+  "forbiddenTerms": [
+    "EVモデル",
+    "N-VAN e:"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hakuturu/nb-nvan/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "status": "verified"
+    }
+  ],
+  "searchQueries": [
+    "nb-nvan",
+    "N-VAN JJ1 JJ2 全席用 フラットマット",
+    "N-VAN NOMAD BASE 車中泊マット"
+  ]
+}
