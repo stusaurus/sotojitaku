@@ -1,0 +1,60 @@
+{
+  "productId": "nbox-jf56-hobbyman-kurumat",
+  "name": "N-BOX JF5/JF6 シートフラットクッション 段差解消 車中泊マット",
+  "brand": "趣味職人",
+  "query": "N-BOX JF5 JF6 シートフラットクッション 段差解消 車中泊マット",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/kurumat-black-n-box-jf56/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 86,
+  "identityGroups": [
+    [
+      "N-BOX",
+      "NBOX"
+    ],
+    [
+      "JF5"
+    ],
+    [
+      "JF6"
+    ],
+    [
+      "シートフラットクッション",
+      "段差解消"
+    ],
+    [
+      "車中泊",
+      "マット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "JF3",
+    "JF4",
+    "フロアマット",
+    "ダッシュボードマット"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/kurumat-black-n-box-jf56/",
+  "fitCheckedAt": "2026-10-05",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "status": "verified",
+      "trims": [
+        "N-BOX",
+        "N-BOX Custom",
+        "N-BOX JOY"
+      ],
+      "exclusions": [
+        "N-BOX Slope"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "N-BOX JF5 JF6 シートフラットクッション",
+    "NBOX JF5 JF6 段差解消 車中泊",
+    "NBOX JF5 車中泊 マット"
+  ]
+}
