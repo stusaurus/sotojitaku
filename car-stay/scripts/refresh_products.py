@@ -268,7 +268,8 @@ def page_sales_audit(seed,item_url,expected_price):
     return 'sales_page',int(live)
 
 def load_seeds():
-    return [json.loads(p.read_text()) for p in sorted(SEED_DIR.glob('*.json'))]
+    seeds=[json.loads(p.read_text()) for p in sorted(SEED_DIR.glob('*.json'))]
+    return [seed for seed in seeds if seed.get('enabled',True) is not False]
 
 def fit_audit_fresh(seed,now):
     try:
