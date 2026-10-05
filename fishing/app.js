@@ -9,6 +9,7 @@ let questionsData,plansData,gearData,catalog;
 let index=0;
 let answers={owned:[]};
 let localRulesConfirmed=false;
+const viewedProducts=new Set();
 
 const labels={party:"だれと",fun:"楽しみ方",bait:"エサ",take_home:"持ち帰り",carry:"荷物",budget:"予算",owned:"手持ち"};
 const track=(name,params={})=>{try{window.gtag?.("event",name,{conversion_source:"fishing",...params})}catch{}};
@@ -25,7 +26,7 @@ async function load(){
 
 function start(){
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
-  index=0;answers={owned:[]};localRulesConfirmed=false;
+  index=0;answers={owned:[]};localRulesConfirmed=false;viewedProducts.clear();
   track("fishing_diagnosis_start");
   renderQuestion();
   scrollTo({top:0,behavior:"smooth"});
@@ -82,8 +83,10 @@ function renderQuestion(){
     const v=btn.dataset.value;
     if(isMulti){
       const set=new Set(answers[q.id]||[]);
-      set.has(v)?set.delete(v):set.add(v);
+      const removing=set.has(v);
+      removing?set.delete(v):set.add(v);
       answers[q.id]=[...set];
+      if(q.id==="owned")track("fishing_owned_item_toggle",{gear_category:v,toggle_action:removing?"remove":"add"});
     }else answers[q.id]=v;
     track("fishing_question_answer",{question_id:q.id,answer_value:v});
     renderQuestion();
@@ -165,6 +168,7 @@ function renderResult(){
     $("#saveBtn").textContent="保存しました";
   });
   $("#againBtn").addEventListener("click",()=>{index=0;renderQuestion()});
+  trackProductViews(productResult.selected,plan);
   bindAffiliateClicks();
 }
 
@@ -194,10 +198,30 @@ function productLabel(p,neededIds){
   return "この不足を埋める";
 }
 
+function trackProductViews(products,plan){
+  for(const p of products||[]){
+    const key=plan.methodId+":"+p.productId;
+    if(viewedProducts.has(key))continue;
+    viewedProducts.add(key);
+    track("fishing_product_view",{
+      product_id:p.productId,
+      gear_category:p.categoryId,
+      fishing_method:plan.methodId,
+      price:Number(p.price)||0,
+      recommendation_role:p.recommendationRole||""
+    });
+  }
+}
 function bindAffiliateClicks(){
-  panel.querySelectorAll(".buy").forEach(a=>a.addEventListener("click",()=>track("affiliate_click",{
-    product_id:a.dataset.product,gear_category:a.dataset.category,fishing_method:selectPlan(answers,plansData)?.methodId
-  })));
+  panel.querySelectorAll(".buy").forEach(a=>a.addEventListener("click",()=>{
+    const payload={
+      product_id:a.dataset.product,
+      gear_category:a.dataset.category,
+      fishing_method:selectPlan(answers,plansData)?.methodId
+    };
+    track("fishing_product_select",payload);
+    track("affiliate_click",payload);
+  }));
 }
 function stateLabel(s){return {owned:"持っている",needed:"必要",optional:"あると快適",covered_by_product:"セットで揃う"}[s]||s}
 function cleanName(s){return String(s||"").replace(/〖[^〗]*〗/g,"").replace(/\s+/g," ").trim().slice(0,95)}
