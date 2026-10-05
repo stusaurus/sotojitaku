@@ -1,1 +1,16 @@
-{"checkedAt":null,"products":[]}
+{
+  "version": 1,
+  "updatedAt": "2026-10-05T11:07:50.942038+00:00",
+  "status": "partial",
+  "products": [],
+  "failures": {
+    "every-da17-da18-hobbyman-shade": "exact_listing_not_found",
+    "freed-gt-hobbyman-shade": "exact_listing_not_found",
+    "hustler-mr52-92-levolva-lvmr13": "exact_listing_not_found",
+    "hustler-mr52-92-hobbyman-full": "exact_listing_not_found",
+    "nbox-jf56-di-flat4": "exact_listing_not_found",
+    "nbox-jf56-zenpo-shade": "exact_listing_not_found",
+    "nvan-jj1-jj2-hobbyman-craft": "exact_listing_not_found",
+    "sienta10-hobbyman-shade": "exact_listing_not_found"
+  }
+}
