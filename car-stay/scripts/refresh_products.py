@@ -7,7 +7,7 @@ that product from the public catalog rather than retaining stale data.
 """
 from __future__ import annotations
 import json, os, re, time, unicodedata, urllib.error, urllib.parse, urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -340,10 +340,14 @@ def order_seeds_for_refresh(seeds,previous_all,now_dt):
         unresolved=unresolved[offset:]+unresolved[:offset]
     return live+unresolved
 
+JST=timezone(timedelta(hours=9))
+
 def fit_audit_fresh(seed,now):
     try:
-        checked=datetime.fromisoformat(seed['fitCheckedAt']+'T00:00:00+00:00')
-        return 0 <= (now-checked).days <= 365
+        checked=datetime.fromisoformat(seed['fitCheckedAt']).date()
+        local_today=now.astimezone(JST).date()
+        age=(local_today-checked).days
+        return 0 <= age <= 365
     except Exception:
         return False
 
@@ -373,7 +377,7 @@ def transient_audit_failure(reason):
     transient_tokens=(
         'HTTPError','URLError','TimeoutError','ConnectionError',
         'ConnectionResetError','RemoteDisconnected','JSONDecodeError',
-        'same_shop_identity_listing_not_found'
+        'same_shop_identity_listing_not_found','sales_page_unreachable'
     )
     return any(token in text for token in transient_tokens)
 
