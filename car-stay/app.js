@@ -21,7 +21,7 @@ let db={vehicles:[],gear:[],products:[],rules:DEFAULT_RULES};
 let state={
   version:VERSION,step:0,vehicleId:null,config:{},people:[{type:"adult",height:171},{type:"adult",height:160}],
   tripStyle:null,date:"",region:"",placeType:null,weather:{status:"unknown",minC:null,maxC:null},
-  ownedGear:[],devices:[],measurements:{lengthMm:null,widthMm:null},sleepEngineOn:false,openFlameInside:false
+  ownedGear:[],devices:[],floorObservation:"unknown",measurements:{lengthMm:null,widthMm:null},sleepEngineOn:false,openFlameInside:false
 };
 
 function track(name,params={}){
@@ -44,7 +44,7 @@ function vehicleConfigComplete(){
 }
 function rules(){return {...DEFAULT_RULES,...db.rules};}
 function inputForEngine(){
-  return {people:state.people,tripStyle:state.tripStyle,placeType:state.placeType,weather:state.weather,gear:selectedGear(),devices:state.devices,measurements:state.measurements,sleepEngineOn:state.sleepEngineOn,openFlameInside:state.openFlameInside};
+  return {people:state.people,tripStyle:state.tripStyle,placeType:state.placeType,weather:state.weather,gear:selectedGear(),devices:state.devices,floorObservation:state.floorObservation,measurements:state.measurements,sleepEngineOn:state.sleepEngineOn,openFlameInside:state.openFlameInside};
 }
 async function loadData(){
   const names=["vehicles.json","gear.json","rules.json","audited-products.json"];
@@ -123,7 +123,9 @@ function renderEnvironment(){
 function renderGear(){
   const icons={home_duvet:"🛏️",blanket:"🧣",pillow:"☁️",towel:"🧺",camp_mat:"▰",led_light:"💡",mobile_battery:"🔋",privacy_full:"🌙",fan:"🌀",electric_blanket:"♨️",portable_power:"🔌"};
   const cards=db.gear.map(g=>"<button class='gear "+(state.ownedGear.includes(g.gearId)?"selected":"")+"' data-gear='"+g.gearId+"'><span class='icon'>"+(icons[g.gearId]||"•")+"</span><b>"+esc(g.label)+"</b></button>").join("");
-  panel.innerHTML=wrap("新しく買う前に、家にあるものを。","持っている物をタップしてください。ひとつの道具を複数の用途に使える場合もあります。","<div class='gear-grid'>"+cards+"</div><div class='field' style='margin-top:22px'><label><input data-device='electric_blanket' type='checkbox' "+(state.devices.includes("electric_blanket")?"checked":"")+"> 今回、電気毛布を使いたい</label></div><div class='actions'>"+backButton()+"<button class='primary' data-next>一泊を完成する <span>→</span></button></div>","STEP 5 · 手持ち");
+  const floorChoices=[["flat","ほぼ平ら","そのまま寝られそう"],["noticeable","段差が気になる","タオルなどで試したい"],["large","大きな段差・すき間","対策が必要そう"],["unknown","まだ試していない","商品はまだ出しません"]];
+  const floorCards=floorChoices.map(x=>"<button class='choice "+(state.floorObservation===x[0]?"selected":"")+"' data-floor='"+x[0]+"' type='button'><b>"+x[1]+"</b><small>"+x[2]+"</small></button>").join("");
+  panel.innerHTML=wrap("新しく買う前に、家にあるものを。","持っている物をタップしてください。ひとつの道具を複数の用途に使える場合もあります。","<div class='gear-grid'>"+cards+"</div><div style='margin-top:24px'><p class='step-kicker'>寝床を作ってみると？</p><div class='grid'>"+floorCards+"</div><p class='micro'>車種データが未確認でも、あなた自身が段差を感じた場合だけ段差対策の候補を出します。</p></div><div class='field' style='margin-top:22px'><label><input data-device='electric_blanket' type='checkbox' "+(state.devices.includes("electric_blanket")?"checked":"")+"> 今回、電気毛布を使いたい</label></div><div class='actions'>"+backButton()+"<button class='primary' data-next>一泊を完成する <span>→</span></button></div>","STEP 5 · 手持ち");
 }
 function statusLabel(s){return {READY:"READY",ALMOST_READY:"ALMOST READY",CHALLENGE:"CHECK FIRST",CHANGE_PLAN:"CHANGE PLAN"}[s]||s;}
 function resultCards(result){
@@ -131,7 +133,10 @@ function resultCards(result){
   const len=sleep.lengthState==="comfort"?"◎ 余裕あり":sleep.lengthState==="ok"?"○ 寝られる":sleep.lengthState==="tight"?"△ 工夫が必要":sleep.lengthState==="short"?"× 短い":"? 未確認";
   const wid=sleep.widthState==="just_right"?"○ ちょうど":sleep.widthState==="snug"?"△ ぎゅっと":sleep.widthState==="not_recommended"?"× 非推奨":sleep.widthState==="solo_unchecked"?"○ 1人":"? 未確認";
   const hasPrivacy=selectedGear().some(g=>g.capabilities?.includes("privacy_full"));
-  return "<div class='result-grid'><div class='result-card'><b>寝床の長さ <span class='"+(len[0]==="×"?"dot-bad":len[0]==="△"||len[0]==="?"?"dot-warn":"dot-ok")+"'>"+len+"</span></b><p>"+(sleep.length?sleep.length+"mmで判定":"実測が必要です")+"</p></div><div class='result-card'><b>寝床の幅 <span class='"+(wid[0]==="×"?"dot-bad":wid[0]==="△"||wid[0]==="?"?"dot-warn":"dot-ok")+"'>"+wid+"</span></b><p>"+(sleep.width?sleep.width+"mm / 目安"+sleep.targetWidth+"mm":"2人以上は実測が必要です")+"</p></div><div class='result-card'><b>目隠し <span class='"+(hasPrivacy?"dot-ok":"dot-warn")+"'>"+(hasPrivacy?"◎ あり":"× 未対策")+"</span></b><p>外からの視線と光を遮る準備。</p></div><div class='result-card'><b>場所 <span class='"+(["rv_park","auto_camp","authorized_private"].includes(state.placeType)?"dot-ok":"dot-warn")+"'>"+(["rv_park","auto_camp","authorized_private"].includes(state.placeType)?"◎ 確認しやすい":"△ 要確認")+"</span></b><p>施設ごとのルールを最終確認してください。</p></div></div>";
+  const floorState=result.floor?.state||"unknown";
+  const floorLabel=floorState==="needs_fix"?"△ 対策したい":floorState==="resolved_free"?"◎ 家の物で対応":floorState==="resolved_product"?"◎ 対策済み":floorState==="flat"?"◎ ほぼ平ら":"? 未確認";
+  const floorClass=floorState==="needs_fix"||floorState==="unknown"?"dot-warn":"dot-ok";
+  return "<div class='result-grid'><div class='result-card'><b>寝床の長さ <span class='"+(len[0]==="×"?"dot-bad":len[0]==="△"||len[0]==="?"?"dot-warn":"dot-ok")+"'>"+len+"</span></b><p>"+(sleep.length?sleep.length+"mmで判定":"実測が必要です")+"</p></div><div class='result-card'><b>寝床の幅 <span class='"+(wid[0]==="×"?"dot-bad":wid[0]==="△"||wid[0]==="?"?"dot-warn":"dot-ok")+"'>"+wid+"</span></b><p>"+(sleep.width?sleep.width+"mm / 目安"+sleep.targetWidth+"mm":"2人以上は実測が必要です")+"</p></div><div class='result-card'><b>寝床の段差 <span class='"+floorClass+"'>"+floorLabel+"</span></b><p>"+(floorState==="unknown"?"自宅で一度寝床を作って確認すると商品選びが正確になります。":"段差を感じた場合だけ対策候補を出します。")+"</p></div><div class='result-card'><b>目隠し <span class='"+(hasPrivacy?"dot-ok":"dot-warn")+"'>"+(hasPrivacy?"◎ あり":"× 未対策")+"</span></b><p>外からの視線と光を遮る準備。</p></div><div class='result-card'><b>場所 <span class='"+(["rv_park","auto_camp","authorized_private"].includes(state.placeType)?"dot-ok":"dot-warn")+"'>"+(["rv_park","auto_camp","authorized_private"].includes(state.placeType)?"◎ 確認しやすい":"△ 要確認")+"</span></b><p>施設ごとのルールを最終確認してください。</p></div></div>";
 }
 function quickMeasure(result){
   if(!result.sleep.needsQuickMeasure.length)return "";
@@ -206,6 +211,7 @@ panel.addEventListener("click",e=>{
   else if(t.dataset.count){const n=Number(t.dataset.count);const old=state.people;state.people=Array.from({length:n},(_,i)=>old[i]||{type:i<2?"adult":"child",height:i<2?165:120});save();render();}
   else if(t.dataset.trip){state.tripStyle=t.dataset.trip;track("trip_style_selected",{trip_style:state.tripStyle});save();render();}
   else if(t.dataset.gear){state.ownedGear=state.ownedGear.includes(t.dataset.gear)?state.ownedGear.filter(x=>x!==t.dataset.gear):[...state.ownedGear,t.dataset.gear];track("gear_selected",{gear_id:t.dataset.gear,owned:state.ownedGear.includes(t.dataset.gear)?1:0});save();render();}
+  else if(t.dataset.floor){state.floorObservation=t.dataset.floor;track("floor_observation",{vehicle_id:state.vehicleId,observation:state.floorObservation});save();render();}
   else if(t.matches("[data-next]"))advance();
   else if(t.matches("[data-back]")){state.step=Math.max(0,state.step-1);save();render();}
   else if(t.matches("[data-recalc]")){renderResult();}
