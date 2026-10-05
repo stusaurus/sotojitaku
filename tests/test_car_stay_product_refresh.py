@@ -32,5 +32,12 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.safe_affiliate(good,item))
         self.assertFalse(refresh.safe_affiliate(bad,item))
 
+    def test_same_shop_identity_listing_is_allowed_but_other_shop_is_not(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/old-slug/","identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["サンシェード"]],"forbiddenTerms":[]}
+        same={"name":"N-VAN JJ1 JJ2 サンシェード フルセット","itemUrl":"https://item.rakuten.co.jp/hobbyman/new-slug/"}
+        other={"name":"N-VAN JJ1 JJ2 サンシェード フルセット","itemUrl":"https://item.rakuten.co.jp/another-shop/new-slug/"}
+        self.assertEqual(refresh.candidate_match_level(same,seed),1)
+        self.assertEqual(refresh.candidate_match_level(other,seed),0)
+
 if __name__=="__main__":
     unittest.main()

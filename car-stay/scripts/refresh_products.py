@@ -61,6 +61,11 @@ def canonical_item_url(value):
     path=re.sub(r'/+','/',u.path).rstrip('/')+'/'
     return f'https://item.rakuten.co.jp{path}'
 
+def rakuten_shop(value):
+    u=urllib.parse.urlparse(canonical_item_url(value))
+    parts=[p for p in u.path.split('/') if p]
+    return parts[0] if parts else ''
+
 def compact(value):
     return re.sub(r'\s+','',unicodedata.normalize('NFKC',str(value or ''))).lower()
 
@@ -80,31 +85,40 @@ def safe_affiliate(url,item_url):
         return False
 
 def normalize_worker_candidate(raw):
+    url=raw.get('shipping_included_url') or raw.get('url') or ''
     return {
         'name':raw.get('shipping_match_name') or raw.get('name') or '',
         'price':raw.get('shipping_included_price') or raw.get('price'),
-        'url':raw.get('shipping_included_url') or raw.get('url') or '',
+        'url':url,
+        'itemUrl':canonical_item_url(url),
         'image':raw.get('shipping_included_image') or raw.get('image') or '',
         'itemCode':raw.get('item_code') or raw.get('itemCode') or '',
         'source':'worker'
     }
 
+def candidate_match_level(candidate,seed):
+    if not candidate or not identity_ok(candidate.get('name',''),seed): return 0
+    item=candidate.get('itemUrl') or canonical_item_url(candidate.get('url',''))
+    expected=canonical_item_url(seed['itemUrl'])
+    if item==expected: return 2
+    if item and rakuten_shop(item)==rakuten_shop(expected): return 1
+    return 0
+
 def worker_candidate(seed):
     query=urllib.parse.urlencode({'q':seed['query'],'hits':30})
     payload=fetch_json(WORKER+'?'+query)
-    exact=[]
+    matches=[]
     for raw in payload.get('products',[]):
         c=normalize_worker_candidate(raw)
-        if canonical_item_url(c['url'])==canonical_item_url(seed['itemUrl']) and identity_ok(c['name'],seed):
-            exact.append(c)
-    if exact:
-        exact.sort(key=lambda x:0 if safe_affiliate(x['url'],seed['itemUrl']) else 1)
-        return exact[0]
+        level=candidate_match_level(c,seed)
+        if level: matches.append((level,c))
+    if matches:
+        matches.sort(key=lambda x:(-x[0],0 if safe_affiliate(x[1]['url'],x[1]['itemUrl']) else 1))
+        return matches[0][1]
     lookup=fetch_json(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':seed['query'],'brand':seed.get('brand','')}))
     if lookup.get('found') is True:
         c=normalize_worker_candidate(lookup)
-        if canonical_item_url(c['url'])==canonical_item_url(seed['itemUrl']) and identity_ok(c['name'],seed):
-            return c
+        if candidate_match_level(c,seed): return c
     return None
 
 def rakuten_api_candidate(seed):
@@ -122,23 +136,24 @@ def rakuten_api_candidate(seed):
         item=raw.get('Item',raw)
         item_url=canonical_item_url(item.get('itemUrl',''))
         name=item.get('itemName','')
-        if item_url!=canonical_item_url(seed['itemUrl']) or not identity_ok(name,seed): continue
+        candidate={'name':name,'itemUrl':item_url}
+        if not candidate_match_level(candidate,seed): continue
         imgs=item.get('mediumImageUrls') or []
         image=imgs[0] if imgs else ''
         if isinstance(image,dict): image=image.get('imageUrl','')
         return {
             'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
-            'image':image,'itemCode':item.get('itemCode',''),'source':'rakuten_api'
+            'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode',''),'source':'rakuten_api'
         }
     return None
 
-def page_sales_audit(seed,expected_price):
+def page_sales_audit(seed,item_url,expected_price):
     """Return (mode, live_price). Exact URL + identity is mandatory.
     Rakuten occasionally sends tiny anti-bot responses in Actions; that case may use
     exact Worker/API evidence, but a real page that contradicts the audit always fails.
     """
     try:
-        page=fetch_text(seed['itemUrl'])
+        page=fetch_text(item_url)
     except Exception:
         return 'exact_feed_fallback',expected_price
     if not identity_ok(page,seed):
@@ -179,13 +194,14 @@ def acquire():
             candidate=worker_candidate(seed)
             if candidate is None:
                 candidate=rakuten_api_candidate(seed)
-            if candidate is None: raise ValueError('exact_listing_not_found')
-            if not safe_affiliate(candidate['url'],seed['itemUrl']): raise ValueError('unsafe_or_wrong_affiliate')
+            if candidate is None: raise ValueError('same_shop_identity_listing_not_found')
+            target_item=candidate.get('itemUrl') or canonical_item_url(candidate['url'])
+            if not safe_affiliate(candidate['url'],target_item): raise ValueError('unsafe_or_wrong_affiliate')
             price=candidate.get('price')
             if not isinstance(price,(int,float)) or price<=0: raise ValueError('price_unknown')
             image=candidate.get('image','')
             if not isinstance(image,str) or not image.startswith('https://'): raise ValueError('image_unknown')
-            mode,live_price=page_sales_audit(seed,int(price))
+            mode,live_price=page_sales_audit(seed,target_item,int(price))
             products.append({
                 'productId':seed['productId'],
                 'name':candidate.get('name') or seed['name'],
@@ -195,7 +211,7 @@ def acquire():
                 'score':seed.get('score',80),
                 'price':int(live_price),
                 'itemCode':candidate.get('itemCode',''),
-                'itemUrl':canonical_item_url(seed['itemUrl']),
+                'itemUrl':target_item,
                 'affiliateUrl':candidate['url'],
                 'image':image,
                 'verifiedAt':now,
