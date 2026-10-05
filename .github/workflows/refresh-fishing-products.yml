@@ -63,9 +63,7 @@ jobs:
           import os
           keys=['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']
           ok=all(os.environ.get(k,'').strip() for k in keys)
-          print('Rakuten credentials:', 'available' if ok else 'missing')
-          if not ok:
-              raise SystemExit(1)
+          print('Rakuten credentials:', 'available' if ok else 'missing; continuing with Worker fallback')
           PY
       - name: Refresh exact FISHING listings
         env:
