@@ -69,12 +69,16 @@ def rakuten_shop(value):
 def compact(value):
     return re.sub(r'\s+','',unicodedata.normalize('NFKC',str(value or ''))).lower()
 
-def identity_ok(name,seed):
-    n=compact(name)
-    if any(compact(x) in n for x in seed.get('forbiddenTerms',[])): return False
+def required_groups_ok(value,seed):
+    n=compact(value)
     for group in seed.get('identityGroups',[]):
         if not any(compact(term) in n for term in group): return False
     return True
+
+def identity_ok(name,seed):
+    n=compact(name)
+    if any(compact(x) in n for x in seed.get('forbiddenTerms',[])): return False
+    return required_groups_ok(name,seed)
 
 def safe_affiliate(url,item_url):
     try:
@@ -115,6 +119,11 @@ def worker_candidate(seed):
     if matches:
         matches.sort(key=lambda x:(-x[0],0 if safe_affiliate(x[1]['url'],x[1]['itemUrl']) else 1))
         return matches[0][1]
+    preview=[]
+    for raw in (payload.get('products',[])[:6]):
+        c=normalize_worker_candidate(raw)
+        preview.append({'shop':rakuten_shop(c.get('itemUrl','')),'name':c.get('name','')[:120],'itemUrl':c.get('itemUrl','')})
+    print('CAR_STAY_DIAG',seed.get('productId'),json.dumps(preview,ensure_ascii=False))
     lookup=fetch_json(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':seed['query'],'brand':seed.get('brand','')}))
     if lookup.get('found') is True:
         c=normalize_worker_candidate(lookup)
@@ -156,9 +165,9 @@ def page_sales_audit(seed,item_url,expected_price):
         page=fetch_text(item_url)
     except Exception:
         return 'exact_feed_fallback',expected_price
-    if not identity_ok(page,seed):
-        # Promotional page text can be large; if none of the required vehicle terms exist,
-        # never accept the listing.
+    if not required_groups_ok(page,seed):
+        # Candidate-name filtering already excludes wrong generations. A sales page may
+        # mention older related products, so the full page only needs every required group.
         raise ValueError('page_identity_mismatch')
     marker='"itemInfoSku":'
     if marker not in page:
