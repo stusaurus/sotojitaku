@@ -174,24 +174,24 @@ def rakuten_api_candidate(seed):
     return None
 
 def page_sales_audit(seed,item_url,expected_price):
-    """Return (mode, live_price). Exact URL + identity is mandatory.
-    Rakuten occasionally sends tiny anti-bot responses in Actions; that case may use
-    exact Worker/API evidence, but a real page that contradicts the audit always fails.
+    """Return (mode, live_price).
+
+    Vehicle/generation identity has already passed against the current API/Worker
+    candidate name before this function runs. The Rakuten sales page independently
+    verifies sale state and price; it does not need to repeat every fit keyword in
+    server-rendered HTML.
     """
     try:
         page=fetch_text(item_url)
     except Exception:
         return 'exact_feed_fallback',expected_price
     marker='"itemInfoSku":'
-    if not required_groups_ok(page,seed):
-        # Rakuten may return a challenge/interstitial instead of the product page in Actions.
-        # Only an exact manually audited item URL may fall back when no sales payload exists.
-        if marker not in page and canonical_item_url(item_url)==canonical_item_url(seed['itemUrl']):
-            return 'exact_feed_fallback',expected_price
-        raise ValueError('page_identity_mismatch')
     if marker not in page:
-        if len(page)<1024: return 'exact_feed_fallback',expected_price
-        return 'page_identity_only',expected_price
+        # Challenge/interstitial fallback is allowed only for the exact manually
+        # audited item URL. Same-shop replacement listings still need sales evidence.
+        if canonical_item_url(item_url)==canonical_item_url(seed['itemUrl']):
+            return 'exact_feed_fallback',expected_price
+        raise ValueError('sales_evidence_missing')
     info,_=json.JSONDecoder().raw_decode(page.split(marker,1)[1])
     if info.get('sellType')!='NORMAL': raise ValueError('wrong_sell_type')
     purchase=info.get('purchaseInfo',{})
