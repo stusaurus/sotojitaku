@@ -54,5 +54,13 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn('renderResult({trackDiagnosis:false})', self.app)
         self.assertIn('if(trackDiagnosis&&isNewResult)', self.app)
 
+    def test_first_trip_guidance_is_present(self):
+        self.assertIn("renderFitReasons", self.app)
+        self.assertIn("renderFirstTripGuide", self.app)
+        self.assertTrue((ROOT/"fishing/data/howto.json").exists())
+        howto=json.loads((ROOT/"fishing/data/howto.json").read_text())
+        self.assertGreaterEqual(len(howto["methods"]["sabiki"]["setup"]), 5)
+        self.assertGreaterEqual(len(howto["methods"]["choi_nage"]["setup"]), 5)
+
 if __name__=="__main__":
     unittest.main()
