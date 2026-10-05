@@ -7,8 +7,13 @@ const STORAGE_KEY="sotojitaku_car_stay_v1";
 const qs=new URLSearchParams(location.search);
 const operatorTest=qs.get("test")==="1";
 const presetVehicle=qs.get("vehicle");
+const entrySource=(qs.get("from")||"direct").slice(0,30);
+const entryKey=(qs.get("entry")||"").slice(0,40);
 let analyticsEnabled=localStorage.getItem("sotojitaku_analytics_optout")!=="1";
 const viewedProducts=new Set();
+const viewedGaps=new Set();
+const viewedFreeSolutions=new Set();
+const completedNoProduct=new Set();
 const $=s=>document.querySelector(s);
 const panel=$("#panel"),builder=$("#builder"),hero=$("#hero"),cabin=$("#cabin"),cabinMessage=$("#cabinMessage"),progressBar=$("#progressBar"),stepLabel=$("#stepLabel"),vehicleMini=$("#vehicleMini"),buildChips=$("#buildChips"),resetTop=$("#resetTop");
 
@@ -21,7 +26,7 @@ let state={
 
 function track(name,params={}){
   if(!analyticsEnabled||typeof window.gtag!=="function")return;
-  window.gtag("event",name,{site_id:"sotojitaku_car_stay",operator_test:operatorTest?1:0,...params});
+  window.gtag("event",name,{site_id:"sotojitaku_car_stay",operator_test:operatorTest?1:0,entry_source:entrySource,entry_key:entryKey,...params});
 }
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
 function loadSaved(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY));if(x&&x.version===VERSION)state={...state,...x};}catch{}}
@@ -136,21 +141,45 @@ function quickMeasure(result){
 function renderResult(){
   const v=currentVehicle();const result=evaluate(inputForEngine(),v,rules());state.lastResult=result;save();
   const recs=recommendations(db.products,{gaps:result.gaps,vehicleId:v.vehicleId,config:state.config});
-  const gaps=result.gaps.map((g,i)=>"<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+renderProducts(recs[g.id]||[])+"</div>").join("");
+  const gaps=result.gaps.map((g,i)=>"<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+renderProducts(recs[g.id]||[],g.id)+"</div>").join("");
   const noNeed=result.notNeeded.length?"<div class='no-need'><h3>今回は、買わなくていいもの</h3><div class='no-need-tags'>"+result.notNeeded.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p class='micro'>はじめての一泊に、全部はいりません。</p></div>":"";
   const issueHtml=result.issues.length?"<div class='note "+(result.status==="CHANGE_PLAN"?"warning":"")+"'>"+result.issues.map(x=>"<b>"+esc(x.title)+"</b><br>"+esc(x.text)).join("<br><br>")+"</div>":"";
   panel.innerHTML="<div class='result-head'><span class='status'>"+statusLabel(result.status)+"</span><h2>"+esc(resultHeadline(result))+"</h2><p>"+esc(v.shortLabel)+" × "+state.people.length+"人 × "+esc(tripLabel(state.tripStyle))+"</p></div>"+issueHtml+resultCards(result)+quickMeasure(result)+(gaps?"<div class='gap-list'><p class='step-kicker'>今回、整えるところ</p>"+gaps+"</div>":"<div class='note'>大きな不足は見つかりませんでした。出発前に施設ルールと最新天気をもう一度確認してください。</div>")+noNeed+"<div class='shopping-empty'>監査済み商品が0件でも計画は完成します。商品CTAは、車種適合・販売状態・価格・リンク先を7日以内に確認できた商品だけ表示します。</div><div class='source-box'>安全判定は初心者向けの保守的な支度支援で、法令・医療上の保証ではありません。出発前に施設公式情報と最新天気を確認してください。</div><div class='actions'><button class='secondary' data-edit>条件を直す</button><button class='primary' data-new>もう一度つくる</button></div>";
-  state.step=5;progressBar.style.width="100%";stepLabel.textContent="YOUR CAR STAY";track("builder_completed",{vehicle_id:v.vehicleId,status:result.status,gap_count:result.gaps.length});setCabin();
+  const eligibleProductCount=Object.values(recs).reduce((sum,items)=>sum+(items?.length||0),0);
+  for(const g of result.gaps){
+    const gapKey=v.vehicleId+":"+g.id;
+    if(!viewedGaps.has(gapKey)){
+      viewedGaps.add(gapKey);
+      track("gap_generated",{vehicle_id:v.vehicleId,gap_id:g.id,severity:g.severity||"",free_solution:g.free?1:0});
+    }
+    if(g.free&&!viewedFreeSolutions.has(gapKey)){
+      viewedFreeSolutions.add(gapKey);
+      track("free_solution_view",{vehicle_id:v.vehicleId,gap_id:g.id});
+    }
+  }
+  if(eligibleProductCount===0){
+    const noProductKey=v.vehicleId+":"+result.status+":"+result.gaps.map(g=>g.id).sort().join(",");
+    if(!completedNoProduct.has(noProductKey)){
+      completedNoProduct.add(noProductKey);
+      track("no_purchase_complete",{vehicle_id:v.vehicleId,status:result.status,gap_count:result.gaps.length});
+    }
+  }
+  state.step=5;progressBar.style.width="100%";stepLabel.textContent="YOUR CAR STAY";
+  track("builder_completed",{vehicle_id:v.vehicleId,status:result.status,gap_count:result.gaps.length,eligible_product_count:eligibleProductCount});
+  setCabin();
 }
 function gapLabel(id){return {privacy_full:"窓の目隠し",floor_step:"寝床の段差",thermal_unknown:"夜の気温・防寒",thermal_warmth:"防寒",authorized_place_unconfirmed:"泊まる場所",sleep_space:"寝床サイズ",sleep_comfort:"寝心地",power_capacity:"電源容量"}[id]||id;}
 function tripLabel(id){return {sleep_only:"寝るだけ",onsen:"温泉の夜",stars:"星を見る夜",morning:"朝を楽しむ",outdoor:"アウトドア"}[id]||"一泊";}
 function yen(value){return new Intl.NumberFormat("ja-JP",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value);}
-function renderProducts(items){
+function renderProducts(items,gapId=""){
   if(!items.length)return "";
   for(const p of items){
-    if(!viewedProducts.has(p.productId)){viewedProducts.add(p.productId);track("product_view",{product_id:p.productId,vehicle_id:state.vehicleId,gap_id:(p.gapIds||[])[0]||""});}
+    if(!viewedProducts.has(p.productId)){
+      viewedProducts.add(p.productId);
+      track("product_view",{product_id:p.productId,vehicle_id:state.vehicleId,gap_id:gapId,price:p.price||0,recommendation_role:p.recommendationRole||""});
+    }
   }
-  return "<div class='product-stack'>"+items.map(p=>"<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><span class='fit-badge'>車種適合・販売確認済み</span><b>"+esc(p.name)+"</b><div class='product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"'>楽天で見る <span>→</span></a></div></article>").join("")+"</div>";
+  return "<div class='product-stack'>"+items.map(p=>"<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><span class='fit-badge'>車種適合・販売確認済み</span><b>"+esc(p.name)+"</b><div class='product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc(p.price||0)+"' data-role='"+esc(p.recommendationRole||"")+"'>楽天で見る <span>→</span></a></div></article>").join("")+"</div>";
 }
 function render(){
   stepLabel.textContent=state.step<5?"STEP "+(state.step+1)+" / 5":"YOUR CAR STAY";
@@ -180,7 +209,7 @@ panel.addEventListener("click",e=>{
   else if(t.matches("[data-recalc]")){renderResult();}
   else if(t.matches("[data-edit]")){state.step=3;save();render();}
   else if(t.matches("[data-new]"))reset();
-  else if(t.dataset.product){track("affiliate_click",{product_id:t.dataset.product,vehicle_id:state.vehicleId});}
+  else if(t.dataset.product){track("affiliate_click",{product_id:t.dataset.product,vehicle_id:state.vehicleId,gap_id:t.dataset.gap||"",price:Number(t.dataset.price)||0,recommendation_role:t.dataset.role||""});}
 });
 panel.addEventListener("input",e=>{
   const t=e.target;
