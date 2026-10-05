@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SOTOJITAKU CAR STAY｜いつものクルマを、今夜泊まれる小さな宿に。</title>
+  <meta name="description" content="自分のクルマ・人数・過ごし方・場所・手持ち品から、はじめての車中泊を安全優先で組み立てるCAR STAY BUILDER。家にある物を使い、足りない物だけを支度します。">
+  <link rel="canonical" href="https://stusaurus.github.io/sotojitaku/car-stay/">
+  <meta property="og:title" content="SOTOJITAKU CAR STAY">
+  <meta property="og:description" content="いつものクルマを、今夜泊まれる小さな宿に。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://stusaurus.github.io/sotojitaku/car-stay/">
+  <meta name="theme-color" content="#111923">
+  <link rel="stylesheet" href="./style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFVSZ8YDQ5"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GFVSZ8YDQ5',{send_page_view:true});</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"SOTOJITAKU CAR STAY","url":"https://stusaurus.github.io/sotojitaku/car-stay/","applicationCategory":"TravelApplication","operatingSystem":"Web","description":"初心者向け車中泊準備ビルダー"}</script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="SOTOJITAKU CAMPへ"><span>SOTOJITAKU</span><b>CAR STAY</b></a>
+    <button id="resetTop" class="ghost tiny" type="button" hidden>最初から</button>
+  </header>
+
+  <main>
+    <section id="hero" class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">QUIET ROAD TRIP · TINY CABIN</p>
+        <h1>いつものクルマを、<br><em>今夜泊まれる小さな宿に。</em></h1>
+        <p class="lead">クルマと過ごし方から、はじめての一泊をつくります。<br>家にあるものを使って、足りないものだけ。</p>
+        <button id="startBtn" class="primary hero-cta" type="button">愛車ではじめる <span>→</span></button>
+        <p class="trust">約3分・登録不要 · 危険な条件では買い物より先に止めます</p>
+      </div>
+      <div class="hero-car" aria-hidden="true">
+        <div class="road-glow"></div>
+        <svg viewBox="0 0 800 420" role="img">
+          <defs>
+            <linearGradient id="bodyGrad" x1="0" x2="1"><stop offset="0" stop-color="#324150"/><stop offset="1" stop-color="#18232e"/></linearGradient>
+            <linearGradient id="glassGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#173040"/><stop offset="1" stop-color="#0b151d"/></linearGradient>
+          </defs>
+          <path class="car-body" d="M104 288c14-68 35-108 78-128 55-25 157-30 272-27 78 2 151 21 195 66 20 20 34 47 42 89l26 9c17 6 27 20 27 38v14H57v-22c0-18 11-31 30-36z" fill="url(#bodyGrad)"/>
+          <path d="M206 166c71-20 193-24 272-17 65 6 111 28 143 69H188c4-20 10-37 18-52z" fill="url(#glassGrad)"/>
+          <path class="cabin-light" d="M223 177c65-13 163-15 239-8 49 4 87 17 116 43H207c3-13 8-25 16-35z"/>
+          <rect class="shade shape-a" x="238" y="180" width="111" height="30" rx="12"/><rect class="shade shape-b" x="365" y="177" width="100" height="33" rx="12"/><rect class="shade shape-c" x="479" y="184" width="71" height="27" rx="10"/>
+          <path class="mattress" d="M250 238h295c15 0 24 11 22 25l-6 40H233l-4-35c-2-17 5-30 21-30z"/>
+          <path class="blanket" d="M276 245h160c34 0 56 13 67 40H267c-6-22-3-34 9-40z"/>
+          <circle cx="197" cy="330" r="54" fill="#0c1117"/><circle cx="197" cy="330" r="26" fill="#3d4853"/>
+          <circle cx="627" cy="330" r="54" fill="#0c1117"/><circle cx="627" cy="330" r="26" fill="#3d4853"/>
+          <path class="floor-step" d="M327 269h108v22H327z"/>
+        </svg>
+        <div class="hero-status"><span></span>まだ普通のクルマ。ここから一泊をつくります。</div>
+      </div>
+    </section>
+
+    <section id="builder" class="builder" hidden>
+      <div class="cabin-pane">
+        <div class="cabin-topline"><span id="stepLabel">STEP 1 / 5</span><span id="vehicleMini">愛車を選択</span></div>
+        <div id="cabin" class="cabin state-empty" aria-label="あなたの車中泊準備イメージ">
+          <div class="night-sky"><i></i><i></i><i></i><i></i></div>
+          <svg viewBox="0 0 760 450" aria-hidden="true">
+            <defs>
+              <linearGradient id="csBody" x1="0" x2="1"><stop offset="0" stop-color="#344454"/><stop offset="1" stop-color="#1b2732"/></linearGradient>
+            </defs>
+            <path class="cs-body" d="M93 310c14-72 37-121 85-146 58-30 169-34 278-31 93 2 166 24 207 75 17 21 29 50 37 92l26 10c15 6 25 19 25 36v14H38v-22c0-19 12-32 31-38z" fill="url(#csBody)"/>
+            <path class="cs-window" d="M200 164c72-18 185-20 267-12 70 7 118 29 148 73H179c5-24 11-43 21-61z"/>
+            <path class="cs-warm" d="M218 178c63-12 157-13 234-7 54 4 94 18 120 42H198c4-13 10-25 20-35z"/>
+            <g class="cs-shades"><rect x="225" y="179" width="118" height="29" rx="10"/><rect x="357" y="176" width="105" height="33" rx="10"/><rect x="477" y="182" width="73" height="28" rx="10"/></g>
+            <path class="cs-mat" d="M236 247h322c14 0 22 10 20 24l-6 48H220l-3-38c-2-20 6-34 19-34z"/>
+            <path class="cs-blanket" d="M267 254h168c33 0 59 14 72 45H255c-7-22-2-38 12-45z"/>
+            <path class="cs-step" d="M330 284h112v25H330z"/>
+            <circle cx="178" cy="347" r="55" fill="#090f14"/><circle cx="178" cy="347" r="25" fill="#4d5964"/>
+            <circle cx="626" cy="347" r="55" fill="#090f14"/><circle cx="626" cy="347" r="25" fill="#4d5964"/>
+          </svg>
+          <div id="cabinMessage" class="cabin-message">クルマを選ぶと、ここにあなたの一泊が育っていきます。</div>
+        </div>
+        <div id="buildChips" class="build-chips" aria-live="polite"></div>
+      </div>
+
+      <div class="control-pane">
+        <div class="progress"><span id="progressBar"></span></div>
+        <div id="panel" class="panel" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><b>SOTOJITAKU CAR STAY</b><span>はじめての一泊に、全部はいりません。</span></div>
+    <nav><a href="../">CAMP</a><button id="analyticsOpt" class="link-btn" type="button">計測設定</button></nav>
+  </footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

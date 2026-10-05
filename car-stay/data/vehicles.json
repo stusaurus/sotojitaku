@@ -1,0 +1,12 @@
+{
+  "checkedAt":"2026-10-05",
+  "vehicles":[
+    {"vehicleId":"honda-nbox-jf5-jf6","shortLabel":"N-BOX","label":"Honda N-BOX JF5/JF6","generation":"2023年10月〜 / JF5・JF6","config":{"trims":["N-BOX","N-BOX Custom","N-BOX JOY","N-BOX Slope"]},"geometry":{"usableLengthMm":1800,"usableWidthMm":null,"confidence":"B","note":"Honda 2023年検証の後席〜ダッシュボード約180cm参考値。横幅は未確認。"},"floorGrade":"C"},
+    {"vehicleId":"toyota-sienta-10-15","shortLabel":"シエンタ","label":"Toyota Sienta 10/15系","generation":"2022年8月〜 / MXPC10G・MXPL10G・MXPL15G","config":{"seatCounts":[5,7]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
+    {"vehicleId":"honda-freed-gt","shortLabel":"FREED","label":"Honda FREED GT1-GT8","generation":"2024年6月〜 / GT1-GT8","config":{"seatCounts":[5,6,7],"trims":["AIR","AIR EX","CROSSTAR"]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
+    {"vehicleId":"suzuki-hustler-mr52s-mr92s","shortLabel":"ハスラー","label":"Suzuki Hustler MR52S/MR92S","generation":"2020年〜 / MR52S・MR92S","geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
+    {"vehicleId":"honda-nvan-jj1-jj2","shortLabel":"N-VAN","label":"Honda N-VAN JJ1/JJ2","generation":"JJ1・JJ2","geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
+    {"vehicleId":"suzuki-every-da17v","shortLabel":"エブリイ DA17V","label":"Suzuki Every Van DA17V","generation":"2015年〜 / DA17V","config":{"trims":["JOIN / JOIN Turbo","PC","PA"]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"},
+    {"vehicleId":"suzuki-every-da18v","shortLabel":"エブリイ DA18V","label":"Suzuki Every Van DA18V","generation":"2026年5月〜 / DA18V","config":{"trims":["JOIN / JOIN Turbo","PC","PA"]},"geometry":{"usableLengthMm":null,"usableWidthMm":null,"confidence":"D"},"floorGrade":"unknown"}
+  ]
+}

@@ -37,3 +37,14 @@ Existing GA4 measurement ID `G-GFVSZ8YDQ5` is reused, with `site_id=sotojitaku_c
 ## Deployment
 
 GitHub Pages already uses main/root. Commits trigger Pages' managed build. CI runs syntax, scenario/product quality and finite-retry tests.
+
+
+## SOTOJITAKU CAR STAY
+
+Second SOTOJITAKU experience: `/car-stay/`.
+
+CAR STAY is a mobile-first first-night builder for ordinary passenger vehicles. It evaluates in this order: safety → place → sleep geometry → floor → temperature → privacy → power → comfort → shopping. Unknown critical measurements are never guessed; QUICK MEASURE asks for the missing length/width. Road stations and SA/PA are treated as rest/nap contexts, not normal lodging. Heat blocks cannot be cleared by buying a fan or bug net.
+
+Purchase CTAs are allowed only for exact vehicle-fit products that are live-audited and verified within seven days. Zero products is a valid state; the plan must still complete with free/home alternatives.
+
+Measurement reuses GA4 ID `G-GFVSZ8YDQ5` with `site_id=sotojitaku_car_stay` and the same `?test=1` operator flag.
