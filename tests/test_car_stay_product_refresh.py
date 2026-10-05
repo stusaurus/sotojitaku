@@ -565,5 +565,15 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_text_cached=original
 
+    def test_fit_audit_uses_japan_calendar_date(self):
+        from datetime import datetime, timezone
+        now=datetime(2026,10,5,22,30,tzinfo=timezone.utc)  # 2026-10-06 07:30 JST
+        self.assertTrue(refresh.fit_audit_fresh({"fitCheckedAt":"2026-10-06"},now))
+        self.assertFalse(refresh.fit_audit_fresh({"fitCheckedAt":"2026-10-07"},now))
+
+    def test_sales_page_unreachable_is_treated_as_transient_for_fresh_previous_item(self):
+        self.assertTrue(refresh.transient_audit_failure("sales_page_unreachable"))
+        self.assertFalse(refresh.transient_audit_failure("unavailable"))
+
 if __name__=="__main__":
     unittest.main()
