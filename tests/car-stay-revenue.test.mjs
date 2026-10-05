@@ -19,6 +19,10 @@ test('CAR STAY measures gaps, free solutions, product views and exact affiliate 
   assert.match(app,/data-gap=/);
   assert.match(app,/data-price=/);
   assert.match(app,/data-role=/);
+  assert.match(app,/data-rank=/);
+  assert.match(app,/data-source=/);
+  assert.match(app,/product_rank/);
+  assert.match(app,/conversion_source/);
   assert.match(app,/eligible_product_count/);
 });
 
