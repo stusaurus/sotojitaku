@@ -80,10 +80,19 @@ export function evaluate(input,vehicle,rules=DEFAULT_RULES){
   }
 
   const floor=vehicle.floorGrade||"unknown";
-  if(["C","D"].includes(floor)){
-    if(hasCapability(gear,"floor_step_full"))resolved.push("floor");
-    else if(hasCapability(gear,"gap_fill")&&hasCapability(gear,"padding"))resolved.push("floor_free");
-    else gaps.push({id:"floor_step",severity:"should",free:"タオル・衣類・毛布で段差を埋め、上からマットや敷物を重ねて自宅で試す。"});
+  const floorObservation=input.floorObservation||"unknown";
+  let floorState="unknown";
+  const floorNeedsFix=["C","D"].includes(floor)||["noticeable","large"].includes(floorObservation);
+  if(floorNeedsFix){
+    if(hasCapability(gear,"floor_step_full")){resolved.push("floor");floorState="resolved_product";}
+    else if(hasCapability(gear,"gap_fill")&&hasCapability(gear,"padding")){resolved.push("floor_free");floorState="resolved_free";}
+    else{
+      floorState="needs_fix";
+      gaps.push({id:"floor_step",severity:"should",free:"まずタオル・衣類・毛布などで段差やすき間を埋め、上から手持ちの敷物を重ねて自宅で寝心地を試す。"});
+    }
+  }else if(floorObservation==="flat"){
+    resolved.push("floor");
+    floorState="flat";
   }
 
   if(hasCapability(gear,"privacy_full"))resolved.push("privacy");
@@ -98,7 +107,7 @@ export function evaluate(input,vehicle,rules=DEFAULT_RULES){
 
   const unresolved=gaps.filter(g=>["must","should"].includes(g.severity));
   const status=blocked?"CHANGE_PLAN":challenge?"CHALLENGE":unresolved.length?"ALMOST_READY":"READY";
-  return {status,issues,gaps,resolved,notNeeded:[...new Set(notNeeded)],sleep,vehicleId:vehicle.vehicleId};
+  return {status,issues,gaps,resolved,notNeeded:[...new Set(notNeeded)],sleep,floor:{grade:floor,observation:floorObservation,state:floorState},vehicleId:vehicle.vehicleId};
 }
 
 export function resultHeadline(result){
