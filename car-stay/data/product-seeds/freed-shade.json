@@ -1,9 +1,9 @@
 {
-  "productId": "freed-gt-hobbyman-shade",
-  "name": "FREED GT1-GT8 シームレスライト サンシェード フルセット",
-  "brand": "趣味職人",
-  "query": "フリード GT1 GT2 GT3 GT4 GT5 GT6 GT7 GT8 サンシェード フルセット",
-  "itemUrl": "https://item.rakuten.co.jp/hobbyman/freed-gt18-lit-6/",
+  "productId": "freed-gt-sunvic-shade",
+  "name": "SUNVIC FREED GT系 6層サンシェード 8PCS",
+  "brand": "SUNVIC",
+  "query": "SUNVIC フリード GT サンシェード 8PCS",
+  "itemUrl": "https://item.rakuten.co.jp/sunvic/sp-vb153/",
   "gapIds": [
     "privacy_full"
   ],
@@ -15,6 +15,7 @@
       "FREED"
     ],
     [
+      "GT系",
       "GT1",
       "GT2",
       "GT3",
@@ -28,6 +29,9 @@
       "サンシェード"
     ],
     [
+      "8PCS",
+      "8枚",
+      "全窓",
       "フルセット"
     ]
   ],
@@ -37,7 +41,7 @@
     "GB7",
     "GB8"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/freed-gt18-lit-6/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/sunvic/sp-vb153/",
   "fitCheckedAt": "2026-10-05",
   "vehicleFit": [
     {
@@ -56,8 +60,8 @@
     }
   ],
   "searchQueries": [
-    "フリード GT1 GT8 サンシェード フルセット",
-    "フリード GT1 サンシェード",
-    "FREED GT1 GT8 シームレスライト"
+    "SP-JK2384",
+    "SUNVIC フリード GT サンシェード",
+    "フリード GT 8PCS サンシェード"
   ]
 }
