@@ -239,5 +239,59 @@ class CarStayProductRefreshTests(unittest.TestCase):
         title="CELLUTANE A1609a-5-602BK [車中泊マット フリードクロスタGT6/8/2/4 5人乗り用]"
         self.assertTrue(refresh.identity_ok(title,seed))
 
+    def test_exact_worker_url_candidate_requires_exact_fit_and_affiliate_target(self):
+        import urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/suwariba/o017/",
+            "identityGroups":[["シエンタ"],["7人乗り"],["車中泊"]],
+            "forbiddenTerms":["5人乗り"]
+        }
+        original=refresh.fetch_json
+        try:
+            exact=seed["itemUrl"]
+            affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(exact,safe="")
+            refresh.fetch_json=lambda url,headers=None:{
+                "found":True,
+                "name":"シエンタ 7人乗り 車中泊 フラットマットレス",
+                "price":19800,
+                "itemUrl":exact,
+                "affiliateUrl":affiliate,
+                "image":"https://thumbnail.image.rakuten.co.jp/example.jpg",
+                "itemCode":"suwariba:o017"
+            }
+            candidate=refresh.worker_exact_candidate(seed)
+            self.assertIsNotNone(candidate)
+            self.assertEqual(candidate["source"],"worker_exact_url")
+            self.assertEqual(candidate["itemUrl"],exact)
+
+            refresh.fetch_json=lambda url,headers=None:{
+                "found":True,
+                "name":"シエンタ 5人乗り 車中泊 フラットマットレス",
+                "price":19800,
+                "itemUrl":exact,
+                "affiliateUrl":affiliate,
+                "image":"https://thumbnail.image.rakuten.co.jp/example.jpg"
+            }
+            self.assertIsNone(refresh.worker_exact_candidate(seed))
+        finally:
+            refresh.fetch_json=original
+
+    def test_exact_worker_url_candidate_rejects_wrong_affiliate_item(self):
+        import urllib.parse
+        seed={"itemUrl":"https://item.rakuten.co.jp/shop/exact/","identityGroups":[["N-VAN"],["JJ1"]],"forbiddenTerms":[]}
+        original=refresh.fetch_json
+        try:
+            refresh.fetch_json=lambda url,headers=None:{
+                "found":True,
+                "name":"N-VAN JJ1 専用 車中泊マット",
+                "price":12000,
+                "itemUrl":seed["itemUrl"],
+                "affiliateUrl":"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote("https://item.rakuten.co.jp/shop/other/",safe=""),
+                "image":"https://thumbnail.image.rakuten.co.jp/example.jpg"
+            }
+            self.assertIsNone(refresh.worker_exact_candidate(seed))
+        finally:
+            refresh.fetch_json=original
+
 if __name__=="__main__":
     unittest.main()
