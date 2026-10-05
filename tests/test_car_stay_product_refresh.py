@@ -198,9 +198,10 @@ class CarStayProductRefreshTests(unittest.TestCase):
         item=seed["itemUrl"]
         affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(item,safe="")
         candidate={"name":"N-VAN shade","price":10000,"url":affiliate,"itemUrl":item,"image":"https://example.com/x.jpg","itemCode":"hobbyman:1","source":"worker"}
-        originals=(refresh.load_seeds,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)
+        originals=(refresh.load_seeds,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)
         try:
             refresh.load_seeds=lambda:[seed]
+            refresh.worker_exact_item_candidate=lambda _seed:None
             refresh.rakuten_api_exact_candidate=lambda _seed:(_ for _ in ()).throw(RuntimeError("api down"))
             refresh.rakuten_api_candidate=lambda _seed:(_ for _ in ()).throw(RuntimeError("api down"))
             refresh.worker_candidate=lambda _seed:candidate
@@ -210,7 +211,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(len(result["products"]),1)
             self.assertEqual(result["products"][0]["audit"]["salesSource"],"worker")
         finally:
-            (refresh.load_seeds,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)=originals
+            (refresh.load_seeds,refresh.worker_exact_item_candidate,refresh.rakuten_api_exact_candidate,refresh.rakuten_api_candidate,refresh.worker_candidate,refresh.page_sales_audit,refresh.time.sleep)=originals
 
     def test_freed_gt_current_seed_identity(self):
         seed={
@@ -272,6 +273,56 @@ class CarStayProductRefreshTests(unittest.TestCase):
         good="Cartist ホンダ 新型 フリード GT系 5人乗り 専用 車中泊 マット 車用ベッド"
         self.assertTrue(refresh.identity_ok(good,seed))
         self.assertFalse(refresh.identity_ok(good+" 7人乗り",seed))
+
+    def test_worker_exact_item_candidate_requires_exact_url_and_identity(self):
+        import urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "searchQueries":["N-VAN JJ1 サンシェード"],
+            "identityGroups":[["N-VAN"],["JJ1"],["サンシェード"]],
+            "forbiddenTerms":[]
+        }
+        affiliate="https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(seed["itemUrl"],safe="")
+        original=refresh.fetch_json
+        try:
+            refresh.fetch_json=lambda url,headers=None:{
+                "found":True,
+                "name":"N-VAN JJ1 サンシェード フルセット",
+                "price":5980,
+                "item_url":seed["itemUrl"],
+                "affiliate_url":affiliate,
+                "image":"https://example.com/item.jpg",
+                "item_code":"hobbyman:123"
+            }
+            candidate=refresh.worker_exact_item_candidate(seed)
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+            self.assertEqual(candidate["source"],"worker_exact_url")
+
+            refresh.fetch_json=lambda url,headers=None:{
+                "found":True,
+                "name":"N-VAN JJ1 サンシェード フルセット",
+                "price":5980,
+                "item_url":"https://item.rakuten.co.jp/hobbyman/other/",
+                "affiliate_url":affiliate,
+                "image":"https://example.com/item.jpg"
+            }
+            self.assertIsNone(refresh.worker_exact_item_candidate(seed))
+        finally:
+            refresh.fetch_json=original
+
+    def test_worker_exact_item_candidate_returns_none_when_endpoint_has_no_exact_item(self):
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/",
+            "searchQueries":["N-VAN JJ1"],
+            "identityGroups":[["N-VAN"]],
+            "forbiddenTerms":[]
+        }
+        original=refresh.fetch_json
+        try:
+            refresh.fetch_json=lambda url,headers=None:{"found":False,"reason":"exact_item_not_found"}
+            self.assertIsNone(refresh.worker_exact_item_candidate(seed))
+        finally:
+            refresh.fetch_json=original
 
 if __name__=="__main__":
     unittest.main()
