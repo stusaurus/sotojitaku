@@ -215,7 +215,7 @@ def rakuten_api_candidate(seed):
             'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
             'shopCode':rakuten_shop(seed['itemUrl']),
             'keyword':search_query,
-            'hits':30,'formatVersion':2,'availability':1,
+            'hits':30,'formatVersion':2,'availability':1,'field':0,
             'elements':'itemName,itemCode,itemPrice,itemUrl,affiliateUrl,mediumImageUrls,availability,shopCode'
         }
         payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
