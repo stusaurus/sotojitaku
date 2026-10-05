@@ -22,6 +22,8 @@ HEADERS={
     'User-Agent':'sotojitaku-car-stay/1.0'
 }
 
+_PAGE_CACHE={}
+
 def fetch_json(url,headers=None):
     req=urllib.request.Request(url,headers=headers or HEADERS)
     for attempt in range(3):
@@ -42,6 +44,12 @@ def fetch_text(url):
     match=re.search(br'charset\s*=\s*["\']?([\w-]+)',raw[:10000],re.I)
     enc=match.group(1).decode() if match else 'utf-8'
     return raw.decode(enc,errors='replace')
+
+def fetch_text_cached(url):
+    key=canonical_item_url(url) or str(url)
+    if key not in _PAGE_CACHE:
+        _PAGE_CACHE[key]=fetch_text(url)
+    return _PAGE_CACHE[key]
 
 def canonical_item_url(value):
     value=str(value or '')
@@ -136,6 +144,66 @@ def worker_candidate(seed):
             if candidate_match_level(c,seed): return c
     return None
 
+def exact_page_info(seed):
+    """Read the exact manually audited Rakuten URL and return live sale metadata.
+    Returns None when Rakuten serves an interstitial/challenge without itemInfoSku.
+    Explicit unavailable/wrong-listing evidence raises and fails closed.
+    """
+    try:
+        page=fetch_text_cached(seed['itemUrl'])
+    except Exception:
+        return None
+    marker='"itemInfoSku":'
+    if marker not in page:
+        return None
+    info,_=json.JSONDecoder().raw_decode(page.split(marker,1)[1])
+    if info.get('sellType')!='NORMAL':
+        raise ValueError('wrong_sell_type')
+    purchase=info.get('purchaseInfo',{})
+    by_type=purchase.get('purchaseBySellType',{})
+    if by_type.get('purchaseCondition')!='enabled':
+        raise ValueError('unavailable')
+    live=by_type.get('normalPurchase',{}).get('price',{}).get('minPrice')
+    if not isinstance(live,(int,float)) or live<=0:
+        raise ValueError('price_unknown')
+    item_id=info.get('itemId')
+    if not isinstance(item_id,int):
+        raise ValueError('item_id_missing')
+    return {'itemId':item_id,'price':int(live)}
+
+def rakuten_api_exact_candidate(seed):
+    env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
+    if not all(env.values()):
+        return None
+    page_info=exact_page_info(seed)
+    if not page_info:
+        return None
+    item_code=f"{rakuten_shop(seed['itemUrl'])}:{page_info['itemId']}"
+    params={
+        'applicationId':env['RAKUTEN_APPLICATION_ID'],
+        'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
+        'itemCode':item_code,
+        'hits':1,'formatVersion':2,'availability':1,
+        'elements':'itemName,itemCode,itemPrice,itemUrl,affiliateUrl,mediumImageUrls,availability,shopCode'
+    }
+    headers={**HEADERS,'accessKey':env['RAKUTEN_ACCESS_KEY']}
+    payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
+    for raw in payload.get('items') or payload.get('Items') or []:
+        item=raw.get('Item',raw)
+        item_url=canonical_item_url(item.get('itemUrl',''))
+        name=item.get('itemName','')
+        if item_url!=canonical_item_url(seed['itemUrl']) or not identity_ok(name,seed):
+            continue
+        imgs=item.get('mediumImageUrls') or []
+        image=imgs[0] if imgs else ''
+        if isinstance(image,dict): image=image.get('imageUrl','')
+        return {
+            'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
+            'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode') or item_code,
+            'source':'rakuten_api_exact','pagePrice':page_info['price']
+        }
+    return None
+
 def rakuten_api_candidate(seed):
     env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
     if not all(env.values()): return None
@@ -178,7 +246,7 @@ def page_sales_audit(seed,item_url,expected_price):
     server-rendered HTML.
     """
     try:
-        page=fetch_text(item_url)
+        page=fetch_text_cached(item_url)
     except Exception:
         return 'exact_feed_fallback',expected_price
     marker='"itemInfoSku":'
@@ -215,7 +283,9 @@ def acquire():
     for seed in load_seeds():
         try:
             if not fit_audit_fresh(seed,now_dt): raise ValueError('fit_audit_expired')
-            candidate=rakuten_api_candidate(seed)
+            candidate=rakuten_api_exact_candidate(seed)
+            if candidate is None:
+                candidate=rakuten_api_candidate(seed)
             if candidate is None:
                 candidate=worker_candidate(seed)
             if candidate is None: raise ValueError('same_shop_identity_listing_not_found')
@@ -223,6 +293,9 @@ def acquire():
             if not safe_affiliate(candidate['url'],target_item): raise ValueError('unsafe_or_wrong_affiliate')
             price=candidate.get('price')
             if not isinstance(price,(int,float)) or price<=0: raise ValueError('price_unknown')
+            page_price=candidate.get('pagePrice')
+            if isinstance(page_price,(int,float)) and abs(page_price-price)>max(500,price*.35):
+                raise ValueError('api_page_price_mismatch')
             image=candidate.get('image','')
             if not isinstance(image,str) or not image.startswith('https://'): raise ValueError('image_unknown')
             mode,live_price=page_sales_audit(seed,target_item,int(price))
