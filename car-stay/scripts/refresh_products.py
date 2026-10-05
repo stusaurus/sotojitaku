@@ -23,6 +23,8 @@ HEADERS={
     'User-Agent':'sotojitaku-car-stay/1.0'
 }
 
+RUNTIME_BUDGET_SECONDS=max(30,min(420,int(os.environ.get('CAR_STAY_REFRESH_BUDGET_SECONDS','300'))))
+
 _PAGE_CACHE={}
 
 def fetch_json(url,headers=None):
@@ -319,10 +321,39 @@ def fit_audit_fresh(seed,now):
     except Exception:
         return False
 
-def acquire():
+def load_previous_products():
+    try:
+        payload=json.loads(OUT.read_text())
+        return payload.get('products',[]) if isinstance(payload,dict) else []
+    except Exception:
+        return []
+
+def previous_product_fresh(product,now_dt,max_days=7):
+    try:
+        verified=datetime.fromisoformat(str(product.get('verifiedAt','')).replace('Z','+00:00'))
+        age=(now_dt-verified).total_seconds()
+        return 0 <= age <= max_days*86400
+    except Exception:
+        return False
+
+def acquire(runtime_budget_seconds=None):
     now_dt=datetime.now(timezone.utc); now=now_dt.isoformat()
-    products=[];failures={}
-    for seed in load_seeds():
+    budget=RUNTIME_BUDGET_SECONDS if runtime_budget_seconds is None else max(0,float(runtime_budget_seconds))
+    started=time.monotonic()
+    seeds=load_seeds()
+    previous={p.get('productId'):p for p in load_previous_products() if p.get('productId') and previous_product_fresh(p,now_dt)}
+    products=[];failures={};deferred={}
+    for index,seed in enumerate(seeds):
+        if time.monotonic()-started >= budget:
+            for pending in seeds[index:]:
+                pid=pending.get('productId','unknown')
+                old=previous.get(pid)
+                if old:
+                    products.append(old)
+                    deferred[pid]='runtime_budget_retained_previous'
+                else:
+                    deferred[pid]='runtime_budget_no_previous'
+            break
         try:
             if not fit_audit_fresh(seed,now_dt): raise ValueError('fit_audit_expired')
             candidate=None
@@ -377,8 +408,9 @@ def acquire():
             failures[seed.get('productId','unknown')]=str(e) if isinstance(e,ValueError) else type(e).__name__
         time.sleep(.6)
     return {
-        'version':1,'updatedAt':now,'status':'ok' if not failures else 'partial',
-        'products':products,'failures':failures
+        'version':1,'updatedAt':now,'status':'ok' if not failures and not deferred else 'partial',
+        'products':products,'failures':failures,'deferred':deferred,
+        'runtimeBudgetSeconds':budget
     }
 
 if __name__=='__main__':
@@ -386,4 +418,4 @@ if __name__=='__main__':
     tmp=OUT.with_suffix('.tmp')
     tmp.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
     tmp.replace(OUT)
-    print('CAR STAY catalog:',payload['status'],'verified:',len(payload['products']),'failed:',len(payload['failures']))
+    print('CAR STAY catalog:',payload['status'],'verified:',len(payload['products']),'failed:',len(payload['failures']),'deferred:',len(payload.get('deferred',{})))
