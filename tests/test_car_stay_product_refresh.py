@@ -176,5 +176,14 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 else: os.environ[k]=v
 
 
+    def test_hustler_sleep_mat_seed_rejects_luggage_mat(self):
+        from pathlib import Path
+        import json
+        seed=json.loads((Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"/"hustler-mat.json").read_text())
+        wrong="Levolva MR52S MR92S ハスラー 専用ラゲッジルームカバー 防水ラゲッジマット フロアマット"
+        right="Levolva ハスラー MR52S MR92S スマート車中泊マットDX LVMR-13"
+        self.assertFalse(refresh.identity_ok(wrong,seed))
+        self.assertTrue(refresh.identity_ok(right,seed))
+
 if __name__=="__main__":
     unittest.main()
