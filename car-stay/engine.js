@@ -114,6 +114,18 @@ export function evaluate(input,vehicle,rules=DEFAULT_RULES){
     floorState="flat";
   }
 
+  const hasSleepPadding=hasCapability(gear,"padding")||hasCapability(gear,"floor_step_full");
+  const hasFloorGap=gaps.some(g=>g.id==="floor_step");
+  if(!hasSleepPadding&&!hasFloorGap){
+    gaps.push({
+      id:"sleep_surface",
+      severity:"should",
+      free:"まず家の敷布団・厚手の毛布・キャンプマットなど、身体の下に敷けるものを使って寝心地を試す。"
+    });
+  }else if(hasSleepPadding){
+    resolved.push("sleep_surface");
+  }
+
   if(hasCapability(gear,"privacy_full"))resolved.push("privacy");
   else gaps.push({id:"privacy_full",severity:"must",free:"専用品がなくても、外から見えず運転操作を妨げない安全な目隠しを用意する。"});
 

@@ -175,7 +175,7 @@ function renderResult(){
   track("builder_completed",{vehicle_id:v.vehicleId,status:result.status,gap_count:result.gaps.length,eligible_product_count:eligibleProductCount});
   setCabin();
 }
-function gapLabel(id){return {privacy_full:"窓の目隠し",floor_step:"寝床の段差",thermal_unknown:"夜の気温・防寒",thermal_warmth:"防寒",authorized_place_unconfirmed:"泊まる場所",sleep_space:"寝床サイズ",sleep_comfort:"寝心地",power_capacity:"電源容量"}[id]||id;}
+function gapLabel(id){return {privacy_full:"窓の目隠し",floor_step:"寝床の段差",sleep_surface:"身体の下に敷くもの",thermal_unknown:"夜の気温・防寒",thermal_warmth:"防寒",authorized_place_unconfirmed:"泊まる場所",sleep_space:"寝床サイズ",sleep_comfort:"寝心地",power_capacity:"電源容量"}[id]||id;}
 function tripLabel(id){return {sleep_only:"寝るだけ",onsen:"温泉の夜",stars:"星を見る夜",morning:"朝を楽しむ",outdoor:"アウトドア"}[id]||"一泊";}
 function yen(value){return new Intl.NumberFormat("ja-JP",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value);}
 function renderProducts(items,gapId=""){

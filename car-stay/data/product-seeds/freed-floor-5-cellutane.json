@@ -5,7 +5,8 @@
   "query": "4982323269905",
   "itemUrl": "https://item.rakuten.co.jp/a-price/4982323269905/",
   "gapIds": [
-    "floor_step"
+    "floor_step",
+    "sleep_surface"
   ],
   "recommendationRole": "beginner_default",
   "score": 93,
