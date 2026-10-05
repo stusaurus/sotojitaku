@@ -111,7 +111,7 @@ def seed_queries(seed):
 def worker_candidate(seed):
     previews=[]
     matches=[]
-    for search_query in seed_queries(seed)[:1]:
+    for search_query in seed_queries(seed):
         query=urllib.parse.urlencode({'q':search_query,'hits':30})
         payload=fetch_json(WORKER+'?'+query)
         for raw in payload.get('products',[]):
@@ -129,7 +129,7 @@ def worker_candidate(seed):
         matches.sort(key=lambda x:(-x[0],0 if safe_affiliate(x[1]['url'],x[1]['itemUrl']) else 1))
         return matches[0][1]
     print('CAR_STAY_DIAG',seed.get('productId'),json.dumps(previews[:8],ensure_ascii=False))
-    for search_query in seed_queries(seed)[:1]:
+    for search_query in seed_queries(seed):
         lookup=fetch_json(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':search_query,'brand':seed.get('brand','')}))
         if lookup.get('found') is True:
             c=normalize_worker_candidate(lookup)
