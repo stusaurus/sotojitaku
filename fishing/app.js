@@ -188,6 +188,7 @@ function renderResult({trackDiagnosis=true}={}){
       fishing_method:plan.methodId,
       plan_id:planId,
       product_count:basket.count,
+      optional_product_count:basket.optionalCount,
       displayed_total:basket.total,
       budget_tier:answers.budget,
       party_type:answers.party
@@ -204,7 +205,7 @@ function renderResult({trackDiagnosis=true}={}){
     }catch{}
   });
   $("#againBtn").addEventListener("click",()=>{index=0;currentResultKey="";renderQuestion()});
-  trackProductViews(productResult.selected,plan);
+  trackProductViews(productResult.selected,plan,rawChecklist);
   bindAffiliateClicks();
 }
 
@@ -222,7 +223,7 @@ function productCoversRequiredGap(product,checklist){
 }
 
 function renderProductCards(products,neededIds,checklist,{optional=false}={}){
-  return `<div class="product-list">${products.map(p=>`
+  return `<div class="product-list">${products.map((p,index)=>`
     <article class="product-card ${optional?"product-card-optional":""}">
       <img src="${escapeAttr(p.image)}" alt="" loading="lazy">
       <div class="product-copy">
@@ -231,7 +232,7 @@ function renderProductCards(products,neededIds,checklist,{optional=false}={}){
         <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
         ${renderQuantityNote(p)}
         ${renderCoverage(p,checklist)}
-        <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}" data-price="${Number(p.price)||0}" data-role="${escapeAttr(p.recommendationRole||"")}">楽天で価格・在庫を見る →</a>
+        <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}" data-price="${Number(p.price)||0}" data-role="${escapeAttr(p.recommendationRole||"")}" data-priority="${optional?"optional":"required"}" data-position="${index+1}">楽天で価格・在庫を見る →</a>
       </div>
     </article>`).join("")}</div>`;
 }
@@ -370,9 +371,13 @@ function productLabel(p,neededIds){
   return "この不足を埋める";
 }
 
-function trackProductViews(products,plan){
+function trackProductViews(products,plan,checklist){
+  let requiredPosition=0;
+  let optionalPosition=0;
   for(const p of products||[]){
-    const key=plan.methodId+":"+p.productId;
+    const priority=productCoversRequiredGap(p,checklist)?"required":"optional";
+    const position=priority==="required"?++requiredPosition:++optionalPosition;
+    const key=plan.methodId+":"+p.productId+":"+priority;
     if(viewedProducts.has(key))continue;
     viewedProducts.add(key);
     track("fishing_product_view",{
@@ -380,7 +385,9 @@ function trackProductViews(products,plan){
       gear_category:p.categoryId,
       fishing_method:plan.methodId,
       price:Number(p.price)||0,
-      recommendation_role:p.recommendationRole||""
+      recommendation_role:p.recommendationRole||"",
+      purchase_priority:priority,
+      basket_position:position
     });
   }
 }
@@ -392,6 +399,8 @@ function bindAffiliateClicks(){
       fishing_method:selectPlan(answers,plansData)?.methodId,
       price:Number(a.dataset.price)||0,
       recommendation_role:a.dataset.role||"",
+      purchase_priority:a.dataset.priority||"",
+      basket_position:Number(a.dataset.position)||0,
       budget_tier:answers.budget,
       party_type:answers.party
     };
