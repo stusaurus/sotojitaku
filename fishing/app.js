@@ -4,7 +4,8 @@ import {buildProductRecommendations,applyProductCoverage} from "./products.js";
 const $=s=>document.querySelector(s);
 const hero=$("#hero"),planner=$("#planner"),panel=$("#panel"),progress=$("#progressBar");
 const resetBtn=$("#resetBtn"),savedBtn=$("#savedBtn"),stepText=$("#stepText"),miniPlan=$("#miniPlan"),visualMessage=$("#visualMessage"),visualTags=$("#visualTags");
-const progressText=$("#progressText"),progressLine=$("#progressLine");
+const progressText=$("#progressText"),progressLine=$("#progressLine"),planVisual=document.querySelector(".plan-visual");
+const previewStartBtn=$("#previewStartBtn");
 const DRAFT_KEY="sotojitakuFishingDraft";
 
 let questionsData,plansData,gearData,howtoData,catalog;
@@ -150,9 +151,9 @@ function readDraft(){
     return draft;
   }catch{return null}
 }
-function persistDraft(){
+function persistDraft(stage="question"){
   try{
-    localStorage.setItem(DRAFT_KEY,JSON.stringify({version:1,index,answers,at:new Date().toISOString()}));
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({version:1,stage,index,answers,at:new Date().toISOString()}));
   }catch{}
   refreshSavedButton();
 }
@@ -163,7 +164,7 @@ function start(){
   clearSharedPlanHash();
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
-  persistDraft();
+  persistDraft("question");
   track("fishing_diagnosis_start");
   renderQuestion();
   scrollTo({top:0,behavior:"smooth"});
@@ -175,8 +176,9 @@ function resumeDraft(){
   index=Math.max(0,Math.min(draft.index,questionsData.questions.length-1));
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
   localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
-  track("fishing_diagnosis_resume",{question_index:index+1});
-  renderQuestion();
+  track("fishing_diagnosis_resume",{question_index:index+1,resume_stage:draft.stage==="result"?"result":"question"});
+  if(draft.stage==="result")renderResult({trackDiagnosis:false});
+  else renderQuestion();
   scrollTo({top:0,behavior:"smooth"});
 }
 function reset(){
@@ -209,6 +211,7 @@ function updateVisual(){
     ["全部買わなくて大丈夫。","手持ちを活かして仕上げます。"]
   ];
   const preview=selectPlan(answers,plansData);
+  if(planVisual)planVisual.dataset.step=String(index);
   miniPlan.textContent=preview&&index>=1?preview.methodName+"が近そう":"BUILD YOUR FISHING";
   const caption=captions[index]||captions[captions.length-1];
   visualMessage.innerHTML=escapeHtml(caption[0])+"<br>"+escapeHtml(caption[1]);
@@ -254,23 +257,24 @@ function renderQuestion(){
       if(q.id==="party"&&v!=="family_child")delete answers.child_fit;
     }
     track("fishing_question_answer",{question_id:q.id,answer_value:v});
-    persistDraft();
+    persistDraft("question");
     renderQuestion();
   }));
   $("#backBtn")?.addEventListener("click",()=>{
     if(index===0){reset();return}
-    index--;persistDraft();renderQuestion();
+    index--;persistDraft("question");renderQuestion();
   });
   $("#nextBtn").addEventListener("click",()=>{
     if(!isMulti&&!answers[q.id]){
       panel.querySelector(".desc").textContent="1つ選んでから進んでください。";
       return;
     }
-    if(index<questions.length-1){index++;persistDraft();renderQuestion()}
-    else{persistDraft();renderResult()}
+    if(index<questions.length-1){index++;persistDraft("question");renderQuestion()}
+    else{persistDraft("result");renderResult()}
   });
 }
 function renderResult({trackDiagnosis=true}={}){
+  persistDraft("result");
   const resultKey=JSON.stringify(answers);
   const isNewResult=resultKey!==currentResultKey;
   if(trackDiagnosis&&isNewResult){
@@ -759,6 +763,7 @@ function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;",
 function escapeAttr(s){return escapeHtml(s)}
 
 $("#startBtn").addEventListener("click",start);
+previewStartBtn?.addEventListener("click",start);
 savedBtn.addEventListener("click",()=>readDraft()?resumeDraft():openSavedPlan());
 resetBtn.addEventListener("click",reset);
 load().then(()=>{
