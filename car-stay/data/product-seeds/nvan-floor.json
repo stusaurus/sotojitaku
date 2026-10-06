@@ -39,7 +39,7 @@
     "N-WGN"
   ],
   "fitEvidenceUrl": "https://item.rakuten.co.jp/auc-sovie-store/mr-11/",
-  "fitCheckedAt": "2026-10-05",
+  "fitCheckedAt": "2026-10-06",
   "vehicleFit": [
     {
       "vehicleId": "honda-nvan-jj1-jj2",
@@ -51,5 +51,6 @@
     "mr-11",
     "Levolva N-VAN JJ1/2 車中泊マット",
     "N-VAN JJ1 JJ2 専用マットレス"
-  ]
+  ],
+  "rakutenItemCode": "auc-sovie-store:mr-11"
 }
