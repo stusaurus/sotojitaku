@@ -143,8 +143,12 @@ def worker_exact_item_candidate(seed):
     """Fast optional exact-URL probe. Never let Worker latency stall the whole audit."""
     queries=seed_queries(seed)
     search_query=queries[0] if queries else seed.get('query','')
+    lookup_params={'url':seed['itemUrl'],'q':search_query}
+    explicit_code=str(seed.get('rakutenItemCode') or '').strip()
+    if explicit_code:
+        lookup_params['itemCode']=explicit_code
     payload=fetch_json_quick(
-        ITEM_LOOKUP+'?'+urllib.parse.urlencode({'url':seed['itemUrl'],'q':search_query}),
+        ITEM_LOOKUP+'?'+urllib.parse.urlencode(lookup_params),
         timeout=4
     )
     if not payload or payload.get('found') is not True:
