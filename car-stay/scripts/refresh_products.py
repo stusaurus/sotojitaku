@@ -150,35 +150,51 @@ def seed_queries(seed):
         if value and value not in out: out.append(value)
     return out
 
+def worker_item_code_variants(seed):
+    """Return Worker lookup code variants without weakening the canonical Rakuten code.
+    Rakuten uses shop:code while the Worker catalog may index only the seller's raw code.
+    """
+    explicit=str(seed.get('rakutenItemCode') or '').strip()
+    values=[]
+    if explicit:
+        values.append(explicit)
+        if ':' in explicit:
+            raw=explicit.split(':',1)[1].strip()
+            if raw and raw not in values:
+                values.append(raw)
+    return values
+
 def worker_exact_item_candidate(seed):
-    """Fast optional exact-URL probe. Never let Worker latency stall the whole audit."""
+    """Fast exact-URL probe. Try canonical and raw seller codes, but accept exact URL + fit identity only."""
     queries=seed_queries(seed)
     search_query=queries[0] if queries else seed.get('query','')
-    lookup_params={'url':seed['itemUrl'],'q':search_query}
-    explicit_code=str(seed.get('rakutenItemCode') or '').strip()
-    if explicit_code:
-        lookup_params['itemCode']=explicit_code
-    payload=fetch_json_quick(
-        ITEM_LOOKUP+'?'+urllib.parse.urlencode(lookup_params),
-        timeout=4
-    )
-    if not payload or payload.get('found') is not True:
-        return None
-    item_url=canonical_item_url(payload.get('item_url',''))
-    if item_url!=canonical_item_url(seed['itemUrl']):
-        return None
-    name=str(payload.get('name') or '')
-    if not identity_ok(name,seed):
-        return None
-    return {
-        'name':name,
-        'price':payload.get('price'),
-        'url':payload.get('affiliate_url',''),
-        'itemUrl':item_url,
-        'image':payload.get('image',''),
-        'itemCode':payload.get('item_code',''),
-        'source':'worker_exact_url'
-    }
+    code_variants=worker_item_code_variants(seed) or ['']
+    for code in code_variants:
+        lookup_params={'url':seed['itemUrl'],'q':search_query}
+        if code:
+            lookup_params['itemCode']=code
+        payload=fetch_json_quick(
+            ITEM_LOOKUP+'?'+urllib.parse.urlencode(lookup_params),
+            timeout=4
+        )
+        if not payload or payload.get('found') is not True:
+            continue
+        item_url=canonical_item_url(payload.get('item_url',''))
+        if item_url!=canonical_item_url(seed['itemUrl']):
+            continue
+        name=str(payload.get('name') or '')
+        if not identity_ok(name,seed):
+            continue
+        return {
+            'name':name,
+            'price':payload.get('price'),
+            'url':payload.get('affiliate_url',''),
+            'itemUrl':item_url,
+            'image':payload.get('image',''),
+            'itemCode':payload.get('item_code','') or code,
+            'source':'worker_exact_url'
+        }
+    return None
 
 def worker_candidate(seed):
     """Best-effort Worker fallback.
