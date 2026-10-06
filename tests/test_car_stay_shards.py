@@ -20,7 +20,11 @@ class CarStayShardTests(unittest.TestCase):
         original_total,original_index=refresh.SHARD_TOTAL,refresh.SHARD_INDEX
         try:
             all_paths=sorted(refresh.SEED_DIR.glob("*.json"))
-            expected={json.loads(p.read_text())["productId"] for p in all_paths}
+            expected={
+                seed["productId"]
+                for seed in (json.loads(p.read_text()) for p in all_paths)
+                if seed.get("enabled",True) is not False
+            }
             seen=[]
             for index in range(3):
                 refresh.SHARD_TOTAL=3
