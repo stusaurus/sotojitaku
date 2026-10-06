@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T11:44:32.164Z",
-  "catalogUpdatedAt": "2026-10-06T11:40:20.561317+00:00",
-  "liveProductCount": 31,
+  "generatedAt": "2026-10-06T11:52:36.806Z",
+  "catalogUpdatedAt": "2026-10-06T11:48:15.709682+00:00",
+  "liveProductCount": 32,
   "summary": {
     "configurations": 18,
     "privacyCovered": 18,
-    "sleepCovered": 17,
+    "sleepCovered": 18,
     "privacyCoveragePct": 100,
-    "sleepCoveragePct": 94,
-    "revenueHoles": 1
+    "sleepCoveragePct": 100,
+    "revenueHoles": 0
   },
   "byVehicle": [
     {
@@ -35,9 +35,9 @@
       "vehicle": "FREED",
       "configurations": 5,
       "privacyCovered": 5,
-      "sleepCovered": 4,
+      "sleepCovered": 5,
       "privacyCoveragePct": 100,
-      "sleepCoveragePct": 80
+      "sleepCoveragePct": 100
     },
     {
       "vehicleId": "suzuki-hustler-mr52s-mr92s",
@@ -76,18 +76,7 @@
       "sleepCoveragePct": 100
     }
   ],
-  "holes": [
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 7,
-        "trim": "AIR EX"
-      }
-    }
-  ],
+  "holes": [],
   "configurations": [
     {
       "vehicleId": "honda-nbox-jf5-jf6",
@@ -272,21 +261,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       }
     },
@@ -305,21 +297,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       }
     },
@@ -338,16 +333,22 @@
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt7-maulbeere-oa008"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt7-maulbeere-oa008"
+        ]
       },
       "surface": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt7-maulbeere-oa008"
+        ]
       }
     },
     {
@@ -404,24 +405,27 @@
         ]
       },
       "sleep": {
-        "count": 2,
+        "count": 3,
         "productIds": [
           "freed-gt-crosstar-6-cellutane-a1612",
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       },
       "floor": {
-        "count": 2,
+        "count": 3,
         "productIds": [
           "freed-gt-crosstar-6-cellutane-a1612",
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       },
       "surface": {
-        "count": 2,
+        "count": 3,
         "productIds": [
           "freed-gt-crosstar-6-cellutane-a1612",
-          "freed-gt6-atmys-kurumat"
+          "freed-gt6-atmys-kurumat",
+          "freed-gt7-maulbeere-oa008"
         ]
       }
     },

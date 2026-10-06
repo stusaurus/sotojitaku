@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T11:40:20.561317+00:00",
+  "updatedAt": "2026-10-06T11:48:15.709682+00:00",
   "auditPolicyVersion": "carstay-2026-10-06-official-manual-affiliate-v2",
   "status": "partial",
   "products": [
@@ -19,7 +19,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr00280029/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00280029%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000843%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640901/jr00280029_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T11:39:48.046851+00:00",
+      "verifiedAt": "2026-10-06T11:48:15.394351+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -228,6 +228,45 @@
       }
     },
     {
+      "productId": "freed-gt7-maulbeere-oa008",
+      "name": "【エントリーで最大全額ポイント還元｜10/11まで】 GARSON｜ギャルソン カンタンベッドキット　ミニバン用　黒木目 OA008-01-02",
+      "brand": "MAULBEERE / GARSON",
+      "gapIds": [
+        "floor_step",
+        "sleep_surface"
+      ],
+      "recommendationRole": "beginner_alternative",
+      "score": 78,
+      "price": 65940,
+      "itemCode": "",
+      "itemUrl": "https://item.rakuten.co.jp/biccamera/4560318787506/",
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r7ldo.7cx6m87c.g00r7ldo.7cx6n351/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F4560318787506%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fbiccamera%2Fi%2F14713101%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/biccamera/cabinet/product/10186/00000012816525_a01.jpg?_ex=128x128",
+      "verifiedAt": "2026-10-06T11:48:15.394351+00:00",
+      "fitVerifiedAt": "2026-10-06",
+      "vehicleFit": [
+        {
+          "vehicleId": "honda-freed-gt",
+          "status": "verified",
+          "seatCounts": [
+            6,
+            7
+          ],
+          "trims": [
+            "AIR",
+            "AIR EX",
+            "CROSSTAR"
+          ]
+        }
+      ],
+      "audit": {
+        "status": "verified_live",
+        "mode": "exact_feed_fallback",
+        "salesSource": "worker_identity_shipping_lookup",
+        "fitEvidence": "https://www.garson.co.jp/acc/oa007/"
+      }
+    },
+    {
       "productId": "freed-gt-hobbyman-lit6",
       "name": "【日本売上No.1】最大全額3,000円引【吸盤＋6個】 新型 フリード GT1/8系 対応 サンシェード カーテン 車中泊 グッズ シームレス ライト フルセット 1台分 GT GT1 GT2 GT3 GT4 GT5 GT6 GT7 GT8 車用 カーテン サイド フロント セット 日除け 【日本製】",
       "brand": "趣味職人",
@@ -281,7 +320,7 @@
       "itemUrl": "https://item.rakuten.co.jp/autorder/au1175/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u1rfo.7cx6m2b8.g00u1rfo.7cx6n238/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fautorder%2Fau1175%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fautorder%2Fi%2F10001966%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/autorder/cabinet/au1175/au1175_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T11:40:20.561317+00:00",
+      "verifiedAt": "2026-10-06T11:48:13.082668+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -359,7 +398,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/kurumat-black-n-box-jf56/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fkurumat-black-n-box-jf56%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10035501%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/01k-sam/01k-c027-ca.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T11:39:47.685799+00:00",
+      "verifiedAt": "2026-10-06T11:48:14.027134+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -989,7 +1028,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr00310032/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00310032%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000845%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640914/jr00310032_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T11:39:45.818695+00:00",
+      "verifiedAt": "2026-10-06T11:48:13.931804+00:00",
       "fitVerifiedAt": "2026-10-05",
       "vehicleFit": [
         {
@@ -1021,7 +1060,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fsienta-mxpl-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10046584%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-a070-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T11:39:48.046851+00:00",
+      "verifiedAt": "2026-10-06T11:48:15.394351+00:00",
       "fitVerifiedAt": "2026-10-06",
       "vehicleFit": [
         {
@@ -1112,7 +1151,6 @@
   "failures": {
     "freed-gt-sunvic-shade": "same_shop_identity_listing_not_found",
     "freed-gt6-hobbyman-kurumat": "same_shop_identity_listing_not_found",
-    "freed-gt7-maulbeere-oa008": "same_shop_identity_listing_not_found",
     "nvan-jj1-jj2-mgr-mbk4646": "same_shop_identity_listing_not_found"
   },
   "deferred": {},
