@@ -202,3 +202,32 @@ test('SEO fit picker gates restricted products and carries the choice into Build
   assert.match(app,/seat_count:state\.config\.seatCount\|\|0/);
   assert.match(app,/trim:state\.config\.trim\|\|""/);
 });
+
+
+test('two-person CAR STAY SEO pages are substantive and preselect two people in Builder',()=>{
+  const sitemap=read('sitemap.xml');
+  const app=read('car-stay/app.js');
+  for(const slug of slugs){
+    const p=read('car-stay/car/'+slug+'/2people/index.html');
+    const parent=read('car-stay/car/'+slug+'/index.html');
+    assert.ok(p.length>5000,slug+' two-person page should not be thin');
+    assert.match(p,/rel="canonical"/);
+    assert.match(p,/FAQPage/);
+    assert.match(p,/QUICK MEASURE/);
+    assert.ok(p.includes('party=2'));
+    assert.ok(p.includes('entry='+slug+'-2people'));
+    assert.ok(parent.includes('./2people/'));
+    assert.ok(sitemap.includes('/car-stay/car/'+slug+'/2people/'));
+  }
+  assert.match(app,/presetParty=Number\(qs\.get\("party"\)\)/);
+  assert.match(app,/party_count:state\.people\.length/);
+});
+
+test('two-person pages do not claim vehicle-name-only approval',()=>{
+  for(const slug of slugs){
+    const p=read('car-stay/car/'+slug+'/2people/index.html');
+    assert.match(p,/一番狭い/);
+    assert.match(p,/110cm/);
+    assert.match(p,/(断定しません|断定しない)/);
+  }
+});
