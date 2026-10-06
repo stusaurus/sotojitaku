@@ -850,5 +850,26 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.exact_page_details=original
 
+    def test_live_revenue_seed_fixes_keep_vehicle_intent_first(self):
+        import json
+        from pathlib import Path
+        root=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"
+        expected={
+            "freed-floor-6-atmys.json":["フリード","6人乗り","車中泊"],
+            "freed-floor-6-hobbyman.json":["フリード","6人乗り","車中泊"],
+            "hustler-floor-atmys.json":["ハスラー","MR52S","車中泊"],
+            "hustler-mat.json":["ハスラー","MR52S","車中泊"],
+            "nbox-shade-joy-atmys.json":["N-BOX","JOY","サンシェード"],
+            "nbox-shade-joy-hobbyman.json":["N-BOX","JOY","サンシェード"],
+            "nvan-floor-hobbyman.json":["N-VAN","車中泊"],
+            "nvan-floor-mgr.json":["N-VAN","ベッドキット"],
+            "nvan-floor.json":["N-VAN","車中泊"]
+        }
+        for filename,tokens in expected.items():
+            seed=json.loads((root/filename).read_text())
+            first=seed["searchQueries"][0]
+            for token in tokens:
+                self.assertIn(token,first,filename)
+
 if __name__=="__main__":
     unittest.main()
