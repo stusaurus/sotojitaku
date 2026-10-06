@@ -70,10 +70,16 @@ const SEO_GAPS={
   "2people":["privacy_full","floor_step","sleep_surface"],
   mat:["floor_step","sleep_surface"],
   shade:["privacy_full"],
-  "7people":["floor_step","sleep_surface"]
+  "7people":["floor_step","sleep_surface"],
+  joy:["privacy_full","floor_step","sleep_surface"],
+  da18:["privacy_full","floor_step","sleep_surface"]
+};
+const SEO_FIXED_VEHICLES={
+  "every:da18":["suzuki-every-da18v"]
 };
 const SEO_FIXED_CONFIGS={
-  "freed:7people":{seatCount:7,trim:"AIR EX"}
+  "freed:7people":{seatCount:7,trim:"AIR EX"},
+  "n-box:joy":{trim:"N-BOX JOY"}
 };
 const SEO_CONFIGS={
   "n-box":[
@@ -91,6 +97,14 @@ const SEO_CONFIGS={
     {key:"airex7",label:"AIR EX 7人",trim:"AIR EX",seatCount:7},
     {key:"cross5",label:"CROSSTAR 5人",trim:"CROSSTAR",seatCount:5},
     {key:"cross6",label:"CROSSTAR 6人",trim:"CROSSTAR",seatCount:6}
+  ],
+  "every":[
+    {key:"da17-join",label:"DA17V JOIN / JOINターボ",vehicleId:"suzuki-every-da17v",trim:"JOIN / JOIN Turbo"},
+    {key:"da17-pc",label:"DA17V PC",vehicleId:"suzuki-every-da17v",trim:"PC"},
+    {key:"da17-pa",label:"DA17V PA",vehicleId:"suzuki-every-da17v",trim:"PA"},
+    {key:"da18-join",label:"DA18V JOIN / JOINターボ",vehicleId:"suzuki-every-da18v",trim:"JOIN / JOIN Turbo"},
+    {key:"da18-pc",label:"DA18V PC",vehicleId:"suzuki-every-da18v",trim:"PC"},
+    {key:"da18-pa",label:"DA18V PA",vehicleId:"suzuki-every-da18v",trim:"PA"}
   ]
 };
 const seoViewedProducts=new Set();
@@ -124,6 +138,7 @@ function safeSeoProduct(product,vehicleIds,gaps,now=Date.now()){
 function fitSupportsConfig(product,vehicleIds,config){
   return (product.vehicleFit||[]).some(f=>{
     if(f.status!=="verified"||!vehicleIds.includes(f.vehicleId))return false;
+    if(config?.vehicleId&&f.vehicleId!==config.vehicleId)return false;
     if(config?.seatCount&&f.seatCounts?.length&&!f.seatCounts.includes(Number(config.seatCount)))return false;
     if(config?.trim&&f.trims?.length&&!f.trims.includes(config.trim))return false;
     if(config?.trim&&f.exclusions?.includes(config.trim))return false;
@@ -153,6 +168,7 @@ function builderWithConfig(anchor,config){
   const u=new URL(link.href,location.href);
   u.searchParams.delete("seatCount");
   u.searchParams.delete("trim");
+  if(config?.vehicleId)u.searchParams.set("vehicle",config.vehicleId);
   if(config?.seatCount)u.searchParams.set("seatCount",String(config.seatCount));
   if(config?.trim)u.searchParams.set("trim",config.trim);
   link.href=u.toString();
@@ -181,7 +197,8 @@ function diversifiedProducts(items,limit=3){
 
 async function renderVerifiedProducts(){
   const ctx=context();
-  const vehicleIds=SEO_VEHICLES[ctx.vehicle_slug];
+  const intentKey=ctx.vehicle_slug+":"+ctx.intent_slug;
+  const vehicleIds=SEO_FIXED_VEHICLES[intentKey]||SEO_VEHICLES[ctx.vehicle_slug];
   const gaps=SEO_GAPS[ctx.intent_slug];
   if(!vehicleIds||!gaps)return;
   const anchor=document.querySelector(".builder-box");
@@ -191,14 +208,14 @@ async function renderVerifiedProducts(){
     const response=await fetch(root+"data/audited-products.json",{cache:"no-store"});
     if(!response.ok)return;
     const payload=await response.json();
-    const fixedConfig=SEO_FIXED_CONFIGS[ctx.vehicle_slug+":"+ctx.intent_slug]||null;
+    const fixedConfig=SEO_FIXED_CONFIGS[intentKey]||null;
     const matched=(payload.products||[])
       .filter(p=>safeSeoProduct(p,vehicleIds,gaps));
     const allItems=(fixedConfig?matched.filter(p=>fitSupportsConfig(p,vehicleIds,fixedConfig)):matched)
       .sort((a,b)=>(b.score||0)-(a.score||0));
     if(!allItems.length)return;
 
-    const options=fixedConfig?[]:(SEO_CONFIGS[ctx.vehicle_slug]||[]);
+    const options=fixedConfig?[]:(SEO_CONFIGS[ctx.vehicle_slug]||[]).filter(o=>!o.vehicleId||vehicleIds.includes(o.vehicleId));
     const needPicker=!fixedConfig&&configPickerNeeded(allItems,vehicleIds,options);
     const storageKey="sotojitaku_seo_fit_"+ctx.vehicle_slug;
     let selectedKey=needPicker?sessionStorage.getItem(storageKey)||"":"";
