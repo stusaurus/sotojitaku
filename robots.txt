@@ -3,3 +3,4 @@ Allow: /
 Sitemap: https://stusaurus.github.io/sotojitaku/sitemap.xml
 
 Disallow: /qa.html
+Sitemap: https://stusaurus.github.io/sotojitaku/car-stay/sitemap.xml
