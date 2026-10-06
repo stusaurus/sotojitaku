@@ -537,6 +537,28 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.identity_ok("新型 フリード GT1/8 AIR CROSSTAR シートフラットクッション 段差解消 車中泊マット",seed))
         self.assertFalse(refresh.identity_ok("フリード GB5 GT1/8 段差解消 車中泊マット",seed))
 
+    def test_nbox_joy_hobbyman_privacy_seed_covers_joy_but_not_slope(self):
+        import json
+        from pathlib import Path
+        path=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"/"nbox-shade-joy-hobbyman.json"
+        seed=json.loads(path.read_text())
+        fit=seed["vehicleFit"][0]
+        self.assertIn("N-BOX JOY",fit["trims"])
+        self.assertIn("N-BOX Slope",fit["exclusions"])
+        self.assertTrue(refresh.identity_ok("新型 N-BOX JF5 JF6 JOY サンシェード フルセット",seed))
+        self.assertFalse(refresh.identity_ok("N-BOX JF3 JF4 JOY サンシェード フルセット",seed))
+
+    def test_freed_gt_hobbyman_six_seat_seed_never_expands_to_seven_seat(self):
+        import json
+        from pathlib import Path
+        path=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"/"freed-floor-6-hobbyman.json"
+        seed=json.loads(path.read_text())
+        fit=seed["vehicleFit"][0]
+        self.assertEqual(fit["seatCounts"],[6])
+        self.assertEqual(set(fit["trims"]),{"AIR","AIR EX","CROSSTAR"})
+        self.assertTrue(refresh.identity_ok("新型 フリード GT1/8 AIR CROSSTAR シートフラットクッション 段差解消 車中泊 マット",seed))
+        self.assertFalse(refresh.identity_ok("フリード GB5 GT1/8 車中泊 マット",seed))
+
     def test_nvan_dedicated_bed_search_starts_with_exact_product_number(self):
         import json
         from pathlib import Path
