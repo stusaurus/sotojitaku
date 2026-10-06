@@ -92,16 +92,22 @@ def rakuten_item_slug(value):
 def compact(value):
     return re.sub(r'\s+','',unicodedata.normalize('NFKC',str(value or ''))).lower()
 
-def required_groups_ok(value,seed):
+def groups_ok(value,groups):
     n=compact(value)
-    for group in seed.get('identityGroups',[]):
+    for group in groups:
         if not any(compact(term) in n for term in group): return False
     return True
+
+def required_groups_ok(value,seed):
+    return groups_ok(value,seed.get('identityGroups',[]))
+
+def candidate_groups_ok(value,seed):
+    return groups_ok(value,seed.get('candidateIdentityGroups') or seed.get('identityGroups',[]))
 
 def identity_ok(name,seed):
     n=compact(name)
     if any(compact(x) in n for x in seed.get('forbiddenTerms',[])): return False
-    return required_groups_ok(name,seed)
+    return candidate_groups_ok(name,seed)
 
 def safe_affiliate(url,item_url):
     try:
