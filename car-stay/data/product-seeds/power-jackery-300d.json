@@ -1,0 +1,48 @@
+{
+  "productId": "power-jackery-300d",
+  "name": "Jackery ポータブル電源 300 D 288Wh / 300W",
+  "brand": "Jackery",
+  "query": "Jackery ポータブル電源 300 D 288Wh 300W",
+  "searchQueries": [
+    "Jackery 300 D 288Wh",
+    "Jackery 300D 288Wh",
+    "Jackery 300 D"
+  ],
+  "itemUrl": "https://item.rakuten.co.jp/jackery-japan/21-0001-000359/",
+  "gapIds": [
+    "power_capacity"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 95,
+  "fitStrategy": "power",
+  "powerSpec": {
+    "capacityWh": 288,
+    "ratedOutputW": 300,
+    "evidenceUrl": "https://item.rakuten.co.jp/jackery-japan/21-0001-000359/"
+  },
+  "identityGroups": [
+    [
+      "Jackery",
+      "ジャクリ"
+    ],
+    [
+      "300 D",
+      "300D"
+    ],
+    [
+      "288Wh"
+    ],
+    [
+      "300W"
+    ]
+  ],
+  "forbiddenTerms": [
+    "Solar Generator",
+    "ソーラーパネルセット",
+    "1000",
+    "1500"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/jackery-japan/21-0001-000359/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": []
+}
