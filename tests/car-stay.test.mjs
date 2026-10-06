@@ -189,3 +189,104 @@ test("N-BOX Slope is not offered through the standard sleep profile",()=>{
   assert.ok(allowed.includes("N-BOX JOY"));
   assert.ok(!allowed.includes("N-BOX Slope"));
 });
+
+
+test("live CAR STAY catalog only references supported vehicle configurations",()=>{
+  const catalog=JSON.parse(fs.readFileSync(new URL("../car-stay/data/audited-products.json",import.meta.url),"utf8"));
+  const vehicleData=JSON.parse(fs.readFileSync(new URL("../car-stay/data/vehicles.json",import.meta.url),"utf8"));
+  const vehicleMap=new Map(vehicleData.vehicles.map(v=>[v.vehicleId,v]));
+  const allowedProductGaps=new Set(["privacy_full","floor_step","sleep_surface","power_capacity","thermal_warmth","frequent_use_bed"]);
+  const ids=new Set();
+
+  for(const product of catalog.products||[]){
+    assert.ok(product.productId&&!ids.has(product.productId),"duplicate/missing productId: "+product.productId);
+    ids.add(product.productId);
+    assert.ok((product.gapIds||[]).length>0,product.productId+" needs at least one gap");
+    for(const gap of product.gapIds)assert.ok(allowedProductGaps.has(gap),product.productId+" has unsupported gap "+gap);
+
+    for(const fit of product.vehicleFit||[]){
+      const vehicle=vehicleMap.get(fit.vehicleId);
+      assert.ok(vehicle,product.productId+" references unknown vehicle "+fit.vehicleId);
+      const valid=vehicle.config?.validConfigs;
+      if(valid?.length){
+        const matching=valid.filter(vc=>{
+          if(fit.seatCounts?.length&&!fit.seatCounts.includes(Number(vc.seatCount)))return false;
+          if(fit.trims?.length&&!fit.trims.includes(vc.trim))return false;
+          if(fit.exclusions?.includes(vc.trim))return false;
+          return true;
+        });
+        assert.ok(matching.length>0,product.productId+" has no valid config for "+fit.vehicleId);
+      }else{
+        if(fit.seatCounts?.length&&vehicle.config?.seatCounts?.length){
+          for(const seat of fit.seatCounts)assert.ok(vehicle.config.seatCounts.includes(Number(seat)),product.productId+" has invalid seat count "+seat);
+        }
+        if(fit.trims?.length&&vehicle.config?.trims?.length){
+          for(const trim of fit.trims)assert.ok(vehicle.config.trims.includes(trim),product.productId+" has invalid trim "+trim);
+        }
+      }
+    }
+  }
+});
+
+test("every live catalog item is actually recommendable for at least one declared fit",()=>{
+  const catalog=JSON.parse(fs.readFileSync(new URL("../car-stay/data/audited-products.json",import.meta.url),"utf8"));
+  const vehicleData=JSON.parse(fs.readFileSync(new URL("../car-stay/data/vehicles.json",import.meta.url),"utf8"));
+  const vehicleMap=new Map(vehicleData.vehicles.map(v=>[v.vehicleId,v]));
+
+  for(const product of catalog.products||[]){
+    let surfaced=false;
+    for(const fit of product.vehicleFit||[]){
+      const vehicle=vehicleMap.get(fit.vehicleId);
+      if(!vehicle)continue;
+      let configs=[{}];
+      if(vehicle.config?.validConfigs?.length){
+        configs=vehicle.config.validConfigs.filter(vc=>{
+          if(fit.seatCounts?.length&&!fit.seatCounts.includes(Number(vc.seatCount)))return false;
+          if(fit.trims?.length&&!fit.trims.includes(vc.trim))return false;
+          if(fit.exclusions?.includes(vc.trim))return false;
+          return true;
+        });
+      }else{
+        const seats=fit.seatCounts?.length?fit.seatCounts:(vehicle.config?.seatCounts?.length?vehicle.config.seatCounts:[undefined]);
+        const trims=fit.trims?.length?fit.trims:(vehicle.config?.trims?.length?vehicle.config.trims:[undefined]);
+        configs=[];
+        for(const seatCount of seats)for(const trim of trims){
+          const config={};
+          if(seatCount!==undefined)config.seatCount=seatCount;
+          if(trim!==undefined)config.trim=trim;
+          configs.push(config);
+        }
+      }
+
+      for(const config of configs){
+        for(const gapId of product.gapIds||[]){
+          const ok=productEligible(product,{
+            vehicleId:fit.vehicleId,
+            config,
+            gapId,
+            now:Date.parse(product.verifiedAt)+60*60*1000
+          });
+          if(ok){surfaced=true;break;}
+        }
+        if(surfaced)break;
+      }
+      if(surfaced)break;
+    }
+    assert.ok(surfaced,product.productId+" is live but can never surface through the current eligibility rules");
+  }
+});
+
+test("CHANGE_PLAN never exposes live catalog products",()=>{
+  const catalog=JSON.parse(fs.readFileSync(new URL("../car-stay/data/audited-products.json",import.meta.url),"utf8"));
+  const sample=(catalog.products||[])[0];
+  if(!sample)return;
+  const fit=sample.vehicleFit[0];
+  const out=recommendations([sample],{
+    gaps:(sample.gapIds||[]).map(id=>({id})),
+    vehicleId:fit.vehicleId,
+    config:{seatCount:fit.seatCounts?.[0],trim:fit.trims?.[0]},
+    status:"CHANGE_PLAN",
+    now:Date.parse(sample.verifiedAt)+60*60*1000
+  });
+  assert.deepEqual(out,{});
+});
