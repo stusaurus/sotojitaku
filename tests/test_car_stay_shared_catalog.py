@@ -107,5 +107,15 @@ class CarStaySharedCatalogTests(unittest.TestCase):
             seed_map=shared.load_seed_map(root)
             self.assertEqual(set(seed_map),{"b"})
 
+    def test_failures_for_disabled_or_removed_seeds_are_pruned(self):
+        now=datetime(2026,10,6,12,tzinfo=timezone.utc)
+        result=shared.merge_catalogs(
+            {"products":[],"failures":{"active":"live_failure","disabled":"old_failure"}},
+            {"products":[],"failures":{}},
+            {"active":{"productId":"active","gapIds":["privacy_full"],"vehicleFit":[]}},
+            now,
+        )
+        self.assertEqual(result["failures"],{"active":"live_failure"})
+
 if __name__=="__main__":
     unittest.main()
