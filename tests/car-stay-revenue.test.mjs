@@ -74,3 +74,16 @@ test('CAR STAY only monetizes unknown vehicle floors after an observed floor gap
   assert.match(engine,/floorObservation=input\.floorObservation/);
   assert.ok(engine.includes('["noticeable","large"].includes(floorObservation)'));
 });
+
+
+test('CAR STAY SEO product cards disclose PR and stay beginner-first',()=>{
+  const seo=read('car-stay/seo.js');
+  assert.match(seo,/seo-pr/);
+  assert.match(seo,/楽天アフィリエイト/);
+  assert.match(seo,/beginner_default/);
+  assert.match(seo,/beginner_alternative/);
+  assert.match(seo,/recommendation_role/);
+  assert.match(seo,/data-price/);
+  assert.match(seo,/data-role/);
+  assert.ok(!seo.includes('["beginner_default","beginner_alternative","frequent_user_upgrade"].includes(role)'));
+});
