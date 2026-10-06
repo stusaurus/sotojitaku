@@ -20,3 +20,14 @@ test('CAR STAY remains discoverable from the static root navigation',()=>{
   assert.match(html,/href="car-stay\/"/);
   assert.match(html,/CAR STAY｜車中泊をつくる/);
 });
+
+
+test('CAR STAY has a dedicated sitemap discoverable from robots',()=>{
+  const robots=read('robots.txt');
+  const sitemap=read('car-stay/sitemap.xml');
+  assert.match(robots,/Sitemap: https:\/\/stusaurus\.github\.io\/sotojitaku\/car-stay\/sitemap\.xml/);
+  const urls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
+  assert.equal(urls.length,26);
+  assert.ok(urls.every(url=>url.startsWith('https://stusaurus.github.io/sotojitaku/car-stay/')));
+  assert.ok(urls.every(url=>!url.includes('?')));
+});
