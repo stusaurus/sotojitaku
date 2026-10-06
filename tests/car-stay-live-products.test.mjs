@@ -10,14 +10,24 @@ test("every published CAR STAY product is eligible for at least one declared fit
   for(const p of catalog.products||[]){
     const now=Date.parse(p.verifiedAt)+60*60*1000;
     let passes=false;
-    for(const fit of p.vehicleFit||[]){
-      const config={};
-      if(fit.seatCounts?.length)config.seatCount=fit.seatCounts[0];
-      if(fit.trims?.length)config.trim=fit.trims[0];
+    if(p.fitStrategy==="measurement"){
+      const fit=p.measurementFit||{};
+      const units=Math.max(1,Math.min(Number(fit.maxUnits)||1,2));
+      const measurements={lengthMm:Number(fit.unitLengthMm)||0,widthMm:(Number(fit.unitWidthMm)||0)*units};
+      const sleep={targetWidth:measurements.widthMm};
       for(const gapId of p.gapIds||[]){
-        if(productEligible(p,{vehicleId:fit.vehicleId,config,gapId,now})){passes=true;break;}
+        if(productEligible(p,{vehicleId:"measurement",config:{},gapId,now,measurements,sleep})){passes=true;break;}
       }
-      if(passes)break;
+    }else{
+      for(const fit of p.vehicleFit||[]){
+        const config={};
+        if(fit.seatCounts?.length)config.seatCount=fit.seatCounts[0];
+        if(fit.trims?.length)config.trim=fit.trims[0];
+        for(const gapId of p.gapIds||[]){
+          if(productEligible(p,{vehicleId:fit.vehicleId,config,gapId,now})){passes=true;break;}
+        }
+        if(passes)break;
+      }
     }
     assert.equal(passes,true,p.productId+" should have at least one valid declared fit");
   }
@@ -52,16 +62,20 @@ test("N-BOX Slope never receives trim-excluded shade or floor items",()=>{
 
 
 test("CHANGE PLAN suppresses all product recommendations",()=>{
-  const sample=(catalog.products||[])[0];
+  const sample=(catalog.products||[]).find(p=>p.vehicleFit?.length)||(catalog.products||[])[0];
   if(!sample)return;
   const fit=sample.vehicleFit?.[0];
   const config={};
   if(fit?.seatCounts?.length)config.seatCount=fit.seatCounts[0];
   if(fit?.trims?.length)config.trim=fit.trims[0];
+  const measurementFit=sample.measurementFit||{};
+  const measurements=sample.fitStrategy==="measurement"?{lengthMm:Number(measurementFit.unitLengthMm)||0,widthMm:(Number(measurementFit.unitWidthMm)||0)*Math.max(1,Math.min(Number(measurementFit.maxUnits)||1,2))}:{};
   const now=Date.parse(sample.verifiedAt)+60*60*1000;
   const out=recommendations(catalog.products,{
-    vehicleId:fit.vehicleId,
+    vehicleId:fit?.vehicleId||"measurement",
     config,
+    measurements,
+    sleep:{targetWidth:measurements.widthMm||0},
     gaps:[{id:(sample.gapIds||[])[0]}],
     status:"CHANGE_PLAN",
     now
