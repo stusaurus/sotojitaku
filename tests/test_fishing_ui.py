@@ -93,6 +93,15 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("recommendation_role:a.dataset.role", self.app)
         self.assertIn("budget_tier:answers.budget", self.app)
 
+    def test_budget_switch_recalculates_the_whole_basket(self):
+        self.assertIn("renderBudgetSwitch", self.app)
+        self.assertIn('id="budgetSwitchBtn"', self.app)
+        self.assertIn('track("fishing_budget_switch"', self.app)
+        self.assertIn("from_budget:from", self.app)
+        self.assertIn("to_budget:to", self.app)
+        self.assertIn("answers.budget=to", self.app)
+        self.assertIn("renderResult({trackDiagnosis:false})", self.app)
+
     def test_priority_analytics_distinguish_required_and_optional(self):
         self.assertIn('data-priority="${optional?"optional":"required"}"', self.app)
         self.assertIn("purchase_priority:priority", self.app)
