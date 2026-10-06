@@ -7,7 +7,7 @@ class FishingGuideTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.guide_root=ROOT/"fishing"/"guides"
-        cls.slugs=["beginner","sabiki","choi-nage","no-worm","kids","gear","budget"]
+        cls.slugs=["beginner","sabiki","choi-nage","no-worm","kids","gear","budget","starter-set"]
         cls.sitemap=(ROOT/"sitemap.xml").read_text()
         cls.analytics=(ROOT/"fishing"/"guide-analytics.js").read_text()
         cls.budget_js=(ROOT/"fishing"/"guides"/"budget"/"budget.js").read_text()
@@ -45,6 +45,14 @@ class FishingGuideTest(unittest.TestCase):
         self.assertIn('selectPlan',self.budget_js)
         self.assertIn('fishing_budget_examples_view',self.budget_js)
         self.assertNotIn('total:5000',self.budget_js)
+
+    def test_starter_set_guide_audits_remaining_needs(self):
+        js=(ROOT/"fishing"/"guides"/"starter-set"/"starter-set.js").read_text()
+        self.assertIn('../../data/audited-products.json',js)
+        self.assertIn('productCoverageForInput',js)
+        self.assertIn('まだ必要',js)
+        self.assertIn('fishing_guide_product_click',js)
+        self.assertIn('affiliate_click',js)
 
 if __name__=="__main__":
     unittest.main()

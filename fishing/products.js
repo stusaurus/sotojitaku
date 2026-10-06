@@ -28,7 +28,7 @@ function effectivePreferenceTags(product={}){
   return [...tags];
 }
 
-function effectiveCoverage(product,input={}){
+export function productCoverageForInput(product,input={}){
   const covers=[...(product.coverCategoryIds||[product.categoryId])];
   if(["no_worm","low_mess"].includes(input.bait) && covers.includes("bait")){
     const tags=effectivePreferenceTags(product);
@@ -38,7 +38,7 @@ function effectiveCoverage(product,input={}){
 }
 
 function productRank(product,neededIds,input){
-  const covers=effectiveCoverage(product,input).filter(id=>neededIds.has(id)).length;
+  const covers=productCoverageForInput(product,input).filter(id=>neededIds.has(id)).length;
   return (Number(product.score)||Number(product.recommendationScore)||0)
     +covers*12+(roleBoost[product.recommendationRole]||0);
 }
@@ -74,7 +74,7 @@ export function buildProductRecommendations(products,{input,plan,checklist,now=D
     }
     const primary=candidates[0];
     const upgrade=candidates.slice(1).find(p=>p.price>primary.price&&p.recommendationRole==="long_term")||null;
-    const primaryCoverage=effectiveCoverage(primary,input);
+    const primaryCoverage=productCoverageForInput(primary,input);
     const selectedPrimary={...primary,effectiveCoverCategoryIds:primaryCoverage};
     recommendations[item.id]={primary:selectedPrimary,upgrade,unresolved:false};
     selected.push(selectedPrimary);
