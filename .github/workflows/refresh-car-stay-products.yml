@@ -8,6 +8,8 @@ on:
       - 'car-stay/scripts/report_coverage.mjs'
       - 'car-stay/data/product-seeds/**'
       - 'car-stay/data/vehicles.json'
+      - 'tests/car-stay*.test.mjs'
+      - 'tests/test_car_stay*.py'
       - '.github/workflows/refresh-car-stay-products.yml'
   workflow_dispatch:
   schedule:
