@@ -132,3 +132,32 @@ test('FREED SEO page reflects verified Honda 5-seat CROSSTAR measurements',()=>{
   assert.match(p,/CROSSTAR 5人乗り/);
   assert.match(p,/https:\/\/www\.honda\.co\.jp\/outdoor\/stay-car\/freed\.html/);
 });
+
+
+test('high-intent SEO pages share the verified-product renderer',()=>{
+  for(const slug of slugs){
+    for(const intent of ['mat','shade']){
+      const p=read('car-stay/car/'+slug+'/'+intent+'/index.html');
+      assert.match(p,/seo\.js/);
+      assert.match(p,/class="builder-box"/);
+    }
+  }
+  const js=read('car-stay/seo.js');
+  assert.match(js,/seo_product_view/);
+  assert.match(js,/seo_affiliate_click/);
+  assert.match(js,/LIVE AUDITED PICKS/);
+});
+
+test('current live catalog is safe for direct SEO purchase cards',()=>{
+  const data=JSON.parse(read('car-stay/data/audited-products.json'));
+  for(const p of data.products||[]){
+    assert.equal(p.audit?.status,'verified_live');
+    assert.ok(Number.isFinite(p.price)&&p.price>0);
+    assert.match(p.image||'',/^https:\/\//);
+    const affiliate=new URL(p.affiliateUrl);
+    assert.equal(affiliate.hostname,'hb.afl.rakuten.co.jp');
+    const target=new URL(affiliate.searchParams.get('pc'));
+    assert.equal(target.hostname,'item.rakuten.co.jp');
+    assert.equal(target.pathname.replace(/\/+$/,'')+'/',new URL(p.itemUrl).pathname.replace(/\/+$/,'')+'/');
+  }
+});
