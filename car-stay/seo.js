@@ -85,7 +85,9 @@ function safeSeoProduct(product,vehicleIds,gaps,now=Date.now()){
   if(product?.audit?.status!=="verified_live")return false;
   const verified=Date.parse(product.verifiedAt||"");
   if(!Number.isFinite(verified)||now-verified>7*86400000)return false;
-  if(!product.gapIds?.some(g=>gaps.includes(g)))return false;\n  const role=product.recommendationRole||"beginner_default";\n  if(!["beginner_default","beginner_alternative"].includes(role))return false;
+  if(!product.gapIds?.some(g=>gaps.includes(g)))return false;
+  const role=product.recommendationRole||"beginner_default";
+  if(!["beginner_default","beginner_alternative"].includes(role))return false;
   if(!Number.isFinite(product.price)||product.price<=0)return false;
   if(typeof product.image!=="string"||!product.image.startsWith("https://"))return false;
   if(canonicalRakuten(product.affiliateUrl)!==canonicalRakuten(product.itemUrl))return false;
