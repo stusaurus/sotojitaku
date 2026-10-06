@@ -819,11 +819,11 @@ class CarStayProductRefreshTests(unittest.TestCase):
         import urllib.parse
         template="https://hb.afl.rakuten.co.jp/hgc/abcd.1234.efgh.5678/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fshop%2Fold%2F&m=https%3A%2F%2Fitem.rakuten.co.jp%2Fshop%2Fold%2F"
         target="https://item.rakuten.co.jp/suwariba/o017/"
-        built=refresh.build_official_manual_affiliate(template,target)
+        built=refresh.build_official_manual_affiliate(template,target,987654)
         self.assertTrue(refresh.safe_affiliate(built,target))
         params=urllib.parse.parse_qs(urllib.parse.urlparse(built).query)
         self.assertEqual(params["pc"],[target])
-        self.assertEqual(params["m"],[target])
+        self.assertEqual(params["m"],["http://m.rakuten.co.jp/suwariba/i/987654/"])
         self.assertIn("/hgc/abcd.1234.efgh.5678/",built)
 
     def test_manual_affiliate_candidate_requires_live_exact_page_and_verified_template(self):
