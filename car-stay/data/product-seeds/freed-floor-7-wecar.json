@@ -1,0 +1,81 @@
+{
+  "productId": "freed-gt7-wecar-kbl009-r023",
+  "name": "WeCar FREED GT系 7人乗り対応 後部座席 車中泊マット",
+  "brand": "WeCar",
+  "query": "KBL009-r023",
+  "itemUrl": "https://item.rakuten.co.jp/wecar/kbl009-r023/",
+  "gapIds": [
+    "floor_step"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 84,
+  "identityGroups": [
+    [
+      "フリード",
+      "FREED"
+    ],
+    [
+      "GT7",
+      "GT1 GT2 GT3 GT4 GT5 GT6 GT7 GT8"
+    ],
+    [
+      "車中泊"
+    ],
+    [
+      "マット",
+      "マットレス"
+    ],
+    [
+      "WeCar"
+    ]
+  ],
+  "candidateIdentityGroups": [
+    [
+      "フリード",
+      "FREED"
+    ],
+    [
+      "GT7",
+      "GT"
+    ],
+    [
+      "車中泊"
+    ],
+    [
+      "マット",
+      "マットレス"
+    ]
+  ],
+  "forbiddenTerms": [
+    "GB5",
+    "GB6",
+    "GB7",
+    "GB8",
+    "フリード+"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/wecar/kbl009-r023/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-freed-gt",
+      "status": "verified",
+      "seatCounts": [
+        7
+      ],
+      "trims": [
+        "AIR EX"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "KBL009-r023",
+    "フリード GT7 車中泊マット",
+    "フリード GT系 車中泊マット WeCar"
+  ],
+  "rakutenItemCode": "wecar:kbl009-r023",
+  "pageCheckedAt": "2026-10-06",
+  "pageEvidenceNote": "楽天の商品ページで現行FREED GT1〜GT8対応、サイズ126×76cm、後部座席用の折りたたみ式車中泊マットとして確認。全面ベッドとは扱わず、AIR EX 7人乗りの段差・後席寝床補助候補に限定する。",
+  "usageScope": "partial_sleep_floor_support",
+  "safetyNote": "126×76cmのため成人の全身用マットとは扱わない。実際の寝床全長・幅はBuilderのQUICK MEASUREで別途確認する。",
+  "enabled": true
+}
