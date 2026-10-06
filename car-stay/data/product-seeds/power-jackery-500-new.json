@@ -1,0 +1,48 @@
+{
+  "productId": "power-jackery-500-new",
+  "name": "Jackery ポータブル電源 500 New 512Wh / 500W",
+  "brand": "Jackery",
+  "query": "Jackery ポータブル電源 500 New 512Wh 500W",
+  "searchQueries": [
+    "Jackery 500 New 512Wh",
+    "Jackery 500 New",
+    "Jackery 512Wh 500W"
+  ],
+  "itemUrl": "https://item.rakuten.co.jp/jackery-japan/n-p-400200-bkor-jk2/",
+  "gapIds": [
+    "power_capacity"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 96,
+  "fitStrategy": "power",
+  "powerSpec": {
+    "capacityWh": 512,
+    "ratedOutputW": 500,
+    "evidenceUrl": "https://www.jackery.jp/products/explorer-500-new"
+  },
+  "identityGroups": [
+    [
+      "Jackery",
+      "ジャクリ"
+    ],
+    [
+      "500 New",
+      "500New"
+    ],
+    [
+      "512Wh"
+    ],
+    [
+      "500W"
+    ]
+  ],
+  "forbiddenTerms": [
+    "Solar Generator",
+    "ソーラーパネルセット",
+    "1000",
+    "1500"
+  ],
+  "fitEvidenceUrl": "https://www.jackery.jp/products/explorer-500-new",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": []
+}
