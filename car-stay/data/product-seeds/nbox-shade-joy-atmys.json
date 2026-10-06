@@ -1,0 +1,61 @@
+{
+  "productId": "nbox-jf56-atmys-joy-shade",
+  "name": "N-BOX JF5/JF6 JOY対応 プライバシーサンシェード フルセット",
+  "brand": "アトマイズ",
+  "query": "N-BOX JF5 JF6 JOY サンシェード フルセット",
+  "itemUrl": "https://item.rakuten.co.jp/atmys/n-box-jf56-set/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 89,
+  "identityGroups": [
+    [
+      "N-BOX",
+      "NBOX",
+      "エヌボックス"
+    ],
+    [
+      "JF5"
+    ],
+    [
+      "JF6"
+    ],
+    [
+      "JOY",
+      "ジョイ"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "JF3",
+    "JF4"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/atmys/n-box-jf56-set/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "status": "verified",
+      "trims": [
+        "N-BOX",
+        "N-BOX Custom",
+        "N-BOX JOY"
+      ],
+      "exclusions": [
+        "N-BOX Slope"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "02s-c034-sa",
+    "N-BOX JF5 JF6 JOY サンシェード フルセット",
+    "N-BOX JF5/6 ジョイ フルセット"
+  ],
+  "rakutenItemCode": "atmys:02s-c034-sa"
+}
