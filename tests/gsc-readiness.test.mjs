@@ -27,7 +27,10 @@ test('CAR STAY has a dedicated sitemap discoverable from robots',()=>{
   const sitemap=read('car-stay/sitemap.xml');
   assert.match(robots,/Sitemap: https:\/\/stusaurus\.github\.io\/sotojitaku\/car-stay\/sitemap\.xml/);
   const urls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
-  assert.equal(urls.length,26);
+  const rootSitemap=read('sitemap.xml');
+  const rootCarStay=[...rootSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]).filter(url=>url.includes('/car-stay/'));
+  assert.deepEqual(urls,rootCarStay);
+  assert.ok(urls.length>=27);
   assert.ok(urls.every(url=>url.startsWith('https://stusaurus.github.io/sotojitaku/car-stay/')));
   assert.ok(urls.every(url=>!url.includes('?')));
 });
