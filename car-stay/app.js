@@ -17,6 +17,9 @@ const viewedProducts=new Set();
 const viewedGaps=new Set();
 const viewedFreeSolutions=new Set();
 const completedNoProduct=new Set();
+const viewedFunnelSteps=new Set();
+const completedFunnelSteps=new Set();
+const FUNNEL_STEP_KEYS=["vehicle","party","trip","environment","gear"];
 const $=s=>document.querySelector(s);
 const panel=$("#panel"),builder=$("#builder"),hero=$("#hero"),cabin=$("#cabin"),cabinMessage=$("#cabinMessage"),progressBar=$("#progressBar"),stepLabel=$("#stepLabel"),vehicleMini=$("#vehicleMini"),buildChips=$("#buildChips"),resetTop=$("#resetTop");
 
@@ -30,6 +33,29 @@ let state={
 function track(name,params={}){
   if(!analyticsEnabled||typeof window.gtag!=="function")return;
   window.gtag("event",name,{site_id:"sotojitaku_car_stay",operator_test:operatorTest?1:0,entry_source:entrySource,entry_key:entryKey,...params});
+}
+function funnelStepParams(step){
+  return {
+    funnel_name:"car_stay_builder",
+    step_number:step+1,
+    step_key:FUNNEL_STEP_KEYS[step]||"unknown",
+    vehicle_id:state.vehicleId||"",
+    party_count:state.people.length,
+    trip_style:state.tripStyle||"",
+    place_type:state.placeType||"",
+    seat_count:state.config.seatCount||0,
+    trim:state.config.trim||""
+  };
+}
+function trackStepView(step=state.step){
+  if(step<0||step>=FUNNEL_STEP_KEYS.length||viewedFunnelSteps.has(step))return;
+  viewedFunnelSteps.add(step);
+  track("carstay_step_view",funnelStepParams(step));
+}
+function trackStepComplete(step=state.step){
+  if(step<0||step>=FUNNEL_STEP_KEYS.length||completedFunnelSteps.has(step))return;
+  completedFunnelSteps.add(step);
+  track("carstay_step_complete",funnelStepParams(step));
 }
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
 function loadSaved(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY));if(x&&x.version===VERSION)state={...state,...x};}catch{}}
@@ -87,7 +113,7 @@ function showBuilder(){
   hero.hidden=true;builder.hidden=false;resetTop.hidden=false;window.scrollTo({top:0,behavior:"instant"});render();
 }
 function start(){
-  state.step=0;save();showBuilder();track("carstay_start");
+  state.step=0;save();track("carstay_start");showBuilder();
 }
 function reset(){
   localStorage.removeItem(STORAGE_KEY);location.href="./";
@@ -249,11 +275,13 @@ function render(){
   else if(state.step===3)renderEnvironment();
   else if(state.step===4)renderGear();
   else renderResult();
+  if(state.step<5)trackStepView(state.step);
 }
 function advance(){
   if(state.step===0&&(!state.vehicleId||!vehicleConfigComplete()))return;
   if(state.step===2&&!state.tripStyle)return;
   if(state.step===3&&!state.placeType)return;
+  trackStepComplete(state.step);
   if(state.step<4){state.step++;save();render();window.scrollTo({top:0,behavior:"smooth"});}
   else renderResult();
 }
