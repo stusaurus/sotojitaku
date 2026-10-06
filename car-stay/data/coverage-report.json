@@ -1,0 +1,855 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-06T07:20:51.309Z",
+  "catalogUpdatedAt": "2026-10-06T07:19:09.125376+00:00",
+  "liveProductCount": 10,
+  "summary": {
+    "configurations": 23,
+    "privacyCovered": 21,
+    "sleepCovered": 11,
+    "privacyCoveragePct": 91,
+    "sleepCoveragePct": 48,
+    "revenueHoles": 14
+  },
+  "byVehicle": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "configurations": 4,
+      "privacyCovered": 2,
+      "sleepCovered": 3,
+      "privacyCoveragePct": 50,
+      "sleepCoveragePct": 75
+    },
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "vehicle": "シエンタ",
+      "configurations": 2,
+      "privacyCovered": 2,
+      "sleepCovered": 1,
+      "privacyCoveragePct": 100,
+      "sleepCoveragePct": 50
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "configurations": 9,
+      "privacyCovered": 9,
+      "sleepCovered": 1,
+      "privacyCoveragePct": 100,
+      "sleepCoveragePct": 11
+    },
+    {
+      "vehicleId": "suzuki-hustler-mr52s-mr92s",
+      "vehicle": "ハスラー",
+      "configurations": 1,
+      "privacyCovered": 1,
+      "sleepCovered": 0,
+      "privacyCoveragePct": 100,
+      "sleepCoveragePct": 0
+    },
+    {
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "vehicle": "N-VAN",
+      "configurations": 1,
+      "privacyCovered": 1,
+      "sleepCovered": 0,
+      "privacyCoveragePct": 100,
+      "sleepCoveragePct": 0
+    },
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "vehicle": "エブリイ DA17V",
+      "configurations": 3,
+      "privacyCovered": 3,
+      "sleepCovered": 3,
+      "privacyCoveragePct": 100,
+      "sleepCoveragePct": 100
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "vehicle": "エブリイ DA18V",
+      "configurations": 3,
+      "privacyCovered": 3,
+      "sleepCovered": 3,
+      "privacyCoveragePct": 100,
+      "sleepCoveragePct": 100
+    }
+  ],
+  "holes": [
+    {
+      "priority": 1,
+      "type": "privacy_full",
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "config": {
+        "trim": "N-BOX JOY"
+      }
+    },
+    {
+      "priority": 1,
+      "type": "privacy_full",
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "config": {
+        "trim": "N-BOX Slope"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 5,
+        "trim": "AIR"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 5,
+        "trim": "AIR EX"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 6,
+        "trim": "AIR"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 6,
+        "trim": "AIR EX"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 6,
+        "trim": "CROSSTAR"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 7,
+        "trim": "AIR"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 7,
+        "trim": "AIR EX"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 7,
+        "trim": "CROSSTAR"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "config": {
+        "trim": "N-BOX Slope"
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "vehicle": "N-VAN",
+      "config": {}
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "toyota-sienta-10-15",
+      "vehicle": "シエンタ",
+      "config": {
+        "seatCount": 7
+      }
+    },
+    {
+      "priority": 2,
+      "type": "sleep",
+      "vehicleId": "suzuki-hustler-mr52s-mr92s",
+      "vehicle": "ハスラー",
+      "config": {}
+    }
+  ],
+  "configurations": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "config": {
+        "trim": "N-BOX"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-zenpo-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      }
+    },
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "config": {
+        "trim": "N-BOX Custom"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-zenpo-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      }
+    },
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "config": {
+        "trim": "N-BOX JOY"
+      },
+      "privacy": {
+        "count": 0,
+        "productIds": []
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "nbox-jf56-hobbyman-kurumat"
+        ]
+      }
+    },
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "vehicle": "N-BOX",
+      "config": {
+        "trim": "N-BOX Slope"
+      },
+      "privacy": {
+        "count": 0,
+        "productIds": []
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "vehicle": "シエンタ",
+      "config": {
+        "seatCount": 5
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "sienta10-hobbyman-cradp"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "sienta10-5-cartist-jr00310032"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "sienta10-5-cartist-jr00310032"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "sienta10-5-cartist-jr00310032"
+        ]
+      }
+    },
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "vehicle": "シエンタ",
+      "config": {
+        "seatCount": 7
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "sienta10-hobbyman-cradp"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 5,
+        "trim": "AIR"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 5,
+        "trim": "AIR EX"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 5,
+        "trim": "CROSSTAR"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "freed-gt5-cartist-jr00280029"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "freed-gt5-cartist-jr00280029"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "freed-gt5-cartist-jr00280029"
+        ]
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 6,
+        "trim": "AIR"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 6,
+        "trim": "AIR EX"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 6,
+        "trim": "CROSSTAR"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 7,
+        "trim": "AIR"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 7,
+        "trim": "AIR EX"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 7,
+        "trim": "CROSSTAR"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "suzuki-hustler-mr52s-mr92s",
+      "vehicle": "ハスラー",
+      "config": {},
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "hustler-mr52-92-hobbyman-full"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "vehicle": "N-VAN",
+      "config": {},
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "nvan-jj1-jj2-hobbyman-lit"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "vehicle": "エブリイ DA17V",
+      "config": {
+        "trim": "JOIN / JOIN Turbo"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-hobbyman-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "vehicle": "エブリイ DA17V",
+      "config": {
+        "trim": "PC"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-hobbyman-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da17v",
+      "vehicle": "エブリイ DA17V",
+      "config": {
+        "trim": "PA"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-hobbyman-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "vehicle": "エブリイ DA18V",
+      "config": {
+        "trim": "JOIN / JOIN Turbo"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-hobbyman-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "vehicle": "エブリイ DA18V",
+      "config": {
+        "trim": "PC"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-hobbyman-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      }
+    },
+    {
+      "vehicleId": "suzuki-every-da18v",
+      "vehicle": "エブリイ DA18V",
+      "config": {
+        "trim": "PA"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-hobbyman-shade"
+        ]
+      },
+      "sleep": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "floor": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "every-da17-da18-cartist-jr14971498"
+        ]
+      }
+    }
+  ]
+}
