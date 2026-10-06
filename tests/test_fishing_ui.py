@@ -76,6 +76,11 @@ class FishingUiTest(unittest.TestCase):
     def test_change_conditions_moves_draft_back_to_question_stage(self):
         self.assertIn('persistDraft("question");renderQuestion()', self.app)
 
+    def test_fishing_entry_ctas_are_attributed(self):
+        self.assertIn('fishing_entry_click', self.app)
+        self.assertIn('entry_location:"hero"', self.app)
+        self.assertIn('entry_location:"diagnosis_preview"', self.app)
+
     def test_secondary_entry_and_result_resume_match_camp_flow(self):
         self.assertIn('id="previewStartBtn"', self.index)
         self.assertIn('previewStartBtn?.addEventListener("click",start)', self.app)
