@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T12:27:27.469Z",
-  "catalogUpdatedAt": "2026-10-06T12:27:27.401542+00:00",
-  "liveProductCount": 31,
+  "generatedAt": "2026-10-06T12:40:28.259Z",
+  "catalogUpdatedAt": "2026-10-06T12:36:20.757568+00:00",
+  "liveProductCount": 30,
   "summary": {
     "configurations": 18,
     "privacyCovered": 18,
@@ -443,26 +443,23 @@
         ]
       },
       "sleep": {
-        "count": 3,
-        "productIds": [
-          "hustler-mr52-92-levolva-lvmr13",
-          "hustler-mr52-92-atmys-kurumat3",
-          "hustler-mr52-92-hobbyman-kurumat"
-        ]
-      },
-      "floor": {
-        "count": 3,
-        "productIds": [
-          "hustler-mr52-92-levolva-lvmr13",
-          "hustler-mr52-92-atmys-kurumat3",
-          "hustler-mr52-92-hobbyman-kurumat"
-        ]
-      },
-      "surface": {
         "count": 2,
         "productIds": [
           "hustler-mr52-92-levolva-lvmr13",
-          "hustler-mr52-92-hobbyman-kurumat"
+          "hustler-mr52-92-atmys-kurumat3"
+        ]
+      },
+      "floor": {
+        "count": 2,
+        "productIds": [
+          "hustler-mr52-92-levolva-lvmr13",
+          "hustler-mr52-92-atmys-kurumat3"
+        ]
+      },
+      "surface": {
+        "count": 1,
+        "productIds": [
+          "hustler-mr52-92-levolva-lvmr13"
         ]
       }
     },
