@@ -302,7 +302,13 @@ loadData().then(()=>{
     }
     const valid=validVehicleConfigs(v);
     state.config=valid&&Object.keys(candidate).length&&!valid.some(vc=>Object.entries(candidate).every(([key,value])=>configValueMatches(key,value,vc[key])))?{}:candidate;
-    if(Number.isInteger(presetParty)&&presetParty>=1&&presetParty<=3){\n      const previous=state.people||[];\n      state.people=Array.from({length:presetParty},(_,i)=>({type:i<2?"adult":"child",height:Number(previous[i]?.height)||(i<2?(i===0?171:160):120)}));\n    }\n    state.step=0;\n    save();\n    track("seo_builder_entry",{vehicle_id:presetVehicle,party_count:state.people.length,seat_count:state.config.seatCount||0,trim:state.config.trim||""});
+    if(Number.isInteger(presetParty)&&presetParty>=1&&presetParty<=3){
+      const previous=state.people||[];
+      state.people=Array.from({length:presetParty},(_,i)=>({type:i<2?"adult":"child",height:Number(previous[i]?.height)||(i<2?(i===0?171:160):120)}));
+    }
+    state.step=0;
+    save();
+    track("seo_builder_entry",{vehicle_id:presetVehicle,party_count:state.people.length,seat_count:state.config.seatCount||0,trim:state.config.trim||""});
     showBuilder();
   }else if(state.vehicleId||state.step>0){
     showBuilder();
