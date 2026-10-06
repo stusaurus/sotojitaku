@@ -82,6 +82,13 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("recommendation_role:a.dataset.role", self.app)
         self.assertIn("budget_tier:answers.budget", self.app)
 
+    def test_priority_analytics_distinguish_required_and_optional(self):
+        self.assertIn('data-priority="${optional?"optional":"required"}"', self.app)
+        self.assertIn("purchase_priority:priority", self.app)
+        self.assertIn("purchase_priority:a.dataset.priority", self.app)
+        self.assertIn("basket_position:position", self.app)
+        self.assertIn("optional_product_count:basket.optionalCount", self.app)
+
     def test_required_and_optional_products_are_visually_separated(self):
         self.assertIn("productCoversRequiredGap", self.app)
         self.assertIn("まず揃える", self.app)
