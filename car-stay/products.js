@@ -5,7 +5,7 @@ export function recommendations(products,context){
   for(const gap of context.gaps||[]){
     byGap[gap.id]=(products||[])
       .filter(p=>{
-        if(!productEligible(p,{vehicleId:context.vehicleId,config:context.config,gapId:gap.id,now:context.now??Date.now(),measurements:context.measurements||{},sleep:context.sleep||{}}))return false;
+        if(!productEligible(p,{vehicleId:context.vehicleId,config:context.config,gapId:gap.id,now:context.now??Date.now(),measurements:context.measurements||{},sleep:context.sleep||{},powerNeed:gap}))return false;
         const role=p.recommendationRole||"beginner_default";
         if(role==="frequent_user_upgrade"&&!context.allowUpgrades)return false;
         return ["beginner_default","beginner_alternative","frequent_user_upgrade"].includes(role);
@@ -16,6 +16,11 @@ export function recommendations(products,context){
         return {...p,recommendedQty:plan?.quantity||1,measurementPlan:plan};
       })
       .sort((a,b)=>{
+        if(gap.id==="power_capacity"){
+          const capDiff=(Number(a.powerSpec?.capacityWh)||Infinity)-(Number(b.powerSpec?.capacityWh)||Infinity);
+          if(capDiff)return capDiff;
+          return (a.price||Infinity)-(b.price||Infinity);
+        }
         const fitRank=p=>(p.fitStrategy==="measurement"?1:2);
         const fitDiff=fitRank(b)-fitRank(a);
         if(fitDiff)return fitDiff;
