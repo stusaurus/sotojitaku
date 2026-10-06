@@ -75,6 +75,12 @@ const holes=rows.flatMap(r=>{
   return out;
 }).sort((a,b)=>a.priority-b.priority||a.vehicle.localeCompare(b.vehicle,"ja"));
 
+const privacyCoveredCount=rows.filter(r=>r.privacy.count>0).length;
+const sleepCoveredCount=rows.filter(r=>r.sleep.count>0).length;
+const measurementFallbackHoleCount=holes.filter(h=>h.measurementFallback).length;
+const unmonetizedHoleCount=holes.filter(h=>!h.measurementFallback).length;
+const monetizableConfigCount=rows.length-unmonetizedHoleCount;
+
 const report={
   version:1,
   generatedAt:new Date().toISOString(),
@@ -82,14 +88,16 @@ const report={
   liveProductCount:products.length,
   summary:{
     configurations:rows.length,
-    privacyCovered:rows.filter(r=>r.privacy.count>0).length,
-    sleepCovered:rows.filter(r=>r.sleep.count>0).length,
-    privacyCoveragePct:Math.round(rows.filter(r=>r.privacy.count>0).length/rows.length*100),
-    sleepCoveragePct:Math.round(rows.filter(r=>r.sleep.count>0).length/rows.length*100),
+    privacyCovered:privacyCoveredCount,
+    sleepCovered:sleepCoveredCount,
+    privacyCoveragePct:Math.round(privacyCoveredCount/rows.length*100),
+    sleepCoveragePct:Math.round(sleepCoveredCount/rows.length*100),
+    monetizableConfigurations:monetizableConfigCount,
+    monetizableCoveragePct:Math.round(monetizableConfigCount/rows.length*100),
     revenueHoles:holes.length,
     measurementFallbackProducts:measuredFallbacks.length,
-    measurementFallbackHoles:holes.filter(h=>h.measurementFallback).length,
-    unmonetizedHoles:holes.filter(h=>!h.measurementFallback).length
+    measurementFallbackHoles:measurementFallbackHoleCount,
+    unmonetizedHoles:unmonetizedHoleCount
   },
   byVehicle,
   holes,
