@@ -226,6 +226,51 @@ test("exact vehicle-fit products outrank measured generic alternatives",()=>{
   assert.equal(out.sleep_surface[1].recommendedQty,2);
 });
 
+
+test("electric blanket power need uses entered watts and hours with 20 percent headroom",()=>{
+  const r=evaluate({...base,devices:["electric_blanket"],powerUse:{blanketW:50,hours:8}},nbox,DEFAULT_RULES);
+  const gap=r.gaps.find(g=>g.id==="power_capacity");
+  assert.ok(gap);
+  assert.equal(gap.requiredWh,500);
+  assert.equal(gap.requiredOutputW,50);
+  assert.equal(r.power.state,"needs_power");
+});
+
+test("sufficient owned portable power prevents a purchase gap",()=>{
+  const gear=[...base.gear,{gearId:"portable_power",capabilities:["portable_power"]}];
+  const r=evaluate({...base,gear,devices:["electric_blanket"],powerUse:{blanketW:50,hours:8,ownedWh:512,ownedOutputW:500}},nbox,DEFAULT_RULES);
+  assert.equal(r.gaps.some(g=>g.id==="power_capacity"),false);
+  assert.equal(r.power.state,"owned_sufficient");
+});
+
+test("power products only pass when both capacity and output meet the calculated need",()=>{
+  const now=Date.parse("2026-10-06T12:00:00Z");
+  const make=(id,capacityWh,ratedOutputW)=>({
+    productId:id,gapIds:["power_capacity"],fitStrategy:"power",powerSpec:{capacityWh,ratedOutputW},
+    vehicleFit:[],verifiedAt:"2026-10-06T10:00:00Z",audit:{status:"verified_live"},price:30000,
+    image:"https://example.com/"+id+".jpg",itemUrl:"https://item.rakuten.co.jp/shop/"+id+"/",
+    affiliateUrl:"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+encodeURIComponent("https://item.rakuten.co.jp/shop/"+id+"/")
+  });
+  assert.equal(productEligible(make("small",288,300),{vehicleId:nbox.vehicleId,gapId:"power_capacity",now,powerNeed:{requiredWh:500,requiredOutputW:50}}),false);
+  assert.equal(productEligible(make("fit",512,500),{vehicleId:nbox.vehicleId,gapId:"power_capacity",now,powerNeed:{requiredWh:500,requiredOutputW:50}}),true);
+});
+
+test("power recommendations prefer the smallest sufficient capacity",()=>{
+  const now=Date.parse("2026-10-06T12:00:00Z");
+  const make=(id,capacityWh,price)=>({
+    productId:id,gapIds:["power_capacity"],fitStrategy:"power",powerSpec:{capacityWh,ratedOutputW:600},
+    vehicleFit:[],verifiedAt:"2026-10-06T10:00:00Z",audit:{status:"verified_live"},price,
+    image:"https://example.com/"+id+".jpg",itemUrl:"https://item.rakuten.co.jp/shop/"+id+"/",
+    affiliateUrl:"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+encodeURIComponent("https://item.rakuten.co.jp/shop/"+id+"/"),
+    recommendationRole:"beginner_default",score:90
+  });
+  const out=recommendations([make("large",700,20000),make("right",512,40000)],{
+    gaps:[{id:"power_capacity",requiredWh:500,requiredOutputW:50}],vehicleId:nbox.vehicleId,config:{},
+    status:"ALMOST_READY",now
+  });
+  assert.equal(out.power_capacity[0].productId,"right");
+});
+
 test("live CAR STAY catalog only references supported vehicle configurations",()=>{
   const catalog=JSON.parse(fs.readFileSync(new URL("../car-stay/data/audited-products.json",import.meta.url),"utf8"));
   const vehicleData=JSON.parse(fs.readFileSync(new URL("../car-stay/data/vehicles.json",import.meta.url),"utf8"));
@@ -238,6 +283,9 @@ test("live CAR STAY catalog only references supported vehicle configurations",()
     if(product.fitStrategy==="measurement"){
       assert.deepEqual(product.vehicleFit||[],[],product.productId+" measurement products must not claim vehicle fit");
       assert.ok(Number(product.measurementFit?.unitLengthMm)>0&&Number(product.measurementFit?.unitWidthMm)>0,product.productId+" invalid measurement fit");
+    }else if(product.fitStrategy==="power"){
+      assert.deepEqual(product.vehicleFit||[],[],product.productId+" power products must not claim vehicle fit");
+      assert.ok(Number(product.powerSpec?.capacityWh)>0&&Number(product.powerSpec?.ratedOutputW)>0,product.productId+" invalid power spec");
     }else{
       for(const fit of product.vehicleFit||[]){
         const vehicle=vehicleMap.get(fit.vehicleId);assert.ok(vehicle,product.productId+" unknown vehicle "+fit.vehicleId);
@@ -262,6 +310,11 @@ test("every live CAR STAY catalog item can surface for at least one declared fit
       const sleep={targetWidth:measurements.widthMm};
       for(const gapId of product.gapIds||[]){
         if(productEligible(product,{vehicleId:"measurement",config:{},gapId,now:Date.parse(product.verifiedAt)+3600000,measurements,sleep})){surfaced=true;break;}
+      }
+    }else if(product.fitStrategy==="power"){
+      const spec=product.powerSpec||{};
+      for(const gapId of product.gapIds||[]){
+        if(productEligible(product,{vehicleId:"power",config:{},gapId,now:Date.parse(product.verifiedAt)+3600000,powerNeed:{requiredWh:Math.max(1,Number(spec.capacityWh)-1),requiredOutputW:Math.max(1,Number(spec.ratedOutputW)-1)}})){surfaced=true;break;}
       }
     }else{
       for(const fit of product.vehicleFit||[]){
