@@ -23,3 +23,5 @@
 .optional-products .product-list{padding:0 10px 10px}.product-card-optional{background:#faf7ef}
 .purchase-complete{padding:16px 17px;border:1px solid #bed1c8;background:#eaf2ed;border-radius:16px;color:#315c53}
 .purchase-complete strong{display:block;font-size:13px}.purchase-complete p{margin:4px 0 0;font-size:10px;line-height:1.65;color:#61756f}
+.purchase-complete-attention{border-color:#dec6a8;background:#fff5e6;color:#6d563e}
+.purchase-complete-attention p{color:#776a5b}
