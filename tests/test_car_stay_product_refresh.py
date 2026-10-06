@@ -850,5 +850,51 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.exact_page_details=original
 
+    def test_worker_item_code_variants_keep_rakuten_code_then_raw_seller_code(self):
+        seed={"rakutenItemCode":"hobbyman:02k-a005-ca"}
+        self.assertEqual(
+            refresh.worker_item_code_variants(seed),
+            ["hobbyman:02k-a005-ca","02k-a005-ca"]
+        )
+
+    def test_worker_exact_lookup_retries_raw_seller_code_after_prefixed_code_miss(self):
+        import urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/n-van-kurumat/",
+            "query":"N-VAN JJ1 JJ2 車中泊ベッド",
+            "searchQueries":["N-VAN JJ1/2系 車中泊ベッド くるマット"],
+            "rakutenItemCode":"hobbyman:02k-a005-ca",
+            "identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["車中泊"]],
+            "forbiddenTerms":[]
+        }
+        seen=[]
+        original=refresh.fetch_json_quick
+        try:
+            def fake(url,headers=None,timeout=4):
+                params=urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+                code=params.get("itemCode",[""])[0]
+                seen.append(code)
+                if code=="hobbyman:02k-a005-ca":
+                    return {"found":False}
+                if code=="02k-a005-ca":
+                    return {
+                        "found":True,
+                        "name":"N-VAN JJ1 JJ2 車中泊ベッド マット",
+                        "price":19800,
+                        "item_url":seed["itemUrl"],
+                        "affiliate_url":"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(seed["itemUrl"],safe=""),
+                        "image":"https://example.com/nvan.jpg",
+                        "item_code":"02k-a005-ca"
+                    }
+                return {"found":False}
+            refresh.fetch_json_quick=fake
+            candidate=refresh.worker_exact_item_candidate(seed)
+            self.assertEqual(seen,["hobbyman:02k-a005-ca","02k-a005-ca"])
+            self.assertIsNotNone(candidate)
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+            self.assertEqual(candidate["itemCode"],"02k-a005-ca")
+        finally:
+            refresh.fetch_json_quick=original
+
 if __name__=="__main__":
     unittest.main()
