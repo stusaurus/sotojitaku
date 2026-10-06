@@ -921,5 +921,20 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_text_cached=original
 
+    def test_load_seeds_skips_disabled_records(self):
+        import tempfile, json
+        from pathlib import Path
+        old_dir=refresh.SEED_DIR
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                root=Path(td)
+                (root/"a.json").write_text(json.dumps({"productId":"a","enabled":False}))
+                (root/"b.json").write_text(json.dumps({"productId":"b"}))
+                refresh.SEED_DIR=root
+                seeds=refresh.load_seeds()
+                self.assertEqual([s["productId"] for s in seeds],["b"])
+        finally:
+            refresh.SEED_DIR=old_dir
+
 if __name__=="__main__":
     unittest.main()

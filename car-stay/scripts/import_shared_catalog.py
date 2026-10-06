@@ -79,6 +79,8 @@ def load_seed_map(seed_dir=SEED_DIR):
     result={}
     for path in sorted(Path(seed_dir).glob("*.json")):
         seed=json.loads(path.read_text())
+        if seed.get("enabled",True) is False:
+            continue
         pid=seed.get("productId")
         if pid:
             result[pid]=seed

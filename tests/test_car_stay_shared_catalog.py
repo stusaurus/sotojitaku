@@ -99,5 +99,13 @@ class CarStaySharedCatalogTests(unittest.TestCase):
         p["measurementFit"]["unitWidthMm"]=600
         self.assertFalse(shared.valid_product(p,seed,now))
 
+    def test_shared_seed_map_skips_disabled_records(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            (root/"a.json").write_text(json.dumps({"productId":"a","enabled":False}))
+            (root/"b.json").write_text(json.dumps({"productId":"b"}))
+            seed_map=shared.load_seed_map(root)
+            self.assertEqual(set(seed_map),{"b"})
+
 if __name__=="__main__":
     unittest.main()
