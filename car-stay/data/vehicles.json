@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-05",
+  "checkedAt": "2026-10-06",
   "vehicles": [
     {
       "vehicleId": "honda-nbox-jf5-jf6",
@@ -73,7 +73,34 @@
           "AIR",
           "AIR EX",
           "CROSSTAR"
-        ]
+        ],
+        "validConfigs": [
+          {
+            "seatCount": 6,
+            "trim": "AIR"
+          },
+          {
+            "seatCount": 6,
+            "trim": "AIR EX"
+          },
+          {
+            "seatCount": 7,
+            "trim": "AIR EX"
+          },
+          {
+            "seatCount": 5,
+            "trim": "CROSSTAR"
+          },
+          {
+            "seatCount": 6,
+            "trim": "CROSSTAR"
+          }
+        ],
+        "source": {
+          "url": "https://www.honda.co.jp/FREED/common/pdf/freed_spec_list.pdf",
+          "checkedAt": "2026-10-06",
+          "note": "Honda主要諸元に基づく通常仕様。AIR=6人、AIR EX=6/7人、CROSSTAR=5/6人。スロープ等福祉仕様は別扱い。"
+        }
       },
       "geometry": {
         "usableLengthMm": null,
