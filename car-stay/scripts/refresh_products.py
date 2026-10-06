@@ -151,34 +151,51 @@ def seed_queries(seed):
     return out
 
 def worker_exact_item_candidate(seed):
-    """Fast optional exact-URL probe. Never let Worker latency stall the whole audit."""
+    """Fast exact-URL probe using every manually curated query.
+
+    Item codes are not consistently resolvable across Rakuten shops, but the Worker can
+    scope a keyword search to the exact shop/item URL. Trying all seed queries lets us
+    use retailer product numbers and URL slugs without weakening the exact-URL gate.
+    """
     queries=seed_queries(seed)
-    search_query=queries[0] if queries else seed.get('query','')
-    lookup_params={'url':seed['itemUrl'],'q':search_query}
+    slug=rakuten_item_slug(seed.get('itemUrl',''))
+    if slug and slug not in queries:
+        queries.append(slug)
     explicit_code=str(seed.get('rakutenItemCode') or '').strip()
-    if explicit_code:
-        lookup_params['itemCode']=explicit_code
-    payload=fetch_json_quick(
-        ITEM_LOOKUP+'?'+urllib.parse.urlencode(lookup_params),
-        timeout=4
-    )
-    if not payload or payload.get('found') is not True:
-        return None
-    item_url=canonical_item_url(payload.get('item_url',''))
-    if item_url!=canonical_item_url(seed['itemUrl']):
-        return None
-    name=str(payload.get('name') or '')
-    if not identity_ok(name,seed):
-        return None
-    return {
-        'name':name,
-        'price':payload.get('price'),
-        'url':payload.get('affiliate_url',''),
-        'itemUrl':item_url,
-        'image':payload.get('image',''),
-        'itemCode':payload.get('item_code',''),
-        'source':'worker_exact_url'
-    }
+    code_tail=explicit_code.split(':',1)[1] if ':' in explicit_code else explicit_code
+    if code_tail and code_tail not in queries:
+        queries.append(code_tail)
+    if not queries:
+        queries=[seed.get('query','')]
+
+    for index,search_query in enumerate(queries[:6]):
+        lookup_params={'url':seed['itemUrl'],'q':search_query}
+        # Try the explicit itemCode on the first request. If a shop does not expose that
+        # code through Rakuten API, later keyword attempts can still find the exact URL.
+        if explicit_code and index==0:
+            lookup_params['itemCode']=explicit_code
+        payload=fetch_json_quick(
+            ITEM_LOOKUP+'?'+urllib.parse.urlencode(lookup_params),
+            timeout=5
+        )
+        if not payload or payload.get('found') is not True:
+            continue
+        item_url=canonical_item_url(payload.get('item_url',''))
+        if item_url!=canonical_item_url(seed['itemUrl']):
+            continue
+        name=str(payload.get('name') or '')
+        if not identity_ok(name,seed):
+            continue
+        return {
+            'name':name,
+            'price':payload.get('price'),
+            'url':payload.get('affiliate_url',''),
+            'itemUrl':item_url,
+            'image':payload.get('image',''),
+            'itemCode':payload.get('item_code',''),
+            'source':'worker_exact_url_multiquery'
+        }
+    return None
 
 def worker_candidate(seed):
     """Best-effort Worker fallback.
