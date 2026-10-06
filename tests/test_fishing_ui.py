@@ -16,6 +16,11 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn('https://stusaurus.github.io/sotojitaku/fishing/', self.index)
         self.assertIn('G-GFVSZ8YDQ5', self.index)
 
+    def test_approved_generated_hero_is_used(self):
+        self.assertIn('fishing-hero-generated.webp', self.index)
+        self.assertIn('class="hero-photo"', self.index)
+        self.assertNotIn('class="hero-scene"', self.index)
+
     def test_mobile_assets_are_cache_busted(self):
         self.assertRegex(self.index, r'href="\./style\.css\?v=[^"]+"')
         self.assertRegex(self.index, r'src="\./app\.js\?v=[^"]+"')
