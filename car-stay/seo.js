@@ -231,7 +231,9 @@ async function renderVerifiedProducts(){
       }
       const link=event.target.closest("[data-seo-product]");
       if(!link||!enabled||!window.gtag)return;
-      window.gtag("event","seo_affiliate_click",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:link.dataset.seoProduct,price:Number(link.dataset.price)||0,recommendation_role:link.dataset.role||"",seat_count:selectedConfig?.seatCount||0,trim:selectedConfig?.trim||""});
+      const affiliateParams={site_id:"sotojitaku_car_stay_seo",conversion_source:"car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:link.dataset.seoProduct,price:Number(link.dataset.price)||0,recommendation_role:link.dataset.role||"",seat_count:selectedConfig?.seatCount||0,trim:selectedConfig?.trim||""};
+      window.gtag("event","seo_affiliate_click",affiliateParams);
+      window.gtag("event","affiliate_click",affiliateParams);
     });
     paint();
   }catch{}
