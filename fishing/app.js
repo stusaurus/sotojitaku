@@ -141,15 +141,51 @@ async function load(){
   questionsData=q;plansData=p;gearData=g;howtoData=h;catalog=c;
 }
 
+function readDraft(){
+  try{
+    const raw=localStorage.getItem(DRAFT_KEY);
+    if(!raw)return null;
+    const draft=JSON.parse(raw);
+    if(!draft||draft.version!==1||!draft.answers||!Number.isInteger(draft.index))return null;
+    return draft;
+  }catch{return null}
+}
+function persistDraft(){
+  try{
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({version:1,index,answers,at:new Date().toISOString()}));
+  }catch{}
+  refreshSavedButton();
+}
+function clearDraft(){
+  try{localStorage.removeItem(DRAFT_KEY)}catch{}
+}
 function start(){
   clearSharedPlanHash();
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
+  persistDraft();
   track("fishing_diagnosis_start");
   renderQuestion();
   scrollTo({top:0,behavior:"smooth"});
 }
-function reset(){clearSharedPlanHash();hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;index=0;answers={owned:[]};localRulesConfirmed=false;scrollTo({top:0,behavior:"smooth"})}
+function resumeDraft(){
+  const draft=readDraft();
+  if(!draft)return openSavedPlan();
+  answers={...draft.answers,owned:[...(draft.answers.owned||[])]};
+  index=Math.max(0,Math.min(draft.index,questionsData.questions.length-1));
+  hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
+  localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
+  track("fishing_diagnosis_resume",{question_index:index+1});
+  renderQuestion();
+  scrollTo({top:0,behavior:"smooth"});
+}
+function reset(){
+  clearSharedPlanHash();clearDraft();
+  hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;
+  index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";
+  refreshSavedButton();
+  scrollTo({top:0,behavior:"smooth"});
+}
 
 function optionLabel(qid,value){
   const q=questionsData.questions.find(x=>x.id===qid);
