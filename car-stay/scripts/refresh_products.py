@@ -250,11 +250,8 @@ def _meta_content(page,key):
             return match.group(1).strip()
     return ''
 
-def exact_page_info(seed):
-    """Read the exact manually audited Rakuten URL and return live sale metadata.
-    Returns None when Rakuten serves an interstitial/challenge without itemInfoSku.
-    Explicit unavailable/wrong-listing evidence raises and fails closed.
-    """
+def exact_page_details(seed):
+    """Read exact Rakuten sales metadata plus display fields for the same-shop fallback."""
     try:
         page=fetch_text_cached(seed['itemUrl'])
     except Exception:
@@ -281,6 +278,13 @@ def exact_page_info(seed):
     title=_meta_content(page,'og:title') or seed.get('name','')
     return {'itemId':item_id,'price':int(live),'image':image,'title':title}
 
+def exact_page_info(seed):
+    """Backward-compatible exact sale metadata used by the existing API audit path."""
+    details=exact_page_details(seed)
+    if not details:
+        return None
+    return {'itemId':details['itemId'],'price':details['price']}
+
 def rebuild_same_shop_affiliate(template_url,item_url,item_id):
     """Reuse only a previously verified same-shop Rakuten affiliate tracking URL."""
     try:
@@ -303,7 +307,7 @@ def same_shop_affiliate_template_candidate(seed,previous_products):
     Requires a fresh, already verified affiliate link from the same Rakuten shop and
     live exact-page price/identity metadata for the new product.
     """
-    page_info=exact_page_info(seed)
+    page_info=exact_page_details(seed)
     if not page_info:
         return None
     shop=rakuten_shop(seed['itemUrl'])
