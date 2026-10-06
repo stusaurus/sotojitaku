@@ -1,25 +1,25 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T08:17:33.105Z",
-  "catalogUpdatedAt": "2026-10-06T08:16:21.323459+00:00",
+  "generatedAt": "2026-10-06T08:21:29.402Z",
+  "catalogUpdatedAt": "2026-10-06T08:19:48.887225+00:00",
   "liveProductCount": 10,
   "summary": {
-    "configurations": 19,
+    "configurations": 18,
     "privacyCovered": 17,
     "sleepCovered": 11,
-    "privacyCoveragePct": 89,
-    "sleepCoveragePct": 58,
-    "revenueHoles": 10
+    "privacyCoveragePct": 94,
+    "sleepCoveragePct": 61,
+    "revenueHoles": 8
   },
   "byVehicle": [
     {
       "vehicleId": "honda-nbox-jf5-jf6",
       "vehicle": "N-BOX",
-      "configurations": 4,
+      "configurations": 3,
       "privacyCovered": 2,
       "sleepCovered": 3,
-      "privacyCoveragePct": 50,
-      "sleepCoveragePct": 75
+      "privacyCoveragePct": 67,
+      "sleepCoveragePct": 100
     },
     {
       "vehicleId": "toyota-sienta-10-15",
@@ -87,15 +87,6 @@
       }
     },
     {
-      "priority": 1,
-      "type": "privacy_full",
-      "vehicleId": "honda-nbox-jf5-jf6",
-      "vehicle": "N-BOX",
-      "config": {
-        "trim": "N-BOX Slope"
-      }
-    },
-    {
       "priority": 2,
       "type": "sleep",
       "vehicleId": "honda-freed-gt",
@@ -133,15 +124,6 @@
       "config": {
         "seatCount": 6,
         "trim": "CROSSTAR"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-nbox-jf5-jf6",
-      "vehicle": "N-BOX",
-      "config": {
-        "trim": "N-BOX Slope"
       }
     },
     {
@@ -258,29 +240,6 @@
         "productIds": [
           "nbox-jf56-hobbyman-kurumat"
         ]
-      }
-    },
-    {
-      "vehicleId": "honda-nbox-jf5-jf6",
-      "vehicle": "N-BOX",
-      "config": {
-        "trim": "N-BOX Slope"
-      },
-      "privacy": {
-        "count": 0,
-        "productIds": []
-      },
-      "sleep": {
-        "count": 0,
-        "productIds": []
-      },
-      "floor": {
-        "count": 0,
-        "productIds": []
-      },
-      "surface": {
-        "count": 0,
-        "productIds": []
       }
     },
     {
