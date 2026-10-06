@@ -34,6 +34,11 @@ class FishingGuideTest(unittest.TestCase):
         self.assertIn("fishing_guide_cta",self.analytics)
         self.assertIn("conversion_source",self.analytics)
 
+    def test_guide_cta_does_not_count_navigation_links(self):
+        self.assertIn('link.classList.contains("button")',self.analytics)
+        self.assertNotIn('href=="../"',self.analytics)
+        self.assertNotIn('href=="../../"',self.analytics)
+
     def test_budget_examples_use_live_verified_catalog_and_product_engine(self):
         self.assertIn('../../data/audited-products.json',self.budget_js)
         self.assertIn('buildProductRecommendations',self.budget_js)
