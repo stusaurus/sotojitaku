@@ -59,9 +59,9 @@ class CarStayProductRefreshTests(unittest.TestCase):
         old_item="https://item.rakuten.co.jp/hobbyman/old/"
         affiliate="https://hb.afl.rakuten.co.jp/hgc/g00test.abc/?pc="+urllib.parse.quote(old_item,safe="")
         previous={"old":{"itemUrl":old_item,"affiliateUrl":affiliate,"verifiedAt":"2026-10-06T00:00:00Z","audit":{"status":"verified_live"}}}
-        original=refresh.exact_page_info
+        original=refresh.exact_page_details
         try:
-            refresh.exact_page_info=lambda _:{"itemId":999,"price":12000,"image":"https://example.com/x.jpg","title":seed["name"]}
+            refresh.exact_page_details=lambda _:{"itemId":999,"price":12000,"image":"https://example.com/x.jpg","title":seed["name"]}
             candidate=refresh.same_shop_affiliate_template_candidate(seed,previous)
             self.assertEqual(candidate["source"],"same_shop_affiliate_template")
             self.assertEqual(candidate["price"],12000)
@@ -69,7 +69,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             other={"old":{"itemUrl":"https://item.rakuten.co.jp/other/old/","affiliateUrl":affiliate,"verifiedAt":"2026-10-06T00:00:00Z","audit":{"status":"verified_live"}}}
             self.assertIsNone(refresh.same_shop_affiliate_template_candidate(seed,other))
         finally:
-            refresh.exact_page_info=original
+            refresh.exact_page_details=original
 
     def test_same_shop_identity_listing_is_allowed_but_other_shop_is_not(self):
         seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/old-slug/","identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["サンシェード"]],"forbiddenTerms":[]}
