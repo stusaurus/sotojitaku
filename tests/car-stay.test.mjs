@@ -281,9 +281,19 @@ test("every live CAR STAY catalog item can surface for at least one declared fit
 
 test("CHANGE_PLAN suppresses every live CAR STAY catalog product",()=>{
   const catalog=JSON.parse(fs.readFileSync(new URL("../car-stay/data/audited-products.json",import.meta.url),"utf8"));
-  const sample=(catalog.products||[])[0];if(!sample)return;
-  const fit=sample.vehicleFit[0];
-  const out=recommendations([sample],{gaps:(sample.gapIds||[]).map(id=>({id})),vehicleId:fit.vehicleId,config:{seatCount:fit.seatCounts?.[0],trim:fit.trims?.[0]},status:"CHANGE_PLAN",now:Date.parse(sample.verifiedAt)+3600000});
+  const sample=(catalog.products||[]).find(p=>p.vehicleFit?.length)||(catalog.products||[])[0];if(!sample)return;
+  const fit=sample.vehicleFit?.[0];
+  const mf=sample.measurementFit||{};
+  const measurements=sample.fitStrategy==="measurement"?{lengthMm:Number(mf.unitLengthMm)||0,widthMm:(Number(mf.unitWidthMm)||0)*Math.max(1,Math.min(Number(mf.maxUnits)||1,2))}:{};
+  const out=recommendations([sample],{
+    gaps:(sample.gapIds||[]).map(id=>({id})),
+    vehicleId:fit?.vehicleId||"measurement",
+    config:{seatCount:fit?.seatCounts?.[0],trim:fit?.trims?.[0]},
+    measurements,
+    sleep:{targetWidth:measurements.widthMm||0},
+    status:"CHANGE_PLAN",
+    now:Date.parse(sample.verifiedAt)+3600000
+  });
   assert.deepEqual(out,{});
 });
 
