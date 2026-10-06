@@ -1,0 +1,62 @@
+{
+  "productId": "nbox-jf56-hobbyman-joy-shade",
+  "name": "N-BOX JF5/JF6 JOY対応 プライバシーサンシェード フルセット",
+  "brand": "趣味職人",
+  "query": "02s-c034-sa",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/n-box-jf56-set/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 96,
+  "identityGroups": [
+    [
+      "N-BOX",
+      "NBOX"
+    ],
+    [
+      "JF5"
+    ],
+    [
+      "JF6"
+    ],
+    [
+      "JOY",
+      "ジョイ"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "JF1",
+    "JF2",
+    "JF3",
+    "JF4"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/n-box-jf56-set/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nbox-jf5-jf6",
+      "status": "verified",
+      "trims": [
+        "N-BOX",
+        "N-BOX Custom",
+        "N-BOX JOY"
+      ],
+      "exclusions": [
+        "N-BOX Slope"
+      ]
+    }
+  ],
+  "searchQueries": [
+    "02s-c034-sa",
+    "n-box-jf56-set",
+    "N-BOX JF5 JF6 JOY サンシェード フルセット"
+  ],
+  "rakutenItemCode": "hobbyman:02s-c034-sa"
+}
