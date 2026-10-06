@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T12:19:28.160Z",
-  "catalogUpdatedAt": "2026-10-06T12:19:28.075776+00:00",
+  "generatedAt": "2026-10-06T12:27:27.469Z",
+  "catalogUpdatedAt": "2026-10-06T12:27:27.401542+00:00",
   "liveProductCount": 31,
   "summary": {
     "configurations": 18,
@@ -9,6 +9,8 @@
     "sleepCovered": 17,
     "privacyCoveragePct": 100,
     "sleepCoveragePct": 94,
+    "monetizableConfigurations": 17,
+    "monetizableCoveragePct": 94,
     "revenueHoles": 1,
     "measurementFallbackProducts": 0,
     "measurementFallbackHoles": 0,
