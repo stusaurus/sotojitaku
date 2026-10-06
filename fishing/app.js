@@ -4,6 +4,8 @@ import {buildProductRecommendations,applyProductCoverage} from "./products.js";
 const $=s=>document.querySelector(s);
 const hero=$("#hero"),planner=$("#planner"),panel=$("#panel"),progress=$("#progressBar");
 const resetBtn=$("#resetBtn"),savedBtn=$("#savedBtn"),stepText=$("#stepText"),miniPlan=$("#miniPlan"),visualMessage=$("#visualMessage"),visualTags=$("#visualTags");
+const progressText=$("#progressText"),progressLine=$("#progressLine");
+const DRAFT_KEY="sotojitakuFishingDraft";
 
 let questionsData,plansData,gearData,howtoData,catalog;
 let index=0;
@@ -139,15 +141,51 @@ async function load(){
   questionsData=q;plansData=p;gearData=g;howtoData=h;catalog=c;
 }
 
+function readDraft(){
+  try{
+    const raw=localStorage.getItem(DRAFT_KEY);
+    if(!raw)return null;
+    const draft=JSON.parse(raw);
+    if(!draft||draft.version!==1||!draft.answers||!Number.isInteger(draft.index))return null;
+    return draft;
+  }catch{return null}
+}
+function persistDraft(){
+  try{
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({version:1,index,answers,at:new Date().toISOString()}));
+  }catch{}
+  refreshSavedButton();
+}
+function clearDraft(){
+  try{localStorage.removeItem(DRAFT_KEY)}catch{}
+}
 function start(){
   clearSharedPlanHash();
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
+  persistDraft();
   track("fishing_diagnosis_start");
   renderQuestion();
   scrollTo({top:0,behavior:"smooth"});
 }
-function reset(){clearSharedPlanHash();hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;index=0;answers={owned:[]};localRulesConfirmed=false;scrollTo({top:0,behavior:"smooth"})}
+function resumeDraft(){
+  const draft=readDraft();
+  if(!draft)return openSavedPlan();
+  answers={...draft.answers,owned:[...(draft.answers.owned||[])]};
+  index=Math.max(0,Math.min(draft.index,questionsData.questions.length-1));
+  hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
+  localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
+  track("fishing_diagnosis_resume",{question_index:index+1});
+  renderQuestion();
+  scrollTo({top:0,behavior:"smooth"});
+}
+function reset(){
+  clearSharedPlanHash();clearDraft();
+  hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;
+  index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";
+  refreshSavedButton();
+  scrollTo({top:0,behavior:"smooth"});
+}
 
 function optionLabel(qid,value){
   const q=questionsData.questions.find(x=>x.id===qid);
@@ -161,21 +199,28 @@ function updateVisual(){
     else if(value)tags.push(optionLabel(q.id,value));
   }
   visualTags.innerHTML=tags.slice(-5).map(t=>`<span>${escapeHtml(t)}</span>`).join("");
+  const captions=[
+    ["まだ何もない。","ここから、最初の一匹がはじまる。"],
+    ["だれと行くかで、","釣りの一日も変わります。"],
+    ["やってみたい時間を、","少しずつ形に。"],
+    ["エサも、無理のないものから。","初めてでも扱いやすく。"],
+    ["持ち帰るかどうかで、","必要な道具を整えます。"],
+    ["荷物は、できるだけ軽く。","必要なものだけを。"],
+    ["全部買わなくて大丈夫。","手持ちを活かして仕上げます。"]
+  ];
   const preview=selectPlan(answers,plansData);
-  if(index>=1&&preview){
-    miniPlan.textContent=preview.methodName+"が近そう";
-    visualMessage.textContent=preview.headline;
-  }else{
-    miniPlan.textContent="まだ何も決めなくて大丈夫";
-    visualMessage.textContent="答えるほど、あなたの最初の釣りが見えてきます。";
-  }
+  miniPlan.textContent=preview&&index>=1?preview.methodName+"が近そう":"BUILD YOUR FISHING";
+  const caption=captions[index]||captions[captions.length-1];
+  visualMessage.innerHTML=escapeHtml(caption[0])+"<br>"+escapeHtml(caption[1]);
 }
-
 function renderQuestion(){
   const questions=questionsData.questions;
   const q=questions[index];
-  stepText.textContent=String(index+1).padStart(2,"0")+" / "+String(questions.length).padStart(2,"0");
+  const stepLabel=String(index+1).padStart(2,"0")+" / "+String(questions.length).padStart(2,"0");
+  stepText.textContent=stepLabel;
+  if(progressText)progressText.textContent=stepLabel;
   progress.style.width=((index+1)/questions.length*100)+"%";
+  if(progressLine)progressLine.innerHTML=questions.map((_,i)=>'<i class="'+(i<=index?"active":"")+'"></i>').join("");
   updateVisual();
   const isMulti=q.type==="multi";
   const selected=isMulti?(answers[q.id]||[]):answers[q.id];
@@ -184,16 +229,17 @@ function renderQuestion(){
     <h2>${escapeHtml(q.label)}</h2>
     <p class="desc">${isMulti?"持っているものは全部選んでください。何もなければ、そのまま進めます。":"専門用語はありません。いちばん近いものを選んでください。"}</p>
     ${isMulti?'<p class="multi-note">複数選択できます</p>':""}
-    <div class="choice-grid">
+    <div class="choice-grid ${isMulti?"choice-grid-multi":""}">
       ${q.options.map(o=>{
         const on=isMulti?selected.includes(o.value):selected===o.value;
-        return `<button class="choice ${on?"selected":""}" data-value="${o.value}" type="button"><b>${escapeHtml(o.label)}</b></button>`
+        return `<button class="choice ${on?"selected":""}" data-value="${o.value}" type="button" aria-pressed="${on}"><span>${escapeHtml(o.label)}</span><span class="checkmark" aria-hidden="true">${on?"✓":""}</span></button>`
       }).join("")}
     </div>
     <div class="actions">
-      ${index?'<button class="secondary" id="backBtn" type="button">← 戻る</button>':""}
       <button class="primary" id="nextBtn" type="button">${index===questions.length-1?"プランを見る":"次へ →"}</button>
     </div>
+    <button class="question-back" id="backBtn" type="button">← ${index?"ひとつ戻る":"ホームへ"}</button>
+    <p class="draft-note">選んだ内容は、このブラウザに保存されます。</p>
   `;
   panel.querySelectorAll(".choice").forEach(btn=>btn.addEventListener("click",()=>{
     const v=btn.dataset.value;
@@ -208,19 +254,22 @@ function renderQuestion(){
       if(q.id==="party"&&v!=="family_child")delete answers.child_fit;
     }
     track("fishing_question_answer",{question_id:q.id,answer_value:v});
+    persistDraft();
     renderQuestion();
   }));
-  $("#backBtn")?.addEventListener("click",()=>{index--;renderQuestion()});
+  $("#backBtn")?.addEventListener("click",()=>{
+    if(index===0){reset();return}
+    index--;persistDraft();renderQuestion();
+  });
   $("#nextBtn").addEventListener("click",()=>{
     if(!isMulti&&!answers[q.id]){
       panel.querySelector(".desc").textContent="1つ選んでから進んでください。";
       return;
     }
-    if(index<questions.length-1){index++;renderQuestion()}
-    else renderResult();
+    if(index<questions.length-1){index++;persistDraft();renderQuestion()}
+    else{persistDraft();renderResult()}
   });
 }
-
 function renderResult({trackDiagnosis=true}={}){
   const resultKey=JSON.stringify(answers);
   const isNewResult=resultKey!==currentResultKey;
@@ -342,6 +391,7 @@ function renderResult({trackDiagnosis=true}={}){
   $("#saveBtn").addEventListener("click",()=>{
     try{
       localStorage.setItem("sotojitakuFishingPlan",JSON.stringify({version:1,answers,at:new Date().toISOString()}));
+      clearDraft();
       $("#saveBtn").textContent="保存しました";
       savedBtn.hidden=false;
       track("fishing_plan_saved",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
@@ -682,7 +732,10 @@ function readSavedPlan(){
 }
 
 function refreshSavedButton(){
-  savedBtn.hidden=!readSavedPlan();
+  const draft=readDraft();
+  const saved=readSavedPlan();
+  savedBtn.hidden=!draft&&!saved;
+  if(!savedBtn.hidden)savedBtn.textContent=draft?"つづきから":"保存したプランを見る";
 }
 
 function openSavedPlan(){
@@ -706,7 +759,7 @@ function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;",
 function escapeAttr(s){return escapeHtml(s)}
 
 $("#startBtn").addEventListener("click",start);
-savedBtn.addEventListener("click",openSavedPlan);
+savedBtn.addEventListener("click",()=>readDraft()?resumeDraft():openSavedPlan());
 resetBtn.addEventListener("click",reset);
 load().then(()=>{
   refreshSavedButton();
