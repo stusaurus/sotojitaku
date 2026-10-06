@@ -16,6 +16,17 @@ test("CAR STAY coverage report enumerates every vehicle configuration without en
     assert.ok(Array.isArray(report.byVehicle));
     assert.ok(report.byVehicle.some(v=>v.vehicleId==="honda-nbox-jf5-jf6"));
     assert.ok(report.configurations.every(r=>typeof r.privacy.count==="number"&&typeof r.sleep.count==="number"));
+    const freed=report.configurations.filter(r=>r.vehicleId==="honda-freed-gt").map(r=>r.config);
+    assert.equal(freed.length,5);
+    assert.deepEqual(freed,[
+      {seatCount:6,trim:"AIR"},
+      {seatCount:6,trim:"AIR EX"},
+      {seatCount:7,trim:"AIR EX"},
+      {seatCount:5,trim:"CROSSTAR"},
+      {seatCount:6,trim:"CROSSTAR"}
+    ]);
+    assert.ok(!freed.some(c=>c.seatCount===5&&c.trim==="AIR"));
+    assert.ok(!freed.some(c=>c.seatCount===7&&c.trim==="CROSSTAR"));
   }finally{
     fs.rmSync(out,{force:true});
   }
