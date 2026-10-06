@@ -231,3 +231,9 @@ test('two-person pages do not claim vehicle-name-only approval',()=>{
     assert.match(p,/(断定しません|断定しない)/);
   }
 });
+
+
+test('vehicle SEO hub links directly to all two-person entries',()=>{
+  const hub=read('car-stay/car/index.html');
+  for(const slug of slugs)assert.ok(hub.includes('./'+slug+'/2people/'),slug+' two-person hub link');
+});
