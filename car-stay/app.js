@@ -230,7 +230,7 @@ function renderProducts(items,gapId=""){
     const roleLabel=p.recommendationRole==="frequent_user_upgrade"?"本格利用向け":p.recommendationRole==="beginner_alternative"?"代替候補":"初泊向け";
     const qty=p.recommendedQty||1;
     const qtyText=qty>1?"<span class='qty-badge'>"+qty+"枚使用</span>":"";
-    const measureText=measured&&p.measurementPlan?"<small class='measure-fit-note'>必要スペース "+p.measurementPlan.requiredLengthMm+"×"+p.measurementPlan.requiredWidthMm+"mm 以下で確認</small>":"";
+    const measureText=measured&&p.measurementPlan?"<small class='measure-fit-note'>実測スペースが "+p.measurementPlan.requiredLengthMm+"×"+p.measurementPlan.requiredWidthMm+"mm 以上のときのみ表示</small>":"";
     return "<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'><span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で見る <span>→</span></a></div></article>";
   }).join("")+"</div>";
 }
