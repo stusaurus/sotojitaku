@@ -408,7 +408,7 @@ function renderResult({trackDiagnosis=true}={}){
     if(method==="clipboard"||method==="fallback_copy")btn.textContent="共有リンクをコピーしました";
     else if(method==="failed")btn.textContent="共有リンクを作れませんでした";
   });
-  $("#againBtn").addEventListener("click",()=>{clearSharedPlanHash();index=0;currentResultKey="";renderQuestion()});
+  $("#againBtn").addEventListener("click",()=>{clearSharedPlanHash();index=0;currentResultKey="";persistDraft("question");renderQuestion()});
   trackProductViews(productResult.selected,plan,rawChecklist);
   bindAffiliateClicks();
 }
