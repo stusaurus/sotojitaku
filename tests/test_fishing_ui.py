@@ -144,5 +144,17 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("未準備の持参品・安全装備が残っています", self.app)
         self.assertIn("サイズ確認が必要な安全装備", self.app)
 
+    def test_child_pfd_fit_selector_is_fail_closed(self):
+        self.assertIn('data-child-fit', self.app)
+        self.assertIn('m_all', self.app)
+        self.assertIn('l_all', self.app)
+        self.assertIn('unknown_mixed', self.app)
+        self.assertIn('体重15〜25kg未満', self.app)
+        self.assertIn('体重25〜40kg未満', self.app)
+        self.assertIn('商品は自動選択せず', self.app)
+        self.assertIn('fishing_child_pfd_fit_select', self.app)
+        self.assertIn('SHIMANO公式サイズ表を確認', self.app)
+        self.assertIn('normalized.child_fit', self.app)
+
 if __name__=="__main__":
     unittest.main()
