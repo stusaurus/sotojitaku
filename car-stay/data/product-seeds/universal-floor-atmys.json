@@ -58,5 +58,8 @@
   ],
   "rakutenItemCode": "atmys:07k-a000-ca",
   "pageCheckedAt": "2026-10-06",
-  "pageEvidenceNote": "楽天販売ページで商品番号07k-a000-ca、汎用品、外寸190×62cm、厚み10cm、1個販売・2個連結可を確認。車種適合ではなく実測寸法でのみ推薦する。"
+  "pageEvidenceNote": "楽天販売ページで商品番号07k-a000-ca、汎用品、外寸190×62cm、厚み10cm、1個販売・2個連結可を確認。車種適合ではなく実測寸法でのみ推薦する。",
+  "enabled": false,
+  "disabledAt": "2026-10-06",
+  "disabledReason": "Equivalent Hobbyman listing is easier to audit reliably and already shares the stable seller used by multiple live CAR STAY products."
 }
