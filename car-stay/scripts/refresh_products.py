@@ -125,7 +125,7 @@ def normalize_worker_candidate(raw):
         'url':url,
         'itemUrl':canonical_item_url(url),
         'image':raw.get('shipping_included_image') or raw.get('image') or '',
-        'itemCode':raw.get('item_code') or raw.get('itemCode') or '',
+        'itemCode':raw.get('item_code') or raw.get('itemCode') or raw.get('product_code') or raw.get('product_no') or '',
         'source':'worker'
     }
 
@@ -176,27 +176,58 @@ def worker_exact_item_candidate(seed):
     }
 
 def worker_candidate(seed):
-    """Best-effort Worker fallback: one short request per query, never a retry bottleneck."""
+    """Best-effort Worker fallback.
+
+    Product Search can identify the correct catalog product even when its shipping
+    item URL is empty. Preserve that identity and ask shipping-lookup again with the
+    full matched product name/code before falling back to broad seed queries.
+    """
     previews=[]
     matches=[]
+    identity_probes=[]
+    seen_probe_keys=set()
     for search_query in seed_queries(seed):
         query=urllib.parse.urlencode({'q':search_query,'hits':30})
         payload=fetch_json_quick(WORKER+'?'+query,timeout=5) or {}
         for raw in payload.get('products',[]):
             c=normalize_worker_candidate(raw)
             level=candidate_match_level(c,seed)
-            if level: matches.append((level,c))
+            if level:
+                matches.append((level,c))
+            elif identity_ok(c.get('name',''),seed):
+                key=(c.get('itemCode',''),c.get('name',''))
+                if key not in seen_probe_keys:
+                    seen_probe_keys.add(key)
+                    identity_probes.append(c)
         previews.extend({
             'q':search_query,
             'shop':rakuten_shop(normalize_worker_candidate(raw).get('itemUrl','')),
             'name':normalize_worker_candidate(raw).get('name','')[:120],
-            'itemUrl':normalize_worker_candidate(raw).get('itemUrl','')
+            'itemUrl':normalize_worker_candidate(raw).get('itemUrl',''),
+            'code':normalize_worker_candidate(raw).get('itemCode','')
         } for raw in (payload.get('products',[])[:3]))
         if matches: break
     if matches:
         matches.sort(key=lambda x:(-x[0],0 if safe_affiliate(x[1]['url'],x[1]['itemUrl']) else 1))
         return matches[0][1]
     print('CAR_STAY_DIAG',seed.get('productId'),json.dumps(previews[:8],ensure_ascii=False))
+
+    for probe in identity_probes[:3]:
+        params={
+            'code':probe.get('itemCode',''),
+            'name':probe.get('name',''),
+            'brand':seed.get('brand','')
+        }
+        lookup=fetch_json_quick(
+            SHIPPING_LOOKUP+'?'+urllib.parse.urlencode(params),
+            timeout=5
+        ) or {}
+        if lookup.get('found') is True:
+            c=normalize_worker_candidate(lookup)
+            if candidate_match_level(c,seed):
+                c['source']='worker_identity_shipping_lookup'
+                return c
+
     for search_query in seed_queries(seed):
         lookup=fetch_json_quick(
             SHIPPING_LOOKUP+'?'+urllib.parse.urlencode({'name':search_query,'brand':seed.get('brand','')}),
