@@ -24,7 +24,7 @@ let db={vehicles:[],gear:[],products:[],rules:DEFAULT_RULES};
 let state={
   version:VERSION,step:0,vehicleId:null,config:{},people:[{type:"adult",height:171},{type:"adult",height:160}],
   tripStyle:null,date:"",region:"",placeType:null,weather:{status:"unknown",minC:null,maxC:null},
-  ownedGear:[],devices:[],floorObservation:"unknown",measurements:{lengthMm:null,widthMm:null},sleepEngineOn:false,openFlameInside:false
+  ownedGear:[],devices:[],powerUse:{blanketW:null,hours:null,ownedWh:null,ownedOutputW:null},floorObservation:"unknown",measurements:{lengthMm:null,widthMm:null},sleepEngineOn:false,openFlameInside:false
 };
 
 function track(name,params={}){
@@ -32,7 +32,7 @@ function track(name,params={}){
   window.gtag("event",name,{site_id:"sotojitaku_car_stay",operator_test:operatorTest?1:0,entry_source:entrySource,entry_key:entryKey,...params});
 }
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
-function loadSaved(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY));if(x&&x.version===VERSION)state={...state,...x};}catch{}}
+function loadSaved(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY));if(x&&x.version===VERSION)state={...state,...x,powerUse:{...state.powerUse,...(x.powerUse||{})}};}catch{}}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
 function selectedGear(){
   return db.gear.filter(g=>state.ownedGear.includes(g.gearId));
@@ -74,7 +74,7 @@ function sanitizeVehicleConfig(v,changedKey){
 }
 function rules(){return {...DEFAULT_RULES,...db.rules};}
 function inputForEngine(){
-  return {people:state.people,tripStyle:state.tripStyle,placeType:state.placeType,weather:state.weather,gear:selectedGear(),devices:state.devices,floorObservation:state.floorObservation,measurements:state.measurements,config:state.config,sleepEngineOn:state.sleepEngineOn,openFlameInside:state.openFlameInside};
+  return {people:state.people,tripStyle:state.tripStyle,placeType:state.placeType,weather:state.weather,gear:selectedGear(),devices:state.devices,powerUse:state.powerUse,floorObservation:state.floorObservation,measurements:state.measurements,config:state.config,sleepEngineOn:state.sleepEngineOn,openFlameInside:state.openFlameInside};
 }
 async function loadData(){
   const names=["vehicles.json","gear.json","rules.json","audited-products.json"];
@@ -158,7 +158,10 @@ function renderGear(){
   const cards=db.gear.map(g=>"<button class='gear "+(state.ownedGear.includes(g.gearId)?"selected":"")+"' data-gear='"+g.gearId+"'><span class='icon'>"+(icons[g.gearId]||"•")+"</span><b>"+esc(g.label)+"</b></button>").join("");
   const floorChoices=[["flat","ほぼ平ら","そのまま寝られそう"],["noticeable","段差が気になる","タオルなどで試したい"],["large","大きな段差・すき間","対策が必要そう"],["unknown","まだ試していない","商品はまだ出しません"]];
   const floorCards=floorChoices.map(x=>"<button class='choice "+(state.floorObservation===x[0]?"selected":"")+"' data-floor='"+x[0]+"' type='button'><b>"+x[1]+"</b><small>"+x[2]+"</small></button>").join("");
-  panel.innerHTML=wrap("新しく買う前に、家にあるものを。","持っている物をタップしてください。ひとつの道具を複数の用途に使える場合もあります。","<div class='gear-grid'>"+cards+"</div><div style='margin-top:24px'><p class='step-kicker'>寝床を作ってみると？</p><div class='grid'>"+floorCards+"</div><p class='micro'>車種データが未確認でも、あなた自身が段差を感じた場合だけ段差対策の候補を出します。</p></div><div class='field' style='margin-top:22px'><label><input data-device='electric_blanket' type='checkbox' "+(state.devices.includes("electric_blanket")?"checked":"")+"> 今回、電気毛布を使いたい</label></div><div class='actions'>"+backButton()+"<button class='primary' data-next>一泊を完成する <span>→</span></button></div>","STEP 5 · 手持ち");
+  const wantsBlanket=state.devices.includes("electric_blanket");
+  const ownsPortable=state.ownedGear.includes("portable_power");
+  const powerFields=wantsBlanket?"<div class='power-plan'><p class='step-kicker'>電気毛布の電力</p><p class='micro'>製品ラベルの消費電力(W)と、実際に使う時間を入力します。入力がない場合、容量を推測して商品は出しません。</p><div class='form-row'><div class='field'><label>消費電力 W</label><input data-power='blanketW' type='number' inputmode='decimal' min='1' placeholder='例 55' value='"+esc(state.powerUse.blanketW??"")+"'></div><div class='field'><label>使用時間 h</label><input data-power='hours' type='number' inputmode='decimal' min='0.5' step='0.5' placeholder='例 8' value='"+esc(state.powerUse.hours??"")+"'></div></div>"+(ownsPortable?"<p class='micro'>手持ちのポータブル電源がある場合、容量と定格出力も入れると買い替え不要か判定できます。</p><div class='form-row'><div class='field'><label>手持ち容量 Wh</label><input data-power='ownedWh' type='number' inputmode='decimal' min='1' placeholder='例 512' value='"+esc(state.powerUse.ownedWh??"")+"'></div><div class='field'><label>手持ち定格出力 W</label><input data-power='ownedOutputW' type='number' inputmode='decimal' min='1' placeholder='例 500' value='"+esc(state.powerUse.ownedOutputW??"")+"'></div></div>":"")+"</div>":"";
+  panel.innerHTML=wrap("新しく買う前に、家にあるものを。","持っている物をタップしてください。ひとつの道具を複数の用途に使える場合もあります。","<div class='gear-grid'>"+cards+"</div><div style='margin-top:24px'><p class='step-kicker'>寝床を作ってみると？</p><div class='grid'>"+floorCards+"</div><p class='micro'>車種データが未確認でも、あなた自身が段差を感じた場合だけ段差対策の候補を出します。</p></div><div class='field' style='margin-top:22px'><label><input data-device='electric_blanket' type='checkbox' "+(wantsBlanket?"checked":"")+"> 今回、電気毛布を使いたい</label></div>"+powerFields+"<div class='actions'>"+backButton()+"<button class='primary' data-next>一泊を完成する <span>→</span></button></div>","STEP 5 · 手持ち");
 }
 function statusLabel(s){return {READY:"READY",ALMOST_READY:"ALMOST READY",CHALLENGE:"CHECK FIRST",CHANGE_PLAN:"CHANGE PLAN"}[s]||s;}
 function resultCards(result){
@@ -179,7 +182,10 @@ function quickMeasure(result){
 function renderResult(){
   const v=currentVehicle();const result=evaluate(inputForEngine(),v,rules());state.lastResult=result;save();
   const recs=recommendations(db.products,{gaps:result.gaps,vehicleId:v.vehicleId,config:state.config,status:result.status,measurements:state.measurements,sleep:result.sleep});
-  const gaps=result.gaps.map((g,i)=>"<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+renderProducts(recs[g.id]||[],g.id)+"</div>").join("");
+  const gaps=result.gaps.map((g,i)=>{
+    const requirement=g.id==="power_capacity"&&g.requiredWh?"<p class='power-requirement'><b>必要容量の目安 "+esc(g.requiredWh)+"Wh以上</b><span>定格出力 "+esc(g.requiredOutputW||0)+"W以上 · 20%の余裕を含むSOTOJITAKU目安</span></p>":"";
+    return "<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+requirement+renderProducts(recs[g.id]||[],g.id)+"</div>";
+  }).join("");
   const noNeed=result.notNeeded.length?"<div class='no-need'><h3>今回は、買わなくていいもの</h3><div class='no-need-tags'>"+result.notNeeded.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p class='micro'>はじめての一泊に、全部はいりません。</p></div>":"";
   const issueHtml=result.issues.length?"<div class='note "+(result.status==="CHANGE_PLAN"?"warning":"")+"'>"+result.issues.map(x=>"<b>"+esc(x.title)+"</b><br>"+esc(x.text)).join("<br><br>")+"</div>":"";
   const eligibleProductCount=Object.values(recs).reduce((sum,items)=>sum+(items?.length||0),0);
@@ -231,7 +237,7 @@ function renderProducts(items,gapId=""){
   });
   return "<div class='product-stack'>"+items.map((p,index)=>{
     const measured=p.fitStrategy==="measurement";
-    const fitLabel=measured?"実測寸法で適合":"車種適合・販売確認済み";
+    const fitLabel=p.fitStrategy==="power"?"必要容量を満たす":measured?"実測寸法で適合":"車種適合・販売確認済み";
     const roleLabel=p.recommendationRole==="frequent_user_upgrade"?"本格利用向け":p.recommendationRole==="beginner_alternative"?"代替候補":"初泊向け";
     const qty=p.recommendedQty||1;
     const qtyText=qty>1?"<span class='qty-badge'>"+qty+"枚使用</span>":"";
@@ -287,6 +293,7 @@ panel.addEventListener("input",e=>{
     if(["minC","maxC"].includes(t.dataset.env)){state.weather[t.dataset.env]=t.value===""?null:Number(t.value);state.weather.status=(state.weather.minC!==null&&state.weather.maxC!==null)?"known":"unknown";}
   }
   if(t.dataset.measure){state.measurements[t.dataset.measure]=t.value===""?null:Number(t.value);}
+  if(t.dataset.power){state.powerUse[t.dataset.power]=t.value===""?null:Number(t.value);}
   if(t.dataset.device){state.devices=t.checked?[...new Set([...state.devices,t.dataset.device])]:state.devices.filter(x=>x!==t.dataset.device);}
   save();
 });
