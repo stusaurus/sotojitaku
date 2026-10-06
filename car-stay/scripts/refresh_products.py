@@ -32,7 +32,7 @@ PAGE_HEADERS={
 }
 
 RUNTIME_BUDGET_SECONDS=max(30,min(420,int(os.environ.get('CAR_STAY_REFRESH_BUDGET_SECONDS','300'))))
-AUDIT_POLICY_VERSION='carstay-2026-10-06-live-replacement-v1'
+AUDIT_POLICY_VERSION='carstay-2026-10-06-official-manual-affiliate-v2'
 
 _PAGE_CACHE={}
 
