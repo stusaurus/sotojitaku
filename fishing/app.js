@@ -149,6 +149,7 @@ function renderResult({trackDiagnosis=true}={}){
         <h3 class="section-title">出発前の安全確認</h3>
         <div class="safety-box">
           釣り禁止区域・利用時間・採捕ルール・足場・天候は場所ごとに違います。テトラ・磯・荒天・立入禁止場所は、この初心者プランの対象外です。
+          ${renderChildPfdSafety()}
           <div class="confirm-row">
             <input id="rulesCheck" type="checkbox" ${localRulesConfirmed?"checked":""}>
             <label for="rulesCheck">行く釣り場の公式ルールを確認した</label>
@@ -204,6 +205,11 @@ function renderResult({trackDiagnosis=true}={}){
   $("#againBtn").addEventListener("click",()=>{index=0;currentResultKey="";renderQuestion()});
   trackProductViews(productResult.selected,plan);
   bindAffiliateClicks();
+}
+
+function renderChildPfdSafety(){
+  if(answers.party!=="family_child")return "";
+  return `<div class="child-fit-note"><strong>子ども用ライフジャケットはサイズ確認が必要です。</strong><br>体格に合うサイズをメーカー表記で確認し、可能なら試着してください。この診断ではサイズが分からないまま特定商品をおすすめしません。</div>`;
 }
 
 function renderProducts(productResult,checklist){

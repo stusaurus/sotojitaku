@@ -31,9 +31,12 @@ class FishingSeedCoverageTest(unittest.TestCase):
                         missing.append(f"{method}/{budget}/{category}")
         self.assertEqual(missing,[])
 
-    def test_child_safety_has_verified_seed_path(self):
-        for budget in ("low","balanced","long_term"):
-            self.assertTrue(self.supports("sabiki",budget,"life_jacket_child"))
+    def test_child_pfd_is_not_required_for_catalog_coverage_without_fit_input(self):
+        gear=json.loads((ROOT/"fishing"/"data"/"gear.json").read_text())
+        child=next(g for g in gear["categories"] if g["id"]=="life_jacket_child")
+        self.assertFalse(child["monetizable"])
+        self.assertTrue(child["safety"])
+        self.assertTrue(child["fit_sensitive"])
 
     def test_exact_rakuten_urls_are_unique(self):
         urls=[s["itemUrl"] for s in self.seeds]
