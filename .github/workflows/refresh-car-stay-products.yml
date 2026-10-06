@@ -79,8 +79,15 @@ jobs:
           pattern: car-stay-products-*
           path: /tmp/car-stay-shards
           merge-multiple: true
+      - name: Fetch shared audited CAR STAY catalog
+        run: |
+          if ! curl -fsSL --retry 2 --connect-timeout 8 --max-time 25 \
+            https://raw.githubusercontent.com/stusaurus/daily-cost-jp/main/shared-data/sotojitaku-car-stay-products.json \
+            -o /tmp/car-stay-shared.json; then
+            echo '{"version":1,"products":[]}' > /tmp/car-stay-shared.json
+          fi
       - name: Merge CAR STAY shard catalogs
-        run: python car-stay/scripts/merge_product_shards.py /tmp/car-stay-shards car-stay/data/audited-products.json
+        run: python car-stay/scripts/merge_product_shards.py /tmp/car-stay-shards car-stay/data/audited-products.json /tmp/car-stay-shared.json car-stay/data/product-seeds
       - name: Build CAR STAY revenue coverage report
         run: node car-stay/scripts/report_coverage.mjs
       - name: Validate CAMP and CAR STAY
