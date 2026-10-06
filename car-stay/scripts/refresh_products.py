@@ -359,16 +359,17 @@ def affiliate_tracking_path(template_url):
     except Exception:
         return ''
 
-def build_official_manual_affiliate(template_url,item_url):
-    """Build Rakuten's documented hgc affiliate URL from a verified affiliate id + item URL.
-    The responsive item URL is used for both pc and m targets; the exact desktop target is
-    independently enforced by safe_affiliate().
+def build_official_manual_affiliate(template_url,item_url,item_id):
+    """Build Rakuten's documented hgc affiliate URL from a verified affiliate id.
+    PC targets the exact item URL and mobile targets Rakuten's documented shop/item path.
     """
     affiliate_id=affiliate_tracking_path(template_url)
     target=canonical_item_url(item_url)
-    if not affiliate_id or not target:
+    shop=rakuten_shop(target)
+    if not affiliate_id or not target or not shop or not isinstance(item_id,int):
         return ''
-    query=urllib.parse.urlencode({'pc':target,'m':target})
+    mobile=f'http://m.rakuten.co.jp/{shop}/i/{item_id}/'
+    query=urllib.parse.urlencode({'pc':target,'m':mobile})
     built=f'https://hb.afl.rakuten.co.jp/hgc/{affiliate_id}/?{query}'
     return built if safe_affiliate(built,target) else ''
 
@@ -389,7 +390,7 @@ def official_manual_affiliate_candidate(seed,previous_products):
     if not templates:
         return None
     templates.sort(key=lambda p:str(p.get('verifiedAt','')),reverse=True)
-    affiliate=build_official_manual_affiliate(templates[0]['affiliateUrl'],seed['itemUrl'])
+    affiliate=build_official_manual_affiliate(templates[0]['affiliateUrl'],seed['itemUrl'],page_info['itemId'])
     image=page_info.get('image','')
     if not affiliate or not isinstance(image,str) or not image.startswith('https://'):
         return None
