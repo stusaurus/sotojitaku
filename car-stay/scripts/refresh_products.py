@@ -629,6 +629,7 @@ def page_sales_audit(seed,item_url,expected_price):
 
 def load_seeds():
     seeds=[json.loads(p.read_text()) for p in sorted(SEED_DIR.glob('*.json'))]
+    seeds=[seed for seed in seeds if seed.get('enabled',True) is not False]
     if SHARD_TOTAL>1:
         seeds=[seed for index,seed in enumerate(seeds) if index%SHARD_TOTAL==SHARD_INDEX]
     return seeds
