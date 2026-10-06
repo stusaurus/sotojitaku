@@ -27,8 +27,17 @@ for method,categories in required.items():
             if not supported(method,budget,category):
                 missing.append(f"{method}/{budget}/{category}")
 
-# Child PFD remains a hard safety requirement in the planner, but exact
-# product recommendation is intentionally disabled until size/fit is known.
+# Child PFD recommendations are enabled only after the family confirms a
+# manufacturer fit band. Keep both supported bands live in the verified catalog.
+for fit_tag in ("child_m","child_l"):
+    if not any(
+        p.get("categoryId")=="life_jacket_child"
+        and fit_tag in p.get("preferenceTags",[])
+        and "sabiki" in p.get("methodIds",[])
+        and "choi_nage" in p.get("methodIds",[])
+        for p in products
+    ):
+        missing.append(f"family_child/{fit_tag}/life_jacket_child")
 
 # At least one cooler must exist in every budget for take-home scenarios.
 for budget in budgets:

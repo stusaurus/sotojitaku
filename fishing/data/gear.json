@@ -53,7 +53,13 @@
       },
       "owned_key": "life_jacket_child",
       "safety": true,
-      "fit_sensitive": true
+      "fit_sensitive": true,
+      "monetizable_when": {
+        "child_fit": [
+          "m_all",
+          "l_all"
+        ]
+      }
     },
     {
       "id": "bucket",

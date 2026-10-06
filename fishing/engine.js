@@ -55,8 +55,12 @@ export function buildGearChecklist(input,plan,gearData){
     if(!requiredByMethod&&!requiredByCondition&&!optionalByCondition)return [];
     const isOwned=category.owned_key?owned.has(category.owned_key):false;
     const priority=(requiredByMethod||requiredByCondition)?"required":"optional";
+    const monetizable=category.monetizable_when
+      ?ruleMatches(input,category.monetizable_when)
+      :Boolean(category.monetizable);
     return [{
       ...category,
+      monetizable,
       priority,
       state:isOwned?"owned":priority==="required"?"needed":"optional"
     }];
@@ -125,7 +129,7 @@ function safeAffiliate(product){
   }catch{return false;}
 }
 
-export function productEligible(product,{methodId,categoryId,budgetTier,audience=null,baitPreference=null,now=Date.now()}){
+export function productEligible(product,{methodId,categoryId,budgetTier,audience=null,baitPreference=null,childFit=null,now=Date.now()}){
   if(product?.audit?.status!=="verified_live")return false;
   if(!product.verifiedAt||!Number.isFinite(Date.parse(product.verifiedAt)))return false;
   if(now-Date.parse(product.verifiedAt)>7*DAY)return false;
@@ -135,6 +139,11 @@ export function productEligible(product,{methodId,categoryId,budgetTier,audience
   if(audience&&Array.isArray(product.audiences)&&!product.audiences.includes(audience))return false;
   if(categoryId==="bait"&&["no_worm","low_mess"].includes(baitPreference)){
     if(!Array.isArray(product.preferenceTags)||!product.preferenceTags.includes(baitPreference))return false;
+  }
+  if(categoryId==="life_jacket_child"){
+    const requiredTag=childFit==="m_all"?"child_m":childFit==="l_all"?"child_l":"";
+    if(!requiredTag)return false;
+    if(!Array.isArray(product.preferenceTags)||!product.preferenceTags.includes(requiredTag))return false;
   }
   if(!Number.isFinite(product.price)||product.price<=0)return false;
   if(typeof product.image!=="string"||!product.image.startsWith("https://"))return false;

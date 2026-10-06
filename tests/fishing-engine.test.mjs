@@ -80,3 +80,26 @@ test("missing required gear is ALMOST_READY after rules confirmed",()=>{
   assert.equal(result.status,"ALMOST_READY");
   assert.equal(result.missing.some(x=>x.id==="life_jacket"),true);
 });
+
+test("child PFD becomes monetizable only after a supported fit band is chosen",()=>{
+  const localGear={categories:[{
+    id:"life_jacket_child",
+    label:"子ども用",
+    required_when:{party:["family_child"]},
+    monetizable:false,
+    monetizable_when:{child_fit:["m_all","l_all"]},
+    owned_key:"life_jacket_child",
+    fit_sensitive:true
+  }]};
+  const plan={methodId:"sabiki"};
+
+  const unknown=buildGearChecklist({party:"family_child",child_fit:"unknown_mixed",owned:[]},plan,localGear);
+  assert.equal(unknown[0].monetizable,false);
+  assert.equal(unknown[0].state,"needed");
+
+  const m=buildGearChecklist({party:"family_child",child_fit:"m_all",owned:[]},plan,localGear);
+  assert.equal(m[0].monetizable,true);
+
+  const l=buildGearChecklist({party:"family_child",child_fit:"l_all",owned:[]},plan,localGear);
+  assert.equal(l[0].monetizable,true);
+});

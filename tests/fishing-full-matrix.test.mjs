@@ -71,3 +71,46 @@ test("owned safety and handling gear are never emitted as standalone recommendat
     assert.equal(standaloneCategories.has(category),false,category+" must not be recommended standalone when owned");
   }
 });
+
+test("all supported child fit bands resolve to the matching verified PFD",()=>{
+  for(const child_fit of ["m_all","l_all"])
+    for(const fun of funs)
+      for(const bait of baits)
+        for(const take_home of takeHomes)
+          for(const carry of carries)
+            for(const budget of budgets){
+              const input={party:"family_child",fun,bait,take_home,carry,budget,child_fit,owned:[]};
+              const plan=selectPlan(input,plans);
+              const checklist=buildGearChecklist(input,plan,gear);
+              const child=checklist.find(x=>x.id==="life_jacket_child");
+              assert.ok(child);
+              assert.equal(child.monetizable,true);
+
+              const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:Date.now()});
+              const childProduct=result.selected.find(p=>p.categoryId==="life_jacket_child");
+              assert.ok(childProduct,"child PFD must be selected for "+child_fit+" "+JSON.stringify(input));
+              const expectedTag=child_fit==="m_all"?"child_m":"child_l";
+              assert.ok((childProduct.preferenceTags||[]).includes(expectedTag));
+            }
+});
+
+test("mixed, unknown or out-of-band child fit never auto-selects a child PFD",()=>{
+  const input={
+    party:"family_child",
+    fun:"easy_catch",
+    bait:"low_mess",
+    take_home:"yes",
+    carry:"normal",
+    budget:"balanced",
+    child_fit:"unknown_mixed",
+    owned:[]
+  };
+  const plan=selectPlan(input,plans);
+  const checklist=buildGearChecklist(input,plan,gear);
+  const child=checklist.find(x=>x.id==="life_jacket_child");
+  assert.ok(child);
+  assert.equal(child.monetizable,false);
+
+  const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:Date.now()});
+  assert.equal(result.selected.some(p=>p.categoryId==="life_jacket_child"),false);
+});
