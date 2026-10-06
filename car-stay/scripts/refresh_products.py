@@ -25,9 +25,14 @@ HEADERS={
     'Referer':'https://stusaurus.github.io/sotojitaku/car-stay/',
     'User-Agent':'sotojitaku-car-stay/1.0'
 }
+PAGE_HEADERS={
+    'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36',
+    'Accept-Language':'ja-JP,ja;q=0.9,en;q=0.7',
+    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+}
 
 RUNTIME_BUDGET_SECONDS=max(30,min(420,int(os.environ.get('CAR_STAY_REFRESH_BUDGET_SECONDS','300'))))
-AUDIT_POLICY_VERSION='carstay-2026-10-06-live-replacement-v1'
+AUDIT_POLICY_VERSION='carstay-2026-10-06-official-manual-affiliate-v2'
 
 _PAGE_CACHE={}
 
@@ -56,7 +61,7 @@ def fetch_json_quick(url,headers=None,timeout=4):
         return None
 
 def fetch_text(url):
-    req=urllib.request.Request(url,headers=HEADERS)
+    req=urllib.request.Request(url,headers=PAGE_HEADERS)
     with urllib.request.urlopen(req,timeout=8) as r:
         raw=r.read()
     match=re.search(br'charset\s*=\s*["\']?([\w-]+)',raw[:10000],re.I)
@@ -344,6 +349,62 @@ def same_shop_affiliate_template_candidate(seed,previous_products):
         'pagePrice':page_info['price']
     }
 
+def affiliate_tracking_path(template_url):
+    try:
+        u=urllib.parse.urlparse(template_url or '')
+        if u.scheme!='https' or u.hostname!='hb.afl.rakuten.co.jp':
+            return ''
+        match=re.fullmatch(r'/hgc/([^/]+)/?',u.path)
+        return match.group(1) if match else ''
+    except Exception:
+        return ''
+
+def build_official_manual_affiliate(template_url,item_url,item_id):
+    """Build Rakuten's documented hgc affiliate URL from a verified affiliate id.
+    PC targets the exact item URL and mobile targets Rakuten's documented shop/item path.
+    """
+    affiliate_id=affiliate_tracking_path(template_url)
+    target=canonical_item_url(item_url)
+    shop=rakuten_shop(target)
+    if not affiliate_id or not target or not shop or not isinstance(item_id,int):
+        return ''
+    mobile=f'http://m.rakuten.co.jp/{shop}/i/{item_id}/'
+    query=urllib.parse.urlencode({'pc':target,'m':mobile})
+    built=f'https://hb.afl.rakuten.co.jp/hgc/{affiliate_id}/?{query}'
+    return built if safe_affiliate(built,target) else ''
+
+def official_manual_affiliate_candidate(seed,previous_products):
+    """Exact-page fallback based on Rakuten's documented manual affiliate-link format.
+    It never discovers a product: fit is pre-audited in the seed, the exact page must be
+    live now, and the affiliate id is copied only from a fresh verified catalog item.
+    """
+    page_info=exact_page_details(seed)
+    if not page_info:
+        return None
+    templates=[
+        product for product in previous_products.values()
+        if product.get('audit',{}).get('status')=='verified_live'
+        and safe_affiliate(product.get('affiliateUrl',''),product.get('itemUrl',''))
+        and affiliate_tracking_path(product.get('affiliateUrl',''))
+    ]
+    if not templates:
+        return None
+    templates.sort(key=lambda p:str(p.get('verifiedAt','')),reverse=True)
+    affiliate=build_official_manual_affiliate(templates[0]['affiliateUrl'],seed['itemUrl'],page_info['itemId'])
+    image=page_info.get('image','')
+    if not affiliate or not isinstance(image,str) or not image.startswith('https://'):
+        return None
+    return {
+        'name':page_info.get('title') or seed.get('name',''),
+        'price':page_info['price'],
+        'url':affiliate,
+        'itemUrl':canonical_item_url(seed['itemUrl']),
+        'image':image,
+        'itemCode':seed.get('rakutenItemCode') or f"{rakuten_shop(seed['itemUrl'])}:{rakuten_item_slug(seed['itemUrl'])}",
+        'source':'rakuten_official_manual_affiliate',
+        'pagePrice':page_info['price']
+    }
+
 def rakuten_api_exact_candidate(seed):
     env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
     if not all(env.values()):
@@ -583,6 +644,7 @@ def acquire(runtime_budget_seconds=None):
                 ('worker_exact_url',worker_exact_item_candidate),
                 ('rakuten_api_exact',rakuten_api_exact_candidate),
                 ('same_shop_affiliate_template',lambda current_seed: same_shop_affiliate_template_candidate(current_seed,previous)),
+                ('rakuten_official_manual_affiliate',lambda current_seed: official_manual_affiliate_candidate(current_seed,previous)),
                 ('rakuten_api_search',rakuten_api_candidate),
                 ('worker',worker_candidate),
             ):
