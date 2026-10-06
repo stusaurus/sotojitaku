@@ -179,3 +179,13 @@ test("CAR STAY product workflow blocks stale audit definitions from publishing",
   assert.match(workflow,/skip stale catalog publish/);
   assert.match(workflow,/car-stay\/data\/product-seeds/);
 });
+
+test("N-BOX Slope is not offered through the standard sleep profile",()=>{
+  const data=JSON.parse(fs.readFileSync(new URL("../car-stay/data/vehicles.json",import.meta.url),"utf8"));
+  const vehicle=data.vehicles.find(v=>v.vehicleId==="honda-nbox-jf5-jf6");
+  const allowed=(vehicle.config?.validConfigs||[]).map(x=>x.trim);
+  assert.ok(allowed.includes("N-BOX"));
+  assert.ok(allowed.includes("N-BOX Custom"));
+  assert.ok(allowed.includes("N-BOX JOY"));
+  assert.ok(!allowed.includes("N-BOX Slope"));
+});
