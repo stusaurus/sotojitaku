@@ -2,8 +2,8 @@
   "productId": "freed-gt7-maulbeere-oa008",
   "name": "MAULBEERE OA008 かんたん車中泊ベッドキット FREED GT1-GT8対応",
   "brand": "MAULBEERE / GARSON",
-  "query": "OA008",
-  "itemUrl": "https://item.rakuten.co.jp/dadgarson/10006794/",
+  "query": "4560318787506",
+  "itemUrl": "https://item.rakuten.co.jp/biccamera/4560318787506/",
   "gapIds": [
     "floor_step",
     "sleep_surface"
@@ -12,15 +12,15 @@
   "score": 78,
   "identityGroups": [
     [
-      "MAULBEERE",
-      "マルビーレ"
+      "GARSON",
+      "ギャルソン"
     ],
     [
       "OA008"
     ],
     [
-      "車中泊",
-      "ベッド"
+      "ベッド",
+      "車中泊"
     ]
   ],
   "forbiddenTerms": [
@@ -49,12 +49,12 @@
     }
   ],
   "searchQueries": [
-    "OA008 MAULBEERE",
-    "MAULBEERE OA008",
-    "マルビーレ OA008",
-    "かんたん車中泊ベッドキット OA008"
+    "4560318787506",
+    "GARSON OA008",
+    "OA008-01-02",
+    "カンタンベッドキット OA008"
   ],
   "fitNote": "GARSON公式でOA008は中型ミニバン向け、FREED GT1/2/3/4/5/6/7/8の装着例を掲載。FREED AIR EX 7人乗りを含むGT系の寝床代替として使用。",
   "sourceCheckedAt": "2026-10-06",
-  "rakutenItemCode": "dadgarson:10006794"
+  "salesListingNote": "自動監査先は楽天ビックの黒木目 OA008-01-02。FREED適合根拠はGARSON公式のGT1/2/3/4/5/6/7/8装着例。"
 }
