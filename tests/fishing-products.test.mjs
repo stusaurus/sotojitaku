@@ -28,11 +28,27 @@ test("complete starter set suppresses categories it already covers",()=>{
 });
 
 test("child life jacket never receives adult product",()=>{
-  const child=p({productId:"kid",categoryId:"life_jacket_child",audiences:["child"],score:90,coverCategoryIds:["life_jacket_child"]});
-  const adult=p({productId:"adult",categoryId:"life_jacket_child",audiences:["adult"],score:99,coverCategoryIds:["life_jacket_child"]});
+  const child=p({productId:"kid",categoryId:"life_jacket_child",audiences:["child"],preferenceTags:["child_m"],score:90,coverCategoryIds:["life_jacket_child"]});
+  const adult=p({productId:"adult",categoryId:"life_jacket_child",audiences:["adult"],preferenceTags:["child_m"],score:99,coverCategoryIds:["life_jacket_child"]});
   const checklist=[{id:"life_jacket_child",monetizable:true,state:"needed",priority:"required"}];
-  const result=buildProductRecommendations([adult,child],{input:{budget:"balanced",bait:"okay"},plan:{methodId:"sabiki"},checklist,now});
+  const result=buildProductRecommendations([adult,child],{input:{budget:"balanced",bait:"okay",child_fit:"m_all"},plan:{methodId:"sabiki"},checklist,now});
   assert.equal(result.recommendations.life_jacket_child.primary.productId,"kid");
+});
+
+test("child PFD recommendation follows the selected fit range",()=>{
+  const m=p({productId:"kid-m",categoryId:"life_jacket_child",audiences:["child"],preferenceTags:["child_m"],score:90,coverCategoryIds:["life_jacket_child"]});
+  const l=p({productId:"kid-l",categoryId:"life_jacket_child",audiences:["child"],preferenceTags:["child_l"],score:90,coverCategoryIds:["life_jacket_child"]});
+  const checklist=[{id:"life_jacket_child",monetizable:true,state:"needed",priority:"required"}];
+
+  const mResult=buildProductRecommendations([m,l],{input:{budget:"balanced",bait:"okay",child_fit:"m_all"},plan:{methodId:"sabiki"},checklist,now});
+  assert.equal(mResult.recommendations.life_jacket_child.primary.productId,"kid-m");
+
+  const lResult=buildProductRecommendations([m,l],{input:{budget:"balanced",bait:"okay",child_fit:"l_all"},plan:{methodId:"sabiki"},checklist,now});
+  assert.equal(lResult.recommendations.life_jacket_child.primary.productId,"kid-l");
+
+  const unknown=buildProductRecommendations([m,l],{input:{budget:"balanced",bait:"okay",child_fit:"unknown_mixed"},plan:{methodId:"sabiki"},checklist,now});
+  assert.equal(unknown.recommendations.life_jacket_child.primary,null);
+  assert.equal(unknown.recommendations.life_jacket_child.unresolved,true);
 });
 
 test("bundle coverage changes checklist state",()=>{
