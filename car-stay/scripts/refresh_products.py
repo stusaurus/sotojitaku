@@ -264,9 +264,20 @@ def rakuten_api_exact_candidate(seed):
         }
         try:
             payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
-        except Exception:
+        except Exception as e:
+            print('CAR_STAY_EXACT_API',seed.get('productId'),item_code,'error',type(e).__name__)
             continue
-        for raw in payload.get('items') or payload.get('Items') or []:
+        api_items=payload.get('items') or payload.get('Items') or []
+        preview=[]
+        for raw in api_items[:3]:
+            item=raw.get('Item',raw)
+            preview.append({
+                'itemCode':item.get('itemCode',''),
+                'itemUrl':canonical_item_url(item.get('itemUrl','')),
+                'name':str(item.get('itemName',''))[:120]
+            })
+        print('CAR_STAY_EXACT_API',seed.get('productId'),item_code,json.dumps(preview,ensure_ascii=False))
+        for raw in api_items:
             item=raw.get('Item',raw)
             item_url=canonical_item_url(item.get('itemUrl',''))
             name=item.get('itemName','')
