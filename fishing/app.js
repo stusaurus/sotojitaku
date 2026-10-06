@@ -212,8 +212,11 @@ function updateVisual(){
 function renderQuestion(){
   const questions=questionsData.questions;
   const q=questions[index];
-  stepText.textContent=String(index+1).padStart(2,"0")+" / "+String(questions.length).padStart(2,"0");
+  const stepLabel=String(index+1).padStart(2,"0")+" / "+String(questions.length).padStart(2,"0");
+  stepText.textContent=stepLabel;
+  if(progressText)progressText.textContent=stepLabel;
   progress.style.width=((index+1)/questions.length*100)+"%";
+  if(progressLine)progressLine.innerHTML=questions.map((_,i)=>'<i class="'+(i<=index?"active":"")+'"></i>').join("");
   updateVisual();
   const isMulti=q.type==="multi";
   const selected=isMulti?(answers[q.id]||[]):answers[q.id];
