@@ -238,11 +238,20 @@ def worker_candidate(seed):
             if candidate_match_level(c,seed): return c
     return None
 
-def exact_page_info(seed):
-    """Read the exact manually audited Rakuten URL and return live sale metadata.
-    Returns None when Rakuten serves an interstitial/challenge without itemInfoSku.
-    Explicit unavailable/wrong-listing evidence raises and fails closed.
-    """
+def _meta_content(page,key):
+    patterns=[
+        rf'<meta[^>]+property=["\']{re.escape(key)}["\'][^>]+content=["\']([^"\']+)["\']',
+        rf'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']{re.escape(key)}["\']',
+        rf'<meta[^>]+name=["\']{re.escape(key)}["\'][^>]+content=["\']([^"\']+)["\']',
+    ]
+    for pattern in patterns:
+        match=re.search(pattern,page,re.I)
+        if match:
+            return match.group(1).strip()
+    return ''
+
+def exact_page_details(seed):
+    """Read exact Rakuten sales metadata plus display fields for the same-shop fallback."""
     try:
         page=fetch_text_cached(seed['itemUrl'])
     except Exception:
@@ -250,6 +259,8 @@ def exact_page_info(seed):
     marker='"itemInfoSku":'
     if marker not in page:
         return None
+    if not required_groups_ok(page,seed):
+        raise ValueError('page_identity_mismatch')
     info,_=json.JSONDecoder().raw_decode(page.split(marker,1)[1])
     if info.get('sellType')!='NORMAL':
         raise ValueError('wrong_sell_type')
@@ -263,7 +274,75 @@ def exact_page_info(seed):
     item_id=info.get('itemId')
     if not isinstance(item_id,int):
         raise ValueError('item_id_missing')
-    return {'itemId':item_id,'price':int(live)}
+    image=_meta_content(page,'og:image')
+    title=_meta_content(page,'og:title') or seed.get('name','')
+    return {'itemId':item_id,'price':int(live),'image':image,'title':title}
+
+def exact_page_info(seed):
+    """Backward-compatible exact sale metadata used by the existing API audit path."""
+    details=exact_page_details(seed)
+    if not details:
+        return None
+    return {'itemId':details['itemId'],'price':details['price']}
+
+def rebuild_same_shop_affiliate(template_url,item_url,item_id):
+    """Reuse only a previously verified same-shop Rakuten affiliate tracking URL."""
+    try:
+        target=canonical_item_url(item_url)
+        shop=rakuten_shop(target)
+        u=urllib.parse.urlparse(template_url or '')
+        if u.scheme!='https' or u.hostname!='hb.afl.rakuten.co.jp' or not target or not shop:
+            return ''
+        q=urllib.parse.parse_qs(u.query,keep_blank_values=True)
+        q['pc']=[target]
+        q['m']=[f'http://m.rakuten.co.jp/{shop}/i/{int(item_id)}/']
+        query=urllib.parse.urlencode(q,doseq=True)
+        rebuilt=urllib.parse.urlunparse((u.scheme,u.netloc,u.path,u.params,query,u.fragment))
+        return rebuilt if safe_affiliate(rebuilt,target) else ''
+    except Exception:
+        return ''
+
+def same_shop_affiliate_template_candidate(seed,previous_products):
+    """Fail-closed fallback for exact pages when API/Worker cannot return the item.
+    Requires a fresh, already verified affiliate link from the same Rakuten shop and
+    live exact-page price/identity metadata for the new product.
+    """
+    page_info=exact_page_details(seed)
+    if not page_info:
+        return None
+    shop=rakuten_shop(seed['itemUrl'])
+    if not shop:
+        return None
+    templates=[]
+    for product in previous_products.values():
+        if product.get('audit',{}).get('status')!='verified_live':
+            continue
+        if rakuten_shop(product.get('itemUrl',''))!=shop:
+            continue
+        if not safe_affiliate(product.get('affiliateUrl',''),product.get('itemUrl','')):
+            continue
+        templates.append(product)
+    if not templates:
+        return None
+    templates.sort(key=lambda p:str(p.get('verifiedAt','')),reverse=True)
+    affiliate=rebuild_same_shop_affiliate(
+        templates[0].get('affiliateUrl',''),
+        seed['itemUrl'],
+        page_info['itemId']
+    )
+    image=page_info.get('image','')
+    if not affiliate or not isinstance(image,str) or not image.startswith('https://'):
+        return None
+    return {
+        'name':page_info.get('title') or seed.get('name',''),
+        'price':page_info['price'],
+        'url':affiliate,
+        'itemUrl':canonical_item_url(seed['itemUrl']),
+        'image':image,
+        'itemCode':f"{shop}:{page_info['itemId']}",
+        'source':'same_shop_affiliate_template',
+        'pagePrice':page_info['price']
+    }
 
 def rakuten_api_exact_candidate(seed):
     env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
@@ -503,6 +582,7 @@ def acquire(runtime_budget_seconds=None):
             for source_name,source_fn in (
                 ('worker_exact_url',worker_exact_item_candidate),
                 ('rakuten_api_exact',rakuten_api_exact_candidate),
+                ('same_shop_affiliate_template',lambda current_seed: same_shop_affiliate_template_candidate(current_seed,previous)),
                 ('rakuten_api_search',rakuten_api_candidate),
                 ('worker',worker_candidate),
             ):
