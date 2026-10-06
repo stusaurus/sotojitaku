@@ -1,0 +1,50 @@
+{
+  "productId": "power-ecoflow-river3plus",
+  "name": "EcoFlow RIVER 3 Plus 286Wh / 600W",
+  "brand": "EcoFlow",
+  "query": "EcoFlow RIVER 3 Plus 286Wh 600W",
+  "searchQueries": [
+    "EcoFlow RIVER 3 Plus 286Wh",
+    "RIVER 3 Plus 286Wh",
+    "EcoFlow RIVER3 Plus"
+  ],
+  "itemUrl": "https://item.rakuten.co.jp/ecoflow/river-3-plus-c/",
+  "gapIds": [
+    "power_capacity"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 94,
+  "fitStrategy": "power",
+  "powerSpec": {
+    "capacityWh": 286,
+    "ratedOutputW": 600,
+    "evidenceUrl": "https://jp.ecoflow.com/products/river-3-plus-portable-power-station"
+  },
+  "identityGroups": [
+    [
+      "EcoFlow",
+      "エコフロー"
+    ],
+    [
+      "RIVER 3 Plus",
+      "RIVER3 Plus"
+    ],
+    [
+      "286Wh"
+    ],
+    [
+      "600W"
+    ]
+  ],
+  "forbiddenTerms": [
+    "Max Plus",
+    "Max 572",
+    "ソーラーパネルセット",
+    "エクストラバッテリー",
+    "EB290",
+    "EB580"
+  ],
+  "fitEvidenceUrl": "https://jp.ecoflow.com/products/river-3-plus-portable-power-station",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": []
+}

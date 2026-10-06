@@ -17,6 +17,14 @@ test('CAR STAY product cards distinguish the first recommendation',()=>{
 });
 
 
+test('CAR STAY asks for real electric blanket power instead of guessing capacity',()=>{
+  assert.match(app,/data-power='blanketW'/);
+  assert.match(app,/data-power='hours'/);
+  assert.match(app,/容量を推測して商品は出しません/);
+  assert.match(app,/必要容量の目安/);
+});
+
+
 test('CAR STAY records deduplicated five-step funnel views and completions',()=>{
   assert.match(app,/carstay_step_view/);
   assert.match(app,/carstay_step_complete/);

@@ -130,15 +130,34 @@ export function evaluate(input,vehicle,rules=DEFAULT_RULES){
   else gaps.push({id:"privacy_full",severity:"must",free:"専用品がなくても、外から見えず運転操作を妨げない安全な目隠しを用意する。"});
 
   const wantsBlanket=(input.devices||[]).includes("electric_blanket");
-  if(wantsBlanket&&!hasCapability(gear,"portable_power"))gaps.push({id:"power_capacity",severity:"should",free:"電気毛布を使わない寝具構成へ変えるか、必要Whを確認する。"});
-  else if(!wantsBlanket&&hasCapability(gear,"usb_power"))notNeeded.push("ポータブル電源");
+  const powerUse=input.powerUse||{};
+  const blanketW=Number(powerUse.blanketW)||0;
+  const blanketHours=Number(powerUse.hours)||0;
+  const requiredWh=blanketW>0&&blanketHours>0?Math.ceil(blanketW*blanketHours*1.25):null;
+  const requiredOutputW=blanketW>0?blanketW:null;
+  const ownsPortablePower=hasCapability(gear,"portable_power");
+  const ownedWh=Number(powerUse.ownedWh)||0;
+  const ownedOutputW=Number(powerUse.ownedOutputW)||0;
+  let powerState="not_needed";
+  if(wantsBlanket){
+    if(!requiredWh){
+      powerState="needs_specs";
+      gaps.push({id:"power_capacity",severity:"should",requiredWh:null,requiredOutputW:requiredOutputW||null,free:"電気毛布の製品ラベルで消費電力(W)を確認し、使う時間を入力してください。容量が分からないまま電源はおすすめしません。"});
+    }else if(ownsPortablePower&&ownedWh>=requiredWh&&ownedOutputW>=requiredOutputW){
+      powerState="owned_sufficient";
+      resolved.push("power_capacity");
+    }else{
+      powerState=ownsPortablePower?"owned_insufficient":"needs_power";
+      gaps.push({id:"power_capacity",severity:"should",requiredWh,requiredOutputW,free:ownsPortablePower?"手持ち電源の容量・定格出力が必要量に足りるか確認してください。足りなければ電気毛布を使わない寝具構成へ変更できます。":"電気毛布を使わない寝具構成へ変えれば、ポータブル電源を買わずに済みます。"});
+    }
+  }else if(hasCapability(gear,"usb_power"))notNeeded.push("ポータブル電源");
 
   if(input.tripStyle==="onsen"||input.tripStyle==="sleep_only")notNeeded.push("車内調理器具","大型テーブル");
   if(hasCapability(gear,"warmth")&&w.status==="known"&&Number(w.minC)>rules.coldChallengeC)notNeeded.push("専用の寝袋");
 
   const unresolved=gaps.filter(g=>["must","should"].includes(g.severity));
   const status=blocked?"CHANGE_PLAN":challenge?"CHALLENGE":unresolved.length?"ALMOST_READY":"READY";
-  return {status,issues,gaps,resolved,notNeeded:[...new Set(notNeeded)],sleep,floor:{grade:floor,stepMm:sleep.profile?.floorStepMm??null,observation:floorObservation,state:floorState},vehicleId:vehicle.vehicleId};
+  return {status,issues,gaps,resolved,notNeeded:[...new Set(notNeeded)],sleep,floor:{grade:floor,stepMm:sleep.profile?.floorStepMm??null,observation:floorObservation,state:floorState},power:{state:powerState,blanketW:blanketW||null,hours:blanketHours||null,requiredWh,requiredOutputW,ownedWh:ownedWh||null,ownedOutputW:ownedOutputW||null},vehicleId:vehicle.vehicleId};
 }
 
 export function resultHeadline(result){
@@ -188,7 +207,7 @@ export function measurementFitPlan(product,{measurements={},sleep={}}={}){
   };
 }
 
-export function productEligible(product,{vehicleId,config={},gapId,now=Date.now(),measurements={},sleep={}}){
+export function productEligible(product,{vehicleId,config={},gapId,now=Date.now(),measurements={},sleep={},powerNeed={}}){
   if(product.audit?.status!=="verified_live")return false;
   if(!product.verifiedAt||!Number.isFinite(Date.parse(product.verifiedAt))||now-Date.parse(product.verifiedAt)>7*86400000)return false;
   if(!product.gapIds?.includes(gapId))return false;
@@ -197,6 +216,13 @@ export function productEligible(product,{vehicleId,config={},gapId,now=Date.now(
   const fitStrategy=product.fitStrategy||"vehicle";
   if(fitStrategy==="measurement"){
     return measurementFitPlan(product,{measurements,sleep})?.eligible===true;
+  }
+  if(fitStrategy==="power"){
+    const spec=product.powerSpec||{};
+    const requiredWh=Number(powerNeed.requiredWh)||0;
+    const requiredOutputW=Number(powerNeed.requiredOutputW)||0;
+    if(!requiredWh||!requiredOutputW)return false;
+    return Number(spec.capacityWh)>=requiredWh&&Number(spec.ratedOutputW)>=requiredOutputW;
   }
   if(fitStrategy!=="vehicle")return false;
   const fit=product.vehicleFit?.find(v=>v.vehicleId===vehicleId);
