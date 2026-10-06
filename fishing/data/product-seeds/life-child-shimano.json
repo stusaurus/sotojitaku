@@ -43,5 +43,20 @@
     "大人"
   ],
   "specCheckedAt": "2026-10-05",
-  "specEvidenceUrl": "https://fish.shimano.com/ja-JP/product/wear_footwear/lifevest_vest/floatingvestsolidtype/a155f00000cb4xzqar.html"
+  "specEvidenceUrl": "https://fish.shimano.com/ja-JP/product/wear_footwear/lifevest_vest/floatingvestsolidtype/a155f00000cb4xzqar.html",
+  "preferenceTags": [
+    "child_m"
+  ],
+  "fit": {
+    "size": "M",
+    "heightCm": {
+      "min": 100,
+      "max": 120
+    },
+    "weightKg": {
+      "min": 15,
+      "maxExclusive": 25
+    },
+    "source": "SHIMANO VF-098V official specification"
+  }
 }
