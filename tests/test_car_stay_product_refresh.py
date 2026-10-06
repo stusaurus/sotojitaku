@@ -336,7 +336,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             }
             candidate=refresh.worker_exact_item_candidate(seed)
             self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
-            self.assertEqual(candidate["source"],"worker_exact_url")
+            self.assertEqual(candidate["source"],"worker_exact_url_multiquery")
 
             refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{
                 "found":True,
@@ -364,7 +364,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_json_quick=original
 
-    def test_worker_exact_url_lookup_runs_once_with_first_query_and_four_second_budget(self):
+    def test_worker_exact_url_lookup_tries_curated_queries_with_bounded_requests(self):
         import urllib.parse
         seed={
             "itemUrl":"https://item.rakuten.co.jp/shop/exact/",
@@ -380,9 +380,11 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 return {"found":False}
             refresh.fetch_json_quick=fake
             self.assertIsNone(refresh.worker_exact_item_candidate(seed))
-            self.assertEqual(len(seen),1)
-            self.assertEqual(seen[0][0]["q"],["exact-model-code"])
-            self.assertEqual(seen[0][1],4)
+            queries=[entry[0]["q"][0] for entry in seen]
+            self.assertEqual(queries[:2],["exact-model-code","broad vehicle phrase"])
+            self.assertIn("exact",queries)
+            self.assertTrue(all(timeout==5 for _,timeout in seen))
+            self.assertLessEqual(len(seen),6)
         finally:
             refresh.fetch_json_quick=original
 
@@ -849,6 +851,41 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(candidate["price"],19800)
         finally:
             refresh.exact_page_details=original
+
+    def test_worker_exact_lookup_tries_later_seed_queries(self):
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/n-box-jf56-set/",
+            "query":"N-BOX JOY サンシェード",
+            "searchQueries":["N-BOX JOY サンシェード","02s-c034-sa"],
+            "rakutenItemCode":"hobbyman:02s-c034-sa",
+            "identityGroups":[["N-BOX"],["JF5"],["JF6"],["JOY"],["サンシェード"]],
+            "forbiddenTerms":[]
+        }
+        calls=[]
+        original=refresh.fetch_json_quick
+        try:
+            def fake(url,headers=None,timeout=4):
+                import urllib.parse
+                calls.append(url)
+                q=urllib.parse.parse_qs(urllib.parse.urlparse(url).query).get("q",[""])[0]
+                if q!="02s-c034-sa":
+                    return {"found":False}
+                return {
+                    "found":True,
+                    "name":"N-BOX JF5 JF6 JOY サンシェード フルセット",
+                    "price":15900,
+                    "item_url":seed["itemUrl"],
+                    "affiliate_url":"https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fn-box-jf56-set%2F",
+                    "image":"https://example.com/a.jpg",
+                    "item_code":"hobbyman:02s-c034-sa"
+                }
+            refresh.fetch_json_quick=fake
+            candidate=refresh.worker_exact_item_candidate(seed)
+            self.assertIsNotNone(candidate)
+            self.assertGreaterEqual(len(calls),2)
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+        finally:
+            refresh.fetch_json_quick=original
 
 if __name__=="__main__":
     unittest.main()
