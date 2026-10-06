@@ -54,6 +54,12 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn('renderResult({trackDiagnosis:false})', self.app)
         self.assertIn('if(trackDiagnosis&&isNewResult)', self.app)
 
+    def test_quantity_guidance_is_present(self):
+        self.assertIn("renderQuantityGuidance", self.app)
+        self.assertIn("1セット＝1本分", self.app)
+        self.assertIn("同時使用する本数分", self.app)
+        self.assertIn("同行者全員分", self.app)
+
     def test_first_trip_guidance_is_present(self):
         self.assertIn("renderFitReasons", self.app)
         self.assertIn("renderFirstTripGuide", self.app)
