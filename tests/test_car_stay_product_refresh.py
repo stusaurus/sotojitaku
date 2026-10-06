@@ -605,7 +605,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertIn("車中泊ベッド",seed["searchQueries"][0])
         self.assertIn("02k-a005-ca",seed["searchQueries"])
         self.assertEqual(seed["rakutenItemCode"],"hobbyman:02k-a005-ca")
-        self.assertEqual(seed["itemUrl"],"https://item.rakuten.co.jp/hobbyman/n-van-kurumat-9/")
+        self.assertEqual(seed["itemUrl"],"https://item.rakuten.co.jp/hobbyman/n-van-kurumat/")
 
     def test_same_shop_replacement_cannot_fallback_when_sales_page_is_unreachable(self):
         seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/exact/","identityGroups":[["N-VAN"],["JJ1"]]}
