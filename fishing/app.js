@@ -13,7 +13,33 @@ let currentResultKey="";
 const viewedProducts=new Set();
 
 const labels={party:"だれと",fun:"楽しみ方",bait:"エサ",take_home:"持ち帰り",carry:"荷物",budget:"予算",owned:"手持ち"};
-const track=(name,params={})=>{try{window.gtag?.("event",name,{conversion_source:"fishing",...params})}catch{}};
+
+function readEntryAttribution(){
+  const key="sotojitakuFishingEntry";
+  try{
+    const raw=sessionStorage.getItem(key);
+    if(raw){
+      const saved=JSON.parse(raw);
+      const age=Date.now()-Number(saved?.at||0);
+      if(saved?.source==="guide"&&saved?.guide_slug&&age>=0&&age<=86400000){
+        return {entry_source:"guide",entry_guide_slug:String(saved.guide_slug).slice(0,80)};
+      }
+      sessionStorage.removeItem(key);
+    }
+  }catch{}
+  try{
+    const ref=new URL(document.referrer);
+    if(ref.origin===location.origin&&ref.pathname.includes("/fishing/guides/")){
+      const parts=ref.pathname.split("/").filter(Boolean);
+      const i=parts.indexOf("guides");
+      const slug=i>=0?(parts[i+1]||"hub"):"hub";
+      return {entry_source:"guide",entry_guide_slug:slug};
+    }
+  }catch{}
+  return {entry_source:"direct",entry_guide_slug:""};
+}
+const entryAttribution=readEntryAttribution();
+const track=(name,params={})=>{try{window.gtag?.("event",name,{conversion_source:"fishing",...entryAttribution,...params})}catch{}};
 
 async function load(){
   const [q,p,g,h,c]=await Promise.all([
