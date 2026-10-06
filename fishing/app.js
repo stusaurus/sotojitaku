@@ -37,6 +37,9 @@ function normalizePlanAnswers(candidate){
     if(!allowed.has(candidate[q.id]))return null;
     normalized[q.id]=candidate[q.id];
   }
+  if(candidate.child_fit&&["m_all","l_all","unknown_mixed"].includes(candidate.child_fit)){
+    normalized.child_fit=candidate.child_fit;
+  }
   return normalized;
 }
 
@@ -200,7 +203,10 @@ function renderQuestion(){
       removing?set.delete(v):set.add(v);
       answers[q.id]=[...set];
       if(q.id==="owned")track("fishing_owned_item_toggle",{gear_category:v,toggle_action:removing?"remove":"add"});
-    }else answers[q.id]=v;
+    }else{
+      answers[q.id]=v;
+      if(q.id==="party"&&v!=="family_child")delete answers.child_fit;
+    }
     track("fishing_question_answer",{question_id:q.id,answer_value:v});
     renderQuestion();
   }));
@@ -309,6 +315,17 @@ function renderResult({trackDiagnosis=true}={}){
     currentResultKey=resultKey;
   }
   $("#rulesCheck").addEventListener("change",e=>{localRulesConfirmed=e.target.checked;renderResult({trackDiagnosis:false})});
+  panel.querySelectorAll("[data-child-fit]").forEach(btn=>btn.addEventListener("click",e=>{
+    const fit=e.currentTarget.dataset.childFit;
+    if(!["m_all","l_all","unknown_mixed"].includes(fit))return;
+    answers.child_fit=fit;
+    currentResultKey=JSON.stringify(answers);
+    track("fishing_child_pfd_fit_select",{
+      fit_choice:fit,
+      party_type:answers.party
+    });
+    renderResult({trackDiagnosis:false});
+  }));
   $("#budgetSwitchBtn")?.addEventListener("click",e=>{
     const from=answers.budget;
     const to=e.currentTarget.dataset.nextBudget;
@@ -344,7 +361,40 @@ function renderResult({trackDiagnosis=true}={}){
 
 function renderChildPfdSafety(){
   if(answers.party!=="family_child")return "";
-  return `<div class="child-fit-note"><strong>子ども用ライフジャケットはサイズ確認が必要です。</strong><br>体格に合うサイズをメーカー表記で確認し、可能なら試着してください。この診断ではサイズが分からないまま特定商品をおすすめしません。</div>`;
+  if((answers.owned||[]).includes("life_jacket_child")){
+    return `<div class="child-fit-note"><strong>子ども用ライフジャケットは「持っている」を選択済みです。</strong><br>出発前に、子ども全員が体格に合うサイズを着用できるか、股ベルト・バックルを含めて再確認してください。</div>`;
+  }
+  const fit=answers.child_fit||"";
+  const choices=[
+    {
+      value:"m_all",
+      title:"子ども全員が M の範囲",
+      detail:"体重15〜25kg未満 ＋ 身長100〜120cm"
+    },
+    {
+      value:"l_all",
+      title:"子ども全員が L の範囲",
+      detail:"体重25〜40kg未満 ＋ 身長120〜150cm"
+    },
+    {
+      value:"unknown_mixed",
+      title:"子どもごとに違う／範囲外／わからない",
+      detail:"商品は自動選択せず、個別にサイズ確認"
+    }
+  ];
+  return `<div class="child-fit-note">
+    <strong>子ども用ライフジャケットは、体重と身長の両方で確認します。</strong>
+    <p>SHIMANO VF-098Vの公式目安に合わせ、全員が同じ範囲に入る場合だけ商品を自動推薦します。境界・範囲外・複数サイズが必要な場合は自動推薦しません。</p>
+    <div class="child-fit-options">
+      ${choices.map(choice=>`<button type="button" class="child-fit-choice ${fit===choice.value?"selected":""}" data-child-fit="${choice.value}"><b>${choice.title}</b><span>${choice.detail}</span></button>`).join("")}
+    </div>
+    ${fit==="unknown_mixed"
+      ?'<p class="child-fit-warning">この条件では安全のため特定商品を出しません。子どもごとにメーカーサイズ表を確認し、可能なら試着してください。</p>'
+      :fit
+        ?'<p class="child-fit-confirmed">選んだ体格範囲に合う販売確認済み商品だけを、下の必須品に追加します。</p>'
+        :'<p class="child-fit-warning">体格を選ぶまで、子ども用ライフジャケットの商品は表示しません。</p>'}
+    <a class="child-fit-link" href="https://fish.shimano.com/ja-JP/product/wear_footwear/lifevest_vest/floatingvestsolidtype/a155f00000cb4xzqar.html" target="_blank" rel="noopener">SHIMANO公式サイズ表を確認 ↗</a>
+  </div>`;
 }
 
 function requiredGapCoverCount(product,checklist){
