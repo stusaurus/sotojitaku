@@ -10,7 +10,7 @@
   <meta property="og:description" content="いつものクルマを、今夜泊まれる小さな宿に。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://stusaurus.github.io/sotojitaku/car-stay/">
-  <meta name="theme-color" content="#111923">
+  <meta name="theme-color" content="#111923">\n  <link rel="preload" href="./assets/carstay-hero-desktop.webp" as="image">
   <link rel="stylesheet" href="./style.css">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFVSZ8YDQ5"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GFVSZ8YDQ5',{send_page_view:true});</script>
@@ -23,33 +23,21 @@
   </header>
 
   <main>
-    <section id="hero" class="hero">
+    <section id="hero" class="hero hero-photo">
+      <picture class="hero-picture" aria-hidden="true">
+        <source media="(max-width:760px)" srcset="./assets/carstay-hero-mobile.webp">
+        <img class="scene-image" src="./assets/carstay-hero-desktop.webp" alt="" fetchpriority="high">
+      </picture>
+      <div class="scene-shade"></div>
       <div class="hero-copy">
-        <p class="eyebrow">QUIET ROAD TRIP · TINY CABIN</p>
+        <p class="eyebrow">SOTOJITAKU CAR STAY</p>
         <h1>いつものクルマを、<br><em>今夜泊まれる小さな宿に。</em></h1>
         <p class="lead">クルマと過ごし方から、はじめての一泊をつくります。<br>家にあるものを使って、足りないものだけ。</p>
         <button id="startBtn" class="primary hero-cta" type="button">愛車ではじめる <span>→</span></button>
-        <p class="trust">約3分・登録不要 · 危険な条件では買い物より先に止めます</p><p class="affiliate-disclosure"><strong>PR</strong> このサイトは楽天アフィリエイト等の広告を利用しています。商品を購入すると、運営者に成果報酬が入る場合があります。</p>
+        <p class="trust">約3分・登録不要 · 危険な条件では買い物より先に止めます</p>
+        <p class="affiliate-disclosure"><strong>PR</strong> このサイトは楽天アフィリエイト等の広告を利用しています。商品を購入すると、運営者に成果報酬が入る場合があります。</p>
       </div>
-      <div class="hero-car" aria-hidden="true">
-        <div class="road-glow"></div>
-        <svg viewBox="0 0 800 420" role="img">
-          <defs>
-            <linearGradient id="bodyGrad" x1="0" x2="1"><stop offset="0" stop-color="#324150"/><stop offset="1" stop-color="#18232e"/></linearGradient>
-            <linearGradient id="glassGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#173040"/><stop offset="1" stop-color="#0b151d"/></linearGradient>
-          </defs>
-          <path class="car-body" d="M104 288c14-68 35-108 78-128 55-25 157-30 272-27 78 2 151 21 195 66 20 20 34 47 42 89l26 9c17 6 27 20 27 38v14H57v-22c0-18 11-31 30-36z" fill="url(#bodyGrad)"/>
-          <path d="M206 166c71-20 193-24 272-17 65 6 111 28 143 69H188c4-20 10-37 18-52z" fill="url(#glassGrad)"/>
-          <path class="cabin-light" d="M223 177c65-13 163-15 239-8 49 4 87 17 116 43H207c3-13 8-25 16-35z"/>
-          <rect class="shade shape-a" x="238" y="180" width="111" height="30" rx="12"/><rect class="shade shape-b" x="365" y="177" width="100" height="33" rx="12"/><rect class="shade shape-c" x="479" y="184" width="71" height="27" rx="10"/>
-          <path class="mattress" d="M250 238h295c15 0 24 11 22 25l-6 40H233l-4-35c-2-17 5-30 21-30z"/>
-          <path class="blanket" d="M276 245h160c34 0 56 13 67 40H267c-6-22-3-34 9-40z"/>
-          <circle cx="197" cy="330" r="54" fill="#0c1117"/><circle cx="197" cy="330" r="26" fill="#3d4853"/>
-          <circle cx="627" cy="330" r="54" fill="#0c1117"/><circle cx="627" cy="330" r="26" fill="#3d4853"/>
-          <path class="floor-step" d="M327 269h108v22H327z"/>
-        </svg>
-        <div class="hero-status"><span></span>まだ普通のクルマ。ここから一泊をつくります。</div>
-      </div>
+      <div class="hero-status scene-caption"><span></span>森と湖のつづきで、クルマを小さな宿に。</div>
     </section>
 
     <section id="builder" class="builder" hidden>
