@@ -51,6 +51,7 @@ export function eligibleForCategory(products,{input,plan,categoryId,now=Date.now
     budgetTier:input.budget,
     audience:audienceForCategory(categoryId),
     baitPreference:input.bait,
+    childFit:input.child_fit||null,
     now
   }));
 }
