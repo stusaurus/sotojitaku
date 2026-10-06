@@ -36,6 +36,41 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.safe_affiliate(good,item))
         self.assertFalse(refresh.safe_affiliate(bad,item))
 
+    def test_rebuild_same_shop_affiliate_preserves_tracking_and_changes_exact_target(self):
+        import urllib.parse
+        old_item="https://item.rakuten.co.jp/hobbyman/old/"
+        new_item="https://item.rakuten.co.jp/hobbyman/new/"
+        template="https://hb.afl.rakuten.co.jp/hgc/g00test.abc/?pc="+urllib.parse.quote(old_item,safe="")+"&rafcid=keepme"
+        rebuilt=refresh.rebuild_same_shop_affiliate(template,new_item,12345678)
+        self.assertTrue(refresh.safe_affiliate(rebuilt,new_item))
+        parsed=urllib.parse.urlparse(rebuilt)
+        query=urllib.parse.parse_qs(parsed.query)
+        self.assertEqual(query["rafcid"],["keepme"])
+        self.assertEqual(query["m"],["http://m.rakuten.co.jp/hobbyman/i/12345678/"])
+
+    def test_same_shop_affiliate_template_requires_verified_same_shop_source(self):
+        import urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/new/",
+            "name":"N-BOX JF5 JF6 JOY サンシェード フルセット",
+            "identityGroups":[["N-BOX"],["JF5"],["JF6"],["JOY"],["サンシェード"]],
+            "forbiddenTerms":[]
+        }
+        old_item="https://item.rakuten.co.jp/hobbyman/old/"
+        affiliate="https://hb.afl.rakuten.co.jp/hgc/g00test.abc/?pc="+urllib.parse.quote(old_item,safe="")
+        previous={"old":{"itemUrl":old_item,"affiliateUrl":affiliate,"verifiedAt":"2026-10-06T00:00:00Z","audit":{"status":"verified_live"}}}
+        original=refresh.exact_page_info
+        try:
+            refresh.exact_page_info=lambda _:{"itemId":999,"price":12000,"image":"https://example.com/x.jpg","title":seed["name"]}
+            candidate=refresh.same_shop_affiliate_template_candidate(seed,previous)
+            self.assertEqual(candidate["source"],"same_shop_affiliate_template")
+            self.assertEqual(candidate["price"],12000)
+            self.assertTrue(refresh.safe_affiliate(candidate["url"],seed["itemUrl"]))
+            other={"old":{"itemUrl":"https://item.rakuten.co.jp/other/old/","affiliateUrl":affiliate,"verifiedAt":"2026-10-06T00:00:00Z","audit":{"status":"verified_live"}}}
+            self.assertIsNone(refresh.same_shop_affiliate_template_candidate(seed,other))
+        finally:
+            refresh.exact_page_info=original
+
     def test_same_shop_identity_listing_is_allowed_but_other_shop_is_not(self):
         seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/old-slug/","identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["サンシェード"]],"forbiddenTerms":[]}
         same={"name":"N-VAN JJ1 JJ2 サンシェード フルセット","itemUrl":"https://item.rakuten.co.jp/hobbyman/new-slug/"}
