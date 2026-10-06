@@ -259,12 +259,26 @@ def exact_page_details(seed):
     """Read exact Rakuten sales metadata plus display fields for the same-shop fallback."""
     try:
         page=fetch_text_cached(seed['itemUrl'])
-    except Exception:
+    except Exception as e:
+        print('CAR_STAY_PAGE_DIAG',seed.get('productId'),'fetch_error',type(e).__name__)
         return None
     marker='"itemInfoSku":'
     if marker not in page:
+        title=_meta_content(page,'og:title')
+        image=_meta_content(page,'og:image')
+        has_groups=required_groups_ok(page,seed)
+        item_patterns=[
+            re.search(r'"itemId"\s*:\s*(\d+)',page),
+            re.search(r'/i/(\d{6,})/?',page),
+            re.search(r'itemId=(\d+)',page)
+        ]
+        guessed_item=next((m.group(1) for m in item_patterns if m),None)
+        print('CAR_STAY_PAGE_DIAG',seed.get('productId'),'no_itemInfoSku',json.dumps({
+            'len':len(page),'title':title[:100],'image':bool(image),'groups':has_groups,'itemId':guessed_item
+        },ensure_ascii=False))
         return None
     if not required_groups_ok(page,seed):
+        print('CAR_STAY_PAGE_DIAG',seed.get('productId'),'identity_mismatch',len(page))
         raise ValueError('page_identity_mismatch')
     info,_=json.JSONDecoder().raw_decode(page.split(marker,1)[1])
     if info.get('sellType')!='NORMAL':
