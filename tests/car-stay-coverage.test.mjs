@@ -14,6 +14,10 @@ test("CAR STAY coverage report enumerates every vehicle configuration without en
     assert.ok(report.summary.configurations>=6);
     assert.ok(Array.isArray(report.holes));
     assert.ok(Array.isArray(report.byVehicle));
+    assert.equal(report.summary.privacyCoveragePct,100,"all supported configurations must keep a verified privacy product");
+    assert.equal(report.summary.sleepCoveragePct,100,"all supported configurations must keep a verified sleep/floor product");
+    assert.equal(report.summary.revenueHoles,0,"supported CAR STAY configurations must not regress to a product coverage hole");
+    assert.deepEqual(report.holes,[]);
     assert.ok(report.byVehicle.some(v=>v.vehicleId==="honda-nbox-jf5-jf6"));
     assert.ok(report.configurations.every(r=>typeof r.privacy.count==="number"&&typeof r.sleep.count==="number"));
     const freed=report.configurations.filter(r=>r.vehicleId==="honda-freed-gt").map(r=>r.config);
