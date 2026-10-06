@@ -48,9 +48,25 @@
     }
   ],
   "searchQueries": [
-    "o017",
-    "シエンタ 7人乗り 全席用 車中泊フラットマットレス",
-    "MXPC10G MXPL10G MXPL15G 7人乗り 車中泊"
+    "シエンタ 3代目 7人乗り 全席用 車中泊フラットマットレス",
+    "シエンタ MXPC10G MXPL10G MXPL15G 7人乗り 車中泊",
+    "シエンタ 7人乗り 全席用 車中泊",
+    "o017"
   ],
-  "rakutenItemCode": "suwariba:o017"
+  "rakutenItemCode": "suwariba:o017",
+  "candidateIdentityGroups": [
+    [
+      "シエンタ"
+    ],
+    [
+      "7人乗り"
+    ],
+    [
+      "全席用"
+    ],
+    [
+      "車中泊",
+      "フラットマット"
+    ]
+  ]
 }
