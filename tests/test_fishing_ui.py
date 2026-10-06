@@ -57,6 +57,17 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn('id="shareBtn"', self.app)
         self.assertIn("#plan=", self.app)
 
+    def test_camp_like_resume_and_progress_flow(self):
+        self.assertIn('DRAFT_KEY="sotojitakuFishingDraft"', self.app)
+        self.assertIn("persistDraft", self.app)
+        self.assertIn("resumeDraft", self.app)
+        self.assertIn("fishing_diagnosis_resume", self.app)
+        self.assertIn('id="progressText"', self.index)
+        self.assertIn('id="progressLine"', self.index)
+        self.assertIn('class="checkmark"', self.app)
+        self.assertIn("選んだ内容は、このブラウザに保存されます。", self.app)
+        self.assertIn("つづきから", self.app)
+
     def test_saved_plan_return_flow(self):
         self.assertIn('id="savedBtn"', self.index)
         self.assertIn("readSavedPlan", self.app)
