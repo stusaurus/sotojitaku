@@ -1,15 +1,14 @@
 {
-  "productId": "hustler-mr52-92-atmys-kurumat4",
+  "productId": "hustler-mr52-92-atmys-kurumat1",
   "name": "ハスラー MR52S/MR92S 段差解消 シートフラットクッション",
   "brand": "アトマイズ",
   "query": "ハスラー MR52S MR92S 段差解消 車中泊 マット",
-  "itemUrl": "https://item.rakuten.co.jp/atmys/kurumat-black-hustler-mr52s-4/",
+  "itemUrl": "https://item.rakuten.co.jp/atmys/kurumat-black-hustler-mr52s-1/",
   "gapIds": [
-    "floor_step",
-    "sleep_surface"
+    "floor_step"
   ],
   "recommendationRole": "beginner_alternative",
-  "score": 93,
+  "score": 89,
   "identityGroups": [
     [
       "ハスラー",
@@ -34,8 +33,8 @@
     "MR31S",
     "MR41S"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/atmys/kurumat-black-hustler-mr52s-4/",
-  "fitCheckedAt": "2026-10-05",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/atmys/kurumat-black-hustler-mr52s-1/",
+  "fitCheckedAt": "2026-10-06",
   "vehicleFit": [
     {
       "vehicleId": "suzuki-hustler-mr52s-mr92s",
@@ -43,8 +42,8 @@
     }
   ],
   "searchQueries": [
-    "kurumat-black-hustler-mr52s-4",
-    "ハスラー MR52S MR92S 段差解消",
-    "ハスラー MR52S 車中泊 マット"
+    "01k-g018-ca",
+    "kurumat-black-hustler-mr52s-1",
+    "ハスラー MR52S MR92S 段差解消"
   ]
 }
