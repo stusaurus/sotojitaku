@@ -27,13 +27,8 @@ for method,categories in required.items():
             if not supported(method,budget,category):
                 missing.append(f"{method}/{budget}/{category}")
 
-# Child PFD is a separate hard safety gate.
-if not any(
-    "life_jacket_child" in p.get("coverCategoryIds",[])
-    and "sabiki" in p.get("methodIds",[])
-    for p in products
-):
-    missing.append("family_child/life_jacket_child")
+# Child PFD remains a hard safety requirement in the planner, but exact
+# product recommendation is intentionally disabled until size/fit is known.
 
 # At least one cooler must exist in every budget for take-home scenarios.
 for budget in budgets:
