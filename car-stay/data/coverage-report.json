@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T12:40:28.259Z",
-  "catalogUpdatedAt": "2026-10-06T12:36:20.757568+00:00",
-  "liveProductCount": 30,
+  "generatedAt": "2026-10-06T13:09:32.200Z",
+  "catalogUpdatedAt": "2026-10-06T13:05:38.462632+00:00",
+  "liveProductCount": 32,
   "summary": {
     "configurations": 18,
     "privacyCovered": 18,
-    "sleepCovered": 17,
+    "sleepCovered": 18,
     "privacyCoveragePct": 100,
-    "sleepCoveragePct": 94,
-    "monetizableConfigurations": 17,
-    "monetizableCoveragePct": 94,
-    "revenueHoles": 1,
-    "measurementFallbackProducts": 0,
+    "sleepCoveragePct": 100,
+    "monetizableConfigurations": 18,
+    "monetizableCoveragePct": 100,
+    "revenueHoles": 0,
+    "measurementFallbackProducts": 1,
     "measurementFallbackHoles": 0,
-    "unmonetizedHoles": 1
+    "unmonetizedHoles": 0
   },
   "byVehicle": [
     {
@@ -40,9 +40,9 @@
       "vehicle": "FREED",
       "configurations": 5,
       "privacyCovered": 5,
-      "sleepCovered": 4,
+      "sleepCovered": 5,
       "privacyCoveragePct": 100,
-      "sleepCoveragePct": 80
+      "sleepCoveragePct": 100
     },
     {
       "vehicleId": "suzuki-hustler-mr52s-mr92s",
@@ -81,19 +81,7 @@
       "sleepCoveragePct": 100
     }
   ],
-  "holes": [
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 7,
-        "trim": "AIR EX"
-      },
-      "measurementFallback": false
-    }
-  ],
+  "holes": [],
   "configurations": [
     {
       "vehicleId": "honda-nbox-jf5-jf6",
@@ -344,12 +332,16 @@
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt7-wecar-kbl009-r023"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt7-wecar-kbl009-r023"
+        ]
       },
       "surface": {
         "count": 0,
