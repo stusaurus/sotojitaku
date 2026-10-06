@@ -239,3 +239,26 @@ test('vehicle SEO hub links directly to all two-person entries',()=>{
   const hub=read('car-stay/car/index.html');
   for(const slug of slugs)assert.ok(hub.includes('./'+slug+'/2people/'),slug+' two-person hub link');
 });
+
+
+test('FREED 7-seat SEO entry is substantive, fixed to AIR EX and Builder-linked',()=>{
+  const page=read('car-stay/car/freed/7people/index.html');
+  const parent=read('car-stay/car/freed/index.html');
+  const sitemap=read('sitemap.xml');
+  const js=read('car-stay/seo.js');
+  assert.ok(page.length>5500,'FREED 7-seat page should not be thin');
+  assert.match(page,/rel="canonical"/);
+  assert.match(page,/FAQPage/);
+  assert.match(page,/QUICK MEASURE/);
+  assert.match(page,/AIR EX/);
+  assert.ok(page.includes('vehicle=honda-freed-gt'));
+  assert.ok(page.includes('seatCount=7'));
+  assert.ok(page.includes('trim=AIR%20EX'));
+  assert.ok(page.includes('party=2'));
+  assert.ok(page.includes('entry=freed-7people'));
+  assert.ok(parent.includes('./7people/'));
+  assert.ok(sitemap.includes('/car-stay/car/freed/7people/'));
+  assert.match(js,/"7people":\["floor_step","sleep_surface"\]/);
+  assert.match(js,/SEO_FIXED_CONFIGS/);
+  assert.match(js,/"freed:7people":\{seatCount:7,trim:"AIR EX"\}/);
+});

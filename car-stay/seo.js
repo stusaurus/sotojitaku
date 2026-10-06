@@ -67,7 +67,11 @@ const SEO_VEHICLES={
 };
 const SEO_GAPS={
   mat:["floor_step","sleep_surface"],
-  shade:["privacy_full"]
+  shade:["privacy_full"],
+  "7people":["floor_step","sleep_surface"]
+};
+const SEO_FIXED_CONFIGS={
+  "freed:7people":{seatCount:7,trim:"AIR EX"}
 };
 const SEO_CONFIGS={
   "n-box":[
@@ -171,17 +175,19 @@ async function renderVerifiedProducts(){
     const response=await fetch(root+"data/audited-products.json",{cache:"no-store"});
     if(!response.ok)return;
     const payload=await response.json();
-    const allItems=(payload.products||[])
-      .filter(p=>safeSeoProduct(p,vehicleIds,gaps))
+    const fixedConfig=SEO_FIXED_CONFIGS[ctx.vehicle_slug+":"+ctx.intent_slug]||null;
+    const matched=(payload.products||[])
+      .filter(p=>safeSeoProduct(p,vehicleIds,gaps));
+    const allItems=(fixedConfig?matched.filter(p=>fitSupportsConfig(p,vehicleIds,fixedConfig)):matched)
       .sort((a,b)=>(b.score||0)-(a.score||0));
     if(!allItems.length)return;
 
-    const options=SEO_CONFIGS[ctx.vehicle_slug]||[];
-    const needPicker=configPickerNeeded(allItems,vehicleIds,options);
+    const options=fixedConfig?[]:(SEO_CONFIGS[ctx.vehicle_slug]||[]);
+    const needPicker=!fixedConfig&&configPickerNeeded(allItems,vehicleIds,options);
     const storageKey="sotojitaku_seo_fit_"+ctx.vehicle_slug;
     let selectedKey=needPicker?sessionStorage.getItem(storageKey)||"":"";
     if(!options.some(o=>o.key===selectedKey))selectedKey="";
-    let selectedConfig=options.find(o=>o.key===selectedKey)||null;
+    let selectedConfig=fixedConfig||(options.find(o=>o.key===selectedKey)||null);
 
     const section=document.createElement("section");
     section.className="section seo-products";
