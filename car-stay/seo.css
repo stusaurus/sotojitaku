@@ -20,3 +20,11 @@
 .seo-card-badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .seo-pr{display:inline-flex;align-items:center;background:#efe1cf;color:#7a5632;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800;letter-spacing:.05em}
 .seo-role{display:inline-flex;align-items:center;background:#eef1ec;color:#56645f;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:800}
+
+.seo-fit-picker{margin:18px 0 4px;padding:15px;background:#f2eee5;border:1px solid var(--line);border-radius:16px}
+.seo-fit-picker>b{font-size:13px}.seo-fit-picker>p{margin:4px 0 10px;color:var(--muted);font-size:11px}
+.seo-fit-options{display:flex;flex-wrap:wrap;gap:7px}
+.seo-fit-options button{border:1px solid #c9c0b2;background:#fffaf2;color:#44514f;border-radius:999px;padding:8px 11px;font-size:10px;font-weight:700;cursor:pointer}
+.seo-fit-options button.selected{background:#173e3a;color:#fff;border-color:#173e3a}
+.seo-fit-prompt{border:1px dashed #c6bbaa;background:#fbf7ef;border-radius:16px;padding:16px;color:#53605e}
+.seo-fit-prompt b{font-size:13px}.seo-fit-prompt p{font-size:11px;margin:5px 0 0;color:#7a8582}

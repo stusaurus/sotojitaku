@@ -7,6 +7,8 @@ const STORAGE_KEY="sotojitaku_car_stay_v1";
 const qs=new URLSearchParams(location.search);
 const operatorTest=qs.get("test")==="1";
 const presetVehicle=qs.get("vehicle");
+const presetSeatCount=qs.get("seatCount");
+const presetTrim=qs.get("trim");
 const entrySource=(qs.get("from")||"direct").slice(0,30);
 const entryKey=(qs.get("entry")||"").slice(0,40);
 let analyticsEnabled=localStorage.getItem("sotojitaku_analytics_optout")!=="1";
@@ -284,10 +286,24 @@ loadSaved();
 loadData().then(()=>{
   if(presetVehicle&&db.vehicles.some(v=>v.vehicleId===presetVehicle)){
     state.vehicleId=presetVehicle;
-    state.config={};
+    const v=currentVehicle();
+    const candidate={};
+    const seat=Number(presetSeatCount);
+    if(presetSeatCount&&Number.isFinite(seat)){
+      const allowed=v?.config?.seatCounts||[];
+      const valid=validVehicleConfigs(v);
+      if((valid&&valid.some(x=>Number(x.seatCount)===seat))||(!valid&&allowed.includes(seat)))candidate.seatCount=seat;
+    }
+    if(presetTrim){
+      const allowed=v?.config?.trims||[];
+      const valid=validVehicleConfigs(v);
+      if((valid&&valid.some(x=>x.trim===presetTrim))||(!valid&&allowed.includes(presetTrim)))candidate.trim=presetTrim;
+    }
+    const valid=validVehicleConfigs(v);
+    state.config=valid&&Object.keys(candidate).length&&!valid.some(vc=>Object.entries(candidate).every(([key,value])=>configValueMatches(key,value,vc[key])))?{}:candidate;
     state.step=0;
     save();
-    track("seo_builder_entry",{vehicle_id:presetVehicle});
+    track("seo_builder_entry",{vehicle_id:presetVehicle,seat_count:state.config.seatCount||0,trim:state.config.trim||""});
     showBuilder();
   }else if(state.vehicleId||state.step>0){
     showBuilder();
