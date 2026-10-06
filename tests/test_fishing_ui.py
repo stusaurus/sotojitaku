@@ -102,6 +102,14 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("余裕があれば追加", self.app)
         self.assertIn('class="optional-products"', self.app)
 
+    def test_featured_bundle_card_and_analytics(self):
+        self.assertIn("requiredGapCoverCount", self.app)
+        self.assertIn("product-card-featured", self.app)
+        self.assertIn("最短で揃える", self.app)
+        self.assertIn("このセットを楽天で見る", self.app)
+        self.assertIn("bundle_cover_count", self.app)
+        self.assertIn('data-cover-count="', self.app)
+
     def test_no_purchase_needed_state_is_explicit(self):
         self.assertIn("必須の買い足しはありません。", self.app)
         self.assertIn("選んだ手持ち品で、必要な道具は揃っています。", self.app)
