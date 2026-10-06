@@ -16,3 +16,7 @@
 .seo-buy{display:inline-flex;background:#173e3a;color:#fff;text-decoration:none;border-radius:999px;padding:9px 13px;font-size:11px;font-weight:800}
 .seo-products-note{font-size:10px!important;color:#7d8785!important;margin-top:13px!important}
 @media(max-width:600px){.seo-products{padding:18px}.seo-products-head{display:block}.seo-products-count{display:inline-block;margin-top:10px}.seo-product-card{grid-template-columns:84px 1fr;padding:11px}.seo-product-card img{width:84px;height:84px}}
+
+.seo-card-badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seo-pr{display:inline-flex;align-items:center;background:#efe1cf;color:#7a5632;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800;letter-spacing:.05em}
+.seo-role{display:inline-flex;align-items:center;background:#eef1ec;color:#56645f;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:800}
