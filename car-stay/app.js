@@ -9,6 +9,7 @@ const operatorTest=qs.get("test")==="1";
 const presetVehicle=qs.get("vehicle");
 const presetSeatCount=qs.get("seatCount");
 const presetTrim=qs.get("trim");
+const presetParty=Number(qs.get("party"));
 const entrySource=(qs.get("from")||"direct").slice(0,30);
 const entryKey=(qs.get("entry")||"").slice(0,40);
 let analyticsEnabled=localStorage.getItem("sotojitaku_analytics_optout")!=="1";
@@ -301,9 +302,7 @@ loadData().then(()=>{
     }
     const valid=validVehicleConfigs(v);
     state.config=valid&&Object.keys(candidate).length&&!valid.some(vc=>Object.entries(candidate).every(([key,value])=>configValueMatches(key,value,vc[key])))?{}:candidate;
-    state.step=0;
-    save();
-    track("seo_builder_entry",{vehicle_id:presetVehicle,seat_count:state.config.seatCount||0,trim:state.config.trim||""});
+    if(Number.isInteger(presetParty)&&presetParty>=1&&presetParty<=3){\n      const previous=state.people||[];\n      state.people=Array.from({length:presetParty},(_,i)=>({type:i<2?"adult":"child",height:Number(previous[i]?.height)||(i<2?(i===0?171:160):120)}));\n    }\n    state.step=0;\n    save();\n    track("seo_builder_entry",{vehicle_id:presetVehicle,party_count:state.people.length,seat_count:state.config.seatCount||0,trim:state.config.trim||""});
     showBuilder();
   }else if(state.vehicleId||state.step>0){
     showBuilder();
