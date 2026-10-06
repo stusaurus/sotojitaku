@@ -166,12 +166,39 @@ function safeAffiliate(product){
     return canonicalRakutenItem(product.affiliateUrl)===canonicalRakutenItem(product.itemUrl);
   }catch{return false;}
 }
-export function productEligible(product,{vehicleId,config={},gapId,now=Date.now()}){
+export function measurementFitPlan(product,{measurements={},sleep={}}={}){
+  if(product.fitStrategy!=="measurement")return null;
+  const fit=product.measurementFit||{};
+  const length=Number(measurements.lengthMm)||0;
+  const width=Number(measurements.widthMm)||0;
+  const unitLength=Number(fit.unitLengthMm)||0;
+  const unitWidth=Number(fit.unitWidthMm)||0;
+  const maxUnits=Math.max(1,Number(fit.maxUnits)||1);
+  const targetWidth=Math.max(1,Number(sleep.targetWidth)||unitWidth);
+  if(!length||!width||!unitLength||!unitWidth)return {eligible:false,quantity:0,requiredLengthMm:unitLength,requiredWidthMm:0};
+  const quantity=Math.max(1,Math.ceil(targetWidth/unitWidth));
+  const requiredWidthMm=unitWidth*quantity;
+  return {
+    eligible:quantity<=maxUnits&&length>=unitLength&&width>=requiredWidthMm,
+    quantity,
+    requiredLengthMm:unitLength,
+    requiredWidthMm,
+    measuredLengthMm:length,
+    measuredWidthMm:width
+  };
+}
+
+export function productEligible(product,{vehicleId,config={},gapId,now=Date.now(),measurements={},sleep={}}){
   if(product.audit?.status!=="verified_live")return false;
   if(!product.verifiedAt||!Number.isFinite(Date.parse(product.verifiedAt))||now-Date.parse(product.verifiedAt)>7*86400000)return false;
   if(!product.gapIds?.includes(gapId))return false;
   if(!Number.isFinite(product.price)||product.price<=0||!safeAffiliate(product))return false;
   if(typeof product.image!=="string"||!product.image.startsWith("https://"))return false;
+  const fitStrategy=product.fitStrategy||"vehicle";
+  if(fitStrategy==="measurement"){
+    return measurementFitPlan(product,{measurements,sleep})?.eligible===true;
+  }
+  if(fitStrategy!=="vehicle")return false;
   const fit=product.vehicleFit?.find(v=>v.vehicleId===vehicleId);
   if(!fit||fit.status!=="verified")return false;
   if(fit.seatCounts?.length&&!fit.seatCounts.includes(Number(config.seatCount)))return false;
