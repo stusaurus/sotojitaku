@@ -1,0 +1,50 @@
+{
+  "productId": "sienta10-hobbyman-cradp",
+  "name": "シエンタ 10/15系 防災サンシェード フルセット",
+  "brand": "趣味職人",
+  "query": "シエンタ MXPL MXPC サンシェード 防災 フルセット",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-cradp/",
+  "gapIds": [
+    "privacy_full"
+  ],
+  "recommendationRole": "beginner_default",
+  "score": 97,
+  "identityGroups": [
+    [
+      "シエンタ"
+    ],
+    [
+      "MXPL",
+      "MXPC",
+      "10系",
+      "15系"
+    ],
+    [
+      "サンシェード"
+    ],
+    [
+      "フルセット"
+    ]
+  ],
+  "forbiddenTerms": [
+    "170系",
+    "CP80"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-cradp/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": [
+    {
+      "vehicleId": "toyota-sienta-10-15",
+      "status": "verified",
+      "seatCounts": [
+        5,
+        7
+      ]
+    }
+  ],
+  "searchQueries": [
+    "sienta-mxpl-cradp",
+    "シエンタ MXPL MXPC 防災 サンシェード",
+    "シエンタ 10系 15系 サンシェード フルセット"
+  ]
+}
