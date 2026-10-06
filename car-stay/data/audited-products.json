@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T13:05:38.462632+00:00",
+  "updatedAt": "2026-10-06T13:23:29.594104+00:00",
   "auditPolicyVersion": "carstay-2026-10-06-official-manual-affiliate-v2",
-  "status": "partial",
+  "status": "ok",
   "products": [
     {
       "productId": "universal-atmys-im10cm-maker",
@@ -53,7 +53,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr00280029/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00280029%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000843%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640901/jr00280029_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T13:05:37.617545+00:00",
+      "verifiedAt": "2026-10-06T13:23:27.554135+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -292,7 +292,7 @@
       "itemUrl": "https://item.rakuten.co.jp/wecar/kbl009-r023/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00upzfo.7cx6mf85.g00upzfo.7cx6nd75/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fwecar%2Fkbl009-r023%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fwecar%2Fi%2F10011335%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/wecar/cabinet/wecar/kbl/11wecarkbl09000.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T13:05:36.122919+00:00",
+      "verifiedAt": "2026-10-06T13:23:29.594104+00:00",
       "fitVerifiedAt": "2026-10-06",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -372,7 +372,7 @@
       "itemUrl": "https://item.rakuten.co.jp/autorder/au1175/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u1rfo.7cx6m2b8.g00u1rfo.7cx6n238/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fautorder%2Fau1175%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fautorder%2Fi%2F10001966%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/autorder/cabinet/au1175/au1175_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T13:05:38.086630+00:00",
+      "verifiedAt": "2026-10-06T13:23:28.478864+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -455,7 +455,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/kurumat-black-n-box-jf56/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fkurumat-black-n-box-jf56%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10035501%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/01k-sam/01k-c027-ca.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T13:05:37.919839+00:00",
+      "verifiedAt": "2026-10-06T13:23:27.838079+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -535,7 +535,7 @@
       "itemUrl": "https://item.rakuten.co.jp/zenpou22/za-syzp-lsb-40/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00q9r1o.7cx6m14e.g00q9r1o.7cx6nf71/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fzenpou22%2Fza-syzp-lsb-40%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fzenpou22%2Fi%2F10044619%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/zenpou22/cabinet/07142215/lsb-40.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T12:36:15.404934+00:00",
+      "verifiedAt": "2026-10-06T13:23:27.542701+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -791,7 +791,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr-car14971498%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000437%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12594710/car14971498_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T13:05:37.919839+00:00",
+      "verifiedAt": "2026-10-06T13:23:27.838079+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -880,11 +880,11 @@
       "recommendationRole": "beginner_default",
       "score": 94,
       "price": 6980,
-      "itemCode": "hobbyman:10046485",
+      "itemCode": "",
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fevery-17-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10046485%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-g004-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T12:20:14.164767+00:00",
+      "verifiedAt": "2026-10-06T13:23:29.594104+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -910,11 +910,9 @@
       ],
       "audit": {
         "status": "verified_live",
-        "mode": "rakuten_api_exact_page_item",
-        "salesSource": "daily-cost-jp_github_actions",
-        "fitEvidence": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/",
-        "seedItemUrl": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/",
-        "sharedCatalog": true
+        "mode": "exact_feed_fallback",
+        "salesSource": "worker",
+        "fitEvidence": "https://item.rakuten.co.jp/hobbyman/every-17-cradp/"
       }
     },
     {
@@ -1100,7 +1098,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr00310032/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00310032%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000845%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640914/jr00310032_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T13:05:36.122919+00:00",
+      "verifiedAt": "2026-10-06T13:23:29.594104+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -1134,7 +1132,7 @@
       "itemUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-cradp/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qdx2o.7cx6mca8.g00qdx2o.7cx6n2e8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fsienta-mxpl-cradp%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhobbyman%2Fi%2F10046584%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/hobbyman/cabinet/07317019/09s-sam1/09s-a070-sa.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T13:05:37.617545+00:00",
+      "verifiedAt": "2026-10-06T13:23:27.554135+00:00",
       "fitVerifiedAt": "2026-10-06",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -1230,9 +1228,7 @@
       }
     }
   ],
-  "failures": {
-    "universal-ventlax-inflatable-8cm": "same_shop_identity_listing_not_found"
-  },
+  "failures": {},
   "deferred": {},
   "runtimeBudgetSeconds": 1920.0,
   "shardsMerged": 8,
