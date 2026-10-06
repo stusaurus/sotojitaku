@@ -583,3 +583,72 @@
   .preview-art{height:58px}
   .beginner-copy{padding:38px 22px 44px}
 }
+
+
+/* ===== CAMP interaction parity ===== */
+.camp-progress{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  margin-bottom:16px;
+  color:#6f7b78;
+  font-size:12px;
+  letter-spacing:.08em;
+}
+.progress-line{display:flex;gap:4px;flex:1}
+.progress-line i{height:3px;background:#d8cbb8;flex:1}
+.progress-line i.active{background:#244a4c}
+.legacy-progress{display:none}
+.question-side .panel{max-width:720px}
+.choice-grid{grid-template-columns:1fr;gap:12px}
+.choice-grid-multi{grid-template-columns:repeat(2,minmax(0,1fr))}
+.choice{
+  min-height:64px;
+  border-radius:16px;
+  padding:14px 18px 14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  background:transparent;
+  border:1px solid #d8cbb8;
+}
+.choice:hover{transform:none;background:#ffffff55}
+.choice.selected{border:1px solid #244a4c;background:#244a4c0a;box-shadow:none}
+.choice>span:first-child{font-size:14px;font-weight:600;line-height:1.5;text-align:left}
+.choice .checkmark{
+  display:inline-flex;
+  flex:0 0 auto;
+  width:24px;height:24px;
+  align-items:center;justify-content:center;
+  border:1px solid #d8cbb8;
+  border-radius:50%;
+  color:#244a4c;
+  background:transparent;
+}
+.choice.selected .checkmark{background:#fff;color:#244a4c;border-color:#244a4c}
+.actions{margin-top:28px}
+.actions .primary{width:100%;min-height:56px;justify-content:center}
+.question-back{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  border:0;
+  background:none;
+  color:#6f7b78;
+  padding:8px 0;
+  margin-top:8px;
+  font-size:13px;
+}
+.draft-note{margin:8px 0 0;font-size:10px;color:#909793}
+.visual-top{letter-spacing:.11em}
+.visual-message{font-size:clamp(23px,2.4vw,34px);line-height:1.65}
+@media(max-width:850px){
+  .camp-progress{margin-bottom:18px}
+  .choice-grid-multi{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  .choice-grid-multi{grid-template-columns:1fr}
+  .choice{min-height:60px;padding:13px 15px}
+  .choice>span:first-child{font-size:13px}
+}
