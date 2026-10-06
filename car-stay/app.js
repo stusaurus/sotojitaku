@@ -35,12 +35,39 @@ function selectedGear(){
   return db.gear.filter(g=>state.ownedGear.includes(g.gearId));
 }
 function currentVehicle(){return db.vehicles.find(v=>v.vehicleId===state.vehicleId);}
+function validVehicleConfigs(v){return v?.config?.validConfigs?.length?v.config.validConfigs:null;}
+function configValueMatches(key,current,expected){
+  return key==="seatCount"?Number(current)===Number(expected):current===expected;
+}
 function vehicleConfigComplete(){
   const v=currentVehicle();
   if(!v)return false;
+  const valid=validVehicleConfigs(v);
+  if(valid){
+    return valid.some(vc=>Object.entries(vc).every(([key,value])=>configValueMatches(key,state.config[key],value)));
+  }
   if(v.config?.seatCounts?.length&&!v.config.seatCounts.includes(Number(state.config.seatCount)))return false;
   if(v.config?.trims?.length&&!v.config.trims.includes(state.config.trim))return false;
   return true;
+}
+function configOptions(v,key){
+  const valid=validVehicleConfigs(v);
+  if(!valid)return v?.config?.[key==="seatCount"?"seatCounts":"trims"]||[];
+  const otherKey=key==="seatCount"?"trim":"seatCount";
+  const otherValue=state.config[otherKey];
+  const rows=otherValue===undefined||otherValue===null||otherValue===""?valid:valid.filter(vc=>configValueMatches(otherKey,otherValue,vc[otherKey]));
+  return [...new Set(rows.map(vc=>vc[key]).filter(value=>value!==undefined&&value!==null))];
+}
+function sanitizeVehicleConfig(v,changedKey){
+  const valid=validVehicleConfigs(v);
+  if(!valid)return;
+  const hasSeat=state.config.seatCount!==undefined&&state.config.seatCount!==null&&state.config.seatCount!=="";
+  const hasTrim=state.config.trim!==undefined&&state.config.trim!==null&&state.config.trim!=="";
+  if(hasSeat&&hasTrim&&!valid.some(vc=>configValueMatches("seatCount",state.config.seatCount,vc.seatCount)&&configValueMatches("trim",state.config.trim,vc.trim))){
+    if(changedKey==="seatCount")delete state.config.trim;
+    else if(changedKey==="trim")delete state.config.seatCount;
+    else state.config={};
+  }
 }
 function rules(){return {...DEFAULT_RULES,...db.rules};}
 function inputForEngine(){
@@ -95,9 +122,12 @@ function renderVehicle(){
   const cards=db.vehicles.map(v=>"<button class='choice "+(state.vehicleId===v.vehicleId?"selected":"")+"' data-vehicle='"+esc(v.vehicleId)+"' type='button'><b>"+esc(v.shortLabel)+"</b><small>"+esc(v.generation)+"</small></button>").join("");
   let config="";
   const v=currentVehicle();
-  if(v?.config?.seatCounts?.length)config+="<div class='field'><label>乗車定員</label><select data-config='seatCount'><option value=''>選択</option>"+v.config.seatCounts.map(x=>"<option value='"+x+"' "+(Number(state.config.seatCount)===x?"selected":"")+">"+x+"人乗り</option>").join("")+"</select></div>";
-  if(v?.config?.trims?.length)config+="<div class='field'><label>グレード / 仕様</label><select data-config='trim'><option value=''>選択</option>"+v.config.trims.map(x=>"<option value='"+esc(x)+"' "+(state.config.trim===x?"selected":"")+">"+esc(x)+"</option>").join("")+"</select></div>";
-  panel.innerHTML=wrap("どのクルマで泊まる？","まずは愛車を選びます。未確認寸法は推測せず、必要ならあとで2か所だけ測ります。","<div class='grid'>"+cards+"</div>"+(config?"<div class='form-row' style='margin-top:18px'>"+config+"</div>":"")+"<div class='note'>"+(v&&!vehicleConfigComplete()&&config?"適合商品を正確に出すため、乗車定員・グレードなどを選んでください。":"登録がない車種でも、寝床の長さと幅を測れば判定できる設計です。")+"</div><div class='actions'>"+backButton()+"<button class='primary' data-next type='button' "+(!state.vehicleId||!vehicleConfigComplete()?"disabled":"")+">誰と泊まる？ <span>→</span></button></div>","STEP 1 · 愛車");
+  const seats=configOptions(v,"seatCount");
+  const trims=configOptions(v,"trim");
+  if(seats.length)config+="<div class='field'><label>乗車定員</label><select data-config='seatCount'><option value=''>選択</option>"+seats.map(x=>"<option value='"+x+"' "+(Number(state.config.seatCount)===Number(x)?"selected":"")+">"+x+"人乗り</option>").join("")+"</select></div>";
+  if(trims.length)config+="<div class='field'><label>グレード / 仕様</label><select data-config='trim'><option value=''>選択</option>"+trims.map(x=>"<option value='"+esc(x)+"' "+(state.config.trim===x?"selected":"")+">"+esc(x)+"</option>").join("")+"</select></div>";
+  const configNote=v&&validVehicleConfigs(v)?"実在する乗車定員とグレードの組み合わせだけを表示しています。":"登録がない車種でも、寝床の長さと幅を測れば判定できる設計です。";
+  panel.innerHTML=wrap("どのクルマで泊まる？","まずは愛車を選びます。未確認寸法は推測せず、必要ならあとで2か所だけ測ります。","<div class='grid'>"+cards+"</div>"+(config?"<div class='form-row' style='margin-top:18px'>"+config+"</div>":"")+"<div class='note'>"+(v&&!vehicleConfigComplete()&&config?"適合商品を正確に出すため、乗車定員・グレードなどを選んでください。 "+configNote:configNote)+"</div><div class='actions'>"+backButton()+"<button class='primary' data-next type='button' "+(!state.vehicleId||!vehicleConfigComplete()?"disabled":"")+">誰と泊まる？ <span>→</span></button></div>","STEP 1 · 愛車");
 }
 function renderPeople(){
   const count=state.people.length;
@@ -228,7 +258,11 @@ panel.addEventListener("input",e=>{
   const t=e.target;
   if(t.dataset.height!==undefined)state.people[Number(t.dataset.height)].height=Number(t.value)||0;
   if(t.dataset.personType!==undefined)state.people[Number(t.dataset.personType)].type=t.value;
-  if(t.dataset.config){state.config[t.dataset.config]=t.dataset.config==="seatCount"?Number(t.value)||null:t.value;renderVehicle();}
+  if(t.dataset.config){
+    state.config[t.dataset.config]=t.dataset.config==="seatCount"?Number(t.value)||null:t.value;
+    sanitizeVehicleConfig(currentVehicle(),t.dataset.config);
+    renderVehicle();
+  }
   if(t.dataset.env){
     if(t.dataset.env==="date")state.date=t.value;
     if(t.dataset.env==="region")state.region=t.value;
