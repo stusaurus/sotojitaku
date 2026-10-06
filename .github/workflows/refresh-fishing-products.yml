@@ -41,6 +41,9 @@ jobs:
           npm test
           python -m unittest discover -s tests -p 'test_*.py' -v
 
+      - name: Validate exhaustive diagnosis-to-product scenarios
+        run: node fishing/scripts/check_scenarios.mjs
+
   refresh-main:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
