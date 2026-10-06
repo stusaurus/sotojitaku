@@ -231,9 +231,14 @@ def rakuten_api_exact_candidate(seed):
     headers={**HEADERS,'accessKey':env['RAKUTEN_ACCESS_KEY']}
     shop=rakuten_shop(seed['itemUrl'])
     item_codes=[]
+    explicit=str(seed.get('rakutenItemCode') or '').strip()
+    if explicit:
+        item_codes.append(explicit)
     slug=rakuten_item_slug(seed['itemUrl'])
     if shop and slug:
-        item_codes.append(f"{shop}:{slug}")
+        slug_code=f"{shop}:{slug}"
+        if slug_code not in item_codes:
+            item_codes.append(slug_code)
     page_info=exact_page_info(seed)
     if page_info:
         numeric_code=f"{shop}:{page_info['itemId']}"
