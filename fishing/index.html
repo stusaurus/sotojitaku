@@ -18,36 +18,97 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="../"><span>SOTOJITAKU</span><b>FISHING</b></a>
+    <a class="brand" href="../"><span>SOTOJITAKU</span></a>
+    <nav class="family-nav" aria-label="SOTOJITAKU サービス">
+      <a href="../">CAMP</a>
+      <a href="../car-stay/">CAR STAY</a>
+      <a href="./" aria-current="page">FISHING</a>
+    </nav>
     <button id="resetBtn" class="ghost" type="button" hidden>最初から</button>
   </header>
 
   <main>
     <section id="hero" class="hero">
-      <div class="hero-water" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <p class="eyebrow">FIRST CAST · FIRST FISH</p>
-        <h1>はじめての釣りを、<br><em>あなた仕立てに。</em></h1>
-        <p class="lead">魚の名前も、竿の種類も知らなくて大丈夫。<br>だれと、どう楽しみたいかから、最初の一匹までの支度をつくります。</p>
-        <div class="hero-actions">
-          <button id="startBtn" class="primary" type="button">最初の一匹をつくる <span>→</span></button>
-          <button id="savedBtn" class="saved-plan" type="button" hidden>保存したプランを見る</button>
+      <div class="hero-stage">
+        <div class="hero-water" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="hero-overline">SOTOJITAKU</p>
+          <h1>FISHING</h1>
+          <p class="hero-tagline">はじめての釣りを、あなた仕立てに。</p>
+          <p class="lead">魚の名前も、竿の種類も知らなくて大丈夫。<br>だれと、どう楽しみたいかから、最初の一匹までの支度をつくります。</p>
+          <div class="hero-actions">
+            <button id="startBtn" class="primary" type="button">無料で診断をはじめる <span>→</span></button>
+            <button id="savedBtn" class="saved-plan" type="button" hidden>保存したプランを見る</button>
+          </div>
+          <p class="micro">約2〜3分・登録不要 · 持っている物は買い直しません</p>
+          <p class="pr"><strong>PR</strong> 楽天アフィリエイト等の広告を利用しています。購入により運営者に成果報酬が入る場合があります。</p>
         </div>
-        <p class="micro">約2〜3分・登録不要 · 持っている物は買い直しません</p>
-        <p class="pr"><strong>PR</strong> 楽天アフィリエイト等の広告を利用しています。購入により運営者に成果報酬が入る場合があります。</p>
+
+        <div class="hero-scene" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="horizon"></div>
+          <svg viewBox="0 0 700 520">
+            <path class="pier" d="M0 390h470l46 28H0z"/>
+            <path class="person" d="M426 226c18 0 31 14 31 31 0 14-9 25-21 29l7 74h-42l8-75c-9-6-15-16-15-28 0-17 14-31 32-31z"/>
+            <path class="rod" d="M438 284 Q535 183 645 156"/>
+            <path class="line" d="M645 156 Q668 244 630 354"/>
+            <circle class="float" cx="630" cy="354" r="5"/>
+            <path class="fish" d="M585 390c23-19 54-19 75 0-21 19-52 19-75 0zm0 0-24-16v32z"/>
+          </svg>
+          <div class="scene-caption"><span></span>知識より先に、行ける形をつくる。</div>
+        </div>
       </div>
-      <div class="hero-scene" aria-hidden="true">
-        <div class="sun"></div>
-        <div class="horizon"></div>
-        <svg viewBox="0 0 700 520">
-          <path class="pier" d="M0 390h470l46 28H0z"/>
-          <path class="person" d="M426 226c18 0 31 14 31 31 0 14-9 25-21 29l7 74h-42l8-75c-9-6-15-16-15-28 0-17 14-31 32-31z"/>
-          <path class="rod" d="M438 284 Q535 183 645 156"/>
-          <path class="line" d="M645 156 Q668 244 630 354"/>
-          <circle class="float" cx="630" cy="354" r="5"/>
-          <path class="fish" d="M585 390c23-19 54-19 75 0-21 19-52 19-75 0zm0 0-24-16v32z"/>
-        </svg>
-        <div class="scene-caption"><span></span>知識より先に、行ける形をつくる。</div>
+
+      <div class="diagnosis-intro">
+        <div class="intro-copy">
+          <p class="intro-eyebrow">FISHING DIAGNOSIS</p>
+          <h2>あなたにぴったりの<br>釣りスタイルを診断</h2>
+          <p class="intro-lead">だれと行くか、どんな時間にしたいか、予算、手持ちの道具から、今のあなたに合う最初の釣りと必要品を組み立てます。</p>
+
+          <div class="benefit-row">
+            <article class="benefit">
+              <div class="benefit-visual benefit-water" aria-hidden="true"><span></span></div>
+              <b>01</b><strong>遊び方がわかる</strong>
+              <p>あなたに合った最初の釣り方を提案</p>
+            </article>
+            <article class="benefit">
+              <div class="benefit-visual benefit-reel" aria-hidden="true"><span></span></div>
+              <b>02</b><strong>必要な道具がわかる</strong>
+              <p>本当に必要なアイテムだけを整理</p>
+            </article>
+            <article class="benefit">
+              <div class="benefit-visual benefit-box" aria-hidden="true"><span></span></div>
+              <b>03</b><strong>すぐに始められる</strong>
+              <p>確認済みの商品まで具体的に比較</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="diagnosis-preview" aria-hidden="true">
+          <div class="preview-top"><span>STEP 01 / 07</span><i><b></b></i></div>
+          <h3>だれと釣りに行きますか？</h3>
+          <p>最初の一日を一緒に過ごす人を選んでください。</p>
+          <div class="preview-grid">
+            <div class="preview-choice selected"><span class="preview-art solo"></span><strong>ひとりで</strong><small>自分のペースで気軽に</small></div>
+            <div class="preview-choice"><span class="preview-art pair"></span><strong>ふたりで</strong><small>一緒にのんびり楽しむ</small></div>
+            <div class="preview-choice"><span class="preview-art family"></span><strong>子どもと家族で</strong><small>安全優先で楽しみたい</small></div>
+            <div class="preview-choice"><span class="preview-art group"></span><strong>大人3人以上で</strong><small>みんなで楽しみたい</small></div>
+          </div>
+          <div class="preview-next">つぎへ <span>→</span></div>
+        </div>
+      </div>
+
+      <div class="beginner-band">
+        <div class="beginner-art" aria-hidden="true">
+          <div class="gear-case case-a"></div><div class="gear-case case-b"></div>
+          <div class="lantern"></div><div class="beginner-wave"></div>
+        </div>
+        <div class="beginner-copy">
+          <p>FOR BEGINNERS</p>
+          <h2>はじめての釣りでも、安心。</h2>
+          <span>道具の選び方、仕掛けの準備、安全確認まで。最初の一日に必要なことを、むずかしい言葉を減らしてまとめています。</span>
+          <a href="./guides/">はじめての準備ガイドを見る <b>→</b></a>
+        </div>
       </div>
     </section>
 
