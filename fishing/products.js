@@ -39,8 +39,9 @@ export function productCoverageForInput(product,input={}){
 
 function productRank(product,neededIds,input){
   const covers=productCoverageForInput(product,input).filter(id=>neededIds.has(id)).length;
+  const intentBoost=input?.budget==="long_term"&&product.recommendationRole==="long_term"?70:0;
   return (Number(product.score)||Number(product.recommendationScore)||0)
-    +covers*12+(roleBoost[product.recommendationRole]||0);
+    +covers*12+(roleBoost[product.recommendationRole]||0)+intentBoost;
 }
 
 export function eligibleForCategory(products,{input,plan,categoryId,now=Date.now()}){
