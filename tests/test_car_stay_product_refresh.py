@@ -887,5 +887,39 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_json_quick=original
 
+    def test_exact_page_details_accepts_structured_meta_fallback_only_when_complete(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/test/","identityGroups":[["N-VAN"],["JJ1"],["車中泊"]]}
+        page="""<html>
+        <meta property="og:title" content="N-VAN JJ1 車中泊 マット">
+        <meta property="og:image" content="https://example.com/p.jpg">
+        <meta property="product:price:amount" content="19800">
+        <script type="application/ld+json">{"availability":"https://schema.org/InStock","price":"19800","itemId":12345678}</script>
+        <a href="http://m.rakuten.co.jp/hobbyman/i/12345678/">mobile</a>
+        </html>"""
+        original=refresh.fetch_text_cached
+        try:
+            refresh.fetch_text_cached=lambda _:page
+            details=refresh.exact_page_details(seed)
+            self.assertEqual(details["itemId"],12345678)
+            self.assertEqual(details["price"],19800)
+            self.assertEqual(details["image"],"https://example.com/p.jpg")
+        finally:
+            refresh.fetch_text_cached=original
+
+    def test_exact_page_details_rejects_meta_fallback_without_stock_evidence(self):
+        seed={"itemUrl":"https://item.rakuten.co.jp/hobbyman/test/","identityGroups":[["N-VAN"],["JJ1"],["車中泊"]]}
+        page="""<html>
+        <meta property="og:title" content="N-VAN JJ1 車中泊 マット">
+        <meta property="og:image" content="https://example.com/p.jpg">
+        <meta property="product:price:amount" content="19800">
+        <a href="http://m.rakuten.co.jp/hobbyman/i/12345678/">mobile</a>
+        </html>"""
+        original=refresh.fetch_text_cached
+        try:
+            refresh.fetch_text_cached=lambda _:page
+            self.assertIsNone(refresh.exact_page_details(seed))
+        finally:
+            refresh.fetch_text_cached=original
+
 if __name__=="__main__":
     unittest.main()
