@@ -619,5 +619,33 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
 
+    def test_explicit_rakuten_item_code_is_tried_before_url_slug(self):
+        import os, urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/atmys/kurumat-black-hustler-mr52s-1/",
+            "rakutenItemCode":"atmys:01k-g018-ca",
+            "identityGroups":[["ハスラー"],["MR52S"],["MR92S"],["段差解消","シートフラットクッション"]],
+            "forbiddenTerms":[]
+        }
+        old={k:os.environ.get(k) for k in ["RAKUTEN_APPLICATION_ID","RAKUTEN_ACCESS_KEY","RAKUTEN_AFFILIATE_ID"]}
+        original_fetch,original_page=refresh.fetch_json,refresh.exact_page_info
+        seen=[]
+        try:
+            os.environ["RAKUTEN_APPLICATION_ID"]="app"
+            os.environ["RAKUTEN_ACCESS_KEY"]="key"
+            os.environ["RAKUTEN_AFFILIATE_ID"]="aff"
+            refresh.exact_page_info=lambda _seed:None
+            def fake(url,headers=None):
+                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+                return {"items":[]}
+            refresh.fetch_json=fake
+            refresh.rakuten_api_exact_candidate(seed)
+            self.assertEqual(seen[0]["itemCode"],["atmys:01k-g018-ca"])
+        finally:
+            refresh.fetch_json,refresh.exact_page_info=original_fetch,original_page
+            for k,v in old.items():
+                if v is None: os.environ.pop(k,None)
+                else: os.environ[k]=v
+
 if __name__=="__main__":
     unittest.main()
