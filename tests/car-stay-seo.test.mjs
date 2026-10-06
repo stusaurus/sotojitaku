@@ -175,3 +175,20 @@ test('N-BOX SEO copy treats Slope as a separate validation path',()=>{
   }
   assert.ok(!pages[0].includes('通常・Custom・JOY・Slopeで用品適合が変わる'));
 });
+
+
+test('SEO fit picker gates restricted products and carries the choice into Builder',()=>{
+  const js=read('car-stay/seo.js');
+  const app=read('car-stay/app.js');
+  assert.match(js,/const SEO_CONFIGS=/);
+  assert.match(js,/"sienta":\[/);
+  assert.match(js,/"freed":\[/);
+  assert.match(js,/seo_config_select/);
+  assert.match(js,/searchParams\.set\("seatCount"/);
+  assert.match(js,/searchParams\.set\("trim"/);
+  assert.match(js,/違う乗車定員・グレードの商品を出さない/);
+  assert.match(app,/presetSeatCount=qs\.get\("seatCount"\)/);
+  assert.match(app,/presetTrim=qs\.get\("trim"\)/);
+  assert.match(app,/seat_count:state\.config\.seatCount\|\|0/);
+  assert.match(app,/trim:state\.config\.trim\|\|""/);
+});
