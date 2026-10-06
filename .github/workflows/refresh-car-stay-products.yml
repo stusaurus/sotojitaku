@@ -31,6 +31,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Check Rakuten API secret availability
+        env:
+          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          print("CAR_STAY_RAKUTEN_SECRET_STATUS", {
+              "application_id": bool(os.getenv("RAKUTEN_APPLICATION_ID")),
+              "access_key": bool(os.getenv("RAKUTEN_ACCESS_KEY")),
+              "affiliate_id": bool(os.getenv("RAKUTEN_AFFILIATE_ID")),
+          })
+          PY
       - name: Audit CAR STAY shard
         env:
           RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
