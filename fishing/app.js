@@ -199,16 +199,20 @@ function updateVisual(){
     else if(value)tags.push(optionLabel(q.id,value));
   }
   visualTags.innerHTML=tags.slice(-5).map(t=>`<span>${escapeHtml(t)}</span>`).join("");
+  const captions=[
+    ["まだ何もない。","ここから、最初の一匹がはじまる。"],
+    ["だれと行くかで、","釣りの一日も変わります。"],
+    ["やってみたい時間を、","少しずつ形に。"],
+    ["エサも、無理のないものから。","初めてでも扱いやすく。"],
+    ["持ち帰るかどうかで、","必要な道具を整えます。"],
+    ["荷物は、できるだけ軽く。","必要なものだけを。"],
+    ["全部買わなくて大丈夫。","手持ちを活かして仕上げます。"]
+  ];
   const preview=selectPlan(answers,plansData);
-  if(index>=1&&preview){
-    miniPlan.textContent=preview.methodName+"が近そう";
-    visualMessage.textContent=preview.headline;
-  }else{
-    miniPlan.textContent="まだ何も決めなくて大丈夫";
-    visualMessage.textContent="答えるほど、あなたの最初の釣りが見えてきます。";
-  }
+  miniPlan.textContent=preview&&index>=1?preview.methodName+"が近そう":"BUILD YOUR FISHING";
+  const caption=captions[index]||captions[captions.length-1];
+  visualMessage.innerHTML=escapeHtml(caption[0])+"<br>"+escapeHtml(caption[1]);
 }
-
 function renderQuestion(){
   const questions=questionsData.questions;
   const q=questions[index];
