@@ -69,7 +69,29 @@ const SEO_GAPS={
   mat:["floor_step","sleep_surface"],
   shade:["privacy_full"]
 };
+const SEO_CONFIGS={
+  "n-box":[
+    {key:"nbox",label:"N-BOX",trim:"N-BOX"},
+    {key:"custom",label:"N-BOX Custom",trim:"N-BOX Custom"},
+    {key:"joy",label:"N-BOX JOY",trim:"N-BOX JOY"}
+  ],
+  "sienta":[
+    {key:"5",label:"5人乗り",seatCount:5},
+    {key:"7",label:"7人乗り",seatCount:7}
+  ],
+  "freed":[
+    {key:"air6",label:"AIR 6人",trim:"AIR",seatCount:6},
+    {key:"airex6",label:"AIR EX 6人",trim:"AIR EX",seatCount:6},
+    {key:"airex7",label:"AIR EX 7人",trim:"AIR EX",seatCount:7},
+    {key:"cross5",label:"CROSSTAR 5人",trim:"CROSSTAR",seatCount:5},
+    {key:"cross6",label:"CROSSTAR 6人",trim:"CROSSTAR",seatCount:6}
+  ]
+};
+const seoViewedProducts=new Set();
 
+function html(value){
+  return String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
 function canonicalRakuten(value){
   try{
     let u=new URL(value);
@@ -91,6 +113,15 @@ function safeSeoProduct(product,vehicleIds,gaps,now=Date.now()){
   if(canonicalRakuten(product.affiliateUrl)!==canonicalRakuten(product.itemUrl))return false;
   return (product.vehicleFit||[]).some(f=>f.status==="verified"&&vehicleIds.includes(f.vehicleId));
 }
+function fitSupportsConfig(product,vehicleIds,config){
+  return (product.vehicleFit||[]).some(f=>{
+    if(f.status!=="verified"||!vehicleIds.includes(f.vehicleId))return false;
+    if(config?.seatCount&&f.seatCounts?.length&&!f.seatCounts.includes(Number(config.seatCount)))return false;
+    if(config?.trim&&f.trims?.length&&!f.trims.includes(config.trim))return false;
+    if(config?.trim&&f.exclusions?.includes(config.trim))return false;
+    return true;
+  });
+}
 function fitLabel(product,vehicleIds){
   const fits=(product.vehicleFit||[]).filter(f=>f.status==="verified"&&vehicleIds.includes(f.vehicleId));
   const labels=[];
@@ -108,6 +139,24 @@ function fitLabel(product,vehicleIds){
 function yen(value){
   return new Intl.NumberFormat("ja-JP",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value);
 }
+function builderWithConfig(anchor,config){
+  const link=anchor.querySelector("a.cta");
+  if(!link)return "";
+  const u=new URL(link.href,location.href);
+  u.searchParams.delete("seatCount");
+  u.searchParams.delete("trim");
+  if(config?.seatCount)u.searchParams.set("seatCount",String(config.seatCount));
+  if(config?.trim)u.searchParams.set("trim",config.trim);
+  link.href=u.toString();
+  return link.href;
+}
+function configPickerNeeded(items,vehicleIds,options){
+  return Boolean(options?.length&&items.some(p=>options.some(option=>!fitSupportsConfig(p,vehicleIds,option))));
+}
+function productCards(items,vehicleIds){
+  return items.map(p=>"<article class='seo-product-card'><img src='"+html(p.image)+"' alt='' loading='lazy'><div><span class='seo-fit'>"+html(fitLabel(p,vehicleIds))+"</span><h3>"+html(p.name)+"</h3><div class='seo-product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+html(String(p.verifiedAt||"").slice(0,10))+"</small></div><a class='seo-buy' data-seo-product='"+html(p.productId)+"' href='"+html(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener'>楽天で見る →</a></div></article>").join("");
+}
+
 async function renderVerifiedProducts(){
   const ctx=context();
   const vehicleIds=SEO_VEHICLES[ctx.vehicle_slug];
@@ -120,25 +169,69 @@ async function renderVerifiedProducts(){
     const response=await fetch(root+"data/audited-products.json",{cache:"no-store"});
     if(!response.ok)return;
     const payload=await response.json();
-    const items=(payload.products||[])
+    const allItems=(payload.products||[])
       .filter(p=>safeSeoProduct(p,vehicleIds,gaps))
-      .sort((a,b)=>(b.score||0)-(a.score||0))
-      .slice(0,3);
-    if(!items.length)return;
+      .sort((a,b)=>(b.score||0)-(a.score||0));
+    if(!allItems.length)return;
+
+    const options=SEO_CONFIGS[ctx.vehicle_slug]||[];
+    const needPicker=configPickerNeeded(allItems,vehicleIds,options);
+    const storageKey="sotojitaku_seo_fit_"+ctx.vehicle_slug;
+    let selectedKey=needPicker?sessionStorage.getItem(storageKey)||"":"";
+    if(!options.some(o=>o.key===selectedKey))selectedKey="";
+    let selectedConfig=options.find(o=>o.key===selectedKey)||null;
 
     const section=document.createElement("section");
     section.className="section seo-products";
-    section.innerHTML="<div class='seo-products-head'><div><p class='seo-products-kicker'>LIVE AUDITED PICKS</p><h2>いま確認できる適合候補</h2><p>無料対策を試したあと、それでも必要なら。販売・価格・楽天リンクを7日以内に監査できた商品だけです。</p></div><span class='seo-products-count'>"+items.length+"件</span></div><div class='seo-product-grid'>"+items.map(p=>"<article class='seo-product-card'><img src='"+p.image.replace(/'/g,"&#39;")+"' alt='' loading='lazy'><div><span class='seo-fit'>"+fitLabel(p,vehicleIds).replace(/</g,"&lt;")+"</span><h3>"+String(p.name||"").replace(/[<&]/g,m=>m==="<"?"&lt;":"&amp;")+"</h3><div class='seo-product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+String(p.verifiedAt||"").slice(0,10)+"</small></div><a class='seo-buy' data-seo-product='"+p.productId+"' href='"+p.affiliateUrl.replace(/'/g,"%27")+"' target='_blank' rel='nofollow sponsored noopener'>楽天で見る →</a></div></article>").join("")+"</div><p class='seo-products-note'>※ここは「あなた専用の最終推薦」ではありません。乗車定員・グレード・寝床・気温まで合わせる場合は下のBuilderで判定してください。</p>";
+    section.innerHTML="<div class='seo-products-head'><div><p class='seo-products-kicker'>LIVE AUDITED PICKS</p><h2>いま確認できる適合候補</h2><p>無料対策を試したあと、それでも必要なら。販売・価格・楽天リンクを7日以内に監査できた商品だけです。</p></div><span class='seo-products-count' data-product-count>—</span></div>"+(needPicker?"<div class='seo-fit-picker'><b>あなたの仕様を選ぶ</b><p>仕様が合う商品だけに絞ります。選択内容はBuilderにも引き継ぎます。</p><div class='seo-fit-options'>"+options.map(o=>"<button type='button' data-seo-fit='"+html(o.key)+"'>"+html(o.label)+"</button>").join("")+"</div></div>":"")+"<div class='seo-product-grid' data-product-grid></div><p class='seo-products-note'>※ここは購入意図が高い検索向けの短縮導線です。人数・身長・寝床・気温まで合わせる最終判定は下のBuilderで行います。</p>";
     anchor.parentNode.insertBefore(section,anchor);
 
-    if(enabled&&window.gtag){
-      for(const p of items)window.gtag("event","seo_product_view",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:p.productId});
+    const grid=section.querySelector("[data-product-grid]");
+    const count=section.querySelector("[data-product-count]");
+    const paint=()=>{
+      if(needPicker&&!selectedConfig){
+        grid.innerHTML="<div class='seo-fit-prompt'><b>まず仕様を1つ選んでください。</b><p>違う乗車定員・グレードの商品を出さないため、選択前は購入候補を表示しません。</p></div>";
+        count.textContent="仕様選択";
+        builderWithConfig(anchor,null);
+        return;
+      }
+      const visible=(selectedConfig?allItems.filter(p=>fitSupportsConfig(p,vehicleIds,selectedConfig)):allItems).slice(0,3);
+      count.textContent=visible.length+"件";
+      builderWithConfig(anchor,selectedConfig);
+      if(!visible.length){
+        grid.innerHTML="<div class='seo-fit-prompt'><b>この仕様で、いま監査を通った商品はありません。</b><p>合わない商品を代わりに出しません。下のBuilderなら手持ち品と0円対策まで含めて判定できます。</p></div>";
+        return;
+      }
+      grid.innerHTML=productCards(visible,vehicleIds);
+      if(enabled&&window.gtag){
+        for(const p of visible){
+          const key=ctx.vehicle_slug+":"+ctx.intent_slug+":"+selectedKey+":"+p.productId;
+          if(seoViewedProducts.has(key))continue;
+          seoViewedProducts.add(key);
+          window.gtag("event","seo_product_view",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:p.productId,seat_count:selectedConfig?.seatCount||0,trim:selectedConfig?.trim||""});
+        }
+      }
+    };
+
+    if(selectedConfig){
+      section.querySelector("[data-seo-fit='"+CSS.escape(selectedConfig.key)+"']")?.classList.add("selected");
     }
     section.addEventListener("click",event=>{
+      const fit=event.target.closest("[data-seo-fit]");
+      if(fit){
+        selectedKey=fit.dataset.seoFit;
+        selectedConfig=options.find(o=>o.key===selectedKey)||null;
+        sessionStorage.setItem(storageKey,selectedKey);
+        section.querySelectorAll("[data-seo-fit]").forEach(btn=>btn.classList.toggle("selected",btn===fit));
+        if(enabled&&window.gtag)window.gtag("event","seo_config_select",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,seat_count:selectedConfig?.seatCount||0,trim:selectedConfig?.trim||""});
+        paint();
+        return;
+      }
       const link=event.target.closest("[data-seo-product]");
       if(!link||!enabled||!window.gtag)return;
-      window.gtag("event","seo_affiliate_click",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:link.dataset.seoProduct});
+      window.gtag("event","seo_affiliate_click",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:link.dataset.seoProduct,seat_count:selectedConfig?.seatCount||0,trim:selectedConfig?.trim||""});
     });
+    paint();
   }catch{}
 }
 renderVerifiedProducts();
