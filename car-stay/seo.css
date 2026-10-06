@@ -16,3 +16,11 @@
 .seo-buy{display:inline-flex;background:#173e3a;color:#fff;text-decoration:none;border-radius:999px;padding:9px 13px;font-size:11px;font-weight:800}
 .seo-products-note{font-size:10px!important;color:#7d8785!important;margin-top:13px!important}
 @media(max-width:600px){.seo-products{padding:18px}.seo-products-head{display:block}.seo-products-count{display:inline-block;margin-top:10px}.seo-product-card{grid-template-columns:84px 1fr;padding:11px}.seo-product-card img{width:84px;height:84px}}
+
+.seo-fit-picker{margin:18px 0 4px;padding:15px;background:#f2eee5;border:1px solid var(--line);border-radius:16px}
+.seo-fit-picker>b{font-size:13px}.seo-fit-picker>p{margin:4px 0 10px;color:var(--muted);font-size:11px}
+.seo-fit-options{display:flex;flex-wrap:wrap;gap:7px}
+.seo-fit-options button{border:1px solid #c9c0b2;background:#fffaf2;color:#44514f;border-radius:999px;padding:8px 11px;font-size:10px;font-weight:700;cursor:pointer}
+.seo-fit-options button.selected{background:#173e3a;color:#fff;border-color:#173e3a}
+.seo-fit-prompt{border:1px dashed #c6bbaa;background:#fbf7ef;border-radius:16px;padding:16px;color:#53605e}
+.seo-fit-prompt b{font-size:13px}.seo-fit-prompt p{font-size:11px;margin:5px 0 0;color:#7a8582}
