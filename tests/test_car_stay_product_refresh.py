@@ -760,5 +760,22 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_json_quick=original
 
+    def test_revenue_hole_seeds_search_vehicle_intent_before_opaque_codes(self):
+        import json
+        from pathlib import Path
+        root=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"
+        expected={
+            "sienta-floor-7.json":["シエンタ","7人乗り","車中泊"],
+            "freed-floor-6.json":["フリード","6人乗り","全席用"],
+            "hustler-floor-atmys.json":["ハスラー","MR52S","車中泊"],
+            "nvan-floor-hobbyman.json":["N-VAN","車中泊ベッド"],
+            "nvan-floor-nomad.json":["N-VAN","全席用","車中泊"]
+        }
+        for filename,tokens in expected.items():
+            seed=json.loads((root/filename).read_text())
+            first=seed["searchQueries"][0]
+            for token in tokens:
+                self.assertIn(token,first,filename)
+
 if __name__=="__main__":
     unittest.main()
