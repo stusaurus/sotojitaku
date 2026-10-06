@@ -291,7 +291,7 @@ function renderCoverage(product,checklist){
 }
 
 function productLabel(p,neededIds){
-  const covers=(p.coverCategoryIds||[]).filter(x=>neededIds.has(x));
+  const covers=(p.effectiveCoverCategoryIds||p.coverCategoryIds||[]).filter(x=>neededIds.has(x));
   if(covers.length>=3)return "まずはこれ · "+covers.length+"項目まとめて揃う";
   if(p.categoryId==="life_jacket_child")return "子どもの安全装備 · 子ども全員分を用意";
   if(p.categoryId==="life_jacket_adult")return "大人の安全装備 · 大人全員分を用意";

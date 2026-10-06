@@ -46,3 +46,54 @@ test("bundle coverage changes checklist state",()=>{
   assert.equal(out.find(x=>x.id==="rig").state,"covered_by_product");
   assert.equal(out.find(x=>x.id==="life_jacket_adult").state,"needed");
 });
+
+
+test("strict bait preference keeps bundle bait unresolved and recommends a matching bait",()=>{
+  const complete=p({
+    productId:"complete",
+    categoryId:"rod_reel",
+    score:96,
+    recommendationRole:"beginner_default",
+    coverCategoryIds:["rod_reel","rig","bait","bucket","fish_grip"],
+    preferenceTags:[]
+  });
+  const lowMessBait=p({
+    productId:"ami",
+    categoryId:"bait",
+    score:97,
+    coverCategoryIds:["bait"],
+    preferenceTags:["low_mess","no_worm"]
+  });
+  const checklist=["rod_reel","rig","bait","bucket","fish_grip"].map(id=>({
+    id,monetizable:true,state:"needed",priority:"required"
+  }));
+  const result=buildProductRecommendations(
+    [complete,lowMessBait],
+    {input:{budget:"balanced",bait:"low_mess"},plan:{methodId:"sabiki"},checklist,now}
+  );
+  assert.equal(result.recommendations.rod_reel.primary.productId,"complete");
+  assert.equal(result.recommendations.bait.primary.productId,"ami");
+  assert.equal(result.recommendations.rod_reel.primary.effectiveCoverCategoryIds.includes("bait"),false);
+  assert.equal(result.coveredCategoryIds.includes("bait"),true);
+  assert.equal(result.selected.length,2);
+});
+
+test("normal bait preference lets a complete set cover bait",()=>{
+  const complete=p({
+    productId:"complete",
+    categoryId:"rod_reel",
+    score:96,
+    recommendationRole:"beginner_default",
+    coverCategoryIds:["rod_reel","rig","bait","bucket","fish_grip"],
+    preferenceTags:[]
+  });
+  const checklist=["rod_reel","rig","bait","bucket","fish_grip"].map(id=>({
+    id,monetizable:true,state:"needed",priority:"required"
+  }));
+  const result=buildProductRecommendations(
+    [complete],
+    {input:{budget:"balanced",bait:"okay"},plan:{methodId:"sabiki"},checklist,now}
+  );
+  assert.equal(result.selected.length,1);
+  assert.equal(result.coveredCategoryIds.includes("bait"),true);
+});

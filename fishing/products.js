@@ -14,8 +14,17 @@ function audienceForCategory(categoryId){
   return null;
 }
 
-function productRank(product,neededIds){
-  const covers=(product.coverCategoryIds||[]).filter(id=>neededIds.has(id)).length;
+function effectiveCoverage(product,input={}){
+  const covers=[...(product.coverCategoryIds||[product.categoryId])];
+  if(["no_worm","low_mess"].includes(input.bait) && covers.includes("bait")){
+    const tags=product.preferenceTags||[];
+    if(!tags.includes(input.bait))return covers.filter(id=>id!=="bait");
+  }
+  return covers;
+}
+
+function productRank(product,neededIds,input){
+  const covers=effectiveCoverage(product,input).filter(id=>neededIds.has(id)).length;
   return (Number(product.score)||Number(product.recommendationScore)||0)
     +covers*12+(roleBoost[product.recommendationRole]||0);
 }
@@ -44,29 +53,38 @@ export function buildProductRecommendations(products,{input,plan,checklist,now=D
   for(const item of ordered){
     if(covered.has(item.id))continue;
     const candidates=eligibleForCategory(products,{input,plan,categoryId:item.id,now})
-      .sort((a,b)=>productRank(b,neededIds)-productRank(a,neededIds)||a.price-b.price);
+      .sort((a,b)=>productRank(b,neededIds,input)-productRank(a,neededIds,input)||a.price-b.price);
     if(!candidates.length){
       recommendations[item.id]={primary:null,upgrade:null,unresolved:true};
       continue;
     }
     const primary=candidates[0];
     const upgrade=candidates.slice(1).find(p=>p.price>primary.price&&p.recommendationRole==="long_term")||null;
-    recommendations[item.id]={primary,upgrade,unresolved:false};
-    selected.push(primary);
-    for(const id of primary.coverCategoryIds||[primary.categoryId])covered.add(id);
+    const primaryCoverage=effectiveCoverage(primary,input);
+    const selectedPrimary={...primary,effectiveCoverCategoryIds:primaryCoverage};
+    recommendations[item.id]={primary:selectedPrimary,upgrade,unresolved:false};
+    selected.push(selectedPrimary);
+    for(const id of primaryCoverage)covered.add(id);
   }
 
-  const unresolved=ordered.filter(item=>!covered.has(item.id)&&recommendations[item.id]?.unresolved).map(x=>x.id);
+  const unresolvedRequiredCategoryIds=required
+    .filter(item=>!covered.has(item.id)&&recommendations[item.id]?.unresolved)
+    .map(x=>x.id);
+  const unresolvedOptionalCategoryIds=optional
+    .filter(item=>!covered.has(item.id)&&recommendations[item.id]?.unresolved)
+    .map(x=>x.id);
   return {
     recommendations,
     selected,
     coveredCategoryIds:[...covered],
-    unresolvedCategoryIds:unresolved
+    unresolvedCategoryIds:unresolvedRequiredCategoryIds,
+    unresolvedRequiredCategoryIds,
+    unresolvedOptionalCategoryIds
   };
 }
 
 export function applyProductCoverage(checklist,selectedProducts){
-  const covered=new Set((selectedProducts||[]).flatMap(p=>p.coverCategoryIds||[p.categoryId]));
+  const covered=new Set((selectedProducts||[]).flatMap(p=>p.effectiveCoverCategoryIds||p.coverCategoryIds||[p.categoryId]));
   return (checklist||[]).map(item=>covered.has(item.id)&&item.state!=="owned"
     ?{...item,state:"covered_by_product"}
     :item);
