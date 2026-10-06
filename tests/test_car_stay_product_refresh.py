@@ -82,6 +82,10 @@ class CarStayProductRefreshTests(unittest.TestCase):
         seed={"query":"very specific","searchQueries":["NBOX JF5 サンシェード","NBOX JF5 サンシェード","NBOX JF5"]}
         self.assertEqual(refresh.seed_queries(seed),["NBOX JF5 サンシェード","NBOX JF5"])
 
+    def test_seed_queries_prioritize_merchant_product_number(self):
+        seed={"merchantProductNumber":"07k-a000-ca","searchQueries":["車中泊 マット 10cm","07k-a000-ca"]}
+        self.assertEqual(refresh.seed_queries(seed),["07k-a000-ca","車中泊 マット 10cm"])
+
     def test_exact_url_can_fallback_when_rakuten_returns_interstitial(self):
         seed={"itemUrl":"https://item.rakuten.co.jp/shop/item123/","identityGroups":[["N-BOX"],["JF5"]]}
         original=refresh.fetch_text
