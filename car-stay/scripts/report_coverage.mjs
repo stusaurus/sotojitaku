@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import {productEligible} from "../engine.js";
+import {recommendations} from "../products.js";
 
 const ROOT=path.resolve(import.meta.dirname,"../..");
 const vehicles=JSON.parse(fs.readFileSync(path.join(ROOT,"car-stay/data/vehicles.json"),"utf8")).vehicles||[];
@@ -24,7 +24,8 @@ function configsFor(vehicle){
   return configs;
 }
 function eligible(vehicleId,config,gapId){
-  return products.filter(p=>productEligible(p,{vehicleId,config,gapId,now}));
+  const result=recommendations(products,{gaps:[{id:gapId}],vehicleId,config,status:"ALMOST_READY",now,allowUpgrades:false});
+  return result[gapId]||[];
 }
 function uniqueById(items){
   return [...new Map(items.map(x=>[x.productId,x])).values()];
