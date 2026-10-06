@@ -106,6 +106,9 @@ jobs:
       - name: Require core live product coverage
         run: python fishing/scripts/check_catalog.py
 
+      - name: Run exhaustive diagnosis-to-product audit
+        run: node fishing/scripts/check_scenarios.mjs
+
       - name: Publish verified FISHING catalog safely
         run: |
           cp fishing/data/audited-products.json /tmp/fishing-products-ready.json
