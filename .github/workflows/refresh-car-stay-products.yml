@@ -7,6 +7,7 @@ on:
       - 'car-stay/scripts/merge_product_shards.py'
       - 'car-stay/scripts/report_coverage.mjs'
       - 'car-stay/data/product-seeds/**'
+      - 'car-stay/data/vehicles.json'
       - '.github/workflows/refresh-car-stay-products.yml'
   workflow_dispatch:
   schedule:

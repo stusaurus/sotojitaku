@@ -9,6 +9,15 @@ const products=catalog.products||[];
 const now=Date.now();
 
 function configsFor(vehicle){
+  const valid=vehicle.config?.validConfigurations;
+  if(Array.isArray(valid)&&valid.length){
+    return valid.map(entry=>{
+      const config={};
+      if(entry.seatCount!==undefined&&entry.seatCount!==null)config.seatCount=entry.seatCount;
+      if(entry.trim)config.trim=entry.trim;
+      return config;
+    });
+  }
   const seats=vehicle.config?.seatCounts?.length?vehicle.config.seatCounts:[null];
   const trims=vehicle.config?.trims?.length?vehicle.config.trims:[null];
   const configs=[];
