@@ -154,8 +154,9 @@ def merge_catalogs(local,shared,seeds,now=None):
     products=sorted(candidates.values(),key=lambda p:p.get("productId",""))
     shared_failures=shared.get("failures") if isinstance(shared.get("failures"),dict) else {}
     local_failures=local.get("failures") if isinstance(local.get("failures"),dict) else {}
-    failures={**local_failures,**shared_failures}
+    failures={pid:reason for pid,reason in {**local_failures,**shared_failures}.items() if pid in seeds}
     # A currently verified product is not a failure, regardless of a stale source's miss.
+    # Disabled/removed seeds are also excluded above so old noise cannot keep the catalog partial.
     for product in products:
         failures.pop(product.get("productId"),None)
     return {
