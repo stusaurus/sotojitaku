@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T07:37:07.604Z",
-  "catalogUpdatedAt": "2026-10-06T07:35:37.967735+00:00",
+  "generatedAt": "2026-10-06T07:53:21.894Z",
+  "catalogUpdatedAt": "2026-10-06T07:51:33.757301+00:00",
   "liveProductCount": 10,
   "summary": {
-    "configurations": 23,
-    "privacyCovered": 21,
+    "configurations": 19,
+    "privacyCovered": 17,
     "sleepCovered": 11,
-    "privacyCoveragePct": 91,
-    "sleepCoveragePct": 48,
-    "revenueHoles": 14
+    "privacyCoveragePct": 89,
+    "sleepCoveragePct": 58,
+    "revenueHoles": 10
   },
   "byVehicle": [
     {
@@ -33,11 +33,11 @@
     {
       "vehicleId": "honda-freed-gt",
       "vehicle": "FREED",
-      "configurations": 9,
-      "privacyCovered": 9,
+      "configurations": 5,
+      "privacyCovered": 5,
       "sleepCovered": 1,
       "privacyCoveragePct": 100,
-      "sleepCoveragePct": 11
+      "sleepCoveragePct": 20
     },
     {
       "vehicleId": "suzuki-hustler-mr52s-mr92s",
@@ -101,26 +101,6 @@
       "vehicleId": "honda-freed-gt",
       "vehicle": "FREED",
       "config": {
-        "seatCount": 5,
-        "trim": "AIR"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 5,
-        "trim": "AIR EX"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
         "seatCount": 6,
         "trim": "AIR"
       }
@@ -141,26 +121,6 @@
       "vehicleId": "honda-freed-gt",
       "vehicle": "FREED",
       "config": {
-        "seatCount": 6,
-        "trim": "CROSSTAR"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 7,
-        "trim": "AIR"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
         "seatCount": 7,
         "trim": "AIR EX"
       }
@@ -171,7 +131,7 @@
       "vehicleId": "honda-freed-gt",
       "vehicle": "FREED",
       "config": {
-        "seatCount": 7,
+        "seatCount": 6,
         "trim": "CROSSTAR"
       }
     },
@@ -383,7 +343,7 @@
       "vehicleId": "honda-freed-gt",
       "vehicle": "FREED",
       "config": {
-        "seatCount": 5,
+        "seatCount": 6,
         "trim": "AIR"
       },
       "privacy": {
@@ -409,7 +369,33 @@
       "vehicleId": "honda-freed-gt",
       "vehicle": "FREED",
       "config": {
-        "seatCount": 5,
+        "seatCount": 6,
+        "trim": "AIR EX"
+      },
+      "privacy": {
+        "count": 1,
+        "productIds": [
+          "freed-gt-autorder-au1175"
+        ]
+      },
+      "sleep": {
+        "count": 0,
+        "productIds": []
+      },
+      "floor": {
+        "count": 0,
+        "productIds": []
+      },
+      "surface": {
+        "count": 0,
+        "productIds": []
+      }
+    },
+    {
+      "vehicleId": "honda-freed-gt",
+      "vehicle": "FREED",
+      "config": {
+        "seatCount": 7,
         "trim": "AIR EX"
       },
       "privacy": {
@@ -468,136 +454,6 @@
       "vehicle": "FREED",
       "config": {
         "seatCount": 6,
-        "trim": "AIR"
-      },
-      "privacy": {
-        "count": 1,
-        "productIds": [
-          "freed-gt-autorder-au1175"
-        ]
-      },
-      "sleep": {
-        "count": 0,
-        "productIds": []
-      },
-      "floor": {
-        "count": 0,
-        "productIds": []
-      },
-      "surface": {
-        "count": 0,
-        "productIds": []
-      }
-    },
-    {
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 6,
-        "trim": "AIR EX"
-      },
-      "privacy": {
-        "count": 1,
-        "productIds": [
-          "freed-gt-autorder-au1175"
-        ]
-      },
-      "sleep": {
-        "count": 0,
-        "productIds": []
-      },
-      "floor": {
-        "count": 0,
-        "productIds": []
-      },
-      "surface": {
-        "count": 0,
-        "productIds": []
-      }
-    },
-    {
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 6,
-        "trim": "CROSSTAR"
-      },
-      "privacy": {
-        "count": 1,
-        "productIds": [
-          "freed-gt-autorder-au1175"
-        ]
-      },
-      "sleep": {
-        "count": 0,
-        "productIds": []
-      },
-      "floor": {
-        "count": 0,
-        "productIds": []
-      },
-      "surface": {
-        "count": 0,
-        "productIds": []
-      }
-    },
-    {
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 7,
-        "trim": "AIR"
-      },
-      "privacy": {
-        "count": 1,
-        "productIds": [
-          "freed-gt-autorder-au1175"
-        ]
-      },
-      "sleep": {
-        "count": 0,
-        "productIds": []
-      },
-      "floor": {
-        "count": 0,
-        "productIds": []
-      },
-      "surface": {
-        "count": 0,
-        "productIds": []
-      }
-    },
-    {
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 7,
-        "trim": "AIR EX"
-      },
-      "privacy": {
-        "count": 1,
-        "productIds": [
-          "freed-gt-autorder-au1175"
-        ]
-      },
-      "sleep": {
-        "count": 0,
-        "productIds": []
-      },
-      "floor": {
-        "count": 0,
-        "productIds": []
-      },
-      "surface": {
-        "count": 0,
-        "productIds": []
-      }
-    },
-    {
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 7,
         "trim": "CROSSTAR"
       },
       "privacy": {
