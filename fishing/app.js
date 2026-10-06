@@ -240,27 +240,35 @@ function renderChildPfdSafety(){
   return `<div class="child-fit-note"><strong>子ども用ライフジャケットはサイズ確認が必要です。</strong><br>体格に合うサイズをメーカー表記で確認し、可能なら試着してください。この診断ではサイズが分からないまま特定商品をおすすめしません。</div>`;
 }
 
-function productCoversRequiredGap(product,checklist){
+function requiredGapCoverCount(product,checklist){
   const byId=new Map((checklist||[]).map(x=>[x.id,x]));
-  return (product.effectiveCoverCategoryIds||product.coverCategoryIds||[product.categoryId]).some(id=>{
+  return (product.effectiveCoverCategoryIds||product.coverCategoryIds||[product.categoryId]).filter(id=>{
     const item=byId.get(id);
     return item?.monetizable&&item.priority==="required"&&item.state!=="owned";
-  });
+  }).length;
+}
+
+function productCoversRequiredGap(product,checklist){
+  return requiredGapCoverCount(product,checklist)>0;
 }
 
 function renderProductCards(products,neededIds,checklist,{optional=false}={}){
-  return `<div class="product-list">${products.map((p,index)=>`
-    <article class="product-card ${optional?"product-card-optional":""}">
+  return `<div class="product-list">${products.map((p,index)=>{
+    const gapCount=requiredGapCoverCount(p,checklist);
+    const featured=!optional&&gapCount>=3;
+    return `
+    <article class="product-card ${optional?"product-card-optional":""} ${featured?"product-card-featured":""}">
       <img src="${escapeAttr(p.image)}" alt="" loading="lazy">
       <div class="product-copy">
+        ${featured?`<div class="bundle-badge">最短で揃える <b>必須${gapCount}項目</b></div>`:""}
         <div class="product-label">${optional?"あると快適":productLabel(p,neededIds)}</div>
         <h3>${escapeHtml(cleanName(p.name))}</h3>
         <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
         ${renderQuantityNote(p)}
         ${renderCoverage(p,checklist)}
-        <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}" data-price="${Number(p.price)||0}" data-role="${escapeAttr(p.recommendationRole||"")}" data-priority="${optional?"optional":"required"}" data-position="${index+1}">楽天で価格・在庫を見る →</a>
+        <a class="buy ${featured?"buy-featured":""}" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}" data-price="${Number(p.price)||0}" data-role="${escapeAttr(p.recommendationRole||"")}" data-priority="${optional?"optional":"required"}" data-position="${index+1}" data-cover-count="${gapCount}">${featured?"このセットを楽天で見る":"楽天で価格・在庫を見る"} →</a>
       </div>
-    </article>`).join("")}</div>`;
+    </article>`}).join("")}</div>`;
 }
 
 function renderProducts(productResult,checklist){
@@ -413,7 +421,8 @@ function trackProductViews(products,plan,checklist){
       price:Number(p.price)||0,
       recommendation_role:p.recommendationRole||"",
       purchase_priority:priority,
-      basket_position:position
+      basket_position:position,
+      bundle_cover_count:requiredGapCoverCount(p,checklist)
     });
   }
 }
@@ -427,6 +436,7 @@ function bindAffiliateClicks(){
       recommendation_role:a.dataset.role||"",
       purchase_priority:a.dataset.priority||"",
       basket_position:Number(a.dataset.position)||0,
+      bundle_cover_count:Number(a.dataset.coverCount)||0,
       budget_tier:answers.budget,
       party_type:answers.party
     };
