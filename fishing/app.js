@@ -180,7 +180,16 @@ function renderResult({trackDiagnosis=true}={}){
   `;
   progress.style.width="100%";
   if(trackDiagnosis&&isNewResult){
-    track("fishing_plan_selected",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
+    const planId=plan.methodId+"-"+plan.variantKey;
+    track("fishing_plan_selected",{fishing_method:plan.methodId,plan_id:planId});
+    track("fishing_basket_view",{
+      fishing_method:plan.methodId,
+      plan_id:planId,
+      product_count:basket.count,
+      displayed_total:basket.total,
+      budget_tier:answers.budget,
+      party_type:answers.party
+    });
     currentResultKey=resultKey;
   }
   $("#rulesCheck").addEventListener("change",e=>{localRulesConfirmed=e.target.checked;renderResult({trackDiagnosis:false})});
@@ -210,8 +219,9 @@ function renderProducts(productResult,checklist){
         <div class="product-label">${productLabel(p,neededIds)}</div>
         <h3>${escapeHtml(cleanName(p.name))}</h3>
         <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
+        ${renderQuantityNote(p)}
         ${renderCoverage(p,checklist)}
-        <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}">楽天で見る →</a>
+        <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}" data-price="${Number(p.price)||0}" data-role="${escapeAttr(p.recommendationRole||"")}">楽天で価格・在庫を見る →</a>
       </div>
     </article>`).join("")}</div>`;
 }
@@ -258,7 +268,7 @@ function basketSummary(checklist,selected){
     .filter(x=>x.monetizable&&x.priority==="required"&&x.state!=="owned")
     .map(x=>x.id));
   const requiredProducts=(selected||[]).filter(p=>
-    (p.coverCategoryIds||[p.categoryId]).some(id=>requiredIds.has(id))
+    (p.effectiveCoverCategoryIds||p.coverCategoryIds||[p.categoryId]).some(id=>requiredIds.has(id))
   );
   const unique=[...new Map(requiredProducts.map(p=>[p.productId,p])).values()];
   return {
@@ -272,14 +282,26 @@ function renderBasketSummary(basket){
   if(!basket.count)return "";
   return `<div class="basket-summary">
     <div><span>必須の購入候補</span><strong>${basket.count}点</strong></div>
-    <div><span>商品価格の合計目安</span><strong>¥${basket.total.toLocaleString("ja-JP")}</strong></div>
-    <p>送料・ポイント・価格変動は楽天の商品ページで確認してください。${basket.optionalCount?" 「あると快適」な任意品はこの合計に含めていません。":""}</p>
+    <div><span>表示商品の1点ずつ合計</span><strong>¥${basket.total.toLocaleString("ja-JP")}</strong></div>
+    <p>送料・ポイント・価格変動は楽天の商品ページで確認してください。ライフジャケットは同行者全員分が必要で、人数分の追加数量はこの合計に含めていません。${basket.optionalCount?" 「あると快適」な任意品もこの合計に含めていません。":""}</p>
   </div>`;
+}
+
+function renderQuantityNote(product){
+  if(product.categoryId==="life_jacket_child"){
+    return '<p class="product-quantity">数量：子どもの人数分を用意してください</p>';
+  }
+  if(product.categoryId==="life_jacket_adult"){
+    if(answers.party==="solo")return '<p class="product-quantity">数量：大人1人分</p>';
+    if(answers.party==="pair")return '<p class="product-quantity">数量：大人2人分を用意してください</p>';
+    return '<p class="product-quantity">数量：大人の人数分を用意してください</p>';
+  }
+  return "";
 }
 
 function renderCoverage(product,checklist){
   const byId=new Map((checklist||[]).map(x=>[x.id,x]));
-  const covers=(product.coverCategoryIds||[product.categoryId])
+  const covers=(product.effectiveCoverCategoryIds||product.coverCategoryIds||[product.categoryId])
     .map(id=>byId.get(id))
     .filter(Boolean);
   const fills=covers.filter(x=>x.state!=="owned").map(x=>x.label);
@@ -317,7 +339,11 @@ function bindAffiliateClicks(){
     const payload={
       product_id:a.dataset.product,
       gear_category:a.dataset.category,
-      fishing_method:selectPlan(answers,plansData)?.methodId
+      fishing_method:selectPlan(answers,plansData)?.methodId,
+      price:Number(a.dataset.price)||0,
+      recommendation_role:a.dataset.role||"",
+      budget_tier:answers.budget,
+      party_type:answers.party
     };
     track("fishing_product_select",payload);
     track("affiliate_click",payload);

@@ -62,5 +62,19 @@ class FishingUiTest(unittest.TestCase):
         self.assertGreaterEqual(len(howto["methods"]["sabiki"]["setup"]), 5)
         self.assertGreaterEqual(len(howto["methods"]["choi_nage"]["setup"]), 5)
 
+    def test_result_coverage_uses_effective_bundle_coverage(self):
+        self.assertIn("product.effectiveCoverCategoryIds||product.coverCategoryIds", self.app)
+        self.assertIn("p.effectiveCoverCategoryIds||p.coverCategoryIds", self.app)
+
+    def test_life_jacket_quantity_and_total_disclaimer_are_present(self):
+        self.assertIn("子どもの人数分を用意してください", self.app)
+        self.assertIn("大人2人分を用意してください", self.app)
+        self.assertIn("人数分の追加数量はこの合計に含めていません", self.app)
+
+    def test_basket_and_click_revenue_events_are_present(self):
+        self.assertIn('track("fishing_basket_view"', self.app)
+        self.assertIn("recommendation_role:a.dataset.role", self.app)
+        self.assertIn("budget_tier:answers.budget", self.app)
+
 if __name__=="__main__":
     unittest.main()
