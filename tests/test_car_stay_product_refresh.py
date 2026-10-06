@@ -678,5 +678,16 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_json_quick=original
 
+    def test_candidate_title_can_be_broader_than_final_page_fit_identity(self):
+        seed={
+            "identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["ベッドキット"]],
+            "candidateIdentityGroups":[["N-VAN"],["ベッドキット"]],
+            "forbiddenTerms":["N-WGN"]
+        }
+        self.assertTrue(refresh.identity_ok("N-VAN ベッドキット Full type 車中泊マット",seed))
+        self.assertFalse(refresh.required_groups_ok("N-VAN ベッドキット Full type 車中泊マット",seed))
+        self.assertTrue(refresh.required_groups_ok("N-VAN JJ1 JJ2 ベッドキット Full type",seed))
+        self.assertFalse(refresh.identity_ok("N-WGN N-VAN ベッドキット",seed))
+
 if __name__=="__main__":
     unittest.main()
