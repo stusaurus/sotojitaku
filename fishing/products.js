@@ -67,12 +67,19 @@ export function buildProductRecommendations(products,{input,plan,checklist,now=D
     for(const id of primaryCoverage)covered.add(id);
   }
 
-  const unresolved=ordered.filter(item=>!covered.has(item.id)&&recommendations[item.id]?.unresolved).map(x=>x.id);
+  const unresolvedRequiredCategoryIds=required
+    .filter(item=>!covered.has(item.id)&&recommendations[item.id]?.unresolved)
+    .map(x=>x.id);
+  const unresolvedOptionalCategoryIds=optional
+    .filter(item=>!covered.has(item.id)&&recommendations[item.id]?.unresolved)
+    .map(x=>x.id);
   return {
     recommendations,
     selected,
     coveredCategoryIds:[...covered],
-    unresolvedCategoryIds:unresolved
+    unresolvedCategoryIds:unresolvedRequiredCategoryIds,
+    unresolvedRequiredCategoryIds,
+    unresolvedOptionalCategoryIds
   };
 }
 
