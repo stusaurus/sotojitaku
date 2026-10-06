@@ -740,3 +740,37 @@
 @media(max-width:520px){
   .hero-photo{object-position:61% center}
 }
+
+
+/* ===== approved generated FISHING hero image ===== */
+.hero-stage{
+  background:
+    linear-gradient(90deg,rgba(3,14,19,.84) 0%,rgba(3,14,19,.67) 31%,rgba(3,14,19,.34) 49%,rgba(3,14,19,.08) 68%,rgba(3,14,19,.20) 100%),
+    linear-gradient(180deg,rgba(4,15,20,.08),rgba(4,15,20,.18) 60%,rgba(4,15,20,.38)),
+    url("./assets/fishing-hero-generated.webp") center center / cover no-repeat;
+}
+.hero-stage:after{
+  background:
+    linear-gradient(90deg,rgba(4,16,22,.30) 0%,rgba(4,16,22,.10) 48%,transparent 70%),
+    linear-gradient(180deg,rgba(4,14,20,.12),transparent 48%,rgba(4,14,20,.28));
+}
+.hero-stage .hero-water,
+.hero-stage .hero-scene{
+  display:none;
+}
+.hero-stage .hero-copy{
+  max-width:760px;
+}
+.hero-stage h1{
+  text-shadow:0 4px 28px rgba(0,0,0,.34);
+}
+@media(max-width:850px){
+  .hero-stage{
+    background:
+      linear-gradient(180deg,rgba(3,14,20,.10) 0%,rgba(3,14,20,.28) 42%,rgba(3,14,20,.86) 78%,rgba(3,14,20,.94) 100%),
+      url("./assets/fishing-hero-generated.webp") 62% center / cover no-repeat;
+  }
+  .hero-stage .hero-copy{
+    padding-top:88px;
+  }
+}
