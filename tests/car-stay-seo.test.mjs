@@ -175,3 +175,11 @@ test('N-BOX SEO copy treats Slope as a separate validation path',()=>{
   }
   assert.ok(!pages[0].includes('通常・Custom・JOY・Slopeで用品適合が変わる'));
 });
+
+
+test('CAR STAY sitemap entries carry the current publish date',()=>{
+  const sitemap=read('sitemap.xml');
+  for(const line of sitemap.split('\n').filter(line=>line.includes('/car-stay/'))){
+    assert.match(line,/<lastmod>2026-10-06<\/lastmod>/);
+  }
+});
