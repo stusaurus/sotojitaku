@@ -28,7 +28,8 @@ test("family low-budget sabiki gets a complete shoppable basket",()=>{
   assert.deepEqual(r.products.unresolvedCategoryIds,[]);
   assert.ok(r.products.selected.some(p=>p.categoryId==="rod_reel"));
   assert.ok(r.products.selected.some(p=>p.categoryId==="life_jacket_adult"));
-  assert.ok(r.products.selected.some(p=>p.categoryId==="life_jacket_child"));
+  assert.ok(r.checklist.some(x=>x.id==="life_jacket_child"&&x.priority==="required"));
+  assert.equal(r.products.selected.some(p=>p.categoryId==="life_jacket_child"),false);
   assert.ok(r.products.selected.some(p=>p.categoryId==="cooler"));
 });
 
