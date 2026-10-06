@@ -280,3 +280,14 @@ test('overview and two-person SEO entries render diversified live audited produc
     assert.match(two,/class="builder-box"/);
   }
 });
+
+
+test('CAR STAY dedicated sitemap stays exactly in sync with CAR STAY URLs in root sitemap',()=>{
+  const root=read('sitemap.xml');
+  const child=read('car-stay/sitemap.xml');
+  const urls=xml=>[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]).sort();
+  const rootCar=urls(root).filter(url=>url.startsWith('https://stusaurus.github.io/sotojitaku/car-stay/'));
+  const childCar=urls(child);
+  assert.deepEqual(childCar,rootCar);
+  assert.ok(childCar.includes('https://stusaurus.github.io/sotojitaku/car-stay/car/freed/7people/'));
+});
