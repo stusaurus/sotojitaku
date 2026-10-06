@@ -93,5 +93,11 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("必須の買い足しはありません。", self.app)
         self.assertIn("選んだ手持ち品で、必要な道具は揃っています。", self.app)
 
+    def test_nonshopping_required_gaps_are_not_called_complete(self):
+        self.assertIn("nonShoppingRequiredGaps", self.app)
+        self.assertIn("楽天で選ぶ必須品はありません。", self.app)
+        self.assertIn("未準備の持参品・安全装備が残っています", self.app)
+        self.assertIn("サイズ確認が必要な安全装備", self.app)
+
 if __name__=="__main__":
     unittest.main()
