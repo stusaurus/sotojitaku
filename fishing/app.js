@@ -213,17 +213,20 @@ function renderChildPfdSafety(){
   return `<div class="child-fit-note"><strong>子ども用ライフジャケットはサイズ確認が必要です。</strong><br>体格に合うサイズをメーカー表記で確認し、可能なら試着してください。この診断ではサイズが分からないまま特定商品をおすすめしません。</div>`;
 }
 
-function renderProducts(productResult,checklist){
-  const neededIds=new Set(checklist.filter(x=>x.monetizable&&x.state!=="owned"&&x.state!=="covered_by_product").map(x=>x.id));
-  const selected=productResult.selected||[];
-  if(!selected.length){
-    return `<div class="empty-products">販売状況を確認できた商品だけを表示します。現在、条件に合う確認済み商品がありません。未確認の商品を無理に出すことはしません。</div>`;
-  }
-  return `<div class="product-list">${selected.map(p=>`
-    <article class="product-card">
+function productCoversRequiredGap(product,checklist){
+  const byId=new Map((checklist||[]).map(x=>[x.id,x]));
+  return (product.effectiveCoverCategoryIds||product.coverCategoryIds||[product.categoryId]).some(id=>{
+    const item=byId.get(id);
+    return item?.monetizable&&item.priority==="required"&&item.state!=="owned";
+  });
+}
+
+function renderProductCards(products,neededIds,checklist,{optional=false}={}){
+  return `<div class="product-list">${products.map(p=>`
+    <article class="product-card ${optional?"product-card-optional":""}">
       <img src="${escapeAttr(p.image)}" alt="" loading="lazy">
       <div class="product-copy">
-        <div class="product-label">${productLabel(p,neededIds)}</div>
+        <div class="product-label">${optional?"あると快適":productLabel(p,neededIds)}</div>
         <h3>${escapeHtml(cleanName(p.name))}</h3>
         <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
         ${renderQuantityNote(p)}
@@ -231,6 +234,31 @@ function renderProducts(productResult,checklist){
         <a class="buy" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}" data-price="${Number(p.price)||0}" data-role="${escapeAttr(p.recommendationRole||"")}">楽天で価格・在庫を見る →</a>
       </div>
     </article>`).join("")}</div>`;
+}
+
+function renderProducts(productResult,checklist){
+  const neededIds=new Set(checklist.filter(x=>x.monetizable&&x.state!=="owned"&&x.state!=="covered_by_product").map(x=>x.id));
+  const requiredGaps=checklist.filter(x=>x.monetizable&&x.priority==="required"&&x.state!=="owned");
+  const selected=productResult.selected||[];
+  const requiredProducts=selected.filter(p=>productCoversRequiredGap(p,checklist));
+  const optionalProducts=selected.filter(p=>!productCoversRequiredGap(p,checklist));
+
+  if(!requiredGaps.length){
+    return `<div class="purchase-complete"><strong>必須の買い足しはありません。</strong><p>選んだ手持ち品で、必要な道具は揃っています。</p></div>${
+      optionalProducts.length?`<details class="optional-products"><summary>余裕があれば追加 <span>${optionalProducts.length}点</span></summary>${renderProductCards(optionalProducts,neededIds,checklist,{optional:true})}</details>`:""
+    }`;
+  }
+
+  if(!requiredProducts.length){
+    return `<div class="empty-products">販売状況を確認できた商品だけを表示します。現在、必須品に合う確認済み商品がありません。未確認の商品を無理に出すことはしません。</div>`;
+  }
+
+  return `<div class="purchase-group">
+    <div class="purchase-group-head"><div><span>まず揃える</span><strong>必須品だけを先に</strong></div><b>${requiredProducts.length}点</b></div>
+    ${renderProductCards(requiredProducts,neededIds,checklist)}
+  </div>${
+    optionalProducts.length?`<details class="optional-products"><summary>余裕があれば追加 <span>${optionalProducts.length}点</span></summary>${renderProductCards(optionalProducts,neededIds,checklist,{optional:true})}</details>`:""
+  }`;
 }
 
 function renderFitReasons(plan){
