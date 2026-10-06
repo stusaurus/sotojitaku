@@ -159,6 +159,7 @@ function renderResult({trackDiagnosis=true}={}){
 
       <div class="section">
         <h3 class="section-title">足りないものは、これで揃える</h3>
+        ${renderQuantityGuidance()}
         ${renderBasketSummary(basket)}
         ${renderProducts(productResult,rawChecklist)}
       </div>
@@ -282,6 +283,17 @@ function basketSummary(checklist,selected){
     total:unique.reduce((sum,p)=>sum+(Number(p.price)||0),0),
     optionalCount:Math.max(0,(selected||[]).length-unique.length)
   };
+}
+
+function renderQuantityGuidance(){
+  const multi=answers.party!=="solo";
+  const rodText=multi
+    ?"竿・リールの商品は1セット＝1本分です。複数人が同時に竿を持つなら、実際に同時使用する本数分を用意してください。"
+    :"竿・リールの商品は1セット＝1本分です。";
+  const safetyText=answers.party==="family_child"
+    ?" 大人用・子ども用ライフジャケットは、それぞれ同行者全員分が必要です。"
+    :multi?" ライフジャケットは同行する大人全員分が必要です。":"";
+  return `<div class="quantity-guidance"><strong>購入数量の考え方</strong><p>${escapeHtml(rodText+safetyText)}</p></div>`;
 }
 
 function renderBasketSummary(basket){
