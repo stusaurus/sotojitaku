@@ -158,3 +158,39 @@ test("Power Isome bundle title satisfies no-worm without an extra bait purchase"
   assert.equal(result.selected[0].productId,"choi-complete");
   assert.equal(result.selected[0].effectiveCoverCategoryIds.includes("bait"),true);
 });
+
+
+test("long-term intent prefers a true long-term tackle over a broader beginner bundle",()=>{
+  const complete=p({
+    productId:"complete",
+    categoryId:"rod_reel",
+    score:96,
+    recommendationRole:"beginner_default",
+    budgetTiers:["balanced","long_term"],
+    coverCategoryIds:["rod_reel","rig","bait","bucket","fish_grip"]
+  });
+  const durable=p({
+    productId:"durable",
+    categoryId:"rod_reel",
+    score:93,
+    recommendationRole:"long_term",
+    budgetTiers:["long_term"],
+    coverCategoryIds:["rod_reel","bag"]
+  });
+  const checklist=[
+    {id:"rod_reel",monetizable:true,state:"needed",priority:"required"},
+    {id:"bag",monetizable:true,state:"optional",priority:"optional"}
+  ];
+
+  const longTerm=buildProductRecommendations(
+    [complete,durable],
+    {input:{budget:"long_term",bait:"okay"},plan:{methodId:"sabiki"},checklist,now}
+  );
+  assert.equal(longTerm.recommendations.rod_reel.primary.productId,"durable");
+
+  const balanced=buildProductRecommendations(
+    [complete,durable],
+    {input:{budget:"balanced",bait:"okay"},plan:{methodId:"sabiki"},checklist,now}
+  );
+  assert.equal(balanced.recommendations.rod_reel.primary.productId,"complete");
+});
