@@ -2,7 +2,7 @@
   "productId": "daiwa-go-fishing-ss-type3",
   "name": "ダイワ #go_fishing SS TYPE-3",
   "brand": "DAIWA",
-  "itemUrl": "https://item.rakuten.co.jp/fto-r/4550133163593/",
+  "itemUrl": "https://item.rakuten.co.jp/casting/4550133163593/",
   "categoryId": "rod_reel",
   "methodIds": [
     "sabiki",
@@ -22,8 +22,8 @@
   "recommendationRole": "long_term",
   "score": 93,
   "searchQueries": [
-    "ダイワ #go_fishing SS TYPE-3 4550133163593",
-    "#go_fishingSS TYPE-3",
+    "ダイワ パックロッドセット #GO_FISHINGSS スターティング セット タイプ-3",
+    "go_fishing SS TYPE-3 4550133163593",
     "4550133163593"
   ],
   "identityGroups": [
@@ -45,5 +45,5 @@
     "ジャンク"
   ],
   "specCheckedAt": "2026-10-06",
-  "specEvidenceUrl": "https://item.rakuten.co.jp/fto-r/4550133163593/"
+  "specEvidenceUrl": "https://item.rakuten.co.jp/casting/4550133163593/"
 }
