@@ -73,6 +73,9 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("選んだ内容は、このブラウザに保存されます。", self.app)
         self.assertIn("つづきから", self.app)
 
+    def test_change_conditions_moves_draft_back_to_question_stage(self):
+        self.assertIn('persistDraft("question");renderQuestion()', self.app)
+
     def test_secondary_entry_and_result_resume_match_camp_flow(self):
         self.assertIn('id="previewStartBtn"', self.index)
         self.assertIn('previewStartBtn?.addEventListener("click",start)', self.app)
