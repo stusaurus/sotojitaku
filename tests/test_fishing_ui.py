@@ -16,6 +16,10 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn('https://stusaurus.github.io/sotojitaku/fishing/', self.index)
         self.assertIn('G-GFVSZ8YDQ5', self.index)
 
+    def test_mobile_assets_are_cache_busted(self):
+        self.assertRegex(self.index, r'href="\./style\.css\?v=[^"]+"')
+        self.assertRegex(self.index, r'src="\./app\.js\?v=[^"]+"')
+
     def test_fail_closed_product_copy_is_present(self):
         self.assertIn('販売状況を確認できた商品だけを表示します', self.app)
         self.assertIn('未確認の商品を無理に出すことはしません', self.app)
