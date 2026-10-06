@@ -1,0 +1,76 @@
+name: Sync CAR STAY shared Rakuten catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'car-stay/scripts/import_shared_catalog.py'
+      - '.github/workflows/sync-car-stay-shared-products.yml'
+  schedule:
+    # daily-cost-jp exports at 22:40 UTC; sync after it finishes.
+    - cron: '15 23 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sotojitaku-car-stay-shared-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Import verified daily-cost CAR STAY catalog
+        run: python car-stay/scripts/import_shared_catalog.py
+
+      - name: Rebuild CAR STAY revenue coverage
+        run: node car-stay/scripts/report_coverage.mjs
+
+      - name: Validate CAMP and CAR STAY
+        run: |
+          npm run check
+          npm test
+          python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Publish merged catalog safely
+        run: |
+          cp car-stay/data/audited-products.json /tmp/car-stay-products.json
+          cp car-stay/data/coverage-report.json /tmp/car-stay-coverage.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if ! git diff --quiet "$GITHUB_SHA" origin/main --               car-stay/scripts/import_shared_catalog.py               car-stay/scripts/report_coverage.mjs               car-stay/engine.js               car-stay/products.js               car-stay/data/product-seeds               car-stay/data/vehicles.json               .github/workflows/sync-car-stay-shared-products.yml; then
+              echo "A newer CAR STAY definition exists on main; skip stale shared-catalog publish."
+              exit 0
+            fi
+            git reset --hard origin/main
+            cp /tmp/car-stay-products.json car-stay/data/audited-products.json
+            cp /tmp/car-stay-coverage.json car-stay/data/coverage-report.json
+            git add car-stay/data/audited-products.json car-stay/data/coverage-report.json
+            if git diff --cached --quiet; then
+              echo "Shared CAR STAY catalog already current."
+              exit 0
+            fi
+            git commit -m 'Sync verified CAR STAY shared catalog'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Main moved during shared catalog sync; retrying ($attempt/3)."
+            sleep $((attempt * 2))
+          done
+          echo "Could not publish shared CAR STAY catalog after three safe retries."
+          exit 1
