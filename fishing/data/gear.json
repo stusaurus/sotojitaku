@@ -45,14 +45,15 @@
     {
       "id": "life_jacket_child",
       "label": "子ども用ライフジャケット（全員分）",
-      "monetizable": true,
+      "monetizable": false,
       "required_when": {
         "party": [
           "family_child"
         ]
       },
       "owned_key": "life_jacket_child",
-      "safety": true
+      "safety": true,
+      "fit_sensitive": true
     },
     {
       "id": "bucket",
