@@ -228,45 +228,6 @@
       }
     },
     {
-      "productId": "freed-gt7-maulbeere-oa008",
-      "name": "【エントリーで最大全額ポイント還元｜10/11まで】 GARSON｜ギャルソン カンタンベッドキット　ミニバン用　黒木目 OA008-01-02",
-      "brand": "MAULBEERE / GARSON",
-      "gapIds": [
-        "floor_step",
-        "sleep_surface"
-      ],
-      "recommendationRole": "beginner_alternative",
-      "score": 78,
-      "price": 65940,
-      "itemCode": "",
-      "itemUrl": "https://item.rakuten.co.jp/biccamera/4560318787506/",
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r7ldo.7cx6m87c.g00r7ldo.7cx6n351/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F4560318787506%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fbiccamera%2Fi%2F14713101%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/biccamera/cabinet/product/10186/00000012816525_a01.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-06T11:48:15.394351+00:00",
-      "fitVerifiedAt": "2026-10-06",
-      "vehicleFit": [
-        {
-          "vehicleId": "honda-freed-gt",
-          "status": "verified",
-          "seatCounts": [
-            6,
-            7
-          ],
-          "trims": [
-            "AIR",
-            "AIR EX",
-            "CROSSTAR"
-          ]
-        }
-      ],
-      "audit": {
-        "status": "verified_live",
-        "mode": "exact_feed_fallback",
-        "salesSource": "worker_identity_shipping_lookup",
-        "fitEvidence": "https://www.garson.co.jp/acc/oa007/"
-      }
-    },
-    {
       "productId": "freed-gt-hobbyman-lit6",
       "name": "【日本売上No.1】最大全額3,000円引【吸盤＋6個】 新型 フリード GT1/8系 対応 サンシェード カーテン 車中泊 グッズ シームレス ライト フルセット 1台分 GT GT1 GT2 GT3 GT4 GT5 GT6 GT7 GT8 車用 カーテン サイド フロント セット 日除け 【日本製】",
       "brand": "趣味職人",
@@ -1154,6 +1115,6 @@
     "nvan-jj1-jj2-mgr-mbk4646": "same_shop_identity_listing_not_found"
   },
   "deferred": {},
-  "runtimeBudgetSeconds": 1680.0,
+  "runtimeBudgetSeconds": 1680,
   "shardsMerged": 7
 }

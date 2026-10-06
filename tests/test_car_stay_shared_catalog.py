@@ -81,5 +81,23 @@ class CarStaySharedCatalogTests(unittest.TestCase):
         )
         self.assertNotIn("p1",result["failures"])
 
+    def test_measurement_fit_metadata_must_match_current_seed(self):
+        now=datetime(2026,10,6,12,tzinfo=timezone.utc)
+        seed=self.seed()
+        seed.update({
+            "productId":"m1","gapIds":["sleep_surface"],"vehicleFit":[],
+            "recommendationRole":"beginner_alternative","fitStrategy":"measurement",
+            "measurementFit":{"unitLengthMm":1900,"unitWidthMm":620,"maxUnits":2,"quantityMode":"target_width"}
+        })
+        p=self.product(now.isoformat())
+        p.update({
+            "productId":"m1","gapIds":["sleep_surface"],"vehicleFit":[],
+            "recommendationRole":"beginner_alternative","fitStrategy":"measurement",
+            "measurementFit":{"unitLengthMm":1900,"unitWidthMm":620,"maxUnits":2,"quantityMode":"target_width"}
+        })
+        self.assertTrue(shared.valid_product(p,seed,now))
+        p["measurementFit"]["unitWidthMm"]=600
+        self.assertFalse(shared.valid_product(p,seed,now))
+
 if __name__=="__main__":
     unittest.main()

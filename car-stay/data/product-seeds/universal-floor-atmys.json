@@ -1,0 +1,61 @@
+{
+  "productId": "universal-atmys-im10cm-maker",
+  "name": "汎用 車中泊マット 10cm 190×62cm",
+  "brand": "アトマイズ",
+  "query": "車中泊 マット 10cm 190 62 im10cm-maker",
+  "itemUrl": "https://item.rakuten.co.jp/atmys/im10cm-maker/",
+  "gapIds": [
+    "sleep_surface"
+  ],
+  "recommendationRole": "beginner_alternative",
+  "score": 72,
+  "fitStrategy": "measurement",
+  "measurementFit": {
+    "unitLengthMm": 1900,
+    "unitWidthMm": 620,
+    "maxUnits": 2,
+    "quantityMode": "target_width",
+    "note": "外寸190×62cm。ユーザーの実測寝床長・最狭幅が必要寸法以上の場合のみ表示する。"
+  },
+  "identityGroups": [
+    [
+      "車中泊"
+    ],
+    [
+      "マット"
+    ],
+    [
+      "10cm"
+    ],
+    [
+      "190",
+      "62"
+    ]
+  ],
+  "candidateIdentityGroups": [
+    [
+      "車中泊"
+    ],
+    [
+      "マット"
+    ],
+    [
+      "10cm"
+    ]
+  ],
+  "forbiddenTerms": [
+    "専用カバー",
+    "シーツカバー"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/atmys/im10cm-maker/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": [],
+  "searchQueries": [
+    "車中泊 マット 10cm 190 62",
+    "im10cm-maker",
+    "アトマイズ 車中泊 マット 10cm"
+  ],
+  "rakutenItemCode": "atmys:im10cm-maker",
+  "pageCheckedAt": "2026-10-06",
+  "pageEvidenceNote": "楽天販売ページで汎用品、外寸190×62cm、厚み10cmの車中泊マットを確認。車種適合ではなく実測寸法でのみ推薦する。"
+}
