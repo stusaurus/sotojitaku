@@ -231,9 +231,14 @@ def rakuten_api_exact_candidate(seed):
     headers={**HEADERS,'accessKey':env['RAKUTEN_ACCESS_KEY']}
     shop=rakuten_shop(seed['itemUrl'])
     item_codes=[]
+    explicit=str(seed.get('rakutenItemCode') or '').strip()
+    if explicit:
+        item_codes.append(explicit)
     slug=rakuten_item_slug(seed['itemUrl'])
     if shop and slug:
-        item_codes.append(f"{shop}:{slug}")
+        slug_code=f"{shop}:{slug}"
+        if slug_code not in item_codes:
+            item_codes.append(slug_code)
     page_info=exact_page_info(seed)
     if page_info:
         numeric_code=f"{shop}:{page_info['itemId']}"
@@ -270,34 +275,55 @@ def rakuten_api_exact_candidate(seed):
             return result
     return None
 
+def api_item_candidate(item,seed):
+    item_url=canonical_item_url(item.get('itemUrl',''))
+    name=item.get('itemName','')
+    level=candidate_match_level({'name':name,'itemUrl':item_url},seed)
+    if not level: return None
+    imgs=item.get('mediumImageUrls') or []
+    image=imgs[0] if imgs else ''
+    if isinstance(image,dict): image=image.get('imageUrl','')
+    return level,{
+        'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
+        'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode',''),'source':'rakuten_api'
+    }
+
 def rakuten_api_candidate(seed):
     env={k:os.environ.get(k,'').strip() for k in ['RAKUTEN_APPLICATION_ID','RAKUTEN_ACCESS_KEY','RAKUTEN_AFFILIATE_ID']}
     if not all(env.values()): return None
     headers={**HEADERS,'accessKey':env['RAKUTEN_ACCESS_KEY']}
+    common={
+        'applicationId':env['RAKUTEN_APPLICATION_ID'],
+        'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
+        'formatVersion':2,'availability':1,'field':0,
+        'elements':'itemName,itemCode,itemPrice,itemUrl,affiliateUrl,mediumImageUrls,availability,shopCode'
+    }
+
+    direct=str(seed.get('rakutenItemCode') or '').strip()
+    if direct:
+        payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode({**common,'itemCode':direct,'hits':1}),headers)
+        direct_candidates=[]
+        for raw in payload.get('items') or payload.get('Items') or []:
+            item=raw.get('Item',raw)
+            candidate=api_item_candidate(item,seed)
+            if candidate: direct_candidates.append(candidate)
+        if direct_candidates:
+            direct_candidates.sort(key=lambda pair:(-pair[0],0 if safe_affiliate(pair[1]['url'],pair[1]['itemUrl']) else 1))
+            return direct_candidates[0][1]
+
     candidates=[]
     for search_query in seed_queries(seed):
         params={
-            'applicationId':env['RAKUTEN_APPLICATION_ID'],
-            'affiliateId':env['RAKUTEN_AFFILIATE_ID'],
+            **common,
             'shopCode':rakuten_shop(seed['itemUrl']),
             'keyword':search_query,
-            'hits':30,'formatVersion':2,'availability':1,'field':0,
-            'elements':'itemName,itemCode,itemPrice,itemUrl,affiliateUrl,mediumImageUrls,availability,shopCode'
+            'hits':30
         }
         payload=fetch_json(RAKUTEN_API+'?'+urllib.parse.urlencode(params),headers)
         for raw in payload.get('items') or payload.get('Items') or []:
             item=raw.get('Item',raw)
-            item_url=canonical_item_url(item.get('itemUrl',''))
-            name=item.get('itemName','')
-            level=candidate_match_level({'name':name,'itemUrl':item_url},seed)
-            if not level: continue
-            imgs=item.get('mediumImageUrls') or []
-            image=imgs[0] if imgs else ''
-            if isinstance(image,dict): image=image.get('imageUrl','')
-            candidates.append((level,{
-                'name':name,'price':item.get('itemPrice'),'url':item.get('affiliateUrl',''),
-                'itemUrl':item_url,'image':image,'itemCode':item.get('itemCode',''),'source':'rakuten_api'
-            }))
+            candidate=api_item_candidate(item,seed)
+            if candidate: candidates.append(candidate)
         if any(level==2 for level,_ in candidates): break
     if not candidates: return None
     candidates.sort(key=lambda pair:(-pair[0],0 if safe_affiliate(pair[1]['url'],pair[1]['itemUrl']) else 1))
