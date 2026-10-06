@@ -34,7 +34,7 @@
     "N-WGN"
   ],
   "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/n-van-kurumat/",
-  "fitCheckedAt": "2026-10-05",
+  "fitCheckedAt": "2026-10-06",
   "vehicleFit": [
     {
       "vehicleId": "honda-nvan-jj1-jj2",
@@ -42,12 +42,11 @@
     }
   ],
   "searchQueries": [
-    "N-VAN JJ1/2系 車中泊ベッド くるマット",
-    "N-VAN JJ1 JJ2 車中泊ベッド マット",
     "n-van-kurumat",
-    "02k-a005-ca"
+    "N-VAN 車中泊ベッド",
+    "N-VAN JJ1 JJ2 車中泊 マット"
   ],
-  "rakutenItemCode": "hobbyman:02k-a005-ca",
+  "rakutenItemCode": "hobbyman:n-van-kurumat",
   "candidateIdentityGroups": [
     [
       "N-VAN",
