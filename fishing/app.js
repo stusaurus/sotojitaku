@@ -271,6 +271,7 @@ function renderResult({trackDiagnosis=true}={}){
       <div class="section">
         <h3 class="section-title">足りないものは、これで揃える</h3>
         ${renderQuantityGuidance()}
+        ${renderBudgetSwitch()}
         ${renderBasketSummary(basket)}
         ${renderProducts(productResult,rawChecklist)}
       </div>
@@ -308,6 +309,19 @@ function renderResult({trackDiagnosis=true}={}){
     currentResultKey=resultKey;
   }
   $("#rulesCheck").addEventListener("change",e=>{localRulesConfirmed=e.target.checked;renderResult({trackDiagnosis:false})});
+  $("#budgetSwitchBtn")?.addEventListener("click",e=>{
+    const from=answers.budget;
+    const to=e.currentTarget.dataset.nextBudget;
+    if(!to||to===from)return;
+    answers.budget=to;
+    track("fishing_budget_switch",{
+      fishing_method:plan.methodId,
+      from_budget:from,
+      to_budget:to,
+      ...entryAttribution
+    });
+    renderResult({trackDiagnosis:false});
+  });
   $("#saveBtn").addEventListener("click",()=>{
     try{
       localStorage.setItem("sotojitakuFishingPlan",JSON.stringify({version:1,answers,at:new Date().toISOString()}));
@@ -454,6 +468,44 @@ function renderQuantityGuidance(){
     ?" 大人用・子ども用ライフジャケットは、それぞれ同行者全員分が必要です。"
     :multi?" ライフジャケットは同行する大人全員分が必要です。":"";
   return `<div class="quantity-guidance"><strong>購入数量の考え方</strong><p>${escapeHtml(rodText+safetyText)}</p></div>`;
+}
+
+function budgetLabel(tier){
+  return {
+    low:"まずは安く始めたい",
+    balanced:"価格と使いやすさのバランス",
+    long_term:"長く使えるものを選びたい"
+  }[tier]||"今の予算感";
+}
+
+function budgetSwitchConfig(tier){
+  if(tier==="low")return {
+    next:"balanced",
+    note:"低予算向けの商品で、必要品全体を組んでいます。",
+    cta:"使いやすさも重視する構成を見る"
+  };
+  if(tier==="long_term")return {
+    next:"balanced",
+    note:"長く使う前提の候補を優先して、必要品全体を組んでいます。",
+    cta:"価格とのバランス構成を見る"
+  };
+  return {
+    next:"low",
+    note:"価格と使いやすさの両方を見ながら、必要品全体を組んでいます。",
+    cta:"もっと安く始める構成を見る"
+  };
+}
+
+function renderBudgetSwitch(){
+  const config=budgetSwitchConfig(answers.budget);
+  return `<div class="budget-switch">
+    <div class="budget-switch-copy">
+      <span>いまの買い方</span>
+      <strong>${escapeHtml(budgetLabel(answers.budget))}</strong>
+      <p>${escapeHtml(config.note)}</p>
+    </div>
+    <button id="budgetSwitchBtn" type="button" data-next-budget="${escapeAttr(config.next)}">${escapeHtml(config.cta)} →</button>
+  </div>`;
 }
 
 function renderBasketSummary(basket){
