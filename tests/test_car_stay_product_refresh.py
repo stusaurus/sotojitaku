@@ -336,7 +336,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
             }
             candidate=refresh.worker_exact_item_candidate(seed)
             self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
-            self.assertEqual(candidate["source"],"worker_exact_url")
+            self.assertEqual(candidate["source"],"worker_exact_url_multiquery")
 
             refresh.fetch_json_quick=lambda url,headers=None,timeout=4:{
                 "found":True,
@@ -364,7 +364,7 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.fetch_json_quick=original
 
-    def test_worker_exact_url_lookup_runs_once_with_first_query_and_four_second_budget(self):
+    def test_worker_exact_url_lookup_tries_curated_queries_with_bounded_requests(self):
         import urllib.parse
         seed={
             "itemUrl":"https://item.rakuten.co.jp/shop/exact/",
@@ -380,9 +380,11 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 return {"found":False}
             refresh.fetch_json_quick=fake
             self.assertIsNone(refresh.worker_exact_item_candidate(seed))
-            self.assertEqual(len(seen),1)
-            self.assertEqual(seen[0][0]["q"],["exact-model-code"])
-            self.assertEqual(seen[0][1],4)
+            queries=[entry[0]["q"][0] for entry in seen]
+            self.assertEqual(queries[:2],["exact-model-code","broad vehicle phrase"])
+            self.assertIn("exact",queries)
+            self.assertTrue(all(timeout==5 for _,timeout in seen))
+            self.assertLessEqual(len(seen),6)
         finally:
             refresh.fetch_json_quick=original
 
@@ -863,8 +865,10 @@ class CarStayProductRefreshTests(unittest.TestCase):
         original=refresh.fetch_json_quick
         try:
             def fake(url,headers=None,timeout=4):
+                import urllib.parse
                 calls.append(url)
-                if "02s-c034-sa" not in url.split("&q=")[-1]:
+                q=urllib.parse.parse_qs(urllib.parse.urlparse(url).query).get("q",[""])[0]
+                if q!="02s-c034-sa":
                     return {"found":False}
                 return {
                     "found":True,
