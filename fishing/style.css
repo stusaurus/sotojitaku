@@ -740,3 +740,48 @@
 @media(max-width:520px){
   .hero-photo{object-position:61% center}
 }
+
+
+/* ===== CAMP parity phase 2 ===== */
+.preview-next{
+  width:100%;
+  border:0;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.preview-next:hover{transform:translateY(-1px);filter:brightness(.98)}
+.preview-next:focus-visible{outline:2px solid #315f5b;outline-offset:3px}
+
+.plan-visual{
+  background:
+    linear-gradient(155deg,rgba(4,20,27,.90),rgba(7,35,42,.62) 58%,rgba(8,31,36,.88)),
+    url("./assets/fishing-hero-generated.webp") 58% center / cover no-repeat;
+}
+.plan-visual[data-step="0"]{background-position:54% center}
+.plan-visual[data-step="1"]{background-position:57% center}
+.plan-visual[data-step="2"]{background-position:60% center}
+.plan-visual[data-step="3"]{background-position:62% center}
+.plan-visual[data-step="4"]{background-position:59% center}
+.plan-visual[data-step="5"]{background-position:56% center}
+.plan-visual[data-step="6"]{background-position:53% center}
+.plan-visual:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(2,12,17,.08),transparent 40%,rgba(2,12,17,.34)),
+    radial-gradient(circle at 62% 38%,rgba(229,176,91,.10),transparent 24%);
+}
+.plan-visual>*{position:relative;z-index:1}
+.water-card{background:linear-gradient(180deg,rgba(4,19,24,.05),rgba(4,19,24,.18))}
+.ring{border-color:rgba(220,236,230,.16)}
+.visual-message{text-shadow:0 2px 18px rgba(0,0,0,.48)}
+.visual-tags span{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+@media(max-width:850px){
+  .plan-visual{
+    background-position:59% 48%;
+  }
+  .plan-visual[data-step]{background-position:59% 48%}
+}
