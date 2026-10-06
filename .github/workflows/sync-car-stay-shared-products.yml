@@ -1,5 +1,5 @@
 name: Sync CAR STAY shared Rakuten catalog
-# v2: rerun after current-listing regression alignment
+# v3: sync measurement-fit fallback products and revenue coverage changes
 
 on:
   workflow_dispatch:
@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'car-stay/scripts/import_shared_catalog.py'
+      - 'car-stay/scripts/report_coverage.mjs'
       - '.github/workflows/sync-car-stay-shared-products.yml'
   schedule:
     # daily-cost-jp exports at 22:40 UTC; sync after it finishes.
