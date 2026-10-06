@@ -689,5 +689,54 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.required_groups_ok("N-VAN JJ1 JJ2 ベッドキット Full type",seed))
         self.assertFalse(refresh.identity_ok("N-WGN N-VAN ベッドキット",seed))
 
+    def test_worker_normalizer_keeps_product_catalog_code(self):
+        c=refresh.normalize_worker_candidate({
+            "name":"Levolva N-VAN JJ1 JJ2 車中泊マット",
+            "product_code":"LVMR-11",
+            "shipping_included_url":"",
+            "shipping_included_price":None
+        })
+        self.assertEqual(c["itemCode"],"LVMR-11")
+
+    def test_worker_identity_without_url_retries_shipping_lookup_with_full_name_and_code(self):
+        import urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/auc-sovie-store/mr-11/",
+            "brand":"Levolva",
+            "query":"LVMR-11",
+            "searchQueries":["LVMR-11"],
+            "identityGroups":[["Levolva"],["N-VAN"],["JJ1"],["JJ2"],["車中泊マット"]],
+            "forbiddenTerms":[]
+        }
+        original=refresh.fetch_json_quick
+        try:
+            def fake(url,headers=None,timeout=4):
+                if url.startswith(refresh.WORKER):
+                    return {"products":[{
+                        "name":"Levolva N-VAN JJ1 JJ2 車中泊マット",
+                        "product_code":"LVMR-11",
+                        "shipping_included_url":"",
+                        "shipping_included_price":None
+                    }]}
+                if url.startswith(refresh.SHIPPING_LOOKUP):
+                    params=urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+                    self.assertEqual(params.get("code"),["LVMR-11"])
+                    self.assertEqual(params.get("name"),["Levolva N-VAN JJ1 JJ2 車中泊マット"])
+                    return {
+                        "found":True,
+                        "shipping_match_name":"Levolva N-VAN JJ1 JJ2 車中泊マット",
+                        "shipping_included_price":22800,
+                        "shipping_included_url":"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(seed["itemUrl"],safe=""),
+                        "shipping_included_image":"https://example.com/nvan.jpg"
+                    }
+                return {}
+            refresh.fetch_json_quick=fake
+            candidate=refresh.worker_candidate(seed)
+            self.assertIsNotNone(candidate)
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+            self.assertEqual(candidate["source"],"worker_identity_shipping_lookup")
+        finally:
+            refresh.fetch_json_quick=original
+
 if __name__=="__main__":
     unittest.main()
