@@ -1,24 +1,24 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T11:13:08.927Z",
-  "catalogUpdatedAt": "2026-10-06T11:08:55.780766+00:00",
-  "liveProductCount": 10,
+  "generatedAt": "2026-10-06T11:30:47.334Z",
+  "catalogUpdatedAt": "2026-10-06T11:30:47.256981+00:00",
+  "liveProductCount": 31,
   "summary": {
     "configurations": 18,
-    "privacyCovered": 17,
-    "sleepCovered": 11,
-    "privacyCoveragePct": 94,
-    "sleepCoveragePct": 61,
-    "revenueHoles": 8
+    "privacyCovered": 18,
+    "sleepCovered": 17,
+    "privacyCoveragePct": 100,
+    "sleepCoveragePct": 94,
+    "revenueHoles": 1
   },
   "byVehicle": [
     {
       "vehicleId": "honda-nbox-jf5-jf6",
       "vehicle": "N-BOX",
       "configurations": 3,
-      "privacyCovered": 2,
+      "privacyCovered": 3,
       "sleepCovered": 3,
-      "privacyCoveragePct": 67,
+      "privacyCoveragePct": 100,
       "sleepCoveragePct": 100
     },
     {
@@ -26,36 +26,36 @@
       "vehicle": "シエンタ",
       "configurations": 2,
       "privacyCovered": 2,
-      "sleepCovered": 1,
+      "sleepCovered": 2,
       "privacyCoveragePct": 100,
-      "sleepCoveragePct": 50
+      "sleepCoveragePct": 100
     },
     {
       "vehicleId": "honda-freed-gt",
       "vehicle": "FREED",
       "configurations": 5,
       "privacyCovered": 5,
-      "sleepCovered": 1,
+      "sleepCovered": 4,
       "privacyCoveragePct": 100,
-      "sleepCoveragePct": 20
+      "sleepCoveragePct": 80
     },
     {
       "vehicleId": "suzuki-hustler-mr52s-mr92s",
       "vehicle": "ハスラー",
       "configurations": 1,
       "privacyCovered": 1,
-      "sleepCovered": 0,
+      "sleepCovered": 1,
       "privacyCoveragePct": 100,
-      "sleepCoveragePct": 0
+      "sleepCoveragePct": 100
     },
     {
       "vehicleId": "honda-nvan-jj1-jj2",
       "vehicle": "N-VAN",
       "configurations": 1,
       "privacyCovered": 1,
-      "sleepCovered": 0,
+      "sleepCovered": 1,
       "privacyCoveragePct": 100,
-      "sleepCoveragePct": 0
+      "sleepCoveragePct": 100
     },
     {
       "vehicleId": "suzuki-every-da17v",
@@ -78,35 +78,6 @@
   ],
   "holes": [
     {
-      "priority": 1,
-      "type": "privacy_full",
-      "vehicleId": "honda-nbox-jf5-jf6",
-      "vehicle": "N-BOX",
-      "config": {
-        "trim": "N-BOX JOY"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 6,
-        "trim": "AIR"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 6,
-        "trim": "AIR EX"
-      }
-    },
-    {
       "priority": 2,
       "type": "sleep",
       "vehicleId": "honda-freed-gt",
@@ -115,39 +86,6 @@
         "seatCount": 7,
         "trim": "AIR EX"
       }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-freed-gt",
-      "vehicle": "FREED",
-      "config": {
-        "seatCount": 6,
-        "trim": "CROSSTAR"
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "honda-nvan-jj1-jj2",
-      "vehicle": "N-VAN",
-      "config": {}
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "toyota-sienta-10-15",
-      "vehicle": "シエンタ",
-      "config": {
-        "seatCount": 7
-      }
-    },
-    {
-      "priority": 2,
-      "type": "sleep",
-      "vehicleId": "suzuki-hustler-mr52s-mr92s",
-      "vehicle": "ハスラー",
-      "config": {}
     }
   ],
   "configurations": [
@@ -158,20 +96,24 @@
         "trim": "N-BOX"
       },
       "privacy": {
-        "count": 1,
+        "count": 3,
         "productIds": [
-          "nbox-jf56-zenpo-shade"
+          "nbox-jf56-hobbyman-joy-shade",
+          "nbox-jf56-zenpo-shade",
+          "nbox-jf56-aurauto-at-tx878"
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "nbox-jf56-di-flat4",
           "nbox-jf56-hobbyman-kurumat"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "nbox-jf56-di-flat4",
           "nbox-jf56-hobbyman-kurumat"
         ]
       },
@@ -189,20 +131,24 @@
         "trim": "N-BOX Custom"
       },
       "privacy": {
-        "count": 1,
+        "count": 3,
         "productIds": [
-          "nbox-jf56-zenpo-shade"
+          "nbox-jf56-hobbyman-joy-shade",
+          "nbox-jf56-zenpo-shade",
+          "nbox-jf56-aurauto-at-tx878"
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "nbox-jf56-di-flat4",
           "nbox-jf56-hobbyman-kurumat"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "nbox-jf56-di-flat4",
           "nbox-jf56-hobbyman-kurumat"
         ]
       },
@@ -220,8 +166,11 @@
         "trim": "N-BOX JOY"
       },
       "privacy": {
-        "count": 0,
-        "productIds": []
+        "count": 2,
+        "productIds": [
+          "nbox-jf56-hobbyman-joy-shade",
+          "nbox-jf56-atmys-joy-shade"
+        ]
       },
       "sleep": {
         "count": 1,
@@ -249,9 +198,11 @@
         "seatCount": 5
       },
       "privacy": {
-        "count": 1,
+        "count": 3,
         "productIds": [
-          "sienta10-hobbyman-cradp"
+          "sienta10-hobbyman-cradp",
+          "sienta10-hobbyman-shade",
+          "sienta10-partsmax-hn03t135a"
         ]
       },
       "sleep": {
@@ -280,22 +231,30 @@
         "seatCount": 7
       },
       "privacy": {
-        "count": 1,
+        "count": 3,
         "productIds": [
-          "sienta10-hobbyman-cradp"
+          "sienta10-hobbyman-cradp",
+          "sienta10-hobbyman-shade",
+          "sienta10-partsmax-hn03t135a"
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "sienta10-7-suwariba-o017"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "sienta10-7-suwariba-o017"
+        ]
       },
       "surface": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "sienta10-7-suwariba-o017"
+        ]
       }
     },
     {
@@ -306,22 +265,29 @@
         "trim": "AIR"
       },
       "privacy": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt6-atmys-kurumat"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt6-atmys-kurumat"
+        ]
       },
       "surface": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt6-atmys-kurumat"
+        ]
       }
     },
     {
@@ -332,22 +298,29 @@
         "trim": "AIR EX"
       },
       "privacy": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt6-atmys-kurumat"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt6-atmys-kurumat"
+        ]
       },
       "surface": {
-        "count": 0,
-        "productIds": []
+        "count": 1,
+        "productIds": [
+          "freed-gt6-atmys-kurumat"
+        ]
       }
     },
     {
@@ -358,8 +331,9 @@
         "trim": "AIR EX"
       },
       "privacy": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
@@ -384,27 +358,34 @@
         "trim": "CROSSTAR"
       },
       "privacy": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 3,
         "productIds": [
-          "freed-gt5-cartist-jr00280029"
+          "freed-gt5-cartist-jr00280029",
+          "freed-gt-crosstar-5-cellutane-premo-a1609",
+          "freed-gt-crosstar-5-suwariba-o010"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 3,
         "productIds": [
-          "freed-gt5-cartist-jr00280029"
+          "freed-gt5-cartist-jr00280029",
+          "freed-gt-crosstar-5-cellutane-premo-a1609",
+          "freed-gt-crosstar-5-suwariba-o010"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 3,
         "productIds": [
-          "freed-gt5-cartist-jr00280029"
+          "freed-gt5-cartist-jr00280029",
+          "freed-gt-crosstar-5-cellutane-premo-a1609",
+          "freed-gt-crosstar-5-suwariba-o010"
         ]
       }
     },
@@ -416,22 +397,32 @@
         "trim": "CROSSTAR"
       },
       "privacy": {
-        "count": 1,
+        "count": 2,
         "productIds": [
+          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 2,
+        "productIds": [
+          "freed-gt-crosstar-6-cellutane-a1612",
+          "freed-gt6-atmys-kurumat"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 2,
+        "productIds": [
+          "freed-gt-crosstar-6-cellutane-a1612",
+          "freed-gt6-atmys-kurumat"
+        ]
       },
       "surface": {
-        "count": 0,
-        "productIds": []
+        "count": 2,
+        "productIds": [
+          "freed-gt-crosstar-6-cellutane-a1612",
+          "freed-gt6-atmys-kurumat"
+        ]
       }
     },
     {
@@ -439,22 +430,34 @@
       "vehicle": "ハスラー",
       "config": {},
       "privacy": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "hustler-mr52-92-hobbyman-full"
+          "hustler-mr52-92-hobbyman-full",
+          "hustler-mr52-92-atmys-shade"
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 3,
+        "productIds": [
+          "hustler-mr52-92-levolva-lvmr13",
+          "hustler-mr52-92-atmys-kurumat3",
+          "hustler-mr52-92-hobbyman-kurumat"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 3,
+        "productIds": [
+          "hustler-mr52-92-levolva-lvmr13",
+          "hustler-mr52-92-atmys-kurumat3",
+          "hustler-mr52-92-hobbyman-kurumat"
+        ]
       },
       "surface": {
-        "count": 0,
-        "productIds": []
+        "count": 2,
+        "productIds": [
+          "hustler-mr52-92-levolva-lvmr13",
+          "hustler-mr52-92-hobbyman-kurumat"
+        ]
       }
     },
     {
@@ -468,16 +471,28 @@
         ]
       },
       "sleep": {
-        "count": 0,
-        "productIds": []
+        "count": 3,
+        "productIds": [
+          "nvan-jj1-jj2-suwariba-o023",
+          "nvan-jj1-jj2-hobbyman-kurumat",
+          "nvan-jj1-jj2-levolva-mr11"
+        ]
       },
       "floor": {
-        "count": 0,
-        "productIds": []
+        "count": 3,
+        "productIds": [
+          "nvan-jj1-jj2-suwariba-o023",
+          "nvan-jj1-jj2-hobbyman-kurumat",
+          "nvan-jj1-jj2-levolva-mr11"
+        ]
       },
       "surface": {
-        "count": 0,
-        "productIds": []
+        "count": 3,
+        "productIds": [
+          "nvan-jj1-jj2-suwariba-o023",
+          "nvan-jj1-jj2-hobbyman-kurumat",
+          "nvan-jj1-jj2-levolva-mr11"
+        ]
       }
     },
     {
@@ -493,21 +508,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       }
     },
@@ -524,21 +542,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       }
     },
@@ -555,21 +576,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       }
     },
@@ -586,21 +610,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       }
     },
@@ -617,21 +644,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       }
     },
@@ -648,21 +678,24 @@
         ]
       },
       "sleep": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "floor": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       },
       "surface": {
-        "count": 1,
+        "count": 2,
         "productIds": [
-          "every-da17-da18-cartist-jr14971498"
+          "every-da17-da18-cartist-jr14971498",
+          "every-da17-da18-levolva-mr09"
         ]
       }
     }
