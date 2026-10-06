@@ -143,7 +143,11 @@ def candidate_match_level(candidate,seed):
     return 0
 
 def seed_queries(seed):
-    queries=seed.get('searchQueries') or [seed.get('query','')]
+    queries=[]
+    merchant_number=str(seed.get('merchantProductNumber') or '').strip()
+    if merchant_number:
+        queries.append(merchant_number)
+    queries.extend(seed.get('searchQueries') or [seed.get('query','')])
     out=[]
     for value in queries:
         value=str(value or '').strip()
