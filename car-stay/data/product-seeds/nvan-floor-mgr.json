@@ -44,8 +44,19 @@
   ],
   "searchQueries": [
     "MBK4646",
-    "N-VAN JJ1 JJ2 ベッドキット",
-    "N-VAN MGR Customs"
+    "N-VAN ベッドキット",
+    "N-VAN 車中泊マット"
   ],
-  "rakutenItemCode": "mgr-customs:MBK4646"
+  "rakutenItemCode": "mgr-customs:MBK4646",
+  "candidateIdentityGroups": [
+    [
+      "N-VAN",
+      "NVAN",
+      "N VAN"
+    ],
+    [
+      "ベッドキット",
+      "車中泊"
+    ]
+  ]
 }
