@@ -85,7 +85,7 @@ function safeSeoProduct(product,vehicleIds,gaps,now=Date.now()){
   if(product?.audit?.status!=="verified_live")return false;
   const verified=Date.parse(product.verifiedAt||"");
   if(!Number.isFinite(verified)||now-verified>7*86400000)return false;
-  if(!product.gapIds?.some(g=>gaps.includes(g)))return false;
+  if(!product.gapIds?.some(g=>gaps.includes(g)))return false;\n  const role=product.recommendationRole||"beginner_default";\n  if(!["beginner_default","beginner_alternative"].includes(role))return false;
   if(!Number.isFinite(product.price)||product.price<=0)return false;
   if(typeof product.image!=="string"||!product.image.startsWith("https://"))return false;
   if(canonicalRakuten(product.affiliateUrl)!==canonicalRakuten(product.itemUrl))return false;
@@ -128,7 +128,7 @@ async function renderVerifiedProducts(){
 
     const section=document.createElement("section");
     section.className="section seo-products";
-    section.innerHTML="<div class='seo-products-head'><div><p class='seo-products-kicker'>LIVE AUDITED PICKS</p><h2>いま確認できる適合候補</h2><p>無料対策を試したあと、それでも必要なら。販売・価格・楽天リンクを7日以内に監査できた商品だけです。</p></div><span class='seo-products-count'>"+items.length+"件</span></div><div class='seo-product-grid'>"+items.map(p=>"<article class='seo-product-card'><img src='"+p.image.replace(/'/g,"&#39;")+"' alt='' loading='lazy'><div><span class='seo-fit'>"+fitLabel(p,vehicleIds).replace(/</g,"&lt;")+"</span><h3>"+String(p.name||"").replace(/[<&]/g,m=>m==="<"?"&lt;":"&amp;")+"</h3><div class='seo-product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+String(p.verifiedAt||"").slice(0,10)+"</small></div><a class='seo-buy' data-seo-product='"+p.productId+"' href='"+p.affiliateUrl.replace(/'/g,"%27")+"' target='_blank' rel='nofollow sponsored noopener'>楽天で見る →</a></div></article>").join("")+"</div><p class='seo-products-note'>※ここは「あなた専用の最終推薦」ではありません。乗車定員・グレード・寝床・気温まで合わせる場合は下のBuilderで判定してください。</p>";
+    section.innerHTML="<div class='seo-products-head'><div><p class='seo-products-kicker'>LIVE AUDITED PICKS</p><h2>いま確認できる適合候補</h2><p><span class='seo-pr'>PR</span> 無料対策を試したあと、それでも必要なら。販売・価格・楽天リンクを7日以内に監査できた初泊向け商品だけです。</p></div><span class='seo-products-count'>"+items.length+"件</span></div><div class='seo-product-grid'>"+items.map(p=>"<article class='seo-product-card'><img src='"+p.image.replace(/'/g,"&#39;")+"' alt='' loading='lazy'><div><div class='seo-card-badges'><span class='seo-pr'>PR</span><span class='seo-fit'>"+fitLabel(p,vehicleIds).replace(/</g,"&lt;")+"</span><span class='seo-role'>"+((p.recommendationRole||"beginner_default")==="beginner_alternative"?"代替候補":"初泊向け")+"</span></div><h3>"+String(p.name||"").replace(/[<&]/g,m=>m==="<"?"&lt;":"&amp;")+"</h3><div class='seo-product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+String(p.verifiedAt||"").slice(0,10)+"</small></div><a class='seo-buy' data-seo-product='"+p.productId+"' data-price='"+(p.price||0)+"' data-role='"+(p.recommendationRole||"")+"' href='"+p.affiliateUrl.replace(/'/g,"%27")+"' target='_blank' rel='nofollow sponsored noopener'>楽天で見る →</a></div></article>").join("")+"</div><p class='seo-products-note'>※楽天アフィリエイトを利用しています。ここは「あなた専用の最終推薦」ではありません。乗車定員・グレード・寝床・気温まで合わせる場合は下のBuilderで判定してください。</p>";
     anchor.parentNode.insertBefore(section,anchor);
 
     if(enabled&&window.gtag){
@@ -137,7 +137,7 @@ async function renderVerifiedProducts(){
     section.addEventListener("click",event=>{
       const link=event.target.closest("[data-seo-product]");
       if(!link||!enabled||!window.gtag)return;
-      window.gtag("event","seo_affiliate_click",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:link.dataset.seoProduct});
+      window.gtag("event","seo_affiliate_click",{site_id:"sotojitaku_car_stay_seo",vehicle_slug:ctx.vehicle_slug,intent_slug:ctx.intent_slug,product_id:link.dataset.seoProduct,price:Number(link.dataset.price)||0,recommendation_role:link.dataset.role||""});
     });
   }catch{}
 }
