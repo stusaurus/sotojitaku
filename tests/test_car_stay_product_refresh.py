@@ -850,5 +850,38 @@ class CarStayProductRefreshTests(unittest.TestCase):
         finally:
             refresh.exact_page_details=original
 
+    def test_worker_exact_lookup_tries_later_seed_queries(self):
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/n-box-jf56-set/",
+            "query":"N-BOX JOY サンシェード",
+            "searchQueries":["N-BOX JOY サンシェード","02s-c034-sa"],
+            "rakutenItemCode":"hobbyman:02s-c034-sa",
+            "identityGroups":[["N-BOX"],["JF5"],["JF6"],["JOY"],["サンシェード"]],
+            "forbiddenTerms":[]
+        }
+        calls=[]
+        original=refresh.fetch_json_quick
+        try:
+            def fake(url,headers=None,timeout=4):
+                calls.append(url)
+                if "02s-c034-sa" not in url.split("&q=")[-1]:
+                    return {"found":False}
+                return {
+                    "found":True,
+                    "name":"N-BOX JF5 JF6 JOY サンシェード フルセット",
+                    "price":15900,
+                    "item_url":seed["itemUrl"],
+                    "affiliate_url":"https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhobbyman%2Fn-box-jf56-set%2F",
+                    "image":"https://example.com/a.jpg",
+                    "item_code":"hobbyman:02s-c034-sa"
+                }
+            refresh.fetch_json_quick=fake
+            candidate=refresh.worker_exact_item_candidate(seed)
+            self.assertIsNotNone(candidate)
+            self.assertGreaterEqual(len(calls),2)
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+        finally:
+            refresh.fetch_json_quick=original
+
 if __name__=="__main__":
     unittest.main()
