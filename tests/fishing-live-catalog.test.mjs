@@ -43,7 +43,7 @@ test("balanced choi-nage gets a verified rod set and all required categories",()
   assert.ok(r.products.selected.some(p=>p.productId==="choi-shimano-complete-500527"));
 });
 
-test("low-mess sabiki adds preference-valid bait instead of trusting bundle bait",()=>{
+test("low-mess sabiki uses the Ami Hime already included in the verified complete bundle",()=>{
   const r=run({
     party:"family_child",fun:"easy_catch",bait:"low_mess",take_home:"yes",
     carry:"normal",budget:"balanced",owned:[]
@@ -51,9 +51,20 @@ test("low-mess sabiki adds preference-valid bait instead of trusting bundle bait
   assert.equal(r.plan.methodId,"sabiki");
   assert.deepEqual(r.products.unresolvedCategoryIds,[]);
   const complete=r.products.selected.find(p=>p.productId==="sabiki-shimano-complete-500528");
-  const bait=r.products.selected.find(p=>p.categoryId==="bait");
   assert.ok(complete);
-  assert.ok(bait);
-  assert.equal(complete.effectiveCoverCategoryIds.includes("bait"),false);
-  assert.ok((bait.preferenceTags||[]).includes("low_mess"));
+  assert.equal(complete.effectiveCoverCategoryIds.includes("bait"),true);
+  assert.equal(r.products.selected.filter(p=>p.categoryId==="bait").length,0);
+});
+
+test("no-worm choi-nage uses the Power Isome already included in the verified complete bundle",()=>{
+  const r=run({
+    party:"pair",fun:"cast_wait",bait:"no_worm",take_home:"no",
+    carry:"normal",budget:"balanced",owned:[]
+  });
+  assert.equal(r.plan.methodId,"choi_nage");
+  assert.deepEqual(r.products.unresolvedCategoryIds,[]);
+  const complete=r.products.selected.find(p=>p.productId==="choi-shimano-complete-500527");
+  assert.ok(complete);
+  assert.equal(complete.effectiveCoverCategoryIds.includes("bait"),true);
+  assert.equal(r.products.selected.filter(p=>p.categoryId==="bait").length,0);
 });

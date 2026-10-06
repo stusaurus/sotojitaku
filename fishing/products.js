@@ -14,10 +14,24 @@ function audienceForCategory(categoryId){
   return null;
 }
 
+function effectivePreferenceTags(product={}){
+  const tags=new Set(product.preferenceTags||[]);
+  const name=String(product.name||"");
+  if(name.includes("アミ姫")){
+    tags.add("no_worm");
+    tags.add("low_mess");
+  }
+  if(name.includes("パワーイソメ")||name.includes("パワーミニイソメ")){
+    tags.add("no_worm");
+    tags.add("low_mess");
+  }
+  return [...tags];
+}
+
 function effectiveCoverage(product,input={}){
   const covers=[...(product.coverCategoryIds||[product.categoryId])];
   if(["no_worm","low_mess"].includes(input.bait) && covers.includes("bait")){
-    const tags=product.preferenceTags||[];
+    const tags=effectivePreferenceTags(product);
     if(!tags.includes(input.bait))return covers.filter(id=>id!=="bait");
   }
   return covers;
