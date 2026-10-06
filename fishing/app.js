@@ -762,8 +762,8 @@ function cleanName(s){return String(s||"").replace(/〖[^〗]*〗/g,"").replace(
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function escapeAttr(s){return escapeHtml(s)}
 
-$("#startBtn").addEventListener("click",start);
-previewStartBtn?.addEventListener("click",start);
+$("#startBtn").addEventListener("click",()=>{track("fishing_entry_click",{entry_location:"hero"});start()});
+previewStartBtn?.addEventListener("click",()=>{track("fishing_entry_click",{entry_location:"diagnosis_preview"});start()});
 savedBtn.addEventListener("click",()=>readDraft()?resumeDraft():openSavedPlan());
 resetBtn.addEventListener("click",reset);
 load().then(()=>{
