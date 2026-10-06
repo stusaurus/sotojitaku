@@ -4,6 +4,8 @@ import {buildProductRecommendations,applyProductCoverage} from "./products.js";
 const $=s=>document.querySelector(s);
 const hero=$("#hero"),planner=$("#planner"),panel=$("#panel"),progress=$("#progressBar");
 const resetBtn=$("#resetBtn"),savedBtn=$("#savedBtn"),stepText=$("#stepText"),miniPlan=$("#miniPlan"),visualMessage=$("#visualMessage"),visualTags=$("#visualTags");
+const progressText=$("#progressText"),progressLine=$("#progressLine");
+const DRAFT_KEY="sotojitakuFishingDraft";
 
 let questionsData,plansData,gearData,howtoData,catalog;
 let index=0;
