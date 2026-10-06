@@ -559,12 +559,15 @@ class CarStayProductRefreshTests(unittest.TestCase):
         self.assertTrue(refresh.identity_ok("新型 フリード GT1/8 AIR CROSSTAR シートフラットクッション 段差解消 車中泊 マット",seed))
         self.assertFalse(refresh.identity_ok("フリード GB5 GT1/8 車中泊 マット",seed))
 
-    def test_nvan_dedicated_bed_search_starts_with_exact_product_number(self):
+    def test_nvan_dedicated_bed_search_keeps_exact_product_number_after_human_intent_query(self):
         import json
         from pathlib import Path
         path=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"/"nvan-floor-hobbyman.json"
         seed=json.loads(path.read_text())
-        self.assertEqual(seed["searchQueries"][0],"02k-a005-ca")
+        self.assertIn("N-VAN",seed["searchQueries"][0])
+        self.assertIn("車中泊ベッド",seed["searchQueries"][0])
+        self.assertIn("02k-a005-ca",seed["searchQueries"])
+        self.assertEqual(seed["rakutenItemCode"],"hobbyman:02k-a005-ca")
         self.assertEqual(seed["itemUrl"],"https://item.rakuten.co.jp/hobbyman/n-van-kurumat/")
 
     def test_same_shop_replacement_cannot_fallback_when_sales_page_is_unreachable(self):
@@ -759,6 +762,23 @@ class CarStayProductRefreshTests(unittest.TestCase):
             self.assertEqual(candidate["source"],"worker_identity_shipping_lookup")
         finally:
             refresh.fetch_json_quick=original
+
+    def test_revenue_hole_seeds_search_vehicle_intent_before_opaque_codes(self):
+        import json
+        from pathlib import Path
+        root=Path(__file__).resolve().parents[1]/"car-stay"/"data"/"product-seeds"
+        expected={
+            "sienta-floor-7.json":["シエンタ","7人乗り","車中泊"],
+            "freed-floor-6.json":["フリード","6人乗り","全席用"],
+            "hustler-floor-atmys.json":["ハスラー","MR52S","車中泊"],
+            "nvan-floor-hobbyman.json":["N-VAN","車中泊ベッド"],
+            "nvan-floor-nomad.json":["N-VAN","全席用","車中泊"]
+        }
+        for filename,tokens in expected.items():
+            seed=json.loads((root/filename).read_text())
+            first=seed["searchQueries"][0]
+            for token in tokens:
+                self.assertIn(token,first,filename)
 
 if __name__=="__main__":
     unittest.main()

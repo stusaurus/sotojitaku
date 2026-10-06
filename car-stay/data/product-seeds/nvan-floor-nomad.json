@@ -42,9 +42,29 @@
     }
   ],
   "searchQueries": [
-    "o023",
-    "N-VAN JJ1/JJ2専用 フラットマット",
-    "N-VAN JJ1 JJ2 全席用 車中泊マット"
+    "N-VAN JJ1/JJ2専用 フラットマット 車中泊マット 全席用",
+    "N-VAN JJ1 JJ2 全席用 車中泊マット",
+    "N-VAN 全席用 フラットマット",
+    "o023"
   ],
-  "rakutenItemCode": "suwariba:o023"
+  "rakutenItemCode": "suwariba:o023",
+  "candidateIdentityGroups": [
+    [
+      "N-VAN",
+      "NVAN",
+      "N VAN"
+    ],
+    [
+      "JJ1/JJ2",
+      "JJ1",
+      "JJ2"
+    ],
+    [
+      "全席用"
+    ],
+    [
+      "車中泊マット",
+      "フラットマット"
+    ]
+  ]
 }

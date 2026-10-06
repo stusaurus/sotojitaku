@@ -42,10 +42,30 @@
     }
   ],
   "searchQueries": [
-    "01k-g018-ca",
+    "ハスラー MR52S MR92S シートフラットクッション 段差解消 車中泊 マット",
+    "ハスラー MR52S MR92S 車中泊 マット",
     "kurumat-black-hustler-mr52s-2",
-    "ハスラー MR52S MR92S 段差解消",
-    "ハスラー MR52S 車中泊 マット"
+    "01k-g018-ca"
   ],
-  "rakutenItemCode": "atmys:01k-g018-ca"
+  "rakutenItemCode": "atmys:01k-g018-ca",
+  "candidateIdentityGroups": [
+    [
+      "ハスラー",
+      "HUSTLER"
+    ],
+    [
+      "MR52S"
+    ],
+    [
+      "MR92S"
+    ],
+    [
+      "段差解消",
+      "シートフラットクッション"
+    ],
+    [
+      "車中泊",
+      "マット"
+    ]
+  ]
 }
