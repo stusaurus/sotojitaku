@@ -43,11 +43,11 @@
     }
   ],
   "searchQueries": [
-    "mbk4646",
     "N-VAN JJ1 JJ2 ベッドキット",
-    "N-VAN Full type ベッドキット"
+    "N-VAN Full type ベッドキット",
+    "MBK4646"
   ],
-  "rakutenItemCode": "mgr-customs:mbk4646",
+  "rakutenItemCode": "mgr-customs:MBK4646",
   "candidateIdentityGroups": [
     [
       "N-VAN",
