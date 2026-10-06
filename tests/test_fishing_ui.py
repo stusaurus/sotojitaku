@@ -89,6 +89,12 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("basket_position:position", self.app)
         self.assertIn("optional_product_count:basket.optionalCount", self.app)
 
+    def test_guide_entry_attribution_reaches_downstream_events(self):
+        self.assertIn("readEntryAttribution", self.app)
+        self.assertIn('entry_source:"guide"', self.app)
+        self.assertIn("entry_guide_slug", self.app)
+        self.assertIn("...entryAttribution", self.app)
+
     def test_required_and_optional_products_are_visually_separated(self):
         self.assertIn("productCoversRequiredGap", self.app)
         self.assertIn("まず揃える", self.app)
