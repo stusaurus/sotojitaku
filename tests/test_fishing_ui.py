@@ -95,6 +95,10 @@ class FishingUiTest(unittest.TestCase):
 
     def test_budget_switch_recalculates_the_whole_basket(self):
         self.assertIn("renderBudgetSwitch", self.app)
+        self.assertIn("productSelectionSignature", self.app)
+        self.assertIn("sameProducts", self.app)
+        self.assertIn("alternateBasket", self.app)
+        self.assertIn("現在の確認済み商品では同じ構成が最適です", self.app)
         self.assertIn('id="budgetSwitchBtn"', self.app)
         self.assertIn('track("fishing_budget_switch"', self.app)
         self.assertIn("from_budget:from", self.app)
