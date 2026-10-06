@@ -83,7 +83,7 @@ class FishingUiTest(unittest.TestCase):
 
     def test_secondary_entry_and_result_resume_match_camp_flow(self):
         self.assertIn('id="previewStartBtn"', self.index)
-        self.assertIn('previewStartBtn?.addEventListener("click",start)', self.app)
+        self.assertIn('previewStartBtn?.addEventListener("click",()=>{track("fishing_entry_click",{entry_location:"diagnosis_preview"});start()})', self.app)
         self.assertIn('stage,index,answers', self.app)
         self.assertIn('persistDraft("result")', self.app)
         self.assertIn('draft.stage==="result"', self.app)
