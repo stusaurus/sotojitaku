@@ -1,4 +1,5 @@
 name: Sync CAR STAY shared Rakuten catalog
+# v2: rerun after current-listing regression alignment
 
 on:
   workflow_dispatch:
