@@ -63,5 +63,8 @@
     "SP-JK2384",
     "SUNVIC フリード GT サンシェード",
     "フリード GT 8PCS サンシェード"
-  ]
+  ],
+  "enabled": false,
+  "disabledReason": "Duplicate FREED privacy options already cover all supported GT configurations.",
+  "disabledAt": "2026-10-06"
 }
