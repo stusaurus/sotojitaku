@@ -271,7 +271,7 @@ function renderResult({trackDiagnosis=true}={}){
       <div class="section">
         <h3 class="section-title">足りないものは、これで揃える</h3>
         ${renderQuantityGuidance()}
-        ${renderBudgetSwitch()}
+        ${renderBudgetSwitch(plan,rawChecklist,productResult)}
         ${renderBasketSummary(basket)}
         ${renderProducts(productResult,rawChecklist)}
       </div>
@@ -496,15 +496,45 @@ function budgetSwitchConfig(tier){
   };
 }
 
-function renderBudgetSwitch(){
+function productSelectionSignature(result){
+  return (result?.selected||[]).map(p=>p.productId).filter(Boolean).sort().join("|");
+}
+
+function renderBudgetSwitch(plan,checklist,currentResult){
   const config=budgetSwitchConfig(answers.budget);
+  const alternateInput={...answers,budget:config.next};
+  const alternateResult=buildProductRecommendations(catalog.products||[],{
+    input:alternateInput,
+    plan,
+    checklist,
+    now:Date.now()
+  });
+  const sameProducts=productSelectionSignature(currentResult)===productSelectionSignature(alternateResult);
+  if(sameProducts){
+    return `<div class="budget-switch budget-switch-static">
+      <div class="budget-switch-copy">
+        <span>いまの買い方</span>
+        <strong>${escapeHtml(budgetLabel(answers.budget))}</strong>
+        <p>${escapeHtml(config.note)}</p>
+      </div>
+      <span class="budget-switch-status">別予算でも、現在の確認済み商品では同じ構成が最適です</span>
+    </div>`;
+  }
+
+  const alternateBasket=basketSummary(checklist,alternateResult.selected);
+  const alternateTotal=alternateBasket.count
+    ?`¥${alternateBasket.total.toLocaleString("ja-JP")}目安`
+    :"買い足しなし";
   return `<div class="budget-switch">
     <div class="budget-switch-copy">
       <span>いまの買い方</span>
       <strong>${escapeHtml(budgetLabel(answers.budget))}</strong>
       <p>${escapeHtml(config.note)}</p>
     </div>
-    <button id="budgetSwitchBtn" type="button" data-next-budget="${escapeAttr(config.next)}">${escapeHtml(config.cta)} →</button>
+    <button id="budgetSwitchBtn" type="button" data-next-budget="${escapeAttr(config.next)}">
+      <span>${escapeHtml(config.cta)} →</span>
+      <b>${escapeHtml(alternateTotal)}</b>
+    </button>
   </div>`;
 }
 
