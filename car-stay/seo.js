@@ -66,6 +66,8 @@ const SEO_VEHICLES={
   "every":["suzuki-every-da17v","suzuki-every-da18v"]
 };
 const SEO_GAPS={
+  overview:["privacy_full","floor_step","sleep_surface"],
+  "2people":["privacy_full","floor_step","sleep_surface"],
   mat:["floor_step","sleep_surface"],
   shade:["privacy_full"],
   "7people":["floor_step","sleep_surface"]
@@ -162,6 +164,20 @@ function configPickerNeeded(items,vehicleIds,options){
 function productCards(items,vehicleIds){
   return items.map(p=>"<article class='seo-product-card'><img src='"+html(p.image)+"' alt='' loading='lazy'><div><div class='seo-card-badges'><span class='seo-pr'>PR</span><span class='seo-fit'>"+html(fitLabel(p,vehicleIds))+"</span><span class='seo-role'>"+((p.recommendationRole||"beginner_default")==="beginner_alternative"?"代替候補":"初泊向け")+"</span></div><h3>"+html(p.name)+"</h3><div class='seo-product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+html(String(p.verifiedAt||"").slice(0,10))+"</small></div><a class='seo-buy' data-seo-product='"+html(p.productId)+"' data-price='"+Number(p.price||0)+"' data-role='"+html(p.recommendationRole||"")+"' href='"+html(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener'>楽天で見る →</a></div></article>").join("");
 }
+function diversifiedProducts(items,limit=3){
+  const picked=[];
+  const take=predicate=>{
+    const item=items.find(p=>!picked.includes(p)&&predicate(p));
+    if(item)picked.push(item);
+  };
+  take(p=>p.gapIds?.some(g=>["floor_step","sleep_surface"].includes(g)));
+  take(p=>p.gapIds?.includes("privacy_full"));
+  for(const item of items){
+    if(picked.length>=limit)break;
+    if(!picked.includes(item))picked.push(item);
+  }
+  return picked.slice(0,limit);
+}
 
 async function renderVerifiedProducts(){
   const ctx=context();
@@ -203,7 +219,8 @@ async function renderVerifiedProducts(){
         builderWithConfig(anchor,null);
         return;
       }
-      const visible=(selectedConfig?allItems.filter(p=>fitSupportsConfig(p,vehicleIds,selectedConfig)):allItems).slice(0,3);
+      const eligible=selectedConfig?allItems.filter(p=>fitSupportsConfig(p,vehicleIds,selectedConfig)):allItems;
+      const visible=diversifiedProducts(eligible,3);
       count.textContent=visible.length+"件";
       builderWithConfig(anchor,selectedConfig);
       if(!visible.length){
