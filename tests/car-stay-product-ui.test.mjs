@@ -15,3 +15,13 @@ test('CAR STAY product cards distinguish the first recommendation',()=>{
   assert.match(app,/まず見る/);
   assert.match(app,/index===0/);
 });
+
+
+test('CAR STAY records deduplicated five-step funnel views and completions',()=>{
+  assert.match(app,/carstay_step_view/);
+  assert.match(app,/carstay_step_complete/);
+  assert.match(app,/FUNNEL_STEP_KEYS=\["vehicle","party","trip","environment","gear"\]/);
+  assert.match(app,/viewedFunnelSteps\.has\(step\)/);
+  assert.match(app,/completedFunnelSteps\.has\(step\)/);
+  assert.match(app,/funnel_name:"car_stay_builder"/);
+});
