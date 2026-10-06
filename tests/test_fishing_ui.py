@@ -82,5 +82,16 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("recommendation_role:a.dataset.role", self.app)
         self.assertIn("budget_tier:answers.budget", self.app)
 
+    def test_required_and_optional_products_are_visually_separated(self):
+        self.assertIn("productCoversRequiredGap", self.app)
+        self.assertIn("まず揃える", self.app)
+        self.assertIn("必須品だけを先に", self.app)
+        self.assertIn("余裕があれば追加", self.app)
+        self.assertIn('class="optional-products"', self.app)
+
+    def test_no_purchase_needed_state_is_explicit(self):
+        self.assertIn("必須の買い足しはありません。", self.app)
+        self.assertIn("選んだ手持ち品で、必要な道具は揃っています。", self.app)
+
 if __name__=="__main__":
     unittest.main()
