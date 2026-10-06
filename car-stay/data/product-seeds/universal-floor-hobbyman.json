@@ -1,9 +1,9 @@
 {
-  "productId": "universal-atmys-im10cm-maker",
+  "productId": "universal-hobbyman-im10cm-maker",
   "name": "汎用 車中泊マット 10cm 190×62cm",
-  "brand": "アトマイズ",
-  "query": "車中泊 マット 10cm 190 62 im10cm-maker",
-  "itemUrl": "https://item.rakuten.co.jp/atmys/im10cm-maker/",
+  "brand": "趣味職人",
+  "query": "07k-a000-ca",
+  "itemUrl": "https://item.rakuten.co.jp/hobbyman/im10cm-maker/",
   "gapIds": [
     "sleep_surface"
   ],
@@ -45,21 +45,19 @@
   ],
   "forbiddenTerms": [
     "専用カバー",
-    "シーツカバー"
+    "シーツカバー",
+    "3cm"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/atmys/im10cm-maker/",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/im10cm-maker/",
   "fitCheckedAt": "2026-10-06",
   "vehicleFit": [],
   "searchQueries": [
     "07k-a000-ca",
-    "車中泊 マット 10cm 190 62",
     "im10cm-maker",
-    "アトマイズ 車中泊 マット 10cm"
+    "趣味職人 車中泊 マット 10cm",
+    "車中泊 マット 10cm 190 62"
   ],
-  "rakutenItemCode": "atmys:07k-a000-ca",
+  "rakutenItemCode": "hobbyman:07k-a000-ca",
   "pageCheckedAt": "2026-10-06",
-  "pageEvidenceNote": "楽天販売ページで商品番号07k-a000-ca、汎用品、外寸190×62cm、厚み10cm、1個販売・2個連結可を確認。車種適合ではなく実測寸法でのみ推薦する。",
-  "enabled": false,
-  "disabledAt": "2026-10-06",
-  "disabledReason": "Equivalent Hobbyman listing is easier to audit reliably and already shares the stable seller used by multiple live CAR STAY products."
+  "pageEvidenceNote": "楽天販売ページで商品番号07k-a000-ca、価格8,800円、外寸190×62cm、厚み10cm、1個販売・2個連結可を確認。車種適合ではなく実測寸法でのみ推薦する。"
 }

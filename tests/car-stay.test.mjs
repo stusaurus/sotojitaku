@@ -163,7 +163,10 @@ test("beginner results suppress frequent-user upgrades unless explicitly allowed
 });
 
 test("CAR STAY audit shards keep the current seed load at five items or fewer per shard",()=>{
-  const seeds=fs.readdirSync(new URL("../car-stay/data/product-seeds/",import.meta.url)).filter(name=>name.endsWith(".json"));
+  const seedDir=new URL("../car-stay/data/product-seeds/",import.meta.url);
+  const seeds=fs.readdirSync(seedDir)
+    .filter(name=>name.endsWith(".json"))
+    .filter(name=>JSON.parse(fs.readFileSync(new URL(name,seedDir),"utf8")).enabled!==false);
   const workflow=fs.readFileSync(new URL("../.github/workflows/refresh-car-stay-products.yml",import.meta.url),"utf8");
   const matrix=workflow.match(/shard:\s*\[([^\]]+)\]/);
   assert.ok(matrix,"shard matrix must exist");
