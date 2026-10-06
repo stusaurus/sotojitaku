@@ -161,3 +161,17 @@ test('current live catalog is safe for direct SEO purchase cards',()=>{
     assert.equal(target.pathname.replace(/\/+$/,'')+'/',new URL(p.itemUrl).pathname.replace(/\/+$/,'')+'/');
   }
 });
+
+
+test('N-BOX SEO copy treats Slope as a separate validation path',()=>{
+  const pages=[
+    read('car-stay/car/n-box/index.html'),
+    read('car-stay/car/n-box/mat/index.html'),
+    read('car-stay/car/n-box/shade/index.html')
+  ];
+  for(const page of pages){
+    assert.match(page,/Slope/);
+    assert.match(page,/(別検証|判定対象外|通常判定から除外|流用せず)/);
+  }
+  assert.ok(!pages[0].includes('通常・Custom・JOY・Slopeで用品適合が変わる'));
+});
