@@ -21,6 +21,10 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn('class="hero-photo"', self.index)
         self.assertNotIn('class="hero-scene"', self.index)
 
+    def test_generated_hero_asset_is_used(self):
+        self.assertIn("fishing-hero-generated.webp", (ROOT/"fishing/style.css").read_text())
+        self.assertTrue((ROOT/"fishing/assets/fishing-hero-generated.webp").exists())
+
     def test_mobile_assets_are_cache_busted(self):
         self.assertRegex(self.index, r'href="\./style\.css\?v=[^"]+"')
         self.assertRegex(self.index, r'src="\./app\.js\?v=[^"]+"')
