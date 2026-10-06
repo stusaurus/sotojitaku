@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import {evaluate,productEligible,DEFAULT_RULES,resolvedVehicleProfile} from "../car-stay/engine.js";
+import {evaluate,measurementFitPlan,productEligible,DEFAULT_RULES,resolvedVehicleProfile} from "../car-stay/engine.js";
 import {recommendations} from "../car-stay/products.js";
 
 const nbox={vehicleId:"honda-nbox-jf5-jf6",geometry:{usableLengthMm:1800,usableWidthMm:null},floorGrade:"C"};
@@ -191,6 +191,41 @@ test("N-BOX Slope is not offered through the standard sleep profile",()=>{
 });
 
 
+test("measurement-fit product stays hidden until QUICK MEASURE is complete",()=>{
+  const now=Date.parse("2026-10-06T12:00:00Z");
+  const item="https://item.rakuten.co.jp/atmys/im10cm-maker/";
+  const product={
+    productId:"universal-atmys-im10cm-maker",gapIds:["sleep_surface"],fitStrategy:"measurement",
+    measurementFit:{unitLengthMm:1900,unitWidthMm:620,maxUnits:2,quantityMode:"target_width"},
+    vehicleFit:[],verifiedAt:"2026-10-06T10:00:00Z",audit:{status:"verified_live"},price:7000,
+    image:"https://thumbnail.image.rakuten.co.jp/a.jpg",itemUrl:item,
+    affiliateUrl:"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+encodeURIComponent(item)
+  };
+  assert.equal(productEligible(product,{vehicleId:"honda-freed-gt",gapId:"sleep_surface",now,measurements:{},sleep:{targetWidth:1100}}),false);
+  assert.equal(productEligible(product,{vehicleId:"honda-freed-gt",gapId:"sleep_surface",now,measurements:{lengthMm:1900,widthMm:1190},sleep:{targetWidth:1100}}),false);
+  assert.equal(productEligible(product,{vehicleId:"honda-freed-gt",gapId:"sleep_surface",now,measurements:{lengthMm:1900,widthMm:1240},sleep:{targetWidth:1100}}),true);
+  const plan=measurementFitPlan(product,{measurements:{lengthMm:1900,widthMm:1240},sleep:{targetWidth:1100}});
+  assert.equal(plan.quantity,2);
+  assert.equal(plan.requiredWidthMm,1240);
+});
+
+test("exact vehicle-fit products outrank measured generic alternatives",()=>{
+  const now=Date.parse("2026-10-06T12:00:00Z");
+  const make=(id,fitStrategy,score)=>({
+    productId:id,gapIds:["sleep_surface"],fitStrategy,measurementFit:fitStrategy==="measurement"?{unitLengthMm:1900,unitWidthMm:620,maxUnits:2}:undefined,
+    vehicleFit:fitStrategy==="measurement"?[]:[{vehicleId:"honda-freed-gt",status:"verified",seatCounts:[7],trims:["AIR EX"]}],
+    verifiedAt:"2026-10-06T10:00:00Z",audit:{status:"verified_live"},price:10000,image:"https://example.com/"+id+".jpg",
+    itemUrl:"https://item.rakuten.co.jp/shop/"+id+"/",affiliateUrl:"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+encodeURIComponent("https://item.rakuten.co.jp/shop/"+id+"/"),
+    recommendationRole:"beginner_alternative",score
+  });
+  const out=recommendations([make("generic","measurement",99),make("exact","vehicle",50)],{
+    gaps:[{id:"sleep_surface"}],vehicleId:"honda-freed-gt",config:{seatCount:7,trim:"AIR EX"},
+    status:"ALMOST_READY",now,measurements:{lengthMm:1950,widthMm:1300},sleep:{targetWidth:1100}
+  });
+  assert.equal(out.sleep_surface[0].productId,"exact");
+  assert.equal(out.sleep_surface[1].recommendedQty,2);
+});
+
 test("live CAR STAY catalog only references supported vehicle configurations",()=>{
   const catalog=JSON.parse(fs.readFileSync(new URL("../car-stay/data/audited-products.json",import.meta.url),"utf8"));
   const vehicleData=JSON.parse(fs.readFileSync(new URL("../car-stay/data/vehicles.json",import.meta.url),"utf8"));
@@ -200,11 +235,16 @@ test("live CAR STAY catalog only references supported vehicle configurations",()
   for(const product of catalog.products||[]){
     assert.ok(product.productId&&!ids.has(product.productId),"duplicate/missing productId: "+product.productId);ids.add(product.productId);
     for(const gap of product.gapIds||[])assert.ok(allowedGaps.has(gap),product.productId+" unsupported gap "+gap);
-    for(const fit of product.vehicleFit||[]){
-      const vehicle=vehicleMap.get(fit.vehicleId);assert.ok(vehicle,product.productId+" unknown vehicle "+fit.vehicleId);
-      const valid=vehicle.config?.validConfigs;
-      if(valid?.length){
-        assert.ok(valid.some(vc=>(!fit.seatCounts?.length||fit.seatCounts.includes(Number(vc.seatCount)))&&(!fit.trims?.length||fit.trims.includes(vc.trim))&&!fit.exclusions?.includes(vc.trim)),product.productId+" has no valid config");
+    if(product.fitStrategy==="measurement"){
+      assert.deepEqual(product.vehicleFit||[],[],product.productId+" measurement products must not claim vehicle fit");
+      assert.ok(Number(product.measurementFit?.unitLengthMm)>0&&Number(product.measurementFit?.unitWidthMm)>0,product.productId+" invalid measurement fit");
+    }else{
+      for(const fit of product.vehicleFit||[]){
+        const vehicle=vehicleMap.get(fit.vehicleId);assert.ok(vehicle,product.productId+" unknown vehicle "+fit.vehicleId);
+        const valid=vehicle.config?.validConfigs;
+        if(valid?.length){
+          assert.ok(valid.some(vc=>(!fit.seatCounts?.length||fit.seatCounts.includes(Number(vc.seatCount)))&&(!fit.trims?.length||fit.trims.includes(vc.trim))&&!fit.exclusions?.includes(vc.trim)),product.productId+" has no valid config");
+        }
       }
     }
   }
@@ -216,15 +256,24 @@ test("every live CAR STAY catalog item can surface for at least one declared fit
   const vehicleMap=new Map(vehicleData.vehicles.map(v=>[v.vehicleId,v]));
   for(const product of catalog.products||[]){
     let surfaced=false;
-    for(const fit of product.vehicleFit||[]){
-      const vehicle=vehicleMap.get(fit.vehicleId);if(!vehicle)continue;
-      let configs=vehicle.config?.validConfigs?.length?vehicle.config.validConfigs:[{}];
-      configs=configs.filter(c=>(!fit.seatCounts?.length||fit.seatCounts.includes(Number(c.seatCount)))&&(!fit.trims?.length||fit.trims.includes(c.trim))&&!fit.exclusions?.includes(c.trim));
-      if(!configs.length&&!(vehicle.config?.validConfigs?.length))configs=[{seatCount:fit.seatCounts?.[0],trim:fit.trims?.[0]}];
-      for(const config of configs)for(const gapId of product.gapIds||[]){
-        if(productEligible(product,{vehicleId:fit.vehicleId,config,gapId,now:Date.parse(product.verifiedAt)+3600000})){surfaced=true;break;}
+    if(product.fitStrategy==="measurement"){
+      const fit=product.measurementFit||{};
+      const measurements={lengthMm:Number(fit.unitLengthMm)||0,widthMm:(Number(fit.unitWidthMm)||0)*Math.min(2,Number(fit.maxUnits)||1)};
+      const sleep={targetWidth:measurements.widthMm};
+      for(const gapId of product.gapIds||[]){
+        if(productEligible(product,{vehicleId:"measurement",config:{},gapId,now:Date.parse(product.verifiedAt)+3600000,measurements,sleep})){surfaced=true;break;}
       }
-      if(surfaced)break;
+    }else{
+      for(const fit of product.vehicleFit||[]){
+        const vehicle=vehicleMap.get(fit.vehicleId);if(!vehicle)continue;
+        let configs=vehicle.config?.validConfigs?.length?vehicle.config.validConfigs:[{}];
+        configs=configs.filter(c=>(!fit.seatCounts?.length||fit.seatCounts.includes(Number(c.seatCount)))&&(!fit.trims?.length||fit.trims.includes(c.trim))&&!fit.exclusions?.includes(c.trim));
+        if(!configs.length&&!(vehicle.config?.validConfigs?.length))configs=[{seatCount:fit.seatCounts?.[0],trim:fit.trims?.[0]}];
+        for(const config of configs)for(const gapId of product.gapIds||[]){
+          if(productEligible(product,{vehicleId:fit.vehicleId,config,gapId,now:Date.parse(product.verifiedAt)+3600000})){surfaced=true;break;}
+        }
+        if(surfaced)break;
+      }
     }
     assert.ok(surfaced,product.productId+" is live but can never surface");
   }

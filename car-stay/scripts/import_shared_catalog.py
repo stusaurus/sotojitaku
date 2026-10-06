@@ -92,6 +92,10 @@ def matches_seed(product,seed):
         return False
     if normalized(product.get("vehicleFit") or [])!=normalized(seed.get("vehicleFit") or []):
         return False
+    if product.get("fitStrategy","vehicle")!=seed.get("fitStrategy","vehicle"):
+        return False
+    if normalized(product.get("measurementFit") or {})!=normalized(seed.get("measurementFit") or {}):
+        return False
     if product.get("recommendationRole","beginner_default")!=seed.get("recommendationRole","beginner_default"):
         return False
     return True

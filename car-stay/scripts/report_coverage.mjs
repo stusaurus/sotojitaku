@@ -63,10 +63,15 @@ for(const vehicle of vehicles){
     sleepCoveragePct:Math.round(sleepCovered/vr.length*100)
   });
 }
+const measuredFallbacks=products.filter(p=>{
+  const role=p.recommendationRole||"beginner_default";
+  return p.fitStrategy==="measurement"&&["beginner_default","beginner_alternative"].includes(role);
+});
+const hasMeasuredSleepFallback=measuredFallbacks.some(p=>(p.gapIds||[]).includes("sleep_surface"));
 const holes=rows.flatMap(r=>{
   const out=[];
-  if(r.privacy.count===0)out.push({priority:1,type:"privacy_full",vehicleId:r.vehicleId,vehicle:r.vehicle,config:r.config});
-  if(r.sleep.count===0)out.push({priority:2,type:"sleep",vehicleId:r.vehicleId,vehicle:r.vehicle,config:r.config});
+  if(r.privacy.count===0)out.push({priority:1,type:"privacy_full",vehicleId:r.vehicleId,vehicle:r.vehicle,config:r.config,measurementFallback:false});
+  if(r.sleep.count===0)out.push({priority:2,type:"sleep",vehicleId:r.vehicleId,vehicle:r.vehicle,config:r.config,measurementFallback:hasMeasuredSleepFallback});
   return out;
 }).sort((a,b)=>a.priority-b.priority||a.vehicle.localeCompare(b.vehicle,"ja"));
 
@@ -81,7 +86,10 @@ const report={
     sleepCovered:rows.filter(r=>r.sleep.count>0).length,
     privacyCoveragePct:Math.round(rows.filter(r=>r.privacy.count>0).length/rows.length*100),
     sleepCoveragePct:Math.round(rows.filter(r=>r.sleep.count>0).length/rows.length*100),
-    revenueHoles:holes.length
+    revenueHoles:holes.length,
+    measurementFallbackProducts:measuredFallbacks.length,
+    measurementFallbackHoles:holes.filter(h=>h.measurementFallback).length,
+    unmonetizedHoles:holes.filter(h=>!h.measurementFallback).length
   },
   byVehicle,
   holes,
