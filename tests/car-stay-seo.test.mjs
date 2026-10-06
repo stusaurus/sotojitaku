@@ -145,6 +145,8 @@ test('high-intent SEO pages share the verified-product renderer',()=>{
   const js=read('car-stay/seo.js');
   assert.match(js,/seo_product_view/);
   assert.match(js,/seo_affiliate_click/);
+  assert.match(js,/window\.gtag\("event","affiliate_click"/);
+  assert.match(js,/conversion_source:"car_stay_seo"/);
   assert.match(js,/LIVE AUDITED PICKS/);
 });
 
