@@ -391,6 +391,7 @@ function renderResult({trackDiagnosis=true}={}){
   $("#saveBtn").addEventListener("click",()=>{
     try{
       localStorage.setItem("sotojitakuFishingPlan",JSON.stringify({version:1,answers,at:new Date().toISOString()}));
+      clearDraft();
       $("#saveBtn").textContent="保存しました";
       savedBtn.hidden=false;
       track("fishing_plan_saved",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
@@ -731,7 +732,10 @@ function readSavedPlan(){
 }
 
 function refreshSavedButton(){
-  savedBtn.hidden=!readSavedPlan();
+  const draft=readDraft();
+  const saved=readSavedPlan();
+  savedBtn.hidden=!draft&&!saved;
+  if(!savedBtn.hidden)savedBtn.textContent=draft?"つづきから":"保存したプランを見る";
 }
 
 function openSavedPlan(){
@@ -755,7 +759,7 @@ function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;",
 function escapeAttr(s){return escapeHtml(s)}
 
 $("#startBtn").addEventListener("click",start);
-savedBtn.addEventListener("click",openSavedPlan);
+savedBtn.addEventListener("click",()=>readDraft()?resumeDraft():openSavedPlan());
 resetBtn.addEventListener("click",reset);
 load().then(()=>{
   refreshSavedButton();
