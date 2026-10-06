@@ -239,12 +239,16 @@ function renderProductCards(products,neededIds,checklist,{optional=false}={}){
 function renderProducts(productResult,checklist){
   const neededIds=new Set(checklist.filter(x=>x.monetizable&&x.state!=="owned"&&x.state!=="covered_by_product").map(x=>x.id));
   const requiredGaps=checklist.filter(x=>x.monetizable&&x.priority==="required"&&x.state!=="owned");
+  const nonShoppingRequiredGaps=checklist.filter(x=>!x.monetizable&&x.priority==="required"&&x.state!=="owned");
   const selected=productResult.selected||[];
   const requiredProducts=selected.filter(p=>productCoversRequiredGap(p,checklist));
   const optionalProducts=selected.filter(p=>!productCoversRequiredGap(p,checklist));
 
   if(!requiredGaps.length){
-    return `<div class="purchase-complete"><strong>必須の買い足しはありません。</strong><p>選んだ手持ち品で、必要な道具は揃っています。</p></div>${
+    const stillNeeded=nonShoppingRequiredGaps.length
+      ?`<div class="purchase-complete purchase-complete-attention"><strong>楽天で選ぶ必須品はありません。</strong><p>ただし、上の「いまの支度」に未準備の持参品・安全装備が残っています。特にサイズ確認が必要な安全装備は、自動で商品を選ばず現地条件と体格に合うものを準備してください。</p></div>`
+      :`<div class="purchase-complete"><strong>必須の買い足しはありません。</strong><p>選んだ手持ち品で、必要な道具は揃っています。</p></div>`;
+    return `${stillNeeded}${
       optionalProducts.length?`<details class="optional-products"><summary>余裕があれば追加 <span>${optionalProducts.length}点</span></summary>${renderProductCards(optionalProducts,neededIds,checklist,{optional:true})}</details>`:""
     }`;
   }
