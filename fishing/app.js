@@ -14,7 +14,91 @@ const viewedProducts=new Set();
 
 const labels={party:"だれと",fun:"楽しみ方",bait:"エサ",take_home:"持ち帰り",carry:"荷物",budget:"予算",owned:"手持ち"};
 
+function readSharedPlanHash(){
+  try{
+    if(!location.hash.startsWith("#plan="))return null;
+    const payload=JSON.parse(decodeURIComponent(location.hash.slice(6)));
+    if(payload?.v!==1||!payload?.a||typeof payload.a!=="object")return null;
+    return payload.a;
+  }catch{return null}
+}
+
+function normalizePlanAnswers(candidate){
+  if(!candidate||!questionsData)return null;
+  const normalized={owned:[]};
+  for(const q of questionsData.questions){
+    const allowed=new Set(q.options.map(o=>o.value));
+    if(q.type==="multi"){
+      normalized[q.id]=Array.isArray(candidate[q.id])
+        ?[...new Set(candidate[q.id].filter(v=>allowed.has(v)))]
+        :[];
+      continue;
+    }
+    if(!allowed.has(candidate[q.id]))return null;
+    normalized[q.id]=candidate[q.id];
+  }
+  return normalized;
+}
+
+function sharePlanUrl(){
+  const payload={v:1,a:{...answers,owned:[...(answers.owned||[])]}};
+  return location.origin+location.pathname+"#plan="+encodeURIComponent(JSON.stringify(payload));
+}
+
+function copyTextFallback(value){
+  const input=document.createElement("textarea");
+  input.value=value;
+  input.setAttribute("readonly","");
+  input.style.position="fixed";
+  input.style.opacity="0";
+  document.body.appendChild(input);
+  input.select();
+  const ok=document.execCommand?.("copy")===true;
+  input.remove();
+  return ok;
+}
+
+async function shareCurrentPlan(){
+  const url=sharePlanUrl();
+  const plan=selectPlan(answers,plansData);
+  const label=plan?.variant?.name||plan?.methodName||"最初の一匹プラン";
+  try{
+    if(typeof navigator.share==="function"){
+      await navigator.share({
+        title:"SOTOJITAKU FISHING",
+        text:"私の最初の一匹プラン："+label,
+        url
+      });
+      track("fishing_plan_share",{share_method:"native",fishing_method:plan?.methodId||""});
+      return "native";
+    }
+  }catch(err){
+    if(err?.name==="AbortError")return "cancelled";
+  }
+  try{
+    if(navigator.clipboard?.writeText){
+      await navigator.clipboard.writeText(url);
+      track("fishing_plan_share",{share_method:"clipboard",fishing_method:plan?.methodId||""});
+      return "clipboard";
+    }
+  }catch{}
+  if(copyTextFallback(url)){
+    track("fishing_plan_share",{share_method:"fallback_copy",fishing_method:plan?.methodId||""});
+    return "fallback_copy";
+  }
+  return "failed";
+}
+
+function clearSharedPlanHash(){
+  if(location.hash.startsWith("#plan=")){
+    history.replaceState(null,"",location.pathname+location.search);
+  }
+}
+
 function readEntryAttribution(){
+  if(location.hash.startsWith("#plan=")){
+    return {entry_source:"share",entry_guide_slug:""};
+  }
   const key="sotojitakuFishingEntry";
   try{
     const raw=sessionStorage.getItem(key);
@@ -53,13 +137,14 @@ async function load(){
 }
 
 function start(){
+  clearSharedPlanHash();
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
   track("fishing_diagnosis_start");
   renderQuestion();
   scrollTo({top:0,behavior:"smooth"});
 }
-function reset(){hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;index=0;answers={owned:[]};localRulesConfirmed=false;scrollTo({top:0,behavior:"smooth"})}
+function reset(){clearSharedPlanHash();hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;index=0;answers={owned:[]};localRulesConfirmed=false;scrollTo({top:0,behavior:"smooth"})}
 
 function optionLabel(qid,value){
   const q=questionsData.questions.find(x=>x.id===qid);
@@ -202,6 +287,7 @@ function renderResult({trackDiagnosis=true}={}){
 
       <div class="save-row">
         <button id="saveBtn" class="save" type="button">このプランを保存</button>
+        <button id="shareBtn" class="share" type="button">同行者に共有</button>
         <button id="againBtn" class="restart" type="button">条件を変える</button>
       </div>
     </div>
@@ -230,7 +316,14 @@ function renderResult({trackDiagnosis=true}={}){
       track("fishing_plan_saved",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
     }catch{}
   });
-  $("#againBtn").addEventListener("click",()=>{index=0;currentResultKey="";renderQuestion()});
+  $("#shareBtn").addEventListener("click",async()=>{
+    const method=await shareCurrentPlan();
+    const btn=$("#shareBtn");
+    if(!btn)return;
+    if(method==="clipboard"||method==="fallback_copy")btn.textContent="共有リンクをコピーしました";
+    else if(method==="failed")btn.textContent="共有リンクを作れませんでした";
+  });
+  $("#againBtn").addEventListener("click",()=>{clearSharedPlanHash();index=0;currentResultKey="";renderQuestion()});
   trackProductViews(productResult.selected,plan,rawChecklist);
   bindAffiliateClicks();
 }
@@ -483,7 +576,28 @@ function escapeAttr(s){return escapeHtml(s)}
 $("#startBtn").addEventListener("click",start);
 savedBtn.addEventListener("click",openSavedPlan);
 resetBtn.addEventListener("click",reset);
-load().then(()=>{refreshSavedButton();track("fishing_view")}).catch(err=>{
+load().then(()=>{
+  refreshSavedButton();
+  track("fishing_view");
+  const shared=normalizePlanAnswers(readSharedPlanHash());
+  if(shared){
+    answers=shared;
+    hero.hidden=true;
+    planner.hidden=false;
+    resetBtn.hidden=false;
+    localRulesConfirmed=false;
+    currentResultKey="";
+    viewedProducts.clear();
+    const plan=selectPlan(answers,plansData);
+    track("fishing_shared_plan_open",{
+      fishing_method:plan?.methodId||"",
+      budget_tier:answers.budget,
+      party_type:answers.party
+    });
+    renderResult({trackDiagnosis:false});
+    scrollTo({top:0,behavior:"smooth"});
+  }
+}).catch(err=>{
   console.error(err);
   $("#startBtn").disabled=true;
   $("#startBtn").textContent="読み込みに失敗しました";
