@@ -38,6 +38,9 @@ function currentVehicle(){return db.vehicles.find(v=>v.vehicleId===state.vehicle
 function vehicleConfigComplete(){
   const v=currentVehicle();
   if(!v)return false;
+  if(v.config?.variants?.length){
+    return v.config.variants.some(x=>Number(x.seatCount)===Number(state.config.seatCount)&&x.trim===state.config.trim);
+  }
   if(v.config?.seatCounts?.length&&!v.config.seatCounts.includes(Number(state.config.seatCount)))return false;
   if(v.config?.trims?.length&&!v.config.trims.includes(state.config.trim))return false;
   return true;
@@ -95,8 +98,12 @@ function renderVehicle(){
   const cards=db.vehicles.map(v=>"<button class='choice "+(state.vehicleId===v.vehicleId?"selected":"")+"' data-vehicle='"+esc(v.vehicleId)+"' type='button'><b>"+esc(v.shortLabel)+"</b><small>"+esc(v.generation)+"</small></button>").join("");
   let config="";
   const v=currentVehicle();
-  if(v?.config?.seatCounts?.length)config+="<div class='field'><label>乗車定員</label><select data-config='seatCount'><option value=''>選択</option>"+v.config.seatCounts.map(x=>"<option value='"+x+"' "+(Number(state.config.seatCount)===x?"selected":"")+">"+x+"人乗り</option>").join("")+"</select></div>";
-  if(v?.config?.trims?.length)config+="<div class='field'><label>グレード / 仕様</label><select data-config='trim'><option value=''>選択</option>"+v.config.trims.map(x=>"<option value='"+esc(x)+"' "+(state.config.trim===x?"selected":"")+">"+esc(x)+"</option>").join("")+"</select></div>";
+  if(v?.config?.variants?.length){
+    config+="<div class='field'><label>グレード / 乗車定員</label><select data-variant><option value=''>選択</option>"+v.config.variants.map((x,i)=>"<option value='"+i+"' "+(Number(state.config.seatCount)===Number(x.seatCount)&&state.config.trim===x.trim?"selected":"")+">"+esc(x.trim)+" / "+x.seatCount+"人乗り</option>").join("")+"</select></div>";
+  }else{
+    if(v?.config?.seatCounts?.length)config+="<div class='field'><label>乗車定員</label><select data-config='seatCount'><option value=''>選択</option>"+v.config.seatCounts.map(x=>"<option value='"+x+"' "+(Number(state.config.seatCount)===x?"selected":"")+">"+x+"人乗り</option>").join("")+"</select></div>";
+    if(v?.config?.trims?.length)config+="<div class='field'><label>グレード / 仕様</label><select data-config='trim'><option value=''>選択</option>"+v.config.trims.map(x=>"<option value='"+esc(x)+"' "+(state.config.trim===x?"selected":"")+">"+esc(x)+"</option>").join("")+"</select></div>";
+  }
   panel.innerHTML=wrap("どのクルマで泊まる？","まずは愛車を選びます。未確認寸法は推測せず、必要ならあとで2か所だけ測ります。","<div class='grid'>"+cards+"</div>"+(config?"<div class='form-row' style='margin-top:18px'>"+config+"</div>":"")+"<div class='note'>"+(v&&!vehicleConfigComplete()&&config?"適合商品を正確に出すため、乗車定員・グレードなどを選んでください。":"登録がない車種でも、寝床の長さと幅を測れば判定できる設計です。")+"</div><div class='actions'>"+backButton()+"<button class='primary' data-next type='button' "+(!state.vehicleId||!vehicleConfigComplete()?"disabled":"")+">誰と泊まる？ <span>→</span></button></div>","STEP 1 · 愛車");
 }
 function renderPeople(){
@@ -228,6 +235,11 @@ panel.addEventListener("input",e=>{
   const t=e.target;
   if(t.dataset.height!==undefined)state.people[Number(t.dataset.height)].height=Number(t.value)||0;
   if(t.dataset.personType!==undefined)state.people[Number(t.dataset.personType)].type=t.value;
+  if(t.dataset.variant!==undefined){
+    const variant=currentVehicle()?.config?.variants?.[Number(t.value)];
+    state.config=variant?{seatCount:Number(variant.seatCount),trim:variant.trim}:{};
+    renderVehicle();
+  }
   if(t.dataset.config){state.config[t.dataset.config]=t.dataset.config==="seatCount"?Number(t.value)||null:t.value;renderVehicle();}
   if(t.dataset.env){
     if(t.dataset.env==="date")state.date=t.value;
