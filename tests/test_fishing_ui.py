@@ -42,6 +42,17 @@ class FishingUiTest(unittest.TestCase):
         self.assertIn("項目まとめて揃う", self.app)
         self.assertIn("rawChecklist", self.app)
 
+    def test_shareable_plan_flow(self):
+        self.assertIn("readSharedPlanHash", self.app)
+        self.assertIn("normalizePlanAnswers", self.app)
+        self.assertIn("sharePlanUrl", self.app)
+        self.assertIn("shareCurrentPlan", self.app)
+        self.assertIn("fishing_plan_share", self.app)
+        self.assertIn("fishing_shared_plan_open", self.app)
+        self.assertIn('entry_source:"share"', self.app)
+        self.assertIn('id="shareBtn"', self.app)
+        self.assertIn("#plan=", self.app)
+
     def test_saved_plan_return_flow(self):
         self.assertIn('id="savedBtn"', self.index)
         self.assertIn("readSavedPlan", self.app)
