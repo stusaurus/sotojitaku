@@ -9,6 +9,9 @@ const products=catalog.products||[];
 const now=Date.now();
 
 function configsFor(vehicle){
+  if(vehicle.config?.variants?.length){
+    return vehicle.config.variants.map(x=>({seatCount:Number(x.seatCount),trim:x.trim}));
+  }
   const seats=vehicle.config?.seatCounts?.length?vehicle.config.seatCounts:[null];
   const trims=vehicle.config?.trims?.length?vehicle.config.trims:[null];
   const configs=[];
