@@ -225,16 +225,17 @@ function renderQuestion(){
     <h2>${escapeHtml(q.label)}</h2>
     <p class="desc">${isMulti?"持っているものは全部選んでください。何もなければ、そのまま進めます。":"専門用語はありません。いちばん近いものを選んでください。"}</p>
     ${isMulti?'<p class="multi-note">複数選択できます</p>':""}
-    <div class="choice-grid">
+    <div class="choice-grid ${isMulti?"choice-grid-multi":""}">
       ${q.options.map(o=>{
         const on=isMulti?selected.includes(o.value):selected===o.value;
-        return `<button class="choice ${on?"selected":""}" data-value="${o.value}" type="button"><b>${escapeHtml(o.label)}</b></button>`
+        return `<button class="choice ${on?"selected":""}" data-value="${o.value}" type="button" aria-pressed="${on}"><span>${escapeHtml(o.label)}</span><span class="checkmark" aria-hidden="true">${on?"✓":""}</span></button>`
       }).join("")}
     </div>
     <div class="actions">
-      ${index?'<button class="secondary" id="backBtn" type="button">← 戻る</button>':""}
       <button class="primary" id="nextBtn" type="button">${index===questions.length-1?"プランを見る":"次へ →"}</button>
     </div>
+    <button class="question-back" id="backBtn" type="button">← ${index?"ひとつ戻る":"ホームへ"}</button>
+    <p class="draft-note">選んだ内容は、このブラウザに保存されます。</p>
   `;
   panel.querySelectorAll(".choice").forEach(btn=>btn.addEventListener("click",()=>{
     const v=btn.dataset.value;
@@ -249,19 +250,22 @@ function renderQuestion(){
       if(q.id==="party"&&v!=="family_child")delete answers.child_fit;
     }
     track("fishing_question_answer",{question_id:q.id,answer_value:v});
+    persistDraft();
     renderQuestion();
   }));
-  $("#backBtn")?.addEventListener("click",()=>{index--;renderQuestion()});
+  $("#backBtn")?.addEventListener("click",()=>{
+    if(index===0){reset();return}
+    index--;persistDraft();renderQuestion();
+  });
   $("#nextBtn").addEventListener("click",()=>{
     if(!isMulti&&!answers[q.id]){
       panel.querySelector(".desc").textContent="1つ選んでから進んでください。";
       return;
     }
-    if(index<questions.length-1){index++;renderQuestion()}
-    else renderResult();
+    if(index<questions.length-1){index++;persistDraft();renderQuestion()}
+    else{persistDraft();renderResult()}
   });
 }
-
 function renderResult({trackDiagnosis=true}={}){
   const resultKey=JSON.stringify(answers);
   const isNewResult=resultKey!==currentResultKey;
