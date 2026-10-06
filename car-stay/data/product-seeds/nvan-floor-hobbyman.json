@@ -42,10 +42,10 @@
     }
   ],
   "searchQueries": [
-    "N-VAN JJ1 JJ2 車中泊ベッド くるマット",
-    "N-VAN JJ1 JJ2 車中泊ベッド マット",
+    "N-VAN JJ1/2系 車中泊ベッド くるマット",
+    "n-van-kurumat",
     "02k-a005-ca",
-    "n-van-kurumat"
+    "N-VAN JJ1 JJ2 車中泊 マット"
   ],
   "rakutenItemCode": "hobbyman:02k-a005-ca",
   "candidateIdentityGroups": [
