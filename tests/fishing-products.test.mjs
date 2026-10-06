@@ -97,3 +97,64 @@ test("normal bait preference lets a complete set cover bait",()=>{
   assert.equal(result.selected.length,1);
   assert.equal(result.coveredCategoryIds.includes("bait"),true);
 });
+
+
+test("Ami Hime bundle title satisfies low-mess without an extra bait purchase",()=>{
+  const complete=p({
+    productId:"sabiki-complete",
+    name:"サビキ完全セット アミ姫 付き",
+    categoryId:"rod_reel",
+    score:96,
+    recommendationRole:"beginner_default",
+    coverCategoryIds:["rod_reel","rig","bait","bucket","fish_grip"],
+    preferenceTags:[]
+  });
+  const spare=p({
+    productId:"extra-bait",
+    categoryId:"bait",
+    score:99,
+    coverCategoryIds:["bait"],
+    preferenceTags:["low_mess","no_worm"]
+  });
+  const checklist=["rod_reel","rig","bait","bucket","fish_grip"].map(id=>({
+    id,monetizable:true,state:"needed",priority:"required"
+  }));
+  const result=buildProductRecommendations(
+    [complete,spare],
+    {input:{budget:"balanced",bait:"low_mess"},plan:{methodId:"sabiki"},checklist,now}
+  );
+  assert.equal(result.selected.length,1);
+  assert.equal(result.selected[0].productId,"sabiki-complete");
+  assert.equal(result.selected[0].effectiveCoverCategoryIds.includes("bait"),true);
+});
+
+test("Power Isome bundle title satisfies no-worm without an extra bait purchase",()=>{
+  const complete=p({
+    productId:"choi-complete",
+    name:"ちょい投げ完全セット パワーミニイソメ 付き",
+    categoryId:"rod_reel",
+    methodIds:["choi_nage"],
+    score:97,
+    recommendationRole:"beginner_default",
+    coverCategoryIds:["rod_reel","rig","bait","fish_grip"],
+    preferenceTags:[]
+  });
+  const spare=p({
+    productId:"extra-worm",
+    categoryId:"bait",
+    methodIds:["choi_nage"],
+    score:99,
+    coverCategoryIds:["bait"],
+    preferenceTags:["no_worm","low_mess"]
+  });
+  const checklist=["rod_reel","rig","bait","fish_grip"].map(id=>({
+    id,monetizable:true,state:"needed",priority:"required"
+  }));
+  const result=buildProductRecommendations(
+    [complete,spare],
+    {input:{budget:"balanced",bait:"no_worm"},plan:{methodId:"choi_nage"},checklist,now}
+  );
+  assert.equal(result.selected.length,1);
+  assert.equal(result.selected[0].productId,"choi-complete");
+  assert.equal(result.selected[0].effectiveCoverCategoryIds.includes("bait"),true);
+});
