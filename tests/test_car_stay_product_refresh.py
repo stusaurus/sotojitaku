@@ -647,5 +647,36 @@ class CarStayProductRefreshTests(unittest.TestCase):
                 if v is None: os.environ.pop(k,None)
                 else: os.environ[k]=v
 
+    def test_worker_exact_lookup_passes_explicit_item_code(self):
+        import urllib.parse
+        seed={
+            "itemUrl":"https://item.rakuten.co.jp/hobbyman/n-van-kurumat/",
+            "query":"N-VAN JJ1 JJ2 車中泊ベッド",
+            "searchQueries":["N-VAN JJ1/2 専用 車中泊ベッド"],
+            "rakutenItemCode":"hobbyman:02k-a005-ca",
+            "identityGroups":[["N-VAN"],["JJ1"],["JJ2"],["車中泊"]],
+            "forbiddenTerms":[]
+        }
+        seen=[]
+        original=refresh.fetch_json_quick
+        try:
+            def fake(url,headers=None,timeout=4):
+                seen.append(urllib.parse.parse_qs(urllib.parse.urlparse(url).query))
+                return {
+                    "found":True,
+                    "name":"N-VAN JJ1 JJ2 車中泊ベッド マット",
+                    "price":19800,
+                    "item_url":seed["itemUrl"],
+                    "affiliate_url":"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+urllib.parse.quote(seed["itemUrl"],safe=""),
+                    "image":"https://example.com/nvan.jpg",
+                    "item_code":seed["rakutenItemCode"]
+                }
+            refresh.fetch_json_quick=fake
+            candidate=refresh.worker_exact_item_candidate(seed)
+            self.assertEqual(seen[0]["itemCode"],[seed["rakutenItemCode"]])
+            self.assertEqual(candidate["itemUrl"],seed["itemUrl"])
+        finally:
+            refresh.fetch_json_quick=original
+
 if __name__=="__main__":
     unittest.main()
