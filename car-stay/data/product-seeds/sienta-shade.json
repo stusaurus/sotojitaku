@@ -1,38 +1,43 @@
 {
-  "productId": "sienta10-hobbyman-shade",
-  "name": "シエンタ 10/15系 サンシェード フルセット",
-  "brand": "趣味職人",
-  "query": "シエンタ 10 15 MXPL10 MXPL15 MXPC10 サンシェード フルセット",
-  "itemUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-set/",
+  "productId": "sienta10-partsmax-hn03t135a",
+  "name": "シエンタ 10系 全窓用8枚セット サンシェード",
+  "brand": "PartsMAX",
+  "query": "シエンタ 10系 MXPL10G MXPL15G MXPC10G サンシェード 8枚",
+  "itemUrl": "https://item.rakuten.co.jp/partsmax-shop/hn03t135a/",
   "gapIds": [
     "privacy_full"
   ],
   "recommendationRole": "beginner_default",
-  "score": 95,
+  "score": 94,
   "identityGroups": [
     [
       "シエンタ"
     ],
     [
-      "MXPL10",
-      "MXPC10"
+      "MXPL10G",
+      "MXPL10"
     ],
     [
-      "MXPL15",
-      "15系"
+      "MXPL15G",
+      "MXPL15"
+    ],
+    [
+      "MXPC10G",
+      "MXPC10"
     ],
     [
       "サンシェード"
     ],
     [
-      "フルセット"
+      "全窓",
+      "8枚"
     ]
   ],
   "forbiddenTerms": [
     "170系"
   ],
-  "fitEvidenceUrl": "https://item.rakuten.co.jp/hobbyman/sienta-mxpl-set/",
-  "fitCheckedAt": "2026-10-05",
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/partsmax-shop/hn03t135a/",
+  "fitCheckedAt": "2026-10-06",
   "vehicleFit": [
     {
       "vehicleId": "toyota-sienta-10-15",
@@ -44,8 +49,8 @@
     }
   ],
   "searchQueries": [
-    "シエンタ MXPL10 サンシェード",
-    "シエンタ 10系 サンシェード",
-    "シエンタ MXPL15 フルセット"
+    "hn03t135a",
+    "シエンタ 10系 サンシェード 8枚",
+    "シエンタ MXPL10G MXPL15G MXPC10G サンシェード"
   ]
 }

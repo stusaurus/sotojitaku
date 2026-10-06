@@ -1,0 +1,50 @@
+{
+  "productId": "nvan-jj1-jj2-mgr-mbk4646",
+  "name": "N-VAN JJ1/JJ2 専用 MGR ベッドキット Full type",
+  "brand": "MGR Customs",
+  "query": "N-VAN JJ1 JJ2 MBK4646 ベッドキット",
+  "itemUrl": "https://item.rakuten.co.jp/mgr-customs/mbk4646/",
+  "gapIds": [
+    "floor_step",
+    "sleep_surface"
+  ],
+  "recommendationRole": "frequent_user_upgrade",
+  "score": 72,
+  "identityGroups": [
+    [
+      "N-VAN",
+      "NVAN",
+      "N VAN"
+    ],
+    [
+      "JJ1"
+    ],
+    [
+      "JJ2"
+    ],
+    [
+      "ベッドキット"
+    ],
+    [
+      "MBK4646",
+      "Full type"
+    ]
+  ],
+  "forbiddenTerms": [
+    "N-VAN e:",
+    "EVモデル"
+  ],
+  "fitEvidenceUrl": "https://item.rakuten.co.jp/mgr-customs/mbk4646/",
+  "fitCheckedAt": "2026-10-06",
+  "vehicleFit": [
+    {
+      "vehicleId": "honda-nvan-jj1-jj2",
+      "status": "verified"
+    }
+  ],
+  "searchQueries": [
+    "MBK4646",
+    "N-VAN JJ1 JJ2 ベッドキット",
+    "N-VAN MGR Customs"
+  ]
+}
