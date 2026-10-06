@@ -12,7 +12,23 @@
           "N-BOX Custom",
           "N-BOX JOY",
           "N-BOX Slope"
-        ]
+        ],
+        "validConfigs": [
+          {
+            "trim": "N-BOX"
+          },
+          {
+            "trim": "N-BOX Custom"
+          },
+          {
+            "trim": "N-BOX JOY"
+          }
+        ],
+        "source": {
+          "url": "https://www.honda.co.jp/Nbox/webcatalog/interior/utility/",
+          "checkedAt": "2026-10-06",
+          "note": "CAR STAY v1 excludes N-BOX Slope from the standard sleep profile because the slope model has a different floor/seat structure and needs separate validation."
+        }
       },
       "geometry": {
         "usableLengthMm": 1800,
