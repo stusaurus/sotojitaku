@@ -272,8 +272,44 @@ def _meta_content(page,key):
             return match.group(1).strip()
     return ''
 
+def _page_price(page):
+    values=[
+        _meta_content(page,'product:price:amount'),
+        _meta_content(page,'og:price:amount')
+    ]
+    patterns=[
+        r'"price"\s*:\s*"?([0-9][0-9,]*)"?',
+        r'"minPrice"\s*:\s*([0-9][0-9,]*)',
+        r'itemPrice["\']?\s*[:=]\s*["\']?([0-9][0-9,]*)'
+    ]
+    for pattern in patterns:
+        match=re.search(pattern,page,re.I)
+        if match: values.append(match.group(1))
+    for value in values:
+        digits=re.sub(r'[^0-9]','',str(value or ''))
+        if digits:
+            price=int(digits)
+            if 100 <= price <= 10000000:
+                return price
+    return None
+
+def _page_in_stock(page):
+    structured=(
+        re.search(r'"purchaseCondition"\s*:\s*"enabled"',page,re.I)
+        or re.search(r'"availability"\s*:\s*"[^"]*InStock[^"]*"',page,re.I)
+        or re.search(r'property=["\']product:availability["\'][^>]+content=["\'](?:in stock|instock)["\']',page,re.I)
+        or re.search(r'content=["\'](?:in stock|instock)["\'][^>]+property=["\']product:availability["\']',page,re.I)
+    )
+    return bool(structured)
+
 def exact_page_details(seed):
-    """Read exact Rakuten sales metadata plus display fields for the same-shop fallback."""
+    """Read exact Rakuten sales metadata plus display fields for the same-shop fallback.
+
+    Prefer Rakuten's itemInfoSku payload. When Actions receives a lighter server-rendered
+    product page, accept it only if the exact URL still exposes vehicle identity, price,
+    item id, product image and structured in-stock evidence. Interstitial/challenge pages
+    cannot satisfy all of those gates.
+    """
     try:
         page=fetch_text_cached(seed['itemUrl'])
     except Exception as e:
@@ -290,10 +326,17 @@ def exact_page_details(seed):
             re.search(r'itemId=(\d+)',page)
         ]
         guessed_item=next((m.group(1) for m in item_patterns if m),None)
+        price=_page_price(page)
+        in_stock=_page_in_stock(page)
         print('CAR_STAY_PAGE_DIAG',seed.get('productId'),'no_itemInfoSku',json.dumps({
-            'len':len(page),'title':title[:100],'image':bool(image),'groups':has_groups,'itemId':guessed_item
+            'len':len(page),'title':title[:100],'image':bool(image),'groups':has_groups,
+            'itemId':guessed_item,'price':price,'inStock':in_stock
         },ensure_ascii=False))
-        return None
+        if not has_groups:
+            return None
+        if not guessed_item or not price or not in_stock or not isinstance(image,str) or not image.startswith('https://'):
+            return None
+        return {'itemId':int(guessed_item),'price':int(price),'image':image,'title':title or seed.get('name','')}
     if not required_groups_ok(page,seed):
         print('CAR_STAY_PAGE_DIAG',seed.get('productId'),'identity_mismatch',len(page))
         raise ValueError('page_identity_mismatch')
