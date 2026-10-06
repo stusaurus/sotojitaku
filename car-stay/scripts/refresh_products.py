@@ -754,7 +754,9 @@ def acquire(runtime_budget_seconds=None):
                 'image':image,
                 'verifiedAt':now,
                 'fitVerifiedAt':seed['fitCheckedAt'],
-                'vehicleFit':seed['vehicleFit'],
+                'fitStrategy':seed.get('fitStrategy','vehicle'),
+                'measurementFit':seed.get('measurementFit'),
+                'vehicleFit':seed.get('vehicleFit',[]),
                 'audit':{
                     'status':'verified_live',
                     'mode':mode,
