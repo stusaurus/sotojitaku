@@ -178,7 +178,7 @@ function quickMeasure(result){
 }
 function renderResult(){
   const v=currentVehicle();const result=evaluate(inputForEngine(),v,rules());state.lastResult=result;save();
-  const recs=recommendations(db.products,{gaps:result.gaps,vehicleId:v.vehicleId,config:state.config,status:result.status});
+  const recs=recommendations(db.products,{gaps:result.gaps,vehicleId:v.vehicleId,config:state.config,status:result.status,measurements:state.measurements,sleep:result.sleep});
   const gaps=result.gaps.map((g,i)=>"<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+renderProducts(recs[g.id]||[],g.id)+"</div>").join("");
   const noNeed=result.notNeeded.length?"<div class='no-need'><h3>今回は、買わなくていいもの</h3><div class='no-need-tags'>"+result.notNeeded.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p class='micro'>はじめての一泊に、全部はいりません。</p></div>":"";
   const issueHtml=result.issues.length?"<div class='note "+(result.status==="CHANGE_PLAN"?"warning":"")+"'>"+result.issues.map(x=>"<b>"+esc(x.title)+"</b><br>"+esc(x.text)).join("<br><br>")+"</div>":"";
@@ -221,10 +221,18 @@ function renderProducts(items,gapId=""){
     const viewKey=gapId+":"+p.productId;
     if(!viewedProducts.has(viewKey)){
       viewedProducts.add(viewKey);
-      track("product_view",{product_id:p.productId,vehicle_id:state.vehicleId,gap_id:gapId,price:p.price||0,recommendation_role:p.recommendationRole||"",product_rank:rank,conversion_source:"car_stay_"+gapId});
+      track("product_view",{product_id:p.productId,vehicle_id:state.vehicleId,gap_id:gapId,price:p.price||0,recommendation_role:p.recommendationRole||"",product_rank:rank,conversion_source:"car_stay_"+gapId,fit_strategy:p.fitStrategy||"vehicle",recommended_qty:p.recommendedQty||1});
     }
   });
-  return "<div class='product-stack'>"+items.map((p,index)=>"<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'><span class='pr-badge'>PR</span><span class='fit-badge'>車種適合・販売確認済み</span><span class='role-badge'>"+(p.recommendationRole==="frequent_user_upgrade"?"本格利用向け":"初泊向け")+"</span></div><b>"+esc(p.name)+"</b><div class='product-meta'><strong>"+yen(p.price)+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc(p.price||0)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"'>楽天で見る <span>→</span></a></div></article>").join("")+"</div>";
+  return "<div class='product-stack'>"+items.map((p,index)=>{
+    const measured=p.fitStrategy==="measurement";
+    const fitLabel=measured?"実測寸法で適合":"車種適合・販売確認済み";
+    const roleLabel=p.recommendationRole==="frequent_user_upgrade"?"本格利用向け":p.recommendationRole==="beginner_alternative"?"代替候補":"初泊向け";
+    const qty=p.recommendedQty||1;
+    const qtyText=qty>1?"<span class='qty-badge'>"+qty+"枚使用</span>":"";
+    const measureText=measured&&p.measurementPlan?"<small class='measure-fit-note'>必要スペース "+p.measurementPlan.requiredLengthMm+"×"+p.measurementPlan.requiredWidthMm+"mm 以下で確認</small>":"";
+    return "<article class='product-card'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'><span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で見る <span>→</span></a></div></article>";
+  }).join("")+"</div>";
 }
 function render(){
   stepLabel.textContent=state.step<5?"STEP "+(state.step+1)+" / 5":"YOUR CAR STAY";
