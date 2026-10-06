@@ -291,3 +291,56 @@ test('CAR STAY dedicated sitemap stays exactly in sync with CAR STAY URLs in roo
   assert.deepEqual(childCar,rootCar);
   assert.ok(childCar.includes('https://stusaurus.github.io/sotojitaku/car-stay/car/freed/7people/'));
 });
+
+
+test('N-BOX JOY and Every DA18 high-intent SEO entries are exact-config and Builder-linked',()=>{
+  const sitemap=read('sitemap.xml');
+  const childSitemap=read('car-stay/sitemap.xml');
+  const js=read('car-stay/seo.js');
+  const cases=[
+    {
+      page:'car-stay/car/n-box/joy/index.html',
+      parent:'car-stay/car/n-box/index.html',
+      parentLink:'./joy/',
+      url:'/car-stay/car/n-box/joy/',
+      vehicle:'honda-nbox-jf5-jf6',
+      entry:'n-box-joy',
+      required:['N-BOX JOY','QUICK MEASURE','trim=N-BOX%20JOY']
+    },
+    {
+      page:'car-stay/car/every/da18/index.html',
+      parent:'car-stay/car/every/index.html',
+      parentLink:'./da18/',
+      url:'/car-stay/car/every/da18/',
+      vehicle:'suzuki-every-da18v',
+      entry:'every-da18',
+      required:['DA18V','QUICK MEASURE']
+    }
+  ];
+  for(const x of cases){
+    const page=read(x.page);
+    const parent=read(x.parent);
+    assert.ok(page.length>5500,x.page+' should not be thin');
+    assert.match(page,/rel="canonical"/);
+    assert.match(page,/FAQPage/);
+    assert.match(page,/seo\.js/);
+    assert.ok(page.includes('vehicle='+x.vehicle));
+    assert.ok(page.includes('entry='+x.entry));
+    for(const term of x.required)assert.ok(page.includes(term),term);
+    assert.ok(parent.includes(x.parentLink));
+    assert.ok(sitemap.includes(x.url));
+    assert.ok(childSitemap.includes(x.url));
+  }
+  assert.match(js,/joy:\["privacy_full","floor_step","sleep_surface"\]/);
+  assert.match(js,/da18:\["privacy_full","floor_step","sleep_surface"\]/);
+  assert.match(js,/"n-box:joy":\{trim:"N-BOX JOY"\}/);
+  assert.match(js,/"every:da18":\["suzuki-every-da18v"\]/);
+  assert.match(js,/config\?\.vehicleId&&f\.vehicleId!==config\.vehicleId/);
+  assert.match(js,/u\.searchParams\.set\("vehicle",config\.vehicleId\)/);
+});
+
+test('N-BOX JOY SEO copy never reuses the standard N-BOX 180cm sleep reference',()=>{
+  const page=read('car-stay/car/n-box/joy/index.html');
+  assert.match(page,/通常N-BOXの約180cm参考値をJOYへ流用しません/);
+  assert.ok(!/JOY.{0,80}約180cm/.test(page));
+});
