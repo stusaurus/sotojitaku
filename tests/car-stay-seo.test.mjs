@@ -262,3 +262,21 @@ test('FREED 7-seat SEO entry is substantive, fixed to AIR EX and Builder-linked'
   assert.match(js,/SEO_FIXED_CONFIGS/);
   assert.match(js,/"freed:7people":\{seatCount:7,trim:"AIR EX"\}/);
 });
+
+
+test('overview and two-person SEO entries render diversified live audited products',()=>{
+  const js=read('car-stay/seo.js');
+  assert.match(js,/overview:\["privacy_full","floor_step","sleep_surface"\]/);
+  assert.match(js,/"2people":\["privacy_full","floor_step","sleep_surface"\]/);
+  assert.match(js,/function diversifiedProducts/);
+  assert.match(js,/\["floor_step","sleep_surface"\]\.includes\(g\)/);
+  assert.match(js,/p\.gapIds\?\.includes\("privacy_full"\)/);
+  for(const slug of slugs){
+    const overview=read('car-stay/car/'+slug+'/index.html');
+    const two=read('car-stay/car/'+slug+'/2people/index.html');
+    assert.match(overview,/seo\.js/);
+    assert.match(two,/seo\.js/);
+    assert.match(overview,/class="builder-box"/);
+    assert.match(two,/class="builder-box"/);
+  }
+});
