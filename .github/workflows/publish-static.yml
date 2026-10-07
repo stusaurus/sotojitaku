@@ -30,6 +30,19 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Install browser test runtime
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Verify mobile and desktop journeys
+        run: |
+          python -m http.server 4173 > /tmp/fishing-server.log 2>&1 &
+          node tests/fishing-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fishing-browser-proof
+          path: browser-proof/
       - name: Prepare complete static site
         run: |
           mkdir public

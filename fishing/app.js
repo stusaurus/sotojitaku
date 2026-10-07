@@ -733,6 +733,7 @@ function bindAffiliateClicks(){
       party_type:answers.party
     };
     track("fishing_product_select",payload);
+    track("product_select",payload);
     track("affiliate_click",payload);
   }));
 }
