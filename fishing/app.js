@@ -203,12 +203,12 @@ function updateVisual(){
   }
   visualTags.innerHTML=tags.slice(-5).map(t=>`<span>${escapeHtml(t)}</span>`).join("");
   const captions=[
-    ["まだ何もない。","ここから、最初の一匹がはじまる。"],
-    ["だれと行くかで、","釣りの一日も変わります。"],
+    ["だれと過ごそう。","水辺の休日を、ここから。"],
     ["やってみたい時間を、","少しずつ形に。"],
     ["エサも、無理のないものから。","初めてでも扱いやすく。"],
-    ["持ち帰るかどうかで、","必要な道具を整えます。"],
+    ["魚との出会い、そのあとも。","持ち帰りに合わせて支度を。"],
     ["荷物は、できるだけ軽く。","必要なものだけを。"],
+    ["あなたの予算に合わせて。","続けやすい、はじめの一歩を。"],
     ["全部買わなくて大丈夫。","手持ちを活かして仕上げます。"]
   ];
   const preview=selectPlan(answers,plansData);
@@ -304,7 +304,7 @@ function renderResult({trackDiagnosis=true}={}){
   panel.innerHTML=`
     <div class="result-wrap">
       <div class="result-hero">
-        <span class="status">${readiness.status}</span>
+        <span class="status">${{READY:"出発の支度が整いました",ALMOST_READY:"あと少し、支度を整えて",CHALLENGE:"出発前の確認があります",CHANGE_PLAN:"場所や条件を見直しましょう"}[readiness.status]||readiness.status}</span>
         <h2>あなたの最初の一匹プラン。<br>${escapeHtml(methodLabel)}</h2>
         <p>${escapeHtml(plan.headline)} 難しい釣り方から始めず、今の条件で成立しやすい形を選びました。</p>
         <div class="target-tags">${plan.targets.map(x=>`<span>${escapeHtml(x)}</span>`).join("")}</div>
@@ -475,6 +475,14 @@ function productCoversRequiredGap(product,checklist){
   return requiredGapCoverCount(product,checklist)>0;
 }
 
+function productFitReason(product,checklist){
+  const covers=new Set(product.effectiveCoverCategoryIds||product.coverCategoryIds||[product.categoryId]);
+  const labels=checklist.filter(item=>covers.has(item.id)&&item.state!=="owned").map(item=>item.label);
+  const needs=labels.length?labels.join("・"):checklist.find(item=>item.id===product.categoryId)?.label||"必要な道具";
+  const budget=(product.budgetTiers||[]).includes(answers.budget)?"選んだ予算感に対応しています。":"";
+  return needs+"を準備するための候補です。"+budget;
+}
+
 function renderProductCards(products,neededIds,checklist,{optional=false}={}){
   return `<div class="product-list">${products.map((p,index)=>{
     const gapCount=requiredGapCoverCount(p,checklist);
@@ -486,7 +494,7 @@ function renderProductCards(products,neededIds,checklist,{optional=false}={}){
         ${featured?`<div class="bundle-badge">最短で揃える <b>必須${gapCount}項目</b></div>`:""}
         <div class="product-label">${optional?"あると快適":productLabel(p,neededIds)}</div>
         <h3>${escapeHtml(cleanName(p.name))}</h3>
-        <p class="product-fit">${escapeHtml(productLabel(p,neededIds))}を、このプランに合わせて。${featured?"複数の不足品をまとめて準備できます。":"必要な用途と条件に合う確認済み商品です。"}</p>
+        <p class="product-fit">${escapeHtml(productFitReason(p,checklist))}</p>
         ${renderQuantityNote(p)}
         ${renderCoverage(p,checklist)}
         <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
@@ -771,7 +779,7 @@ function openSavedPlan(){
   scrollTo({top:0,behavior:"smooth"});
 }
 
-function stateLabel(s){return {owned:"持っている",needed:"必要",optional:"あると快適",covered_by_product:"セットで揃う"}[s]||s}
+function stateLabel(s){return {owned:"持っている",needed:"必要",optional:"あると快適",covered_by_product:"購入候補あり"}[s]||s}
 function cleanName(s){return String(s||"").replace(/〖[^〗]*〗/g,"").replace(/\s+/g," ").trim().slice(0,95)}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function escapeAttr(s){return escapeHtml(s)}
