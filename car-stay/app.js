@@ -126,7 +126,7 @@ function setCabin(){
   if(caps.has("warmth")||caps.has("padding")){cabin.classList.add("state-bedding");chips.push(["寝具","on"]);}else chips.push(["寝具",""]);
   if(caps.has("padding")){cabin.classList.add("state-mat");chips.push(["寝床","on"]);}else chips.push(["寝床",""]);
   if(caps.has("privacy_full")){cabin.classList.add("state-private");chips.push(["目隠し","on"]);}else chips.push(["目隠し",""]);
-  const result=state.step>=5?state.lastResult:null;
+  const result=state.step>=5&&currentVehicle()?evaluate(inputForEngine(),currentVehicle(),rules()):null;
   if(result?.status==="READY")cabin.classList.add("state-ready");
   const scene=result?.status==="CHANGE_PLAN"?"arrival":state.step<3?"arrival":state.step===3?"dusk":(caps.has("padding")||result?.status==="READY")?"night":"dusk";
   const image=$("#sceneImage"),mobile=$("#sceneMobile");
@@ -282,8 +282,9 @@ function renderProducts(items,gapId=""){
     const qty=p.recommendedQty||1;
     const qtyText=qty>1?"<span class='qty-badge'>"+qty+"枚使用</span>":"";
     const measureText=measured&&p.measurementPlan?"<small class='measure-fit-note'>実測スペースが "+p.measurementPlan.requiredLengthMm+"×"+p.measurementPlan.requiredWidthMm+"mm 以上のときのみ表示</small>":"";
+    const fitExplanation=p.fitStrategy==="power"?"必要 "+(state.lastResult?.power?.requiredWh||0)+"Wh・"+(state.lastResult?.power?.requiredOutputW||0)+"Wに対し、容量 "+p.powerSpec.capacityWh+"Wh・定格 "+p.powerSpec.ratedOutputW+"Wを満たす候補です。":measured?"入力した寝床の長さ・幅で、"+qty+"枚を置ける寸法を確認しています。":(currentVehicle()?.shortLabel||"")+" "+(state.config.seatCount?state.config.seatCount+"人乗り ":"")+(state.config.trim||"")+"の適合確認済み候補です。";
     const firstPick=index===0?"<span class='top-pick-badge'>まず見る</span>":"";
-    return "<article class='product-card "+(index===0?"top-pick":"")+"'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'>"+firstPick+"<span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で確認する <span>→</span></a></div></article>";
+    return "<article class='product-card "+(index===0?"top-pick":"")+"'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'>"+firstPick+"<span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<p class='fit-explanation'>"+esc(fitExplanation)+"</p><div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で確認する <span>→</span></a></div></article>";
   }).join("")+"</div>";
 }
 function render(){
@@ -305,7 +306,7 @@ function advance(){
   if(state.step===3&&!state.placeType)return;
   trackStepComplete(state.step);
   if(state.step<4){state.step++;save();render();window.scrollTo({top:0,behavior:"smooth"});}
-  else renderResult();
+  else {renderResult();window.scrollTo({top:0,behavior:"instant"});}
 }
 panel.addEventListener("click",e=>{
   const t=e.target.closest("button,a");if(!t)return;
