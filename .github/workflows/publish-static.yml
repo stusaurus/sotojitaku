@@ -1,0 +1,43 @@
+name: Publish verified SOTOJITAKU site
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'fishing/**'
+      - '.github/workflows/publish-static.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: sotojitaku-static-pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm run check
+      - run: npm test
+      - run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Prepare complete static site
+        run: |
+          mkdir public
+          cp index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml googlef35e71acece62b67.html .nojekyll public/
+          cp -r assets data guides car-stay fishing public/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - name: Publish complete site
+        id: deployment
+        uses: actions/deploy-pages@v4

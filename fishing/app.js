@@ -182,6 +182,7 @@ function resumeDraft(){
   scrollTo({top:0,behavior:"smooth"});
 }
 function reset(){
+  document.body.dataset.screen="home";
   clearSharedPlanHash();clearDraft();
   hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";
@@ -217,6 +218,8 @@ function updateVisual(){
   visualMessage.innerHTML=escapeHtml(caption[0])+"<br>"+escapeHtml(caption[1]);
 }
 function renderQuestion(){
+  planner.classList.remove("is-result");
+  document.body.dataset.screen="question";
   const questions=questionsData.questions;
   const q=questions[index];
   const stepLabel=String(index+1).padStart(2,"0")+" / "+String(questions.length).padStart(2,"0");
@@ -225,6 +228,7 @@ function renderQuestion(){
   progress.style.width=((index+1)/questions.length*100)+"%";
   if(progressLine)progressLine.innerHTML=questions.map((_,i)=>'<i class="'+(i<=index?"active":"")+'"></i>').join("");
   updateVisual();
+  planVisual.setAttribute("aria-label", "あなたの釣りの一日："+miniPlan.textContent);
   const isMulti=q.type==="multi";
   const selected=isMulti?(answers[q.id]||[]):answers[q.id];
   panel.innerHTML=`
@@ -259,21 +263,26 @@ function renderQuestion(){
     track("fishing_question_answer",{question_id:q.id,answer_value:v});
     persistDraft("question");
     renderQuestion();
+    panel.querySelector(`[data-value="${v}"]`)?.focus({preventScroll:true});
   }));
   $("#backBtn")?.addEventListener("click",()=>{
-    if(index===0){reset();return}
-    index--;persistDraft("question");renderQuestion();
+    if(index===0){persistDraft("question");hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;document.body.dataset.screen="home";scrollTo({top:0,behavior:"smooth"});return}
+    index--;persistDraft("question");renderQuestion();scrollTo({top:0,behavior:"smooth"});
   });
   $("#nextBtn").addEventListener("click",()=>{
     if(!isMulti&&!answers[q.id]){
       panel.querySelector(".desc").textContent="1つ選んでから進んでください。";
       return;
     }
-    if(index<questions.length-1){index++;persistDraft("question");renderQuestion()}
-    else{persistDraft("result");renderResult()}
+    if(index<questions.length-1){index++;persistDraft("question");renderQuestion();scrollTo({top:0,behavior:"smooth"})}
+    else{persistDraft("result");renderResult();scrollTo({top:0,behavior:"smooth"})}
   });
 }
 function renderResult({trackDiagnosis=true}={}){
+  planner.classList.add("is-result");
+  document.body.dataset.screen="result";
+  if(progressText)progressText.textContent="YOUR FIRST PLAN";
+  if(progressLine)progressLine.innerHTML="";
   persistDraft("result");
   const resultKey=JSON.stringify(answers);
   const isNewResult=resultKey!==currentResultKey;
@@ -308,8 +317,11 @@ function renderResult({trackDiagnosis=true}={}){
 
       <div class="section">
         <h3 class="section-title">いまの支度</h3>
+        <p class="readiness-copy">${escapeHtml(resultHeadline(readiness))}</p>
+        <div class="owned-summary"><h4>持っているものを活かして</h4><p>${(answers.owned||[]).length?answers.owned.map(id=>escapeHtml(optionLabel("owned",id))).join("・"):"手持ちの道具はまだなくても大丈夫。必要なものから、ひとつずつ。"}</p></div>
+        <h4>あと準備するもの</h4>
         <div class="checklist">
-          ${checklist.filter(x=>x.priority==="required").map(x=>`
+          ${checklist.filter(x=>x.priority==="required"&&x.state!=="owned").map(x=>`
             <div class="check"><b>${escapeHtml(x.label)}</b><span class="${x.state}">${stateLabel(x.state)}</span></div>
           `).join("")}
         </div>
@@ -342,7 +354,7 @@ function renderResult({trackDiagnosis=true}={}){
 
       <div class="section">
         <h3 class="section-title">判定</h3>
-        <div class="safety-box"><strong>${escapeHtml(resultHeadline(readiness))}</strong><br>${readiness.status==="CHALLENGE"?"釣り場の公式ルールを確認するとREADY判定へ進めます。":"必要な装備を揃え、当日の天候を確認して出発してください。"}</div>
+        <div class="safety-box"><strong>${escapeHtml(resultHeadline(readiness))}</strong><br>${readiness.status==="CHALLENGE"?"公式ルールを確認し、必要な安全装備と持参品を揃えてください。":"必要な装備を揃え、当日の天候を確認して出発してください。"}</div>
       </div>
 
       <div class="save-row">
@@ -474,9 +486,10 @@ function renderProductCards(products,neededIds,checklist,{optional=false}={}){
         ${featured?`<div class="bundle-badge">最短で揃える <b>必須${gapCount}項目</b></div>`:""}
         <div class="product-label">${optional?"あると快適":productLabel(p,neededIds)}</div>
         <h3>${escapeHtml(cleanName(p.name))}</h3>
-        <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
+        <p class="product-fit">${escapeHtml(productLabel(p,neededIds))}を、このプランに合わせて。${featured?"複数の不足品をまとめて準備できます。":"必要な用途と条件に合う確認済み商品です。"}</p>
         ${renderQuantityNote(p)}
         ${renderCoverage(p,checklist)}
+        <div class="product-meta"><strong>¥${Number(p.price).toLocaleString("ja-JP")}</strong><span>販売確認済み</span></div>
         <a class="buy ${featured?"buy-featured":""}" href="${escapeAttr(p.affiliateUrl)}" target="_blank" rel="sponsored noopener" data-product="${escapeAttr(p.productId)}" data-category="${escapeAttr(p.categoryId)}" data-price="${Number(p.price)||0}" data-role="${escapeAttr(p.recommendationRole||"")}" data-priority="${optional?"optional":"required"}" data-position="${index+1}" data-cover-count="${gapCount}">${featured?"このセットを楽天で見る":"楽天で価格・在庫を見る"} →</a>
       </div>
     </article>`}).join("")}</div>`;
@@ -768,6 +781,8 @@ savedBtn.addEventListener("click",()=>readDraft()?resumeDraft():openSavedPlan())
 resetBtn.addEventListener("click",reset);
 load().then(()=>{
   refreshSavedButton();
+  $("#startBtn").disabled=false;
+  if(previewStartBtn)previewStartBtn.disabled=false;
   track("fishing_view");
   const shared=normalizePlanAnswers(readSharedPlanHash());
   if(shared){
