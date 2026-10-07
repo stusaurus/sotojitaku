@@ -13,7 +13,7 @@ let count=0;
 try{
  for(const width of [320,390,1440]){
   for(const scenario of scenarios){
-   const context=await browser.newContext({viewport:{width,height:844},reducedMotion:'reduce'});
+   const context=await browser.newContext({viewport:{width,height:844},reducedMotion:'reduce',permissions:['clipboard-read','clipboard-write']});
    const page=await context.newPage();const errors=[];
    page.on('pageerror',e=>errors.push(e.message));
    await page.route('https://www.googletagmanager.com/**',r=>r.fulfill({status:200,body:''}));
@@ -24,6 +24,7 @@ try{
    if(width===390&&scenario.name==='solo')await page.screenshot({path:'browser-proof/mobile-home.png'});
    if(width===1440&&scenario.name==='solo')await page.screenshot({path:'browser-proof/desktop-home.png'});
    await page.locator('#startBtn').click();
+   if(width===1440&&scenario.name==='solo')await page.screenshot({path:'browser-proof/desktop-question.png'});
    await page.locator('.choice[data-value="'+scenario.values[0]+'"]').click();
    await page.locator('#nextBtn').click();
    await noOverflow();
@@ -59,12 +60,15 @@ try{
    await page.locator('#rulesCheck').check();
    assert.equal(await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event'&&x[1]==='fishing_diagnosis_complete').length),before);
    const affiliate=page.locator('.buy').first();assert.match(await affiliate.getAttribute('href'),/^https:\/\/hb.afl.rakuten.co.jp\//);
-   await page.route('https://hb.afl.rakuten.co.jp/**',r=>r.fulfill({status:200,body:'Affiliate navigation test'}));
+   await context.route('https://hb.afl.rakuten.co.jp/**',r=>r.fulfill({status:200,body:'Affiliate navigation test'}));
    const popupPromise=page.waitForEvent('popup');await affiliate.click();const popup=await popupPromise;await popup.close();
    const events=await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event').map(x=>({name:x[1],params:x[2]})));
    for(const name of ['affiliate_click','product_select']){
     const e=events.find(x=>x.name===name);assert.ok(e,name+' missing');assert.equal(e.params.conversion_source,'fishing');
    }
+   await page.locator('#shareBtn').click();
+   const shared=await page.evaluate(()=>navigator.clipboard.readText());assert.match(shared,/#plan=/);
+   await page.goto(shared);await page.locator('.result-hero').waitFor();await noOverflow();
    await page.locator('#saveBtn').click();assert.match(await page.locator('#saveBtn').innerText(),/保存しました/);
    await page.reload();await page.locator('#savedBtn').click();await page.locator('.result-hero').waitFor();
    await page.locator('#againBtn').click();assert.match(await page.locator('#panel h2').innerText(),/だれと/);
