@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'fishing/**'
+      - 'tests/fishing-browser.mjs'
       - '.github/workflows/publish-static.yml'
   workflow_dispatch:
 permissions:

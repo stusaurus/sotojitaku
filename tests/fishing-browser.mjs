@@ -70,7 +70,7 @@ try{
    const shared=await page.evaluate(()=>navigator.clipboard.readText());assert.match(shared,/#plan=/);
    await page.goto(shared);await page.locator('.result-hero').waitFor();await noOverflow();
    await page.locator('#saveBtn').click();assert.match(await page.locator('#saveBtn').innerText(),/保存しました/);
-   await page.reload();await page.locator('#savedBtn').click();await page.locator('.result-hero').waitFor();
+   await page.goto('http://127.0.0.1:4173/fishing/');await page.locator('#savedBtn').click();await page.locator('.result-hero').waitFor();
    await page.locator('#againBtn').click();assert.match(await page.locator('#panel h2').innerText(),/だれと/);
    assert.equal(await page.locator('.result-hero').count(),0);await noOverflow();
    assert.deepEqual(errors,[]);count++;console.log(`PASS ${width}px ${scenario.name}`);await context.close();
