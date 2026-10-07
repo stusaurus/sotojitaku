@@ -11,7 +11,7 @@ for(const width of [1440,760,430,390,320]){
  await context.addInitScript(()=>{window.dataLayer=[];window.gtag=(...x)=>window.dataLayer.push(x);});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base+'?test=1');await page.locator('#startBtn:enabled').waitFor();
- await page.screenshot({path:`browser-proof/car-stay/hero-${width}.png`});
+ await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`browser-proof/car-stay/hero-${width}.png`});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'hero overflow '+width);
  await page.locator('#startBtn').click();await page.locator('[data-vehicle="honda-nvan-jj1-jj2"]').click();await page.locator('[data-next]').click();
  await page.locator('[data-count="1"]').click();await page.locator('[data-next]').click();
@@ -19,10 +19,10 @@ for(const width of [1440,760,430,390,320]){
  await page.locator('[data-env="placeType"]').selectOption('rv_park');await page.locator('[data-env="minC"]').fill('12');await page.locator('[data-env="maxC"]').fill('20');await page.locator('[data-next]').click();
  await page.locator('[data-gear="blanket"]').click();await page.locator('[data-gear="privacy_full"]').click();await page.locator('[data-floor="flat"]').click();
  await page.locator('[data-device="electric_blanket"]').check();await page.locator('[data-power="blanketW"]').waitFor();await page.locator('[data-power="blanketW"]').fill('50');await page.locator('[data-power="hours"]').fill('8');
- await page.screenshot({path:`browser-proof/car-stay/gear-${width}.png`,fullPage:true});
+ await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`browser-proof/car-stay/gear-${width}.png`,fullPage:true});
  await page.locator('[data-gear="portable_power"]').click();await page.locator('[data-power="ownedWh"]').fill('512');await page.locator('[data-power="ownedOutputW"]').fill('500');await page.locator('[data-next]').click();
  assert.match(await page.locator('.status').innerText(),/READY/);
- await page.screenshot({path:`browser-proof/car-stay/result-${width}.png`,fullPage:true});
+ await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`browser-proof/car-stay/result-${width}.png`,fullPage:true});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'result overflow '+width);
  await page.reload();assert.match(await page.locator('.status').innerText(),/READY/);
  const events=await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event').map(x=>x[1]));assert.ok(events.includes('builder_completed'));
@@ -36,14 +36,14 @@ for(const width of [1440,760,430,390,320]){
   assert.equal(await page.evaluate(()=>document.querySelector('.gap-list').getBoundingClientRect().top<document.querySelector('.needed-products').getBoundingClientRect().top),true);
   await first.evaluate(el=>{el.addEventListener('click',e=>e.preventDefault());el.click();});
   const click=await page.evaluate(()=>window.dataLayer.findLast(x=>x[1]==='affiliate_click'));assert.equal(click[2].operator_test,1);assert.ok(click[2].product_id&&click[2].gap_id&&click[2].conversion_source);
-  await page.screenshot({path:`browser-proof/car-stay/products-${width}.png`,fullPage:true});
+  await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`browser-proof/car-stay/products-${width}.png`,fullPage:true});
  }
  await page.locator('[data-edit]').click();await page.locator('[data-safety="sleepEngineOn"]').check();await page.locator('[data-next]').click();await page.locator('[data-next]').click();assert.equal(await page.locator('.status').innerText(),'CHANGE PLAN');
  assert.deepEqual(errors,[]);await context.close();console.log('PASS',width,'flow, restore, safety, power, measurement, commerce, telemetry');
 }
 // Failed images never block the functional flow; presets retain attribution.
 const context=await browser.newContext({viewport:{width:390,height:844}});const page=await context.newPage();await page.route('**/assets/**',r=>r.abort());await page.goto(base+'?vehicle=toyota-sienta-10-15&seatCount=5&party=1&from=seo&entry=sienta&test=1');await page.locator('[data-next]:enabled').waitFor();assert.match(await page.locator('#vehicleMini').innerText(),/シエンタ/);await page.locator('[data-next]').click();assert.match(await page.locator('#stepLabel').innerText(),/STEP 2/);await page.evaluate(state=>localStorage.setItem('sotojitaku_car_stay_v1',JSON.stringify(state)),{...seed,ownedGear:[]});
-await page.route('**/data/audited-products.json',r=>r.fulfill({json:{products:[]}}));await page.reload();await page.locator('.shopping-empty').waitFor();assert.equal(await page.locator('[data-product]').count(),0);
+await page.route('**/data/audited-products.json',r=>r.fulfill({json:{products:[]}}));await page.goto(base+'?test=1');await page.locator('.shopping-empty').waitFor();assert.equal(await page.locator('[data-product]').count(),0);
 page.on('dialog',dialog=>dialog.dismiss());await page.locator('#analyticsOpt').click();assert.equal(await page.evaluate(()=>window['ga-disable-G-GFVSZ8YDQ5']),true);
 const before=await page.evaluate(()=>window.dataLayer.length);await page.locator('[data-edit]').click();assert.equal(await page.evaluate(()=>window.dataLayer.length),before);
 await browser.close();console.log('PASS broken image fallback, SEO preset, zero products and analytics opt-out');
