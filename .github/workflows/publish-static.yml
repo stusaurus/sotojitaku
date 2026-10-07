@@ -58,3 +58,12 @@ jobs:
       - name: Publish complete site
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published CAR STAY desktop and mobile journeys
+        env:
+          CAR_STAY_BASE: https://stusaurus.github.io/sotojitaku/car-stay/
+        run: node tests/car-stay-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: car-stay-published-browser-proof
+          path: browser-proof/car-stay/
