@@ -30,7 +30,7 @@ for(const width of [1440,760,430,390,320]){
   await page.evaluate(state=>localStorage.setItem('sotojitaku_car_stay_v1',JSON.stringify(state)),{...seed,...patch});await page.reload();await page.locator('.status').waitFor();assert.equal(await page.locator('.status').innerText(),status,name+' '+width);
   if(status==='CHANGE PLAN')assert.equal(await page.locator('[data-product]').count(),0);
  }
- await page.evaluate(state=>localStorage.setItem('sotojitaku_car_stay_v1',JSON.stringify(state)),{...seed,vehicleId:'suzuki-hustler-mr52s-mr92s',measurements:{},ownedGear:[]});await page.reload();await page.locator('[data-measure="lengthMm"]').fill('2000');await page.locator('[data-measure="widthMm"]').fill('1200');await page.locator('[data-recalc]').click();assert.equal(await page.locator('.measure-card').count(),0);
+ await page.evaluate(state=>localStorage.setItem('sotojitaku_car_stay_v1',JSON.stringify(state)),{...seed,vehicleId:'suzuki-hustler-mr52s-mr92s',people:[{type:'adult',height:171},{type:'adult',height:160}],measurements:{},ownedGear:[]});await page.reload();await page.locator('[data-measure="lengthMm"]').fill('2000');await page.locator('[data-measure="widthMm"]').fill('1300');await page.locator('[data-recalc]').click();assert.equal(await page.locator('.measure-card').count(),0);
  const cards=page.locator('[data-product]');if(await cards.count()){
   const first=cards.first(),href=await first.getAttribute('href');assert.ok(href.startsWith('https://hb.afl.rakuten.co.jp/'));
   assert.equal(await page.evaluate(()=>document.querySelector('.gap-list').getBoundingClientRect().top<document.querySelector('.needed-products').getBoundingClientRect().top),true);
