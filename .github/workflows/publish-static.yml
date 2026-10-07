@@ -3,6 +3,11 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
+      - 'home.css'
+      - 'assets/home-world-*'
+      - 'camp/**'
+      - 'tests/home-browser.cjs'
       - 'fishing/**'
       - 'car-stay/**'
       - 'tests/car-stay-browser.mjs'
@@ -40,6 +45,7 @@ jobs:
       - name: Verify mobile and desktop journeys
         run: |
           python -m http.server 4173 > /tmp/fishing-server.log 2>&1 &
+          node tests/home-browser.cjs
           node tests/fishing-browser.mjs
           node tests/car-stay-browser.mjs
       - uses: actions/upload-artifact@v4
@@ -50,8 +56,8 @@ jobs:
       - name: Prepare complete static site
         run: |
           mkdir public
-          cp index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml googlef35e71acece62b67.html .nojekyll public/
-          cp -r assets data guides car-stay fishing public/
+          cp home.css index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml googlef35e71acece62b67.html .nojekyll public/
+          cp -r assets data guides camp car-stay fishing public/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public

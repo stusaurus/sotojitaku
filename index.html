@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home.css?v=20261008-1">
+  <link rel="stylesheet" href="home.css?v=5d7f14e9d55e">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFVSZ8YDQ5"></script>
   <script>
     window.dataLayer=window.dataLayer||[];
@@ -32,15 +32,19 @@
   <header class="site-header">
     <a class="brand" href="./" aria-label="SOTOJITAKU ホーム">SOTOJITAKU</a>
     <nav aria-label="サービス">
-      <a href="camp/">CAMP</a>
-      <a href="car-stay/">CAR STAY</a>
-      <a href="fishing/">FISHING</a>
+      <a href="camp/" data-service="camp">CAMP</a>
+      <a href="car-stay/" data-service="car_stay">CAR STAY</a>
+      <a href="fishing/" data-service="fishing">FISHING</a>
     </nav>
   </header>
 
   <main id="main">
+    <div class="landscape">
+      <picture class="landscape-image" aria-hidden="true">
+        <source media="(max-width:800px)" srcset="assets/home-world-mobile.webp">
+        <img src="assets/home-world-desktop.webp" alt="" width="3072" height="2048" fetchpriority="high">
+      </picture>
     <section class="hero">
-      <div class="hero-image" aria-hidden="true"></div>
       <div class="hero-shade"></div>
       <div class="hero-copy">
         <p class="eyebrow">YOUR WEEKEND, YOUR WAY.</p>
@@ -52,17 +56,9 @@
     </section>
 
     <section id="choose" class="choose">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow dark">CHOOSE YOUR OUTDOOR DAY</p>
-          <h2>あなたの「やってみたい」から。</h2>
-        </div>
-        <p>全部を知ってから始めなくて大丈夫。<br>今の気分に近い休日を選んでください。</p>
-      </div>
-
+      <h2 class="visually-hidden">あなたの休日を選ぶ</h2>
       <div class="worlds">
         <a class="world camp" href="camp/" data-service="camp">
-          <img src="assets/scene-morning-desktop.webp" alt="森と湖に囲まれた朝のキャンプ" width="1200" height="800">
           <span class="world-shade"></span>
           <span class="world-number">01</span>
           <span class="world-copy">
@@ -74,7 +70,6 @@
         </a>
 
         <a class="world carstay" href="car-stay/" data-service="car_stay">
-          <img src="car-stay/assets/cabin-dusk.webp" alt="夕暮れの湖畔に停めた車中泊のクルマ" width="1536" height="1024">
           <span class="world-shade"></span>
           <span class="world-number">02</span>
           <span class="world-copy">
@@ -86,7 +81,6 @@
         </a>
 
         <a class="world fishing" href="fishing/" data-service="fishing">
-          <img src="fishing/assets/fishing-hero-generated.webp?v=20261007-world-5" alt="静かな水辺ではじめての釣りを楽しむ休日" width="1536" height="1024">
           <span class="world-shade"></span>
           <span class="world-number">03</span>
           <span class="world-copy">
@@ -98,6 +92,8 @@
         </a>
       </div>
     </section>
+
+    </div>
 
     <section class="philosophy">
       <div class="philosophy-copy">
@@ -124,9 +120,9 @@
     <a class="footer-brand" href="./">SOTOJITAKU</a>
     <p>外へ行く準備を、もっと楽しく。</p>
     <nav>
-      <a href="camp/">CAMP</a>
-      <a href="car-stay/">CAR STAY</a>
-      <a href="fishing/">FISHING</a>
+      <a href="camp/" data-service="camp">CAMP</a>
+      <a href="car-stay/" data-service="car_stay">CAR STAY</a>
+      <a href="fishing/" data-service="fishing">FISHING</a>
     </nav>
     <small>© 2026 SOTOJITAKU</small>
   </footer>
