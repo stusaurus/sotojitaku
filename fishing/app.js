@@ -298,14 +298,15 @@ function renderResult({trackDiagnosis=true}={}){
   const methodLabel=plan.variant?.name||plan.methodName;
   stepText.textContent="YOUR FIRST PLAN";
   miniPlan.textContent=methodLabel;
-  visualMessage.textContent="最初の一匹まで、必要なものだけ。";
+  visualMessage.innerHTML="最初の一匹まで、<br>必要なものだけ。";
   visualTags.innerHTML=[methodLabel,...plan.targets.slice(0,3)].map(t=>`<span>${escapeHtml(t)}</span>`).join("");
 
   panel.innerHTML=`
     <div class="result-wrap">
       <div class="result-hero">
         <span class="status">${{READY:"出発の支度が整いました",ALMOST_READY:"あと少し、支度を整えて",CHALLENGE:"出発前の確認があります",CHANGE_PLAN:"場所や条件を見直しましょう"}[readiness.status]||readiness.status}</span>
-        <h2>あなたの最初の一匹プラン。<br>${escapeHtml(methodLabel)}</h2>
+        <p class="result-eyebrow">あなたの最初の一匹プラン</p>
+        <h2>${escapeHtml(methodLabel)}</h2>
         <p>${escapeHtml(plan.headline)} 難しい釣り方から始めず、今の条件で成立しやすい形を選びました。</p>
         <div class="target-tags">${plan.targets.map(x=>`<span>${escapeHtml(x)}</span>`).join("")}</div>
       </div>

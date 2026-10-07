@@ -5,3 +5,5 @@
 /* Keep the control header legible and uncluttered over the question scene. */
 body[data-screen='question'] .family-nav,body[data-screen='result'] .family-nav{display:none}body[data-screen='question'] .ghost,body[data-screen='result'] .ghost{background:var(--forest);color:var(--white);border-color:var(--sand)}
 @media(max-width:899px){.hero h1{letter-spacing:0;font-size:clamp(33px,9.6vw,40px)}}
+
+.result-eyebrow{font-size:15px;color:var(--moss);letter-spacing:.06em;margin:20px 0 8px}.result-hero .result-eyebrow+h2{margin-top:0;overflow-wrap:anywhere}
