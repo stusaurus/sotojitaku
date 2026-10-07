@@ -11,18 +11,19 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://stusaurus.github.io/sotojitaku/car-stay/">
   <meta name="theme-color" content="#111923">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=carstay-final-1">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFVSZ8YDQ5"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GFVSZ8YDQ5',{send_page_view:true});</script>
+  <script>try{window['ga-disable-G-GFVSZ8YDQ5']=localStorage.getItem('sotojitaku_analytics_optout')==='1'}catch{}window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-GFVSZ8YDQ5',{send_page_view:true});</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"SOTOJITAKU CAR STAY","url":"https://stusaurus.github.io/sotojitaku/car-stay/","applicationCategory":"TravelApplication","operatingSystem":"Web","description":"初心者向け車中泊準備ビルダー"}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main">本文へ</a>
   <header class="site-header">
     <a class="brand" href="../" aria-label="SOTOJITAKU CAMPへ"><span>SOTOJITAKU</span><b>CAR STAY</b></a>
     <button id="resetTop" class="ghost tiny" type="button" hidden>最初から</button>
   </header>
 
-  <main>
+  <main id="main">
     <section id="hero" class="hero">
       <div class="hero-copy">
         <p class="eyebrow">QUIET ROAD TRIP · TINY CABIN</p>
@@ -31,32 +32,17 @@
         <button id="startBtn" class="primary hero-cta" type="button">愛車ではじめる <span>→</span></button>
         <p class="trust">約3分・登録不要 · 危険な条件では買い物より先に止めます</p><p class="affiliate-disclosure"><strong>PR</strong> このサイトは楽天アフィリエイト等の広告を利用しています。商品を購入すると、運営者に成果報酬が入る場合があります。</p>
       </div>
-      <div class="hero-car" aria-hidden="true">
-        <div class="road-glow"></div>
-        <svg viewBox="0 0 800 420" role="img">
-          <defs>
-            <linearGradient id="bodyGrad" x1="0" x2="1"><stop offset="0" stop-color="#324150"/><stop offset="1" stop-color="#18232e"/></linearGradient>
-            <linearGradient id="glassGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#173040"/><stop offset="1" stop-color="#0b151d"/></linearGradient>
-          </defs>
-          <path class="car-body" d="M104 288c14-68 35-108 78-128 55-25 157-30 272-27 78 2 151 21 195 66 20 20 34 47 42 89l26 9c17 6 27 20 27 38v14H57v-22c0-18 11-31 30-36z" fill="url(#bodyGrad)"/>
-          <path d="M206 166c71-20 193-24 272-17 65 6 111 28 143 69H188c4-20 10-37 18-52z" fill="url(#glassGrad)"/>
-          <path class="cabin-light" d="M223 177c65-13 163-15 239-8 49 4 87 17 116 43H207c3-13 8-25 16-35z"/>
-          <rect class="shade shape-a" x="238" y="180" width="111" height="30" rx="12"/><rect class="shade shape-b" x="365" y="177" width="100" height="33" rx="12"/><rect class="shade shape-c" x="479" y="184" width="71" height="27" rx="10"/>
-          <path class="mattress" d="M250 238h295c15 0 24 11 22 25l-6 40H233l-4-35c-2-17 5-30 21-30z"/>
-          <path class="blanket" d="M276 245h160c34 0 56 13 67 40H267c-6-22-3-34 9-40z"/>
-          <circle cx="197" cy="330" r="54" fill="#0c1117"/><circle cx="197" cy="330" r="26" fill="#3d4853"/>
-          <circle cx="627" cy="330" r="54" fill="#0c1117"/><circle cx="627" cy="330" r="26" fill="#3d4853"/>
-          <path class="floor-step" d="M327 269h108v22H327z"/>
-        </svg>
-        <div class="hero-status"><span></span>まだ普通のクルマ。ここから一泊をつくります。</div>
-      </div>
+      <picture class="hero-scene"><source media="(max-width:760px)" srcset="./assets/cabin-dusk-mobile.webp"><img src="./assets/cabin-dusk.webp" alt="静かな湖畔で、家庭の寝具と灯りを積んだ小さな車の宿" width="1536" height="1024" fetchpriority="high"></picture>
+      <div class="hero-shade"></div>
+      <div class="hero-scene-note"><span>01 / DUSK AT THE LAKE</span><p>森を少し抜けたら、<br>今夜の居場所をつくろう。</p></div>
     </section>
 
     <section id="builder" class="builder" hidden>
       <div class="cabin-pane">
+        <picture class="builder-scene"><source id="sceneMobile" media="(max-width:760px)" srcset="./assets/car-arrival-mobile.webp"><img id="sceneImage" src="./assets/car-arrival.webp" alt="湖畔に到着した愛車。これから一泊の支度を始めます" width="1536" height="1024"></picture><div class="builder-shade"></div>
         <div class="cabin-topline"><span id="stepLabel">STEP 1 / 5</span><span id="vehicleMini">愛車を選択</span></div>
         <div id="cabin" class="cabin state-empty" aria-label="あなたの車中泊準備イメージ">
-          <div class="night-sky"><i></i><i></i><i></i><i></i></div>
+          <p id="sceneChapter" class="scene-chapter">ARRIVE / 愛車からはじまる一泊</p>
           <svg viewBox="0 0 760 450" aria-hidden="true">
             <defs>
               <linearGradient id="csBody" x1="0" x2="1"><stop offset="0" stop-color="#344454"/><stop offset="1" stop-color="#1b2732"/></linearGradient>
@@ -78,6 +64,7 @@
 
       <div class="control-pane">
         <div class="progress"><span id="progressBar"></span></div>
+        <ol class="step-trail" aria-label="一泊の支度"><li>愛車</li><li>人</li><li>夜</li><li>安全</li><li>手持ち</li></ol>
         <div id="panel" class="panel" aria-live="polite"></div>
       </div>
     </section>
@@ -87,6 +74,6 @@
     <div><b>SOTOJITAKU CAR STAY</b><span>はじめての一泊に、全部はいりません。</span><span class="footer-pr">PR：アフィリエイト広告を利用しています。</span></div>
     <nav><a href="./car/">車種から探す</a><a href="../">CAMP</a><a href="../fishing/">FISHING</a><button id="analyticsOpt" class="link-btn" type="button">計測設定</button></nav>
   </footer>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=carstay-final-1"></script>
 </body>
 </html>

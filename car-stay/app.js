@@ -126,7 +126,17 @@ function setCabin(){
   if(caps.has("warmth")||caps.has("padding")){cabin.classList.add("state-bedding");chips.push(["寝具","on"]);}else chips.push(["寝具",""]);
   if(caps.has("padding")){cabin.classList.add("state-mat");chips.push(["寝床","on"]);}else chips.push(["寝床",""]);
   if(caps.has("privacy_full")){cabin.classList.add("state-private");chips.push(["目隠し","on"]);}else chips.push(["目隠し",""]);
-  if(state.step>=5)cabin.classList.add("state-ready");
+  const result=state.step>=5?state.lastResult:null;
+  if(result?.status==="READY")cabin.classList.add("state-ready");
+  const scene=result?.status==="CHANGE_PLAN"?"arrival":state.step<3?"arrival":state.step===3?"dusk":(caps.has("padding")||result?.status==="READY")?"night":"dusk";
+  const image=$("#sceneImage"),mobile=$("#sceneMobile");
+  const asset=scene==="arrival"?"car-arrival":scene==="night"?"cabin-night":"cabin-dusk";
+  const src="./assets/"+asset+".webp";
+  if(image.getAttribute("src")!==src){image.src=src;mobile.srcset="./assets/"+asset+"-mobile.webp";}
+  image.alt="同じ湖畔の愛車。一泊の準備を伝える情景イメージ";
+  builder.dataset.status=result?.status||"building";
+  $("#sceneChapter").textContent=result?.status==="CHANGE_PLAN"?"PLAN AGAIN / 条件の見直しから":result?.status==="READY"?"YOUR TINY CABIN / 一泊の支度ができました":result?"ALMOST THERE / 残る支度を確かめよう":["ARRIVE / 愛車からはじまる一泊","TOGETHER / 今夜の宿泊者","YOUR EVENING / 過ごしたい時間","DUSK / 場所と気温を確かめる","PACK LIGHT / 家にあるものから"][state.step];
+  document.querySelectorAll(".step-trail li").forEach((el,i)=>{el.classList.toggle("active",i===state.step);el.classList.toggle("done",i<state.step);if(i===state.step)el.setAttribute("aria-current","step");else el.removeAttribute("aria-current");});
   buildChips.innerHTML=chips.map(c=>"<span class='"+c[1]+"'>"+c[0]+"</span>").join("");
   const v=currentVehicle();
   vehicleMini.textContent=v?v.shortLabel:"愛車を選択";
@@ -136,7 +146,7 @@ function setCabin(){
   else if(state.step===2)cabinMessage.textContent="過ごし方を決めると、いらない道具も見えてきます。";
   else if(state.step===3)cabinMessage.textContent="安全な場所と気温を、道具より先に確認します。";
   else if(state.step===4)cabinMessage.textContent="家にあるものを積むほど、買うものは減っていきます。";
-  else cabinMessage.textContent="あなたの小さな宿が、ここまでできました。";
+  else cabinMessage.textContent=result.status==="CHANGE_PLAN"?"道具を買う前に、泊まる条件を見直しましょう。":result.status==="READY"?"いつもの愛車が、あなたの小さな宿になりました。":result.status==="CHALLENGE"?"確認を済ませてから、一泊の支度を進めましょう。":"小さな宿まで、あと必要なところだけ。";
 }
 function wrap(title,desc,body,kicker){
   return "<p class='step-kicker'>"+esc(kicker||("STEP "+(state.step+1)))+"</p><h2>"+title+"</h2><p class='desc'>"+desc+"</p>"+body;
@@ -177,7 +187,7 @@ function renderTrip(){
 function renderEnvironment(){
   const placeOptions=[["rv_park","RVパーク"],["auto_camp","オートキャンプ場"],["authorized_private","許可済み私有地"],["road_station","道の駅（休憩・仮眠）"],["sa_pa","SA・PA（休憩・仮眠）"],["unknown","まだ未定"]];
   const place=placeOptions.map(x=>"<option value='"+x[0]+"' "+(state.placeType===x[0]?"selected":"")+">"+x[1]+"</option>").join("");
-  panel.innerHTML=wrap("いつ、どこで泊まる？","場所のルールと夜の気温を安全判定の最上位に置きます。","<div class='form-row'><div class='field'><label>日付</label><input data-env='date' type='date' value='"+esc(state.date)+"'></div><div class='field'><label>地域</label><input data-env='region' placeholder='例：山梨県 富士五湖' value='"+esc(state.region)+"'></div></div><div class='field'><label>場所タイプ</label><select data-env='placeType'><option value=''>選択してください</option>"+place+"</select></div><div class='form-row'><div class='field'><label>予想最低気温 °C（分かれば）</label><input data-env='minC' type='number' inputmode='decimal' value='"+esc(state.weather.minC??"")+"'></div><div class='field'><label>予想最高気温 °C（分かれば）</label><input data-env='maxC' type='number' inputmode='decimal' value='"+esc(state.weather.maxC??"")+"'></div></div><div class='note warning'>道の駅・SA/PAは宿泊施設としてREADY判定しません。暑さ条件も、扇風機や網戸を買うだけでは解除しません。</div><div class='actions'>"+backButton()+"<button class='primary' data-next "+(!state.placeType?"disabled":"")+">家にあるもの <span>→</span></button></div>","STEP 4 · 安全");
+  panel.innerHTML=wrap("いつ、どこで泊まる？","場所のルールと夜の気温を安全判定の最上位に置きます。","<div class='form-row'><div class='field'><label>日付</label><input data-env='date' type='date' value='"+esc(state.date)+"'></div><div class='field'><label>地域</label><input data-env='region' placeholder='例：山梨県 富士五湖' value='"+esc(state.region)+"'></div></div><div class='field'><label>場所タイプ</label><select data-env='placeType'><option value=''>選択してください</option>"+place+"</select></div><div class='form-row'><div class='field'><label>予想最低気温 °C（分かれば）</label><input data-env='minC' type='number' inputmode='decimal' value='"+esc(state.weather.minC??"")+"'></div><div class='field'><label>予想最高気温 °C（分かれば）</label><input data-env='maxC' type='number' inputmode='decimal' value='"+esc(state.weather.maxC??"")+"'></div></div><fieldset class='safety-plan'><legend>就寝中の計画を確認</legend><label><input type='checkbox' data-safety='sleepEngineOn' "+(state.sleepEngineOn?"checked":"")+"> エンジンをかけたまま眠る予定</label><label><input type='checkbox' data-safety='openFlameInside' "+(state.openFlameInside?"checked":"")+"> 車内で火器・燃焼器具を使う予定</label><p>どちらかがある場合は、購入候補を出さず計画変更を案内します。</p></fieldset><div class='note warning'>道の駅・SA/PAは宿泊施設としてREADY判定しません。暑さ条件も、扇風機や網戸を買うだけでは解除しません。</div><div class='actions'>"+backButton()+"<button class='primary' data-next "+(!state.placeType?"disabled":"")+">家にあるもの <span>→</span></button></div>","STEP 4 · 安全");
 }
 function renderGear(){
   const icons={home_duvet:"🛏️",blanket:"🧣",pillow:"☁️",towel:"🧺",camp_mat:"▰",led_light:"💡",mobile_battery:"🔋",privacy_full:"🌙",fan:"🌀",electric_blanket:"♨️",portable_power:"🔌"};
@@ -206,12 +216,16 @@ function quickMeasure(result){
   return "<div class='measure-card'><h3>QUICK MEASURE</h3><p>分からない寸法は推測しません。メジャーで次だけ測れば、判定を更新できます。</p><div class='measure-diagram'>"+(needL&&needW?"① 寝床の長さ　／　② 一番狭い幅":needL?"① 寝床の長さ":"② 一番狭い幅")+"</div><div class='form-row'>"+(needL?"<div class='field'><label>長さ mm</label><input data-measure='lengthMm' type='number' value='"+esc(state.measurements.lengthMm??"")+"'></div>":"")+(needW?"<div class='field'><label>幅 mm</label><input data-measure='widthMm' type='number' value='"+esc(state.measurements.widthMm??"")+"'></div>":"")+"</div><button class='primary' data-recalc>測って判定を更新</button></div>";
 }
 function renderResult(){
+  state.step=5;
   const v=currentVehicle();const result=evaluate(inputForEngine(),v,rules());state.lastResult=result;save();
   const recs=recommendations(db.products,{gaps:result.gaps,vehicleId:v.vehicleId,config:state.config,status:result.status,measurements:state.measurements,sleep:result.sleep});
   const gaps=result.gaps.map((g,i)=>{
-    const requirement=g.id==="power_capacity"&&g.requiredWh?"<p class='power-requirement'><b>必要容量の目安 "+esc(g.requiredWh)+"Wh以上</b><span>定格出力 "+esc(g.requiredOutputW||0)+"W以上 · 20%の余裕を含むSOTOJITAKU目安</span></p>":"";
-    return "<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+requirement+renderProducts(recs[g.id]||[],g.id)+"</div>";
+    const requirement=g.id==="power_capacity"&&g.requiredWh?"<p class='power-requirement'><b>必要容量の目安 "+esc(g.requiredWh)+"Wh以上</b><span>定格出力 "+esc(g.requiredOutputW||0)+"W以上 · 消費電力×時間×1.25のSOTOJITAKU目安</span></p>":"";
+    return "<div class='gap-item'><span class='free-badge'>"+(g.free?"0円対策を先に":"確認")+"</span><h3>"+(i+1)+". "+esc(gapLabel(g.id))+"</h3><p>"+esc(g.free||"条件を確認してください。")+"</p>"+requirement+"</div>";
   }).join("");
+  const productSections=result.gaps.filter(g=>(recs[g.id]||[]).length).map(g=>"<section class='gap-item'><h3>"+esc(gapLabel(g.id))+"が、0円対策でも足りないときだけ</h3><p>手持ち品で解決できれば購入は不要です。</p>"+renderProducts(recs[g.id]||[],g.id)+"</section>").join("");
+  const readyNames={floor:"段差の対策",floor_free:"家にある物で段差対策",sleep_surface:"身体の下に敷く寝具",privacy:"全面の目隠し",power_capacity:"手持ち電源の容量"};
+  const prepared=result.resolved.length?"<div class='prepared'><p class='step-kicker'>すでに整っていること</p><div class='no-need-tags'>"+[...new Set(result.resolved)].map(x=>"<span>✓ "+esc(readyNames[x]||x)+"</span>").join("")+"</div></div>":"";
   const noNeed=result.notNeeded.length?"<div class='no-need'><h3>今回は、買わなくていいもの</h3><div class='no-need-tags'>"+result.notNeeded.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p class='micro'>はじめての一泊に、全部はいりません。</p></div>":"";
   const issueHtml=result.issues.length?"<div class='note "+(result.status==="CHANGE_PLAN"?"warning":"")+"'>"+result.issues.map(x=>"<b>"+esc(x.title)+"</b><br>"+esc(x.text)).join("<br><br>")+"</div>":"";
   const eligibleProductCount=Object.values(recs).reduce((sum,items)=>sum+(items?.length||0),0);
@@ -220,7 +234,7 @@ function renderResult(){
     :eligibleProductCount>0
       ?"<div class='shopping-trust'><b>表示しているのは、今の条件に合う確認済み商品だけ。</b><span>車種・仕様・販売状態・価格・楽天リンクを7日以内に確認しています。0円対策で足りる場合は、買わなくて大丈夫です。</span></div>"
       :"<div class='shopping-empty'>この条件で安全に出せる監査済み商品はまだありません。無理に近い商品は表示せず、0円対策を優先します。</div>";
-  panel.innerHTML="<div class='result-head'><span class='status'>"+statusLabel(result.status)+"</span><h2>"+esc(resultHeadline(result))+"</h2><p>"+esc(v.shortLabel)+" × "+state.people.length+"人 × "+esc(tripLabel(state.tripStyle))+"</p></div>"+issueHtml+resultCards(result)+quickMeasure(result)+(gaps?"<div class='gap-list'><p class='step-kicker'>今回、整えるところ</p>"+gaps+"</div>":"<div class='note'>大きな不足は見つかりませんでした。出発前に施設ルールと最新天気をもう一度確認してください。</div>")+noNeed+commerceNote+"<div class='source-box'>安全判定は初心者向けの保守的な支度支援で、法令・医療上の保証ではありません。出発前に施設公式情報と最新天気を確認してください。</div><div class='actions'><button class='secondary' data-edit>条件を直す</button><button class='primary' data-new>もう一度つくる</button></div>";
+  panel.innerHTML="<div class='result-head'><span class='status'>"+statusLabel(result.status)+"</span><h2>"+esc(resultHeadline(result))+"</h2><p>"+esc(v.shortLabel)+" × "+state.people.length+"人 × "+esc(tripLabel(state.tripStyle))+"</p></div>"+issueHtml+resultCards(result)+prepared+quickMeasure(result)+(gaps?"<div class='gap-list'><p class='step-kicker'>まずは0円でできること</p>"+gaps+"</div>":"<div class='note'>大きな不足は見つかりませんでした。出発前に施設ルールと最新天気をもう一度確認してください。</div>")+noNeed+commerceNote+(productSections?"<div class='needed-products'><p class='step-kicker'>それでも足りないもの</p>"+productSections+"</div>":"")+"<div class='source-box'>安全判定は初心者向けの保守的な支度支援で、法令・医療上の保証ではありません。出発前に施設公式情報と最新天気を確認してください。</div><div class='actions'><button class='secondary' data-edit>条件を直す</button><button class='primary' data-new>もう一度つくる</button></div>";
   for(const g of result.gaps){
     const gapKey=v.vehicleId+":"+g.id;
     if(!viewedGaps.has(gapKey)){
@@ -269,7 +283,7 @@ function renderProducts(items,gapId=""){
     const qtyText=qty>1?"<span class='qty-badge'>"+qty+"枚使用</span>":"";
     const measureText=measured&&p.measurementPlan?"<small class='measure-fit-note'>実測スペースが "+p.measurementPlan.requiredLengthMm+"×"+p.measurementPlan.requiredWidthMm+"mm 以上のときのみ表示</small>":"";
     const firstPick=index===0?"<span class='top-pick-badge'>まず見る</span>":"";
-    return "<article class='product-card "+(index===0?"top-pick":"")+"'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'>"+firstPick+"<span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で見る <span>→</span></a></div></article>";
+    return "<article class='product-card "+(index===0?"top-pick":"")+"'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'>"+firstPick+"<span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で確認する <span>→</span></a></div></article>";
   }).join("")+"</div>";
 }
 function render(){
@@ -282,6 +296,8 @@ function render(){
   else if(state.step===4)renderGear();
   else renderResult();
   if(state.step<5)trackStepView(state.step);
+  panel.querySelectorAll(".choice,.gear").forEach(el=>el.setAttribute("aria-pressed",String(el.classList.contains("selected"))));
+  panel.querySelectorAll(".field").forEach((field,i)=>{const label=field.querySelector("label"),input=field.querySelector("input,select");if(label&&input){input.id="answer-"+i;label.htmlFor=input.id;}});
 }
 function advance(){
   if(state.step===0&&(!state.vehicleId||!vehicleConfigComplete()))return;
@@ -317,23 +333,28 @@ panel.addEventListener("input",e=>{
   if(t.dataset.env){
     if(t.dataset.env==="date")state.date=t.value;
     if(t.dataset.env==="region")state.region=t.value;
-    if(t.dataset.env==="placeType"){state.placeType=t.value;track("location_selected",{place_type:t.value});}
+    if(t.dataset.env==="placeType"){state.placeType=t.value;panel.querySelector("[data-next]").disabled=!state.placeType;track("location_selected",{place_type:t.value});}
     if(["minC","maxC"].includes(t.dataset.env)){state.weather[t.dataset.env]=t.value===""?null:Number(t.value);state.weather.status=(state.weather.minC!==null&&state.weather.maxC!==null)?"known":"unknown";}
   }
   if(t.dataset.measure){state.measurements[t.dataset.measure]=t.value===""?null:Number(t.value);}
   if(t.dataset.power){state.powerUse[t.dataset.power]=t.value===""?null:Number(t.value);}
+  if(t.dataset.safety)state[t.dataset.safety]=t.checked;
   if(t.dataset.device){state.devices=t.checked?[...new Set([...state.devices,t.dataset.device])]:state.devices.filter(x=>x!==t.dataset.device);}
   save();
+  if(t.dataset.device){renderGear();setCabin();}
 });
 $("#startBtn").addEventListener("click",start);
 resetTop.addEventListener("click",reset);
 $("#analyticsOpt").addEventListener("click",()=>{
   analyticsEnabled=!analyticsEnabled;
+  window["ga-disable-G-GFVSZ8YDQ5"]=!analyticsEnabled;
   localStorage.setItem("sotojitaku_analytics_optout",analyticsEnabled?"0":"1");
   alert(analyticsEnabled?"アクセス計測を有効にしました。":"アクセス計測を無効にしました。");
 });
+$("#startBtn").disabled=true;
 loadSaved();
 loadData().then(()=>{
+  $("#startBtn").disabled=false;
   if(presetVehicle&&db.vehicles.some(v=>v.vehicleId===presetVehicle)){
     state.vehicleId=presetVehicle;
     const v=currentVehicle();

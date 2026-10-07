@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'fishing/**'
+      - 'car-stay/**'
+      - 'tests/car-stay-browser.mjs'
       - 'tests/fishing-browser.mjs'
       - '.github/workflows/publish-static.yml'
   workflow_dispatch:
@@ -39,6 +41,7 @@ jobs:
         run: |
           python -m http.server 4173 > /tmp/fishing-server.log 2>&1 &
           node tests/fishing-browser.mjs
+          node tests/car-stay-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
