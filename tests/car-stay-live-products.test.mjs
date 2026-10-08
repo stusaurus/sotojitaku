@@ -18,6 +18,16 @@ test("every published CAR STAY product is eligible for at least one declared fit
       for(const gapId of p.gapIds||[]){
         if(productEligible(p,{vehicleId:"measurement",config:{},gapId,now,measurements,sleep})){passes=true;break;}
       }
+    }else if(p.fitStrategy==="power"){
+      const spec=p.powerSpec||{};
+      const wh=Number(spec.capacityWh),watts=Number(spec.ratedOutputW);
+      if(Number.isFinite(wh)&&Number.isFinite(watts)&&wh>0&&watts>0){
+        for(const gapId of p.gapIds||[]){
+          if(productEligible(p,{vehicleId:"power",config:{},gapId,now,powerNeed:{requiredWh:wh,requiredOutputW:watts}})){
+            passes=true;break;
+          }
+        }
+      }
     }else{
       for(const fit of p.vehicleFit||[]){
         const config={};
