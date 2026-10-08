@@ -14,7 +14,7 @@ class FishingUiTest(unittest.TestCase):
 
     def test_canonical_and_ga_are_present(self):
         self.assertIn('https://stusaurus.github.io/sotojitaku/fishing/', self.index)
-        self.assertIn('G-GFVSZ8YDQ5', self.index)
+        self.assertIn('G-6STQ5HXRDH', self.index)
 
     def test_approved_generated_hero_is_used(self):
         self.assertIn('fishing-hero-generated.webp', self.index)
