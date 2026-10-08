@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const read = path => fs.readFileSync(new URL('../' + path, import.meta.url), 'utf8');
-const GA_ID = 'G-GFVSZ8YDQ5';
+const GA_ID = 'G-6STQ5HXRDH';
 
 test('HOME and three services reference the same GA4 measurement ID', () => {
   for (const path of ['index.html','camp/index.html','car-stay/index.html','fishing/index.html']) {
