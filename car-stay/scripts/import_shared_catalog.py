@@ -143,13 +143,18 @@ def merge_catalogs(local,shared,seeds,now=None):
                     rejected[pid]=source+"_invalid_or_stale"
                 continue
             existing=candidates.get(pid)
+            # Ratings for power products come from the vetted local seed, not
+            # the external pricing feed (which need not carry powerSpec).
+            normalized_product=dict(product)
+            if seed.get("fitStrategy")=="power":
+                normalized_product["powerSpec"]=seed.get("powerSpec")
             if existing is None:
-                candidates[pid]=product
+                candidates[pid]=normalized_product
                 continue
             old=parse_time(existing.get("verifiedAt")) or datetime.min.replace(tzinfo=timezone.utc)
-            new=parse_time(product.get("verifiedAt")) or datetime.min.replace(tzinfo=timezone.utc)
+            new=parse_time(normalized_product.get("verifiedAt")) or datetime.min.replace(tzinfo=timezone.utc)
             if new>old:
-                candidates[pid]=product
+                candidates[pid]=normalized_product
 
     products=sorted(candidates.values(),key=lambda p:p.get("productId",""))
     shared_failures=shared.get("failures") if isinstance(shared.get("failures"),dict) else {}
