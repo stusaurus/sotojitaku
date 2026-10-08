@@ -130,7 +130,7 @@
   <script>
     document.querySelectorAll('[data-service]').forEach(function(a){
       a.addEventListener('click',function(){
-        if(window.gtag) gtag('event','service_select',{site_id:'sotojitaku_home',service:this.dataset.service});
+        if(window.gtag) gtag('event','service_select',{site_id:'sotojitaku_home',service:this.dataset.service,transport_type:'beacon'});
       });
     });
   </script>
