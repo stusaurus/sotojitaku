@@ -36,6 +36,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: npm run check
+      - name: Stamp asset fingerprints before release checks
+        run: python scripts/stamp_assets.py
       - run: npm test
       - run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Install browser test runtime
