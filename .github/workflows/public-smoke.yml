@@ -1,0 +1,38 @@
+name: Public SOTOJITAKU smoke QA
+
+on:
+  pull_request:
+    paths:
+      - 'tests/public-smoke.cjs'
+      - '.github/workflows/public-smoke.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '7 0 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  public-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Inspect all four published experiences and catalog links
+        env:
+          SOTOJITAKU_BASE: https://stusaurus.github.io/sotojitaku/
+        run: node tests/public-smoke.cjs
+      - name: Save browser proof and JSON results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sotojitaku-public-qa
+          path: browser-proof/public/
+          retention-days: 14
