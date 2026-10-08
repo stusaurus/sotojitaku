@@ -129,7 +129,7 @@ function readEntryAttribution(){
   return {entry_source:"direct",entry_guide_slug:""};
 }
 const entryAttribution=readEntryAttribution();
-const track=(name,params={})=>{try{window.gtag?.("event",name,{conversion_source:"fishing",...entryAttribution,...params})}catch{}};
+const track=(name,params={})=>{try{window.gtag?.("event",name,{site_id:"sotojitaku_fishing",conversion_source:"fishing",...entryAttribution,...params})}catch{}};
 
 async function load(){
   const [q,p,g,h,c]=await Promise.all([
