@@ -129,7 +129,7 @@ function readEntryAttribution(){
   return {entry_source:"direct",entry_guide_slug:""};
 }
 const entryAttribution=readEntryAttribution();
-const track=(name,params={})=>{try{const common={site_id:"sotojitaku_fishing",service_id:"fishing",conversion_source:"fishing",page_path:location.pathname,transport_type:"beacon",...entryAttribution,...params};if(name==="affiliate_click"&&!common.affiliate)common.affiliate="rakuten";window.gtag?.("event",name,common);const alias={fishing_diagnosis_start:"journey_start",fishing_diagnosis_complete:"journey_complete",fishing_product_view:"product_view"}[name];if(alias)window.gtag?.("event",alias,common)}catch{}};
+const track=(name,params={})=>{try{const common={site_id:"sotojitaku_fishing",service_id:"fishing",operator_test:new URLSearchParams(location.search).get("test")==="1"?"1":"0",conversion_source:"fishing",page_path:location.pathname,transport_type:"beacon",...entryAttribution,...params};if(name==="affiliate_click"&&!common.affiliate)common.affiliate="rakuten";window.gtag?.("event",name,common);const alias={fishing_diagnosis_start:"journey_start",fishing_diagnosis_complete:"journey_complete",fishing_product_view:"product_view"}[name];if(alias)window.gtag?.("event",alias,common)}catch{}};
 
 async function load(){
   const [q,p,g,h,c]=await Promise.all([

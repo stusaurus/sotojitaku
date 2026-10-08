@@ -23,7 +23,7 @@
     window.dataLayer=window.dataLayer||[];
     function gtag(){dataLayer.push(arguments)}
     gtag('js',new Date());
-    gtag('config','G-GFVSZ8YDQ5',{site_id:'sotojitaku_home',send_page_view:true});
+    gtag('config','G-GFVSZ8YDQ5',{site_id:'sotojitaku_home',operator_test:new URLSearchParams(location.search).get('test')==='1'?'1':'0',send_page_view:true});
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SOTOJITAKU","url":"https://stusaurus.github.io/sotojitaku/","description":"外遊び初心者のための支度サービス。CAMP、CAR STAY、FISHINGを提供。","inLanguage":"ja"}</script>
 </head>
@@ -130,7 +130,7 @@
   <script>
     document.querySelectorAll('[data-service]').forEach(function(a){
       a.addEventListener('click',function(){
-        if(window.gtag) gtag('event','service_select',{site_id:'sotojitaku_home',service:this.dataset.service,transport_type:'beacon'});
+        if(window.gtag) gtag('event','service_select',{site_id:'sotojitaku_home',service:this.dataset.service,service_id:this.dataset.service,operator_test:new URLSearchParams(location.search).get('test')==='1'?'1':'0',transport_type:'beacon'});
       });
     });
   </script>
