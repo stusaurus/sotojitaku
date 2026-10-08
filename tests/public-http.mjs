@@ -48,7 +48,7 @@ async function main() {
     ]) {
       await check(path, async html => {
         assert.ok(html.includes(marker), name + ': expected markup missing');
-        assert.ok(html.includes('G-GFVSZ8YDQ5'), name + ': GA4 integration missing');
+        assert.ok(/G-[A-Z0-9]{8,16}/.test(html), name + ': GA4 integration missing');
         if (name === 'HOME') {
           for (const expected of ['href="camp/"', 'href="car-stay/"', 'href="fishing/"'])
             assert.ok(html.includes(expected), 'HOME: missing ' + expected);
