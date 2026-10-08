@@ -80,6 +80,9 @@ def normalize_shared_product(product,seed):
     merged["recommendationRole"]=seed.get("recommendationRole","beginner_default")
     merged["score"]=seed.get("score",merged.get("score",80))
     merged["fitStrategy"]=seed.get("fitStrategy","vehicle")
+    if merged["fitStrategy"]=="power":
+        # The audited local seed owns electrical rating and fit evidence.
+        merged["powerSpec"]=seed.get("powerSpec")
     merged["measurementFit"]=seed.get("measurementFit")
     merged["vehicleFit"]=seed.get("vehicleFit",[])
     merged["fitVerifiedAt"]=seed.get("fitCheckedAt")
