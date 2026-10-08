@@ -32,7 +32,11 @@ let state={
 
 function track(name,params={}){
   if(!analyticsEnabled||typeof window.gtag!=="function")return;
-  window.gtag("event",name,{site_id:"sotojitaku_car_stay",operator_test:operatorTest?1:0,entry_source:entrySource,entry_key:entryKey,...params});
+  const common={site_id:"sotojitaku_car_stay",service_id:"car_stay",operator_test:operatorTest?1:0,entry_source:entrySource,entry_key:entryKey,page_path:location.pathname,transport_type:"beacon",...params};
+  if(name==="affiliate_click"&&!common.affiliate)common.affiliate="rakuten";
+  window.gtag("event",name,common);
+  const alias={carstay_start:"journey_start",builder_completed:"journey_complete"}[name];
+  if(alias)window.gtag("event",alias,common);
 }
 function funnelStepParams(step){
   return {
