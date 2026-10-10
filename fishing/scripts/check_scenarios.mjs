@@ -8,6 +8,7 @@ const gear=readJson("../data/gear.json");
 const catalog=readJson("../data/audited-products.json");
 
 const suspendedRod=readJson("../data/product-seeds/choi-shimano-complete.json").suspended===true;
+const suspendedSabikiRod=readJson("../data/product-seeds/sabiki-shimano-complete.json").suspended===true;
 const dimensions={
   party:["solo","pair","family_child","group"],
   fun:["easy_catch","cast_wait","choose_for_me"],
@@ -58,7 +59,7 @@ for(const profile of ownedProfiles){
     item.state!=="covered_by_product"
   );
 
-  const suspendedHole=suspendedRod&&plan.methodId==="choi_nage"&&budget!=="low"&&!input.owned?.includes("rod_reel");
+  const suspendedHole=((suspendedRod&&plan.methodId==="choi_nage")||(suspendedSabikiRod&&plan.methodId==="sabiki"))&&budget!=="low"&&!input.owned?.includes("rod_reel");
   const unexpected=unresolved.filter(x=>!(suspendedHole&&x.id==="rod_reel"));
   if(unexpected.length){
     failures.push({
@@ -110,4 +111,4 @@ if(failures.length){
   process.exit(1);
 }
 
-console.log("FISHING scenarios pass safety/coverage gates; known suspended choi-nage rod hole remains for balanced/long_term.");
+console.log("FISHING scenarios pass safety/coverage gates; known suspended sabiki/choi-nage rod holes remain for balanced/long_term.");

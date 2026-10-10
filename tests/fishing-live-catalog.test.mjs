@@ -43,17 +43,17 @@ test("balanced choi-nage reports missing rod set after the broken listing is sus
   assert.equal(r.products.selected.some(p=>p.productId==="choi-shimano-complete-500527"),false);
 });
 
-test("low-mess sabiki uses the Ami Hime already included in the verified complete bundle",()=>{
+test("low-mess sabiki preserves separate Ami Hime and reports the sold-out rod set",()=>{
   const r=run({
     party:"family_child",fun:"easy_catch",bait:"low_mess",take_home:"yes",
     carry:"normal",budget:"balanced",owned:[]
   });
   assert.equal(r.plan.methodId,"sabiki");
-  assert.deepEqual(r.products.unresolvedCategoryIds,[]);
-  const complete=r.products.selected.find(p=>p.productId==="sabiki-shimano-complete-500528");
-  assert.ok(complete);
-  assert.equal(complete.effectiveCoverCategoryIds.includes("bait"),true);
-  assert.equal(r.products.selected.filter(p=>p.categoryId==="bait").length,0);
+  assert.deepEqual(r.products.unresolvedCategoryIds,["rod_reel"]);
+  assert.equal(r.products.selected.some(p=>p.productId==="sabiki-shimano-complete-500528"),false);
+  const bait=r.products.selected.find(p=>p.categoryId==="bait");
+  assert.ok(bait);
+  assert.ok(bait.preferenceTags.includes("low_mess"));
 });
 
 test("no-worm choi-nage preserves artificial bait and reports the unavailable rod",()=>{
