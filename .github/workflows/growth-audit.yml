@@ -28,7 +28,7 @@ jobs:
           npm test
           node scripts/growth-audit.mjs
           node car-stay/scripts/report_coverage.mjs browser-proof/growth/car-coverage.json
-          node fishing/scripts/check_scenarios.mjs
+          node fishing/scripts/check_scenarios.mjs browser-proof/growth/fishing-coverage.json
       - name: Check direct item destinations without generating affiliate clicks
         if: github.event_name != 'pull_request'
         run: node scripts/growth-audit.mjs --network
@@ -53,3 +53,4 @@ jobs:
           name: growth-audit-proof
           path: browser-proof/
           retention-days: 30
+
