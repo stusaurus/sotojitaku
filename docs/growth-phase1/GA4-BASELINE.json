@@ -1,1 +1,51 @@
-{"propertyId":"558239521","source":"Windsor.ai googleanalytics4","dateFrom":"2026-10-04","dateTo":"2026-10-09","operatorExclusion":"not available in this connection; do not label as real visitors","daily":[{"date":"2026-10-09","sessions":2,"users":2,"screen_page_views":2}],"events":[{"page_path":"/sotojitaku/","event_name":"first_visit","event_count":2},{"page_path":"/sotojitaku/","event_name":"page_view","event_count":2},{"page_path":"/sotojitaku/","event_name":"session_start","event_count":2},{"page_path":"/sotojitaku/","event_name":"user_engagement","event_count":1}],"sources":[{"session_source_medium":"(direct) / (none)","sessions":2,"users":2}],"searchConsole":"SOTOJITAKU account absent in connected account inventory","revenue":"not retrieved"}
+{
+  "propertyId": "558239521",
+  "source": "Windsor.ai googleanalytics4",
+  "dateFrom": "2026-10-04",
+  "dateTo": "2026-10-09",
+  "operatorExclusion": "not available in this connection; do not label as real visitors",
+  "daily": [
+    {
+      "date": "2026-10-09",
+      "sessions": 2,
+      "users": 2,
+      "screen_page_views": 2
+    }
+  ],
+  "events": [
+    {
+      "page_path": "/sotojitaku/",
+      "event_name": "first_visit",
+      "event_count": 2
+    },
+    {
+      "page_path": "/sotojitaku/",
+      "event_name": "page_view",
+      "event_count": 2
+    },
+    {
+      "page_path": "/sotojitaku/",
+      "event_name": "session_start",
+      "event_count": 2
+    },
+    {
+      "page_path": "/sotojitaku/",
+      "event_name": "user_engagement",
+      "event_count": 1
+    }
+  ],
+  "sources": [
+    {
+      "session_source_medium": "(direct) / (none)",
+      "sessions": 2,
+      "users": 2
+    }
+  ],
+  "searchConsole": "SOTOJITAKU account absent in connected account inventory",
+  "revenue": "not retrieved",
+  "stream": {
+    "measurement_id": "G-6STQ5HXRDH",
+    "stream_name": "SOTOJITAKU",
+    "sessions": 2
+  }
+}

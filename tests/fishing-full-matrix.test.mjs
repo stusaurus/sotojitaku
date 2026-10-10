@@ -8,6 +8,7 @@ const plans=JSON.parse(fs.readFileSync(new URL("../fishing/data/plans.json",impo
 const gear=JSON.parse(fs.readFileSync(new URL("../fishing/data/gear.json",import.meta.url)));
 const catalog=JSON.parse(fs.readFileSync(new URL("../fishing/data/audited-products.json",import.meta.url)));
 
+const suspendedRod=JSON.parse(fs.readFileSync(new URL("../fishing/data/product-seeds/choi-shimano-complete.json",import.meta.url))).suspended===true;
 const parties=["solo","pair","family_child","group"];
 const funs=["easy_catch","cast_wait","choose_for_me"];
 const baits=["okay","no_worm","low_mess"];
@@ -35,7 +36,7 @@ test("all first-trip gaps have verified coverage or the explicitly suspended rod
               const missing=covered.filter(
                 x=>x.priority==="required"&&x.monetizable&&x.state==="needed"
               );
-              const expectedHole=plan.methodId==="choi_nage"&&budget!=="low";
+              const expectedHole=suspendedRod&&plan.methodId==="choi_nage"&&budget!=="low";
               assert.deepEqual(missing.map(x=>x.id),expectedHole?["rod_reel"]:[],JSON.stringify(input));
               assert.equal(result.selected.some(p=>p.productId==="choi-shimano-complete-500527"),false);
               if(missing.length&&!expectedHole){
