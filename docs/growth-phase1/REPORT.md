@@ -1,5 +1,18 @@
 # SOTOJITAKU 集客・収益化 第1弾監査（2026-10-10）
 
+## 3サービスのGA4実受信追記（2026-10-10 17時台 JST）
+
+前項のCAMPに続き、CAR STAYをN-BOX JF5/JF6・ひとり・寝るだけ・RVパーク・最低15/最高22°Cという仮のテスト条件で、FISHINGをひとり・サビキ・虫エサなし・持ち帰らない・低予算・手持ちなしで操作した。実際の旅行条件や一般利用者の行動ではない。
+
+- 共通 journey_start 3、journey_complete 3、result_view 3、journey_step_view 19、journey_step_complete 19の着信を確認。ステップ数はCAMP7＋CAR STAY5＋FISHING7。イベント合計から一般利用者の完了率を算出しない。
+- CAR STAYの carstay_start 1、carstay_step_view/complete 各5、builder_completed 1を確認。
+- FISHINGの fishing_diagnosis_start/complete 各1、fishing_product_view 6、fishing_plan_saved 1、fishing_plan_share 1、共通 plan_share 1を確認。plan_saveはCAMPと合わせ2。共有ボタンは共有準備の操作であり、他者へ送信したことの証明ではない。ツールで他者へ送信していない。
+- product_viewの集計12はCAMPカテゴリ1＋CAR STAY商品5＋FISHING商品6という異なる単位。人数や商品確認セッション12と扱わない。
+- 3サービスで楽天ボタンを各1回テスト。affiliate_click 3のパラメータ service_id を開き、camp 1 / car_stay 1 / fishing 1を確認。operator_testは値1が3件。すべて運営者テストとして除外する。楽天側にも各1回のテスト遷移が発生し、クリック・成約成果として利用実績に含めない。
+- 全イベントのパラメータを個別監査したわけではない。サービス別の順序付き探索・カスタム定義の通常レポート反映・運営者を除いた実利用ファネルは未確認。自動GA4受信監視が完成したとは主張しない。
+- CAR STAYの「まだ試していない／商品はまだ出しません」と段差候補の表示が不一致。engineでは車種の確認済み段差C/D、または本人のnoticeable/largeのいずれかで対策対象となる既存仕様だった。安全判定・推薦順位・商品を維持し、未試行の説明と結果説明だけを実際の仕様に合わせる修正を別PRに準備。公開はこの修正の承認後。
+- Search Console sitemap/URL検査、楽天確定報酬、不足するFISHING竿候補は残課題。通常集計の除外確認が残るため、効果測定のD0はまだ確定しない。
+
 ## GA4管理画面・実受信確認の追記（2026-10-10 17時台 JST）
 
 SOTOJITAKU（プロパティ558239521）の管理画面へログインできた。初回の認証結果をユーザーの見送りと説明したが、理由を判断できない結果だったため訂正し、再認証後の対象プロパティ表示で成功を確認した。
