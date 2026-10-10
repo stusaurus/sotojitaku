@@ -5,16 +5,16 @@ const base=(process.env.BRAND_BASE||'http://127.0.0.1:4173/').replace(/\/?$/,'/'
 const browser=await chromium.launch({headless:true});
 const results=[];
 try{
- for(const width of [1440,768,390,320])for(const path of ['','camp/','car-stay/','fishing/']){
+ for(const width of [1440,768,390,360,320])for(const path of ['','camp/','car-stay/','fishing/']){
   const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});
   await context.route(/https:\/\/(www\.googletagmanager\.com|.*google-analytics\.com)\//,r=>r.fulfill({status:200,body:''}));
   const page=await context.newPage(),errors=[],bad=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().startsWith(base)&&r.status()>=400)bad.push(r.url())});
   await page.goto(base+path+'?test=1');
-  const img=page.locator('header .official-brand__symbol');await img.waitFor();
+  const img=page.locator('.home-main-header .official-brand__main:visible, header .official-brand__symbol:visible');await img.waitFor();
   await img.evaluate(async e=>{await e.decode()});
-  const state=await page.evaluate(()=>{const img=document.querySelector('header .official-brand__symbol');const r=img.getBoundingClientRect();const b=document.querySelector('header .brand').getBoundingClientRect();return {width:r.width,height:r.height,brandRight:b.right,overflow:document.documentElement.scrollWidth>innerWidth,logo:img.currentSrc,alt:img.alt,anchorName:document.querySelector('header .brand').getAttribute('aria-label')||document.querySelector('header .brand').textContent.trim(),nav:[...document.querySelectorAll('header nav a')].filter(e=>e.getBoundingClientRect().width).map(e=>({left:e.getBoundingClientRect().left,right:e.getBoundingClientRect().right}))}});
-  assert.equal(state.overflow,false,`overflow ${path} ${width}`);assert.equal(state.width,width>800?40:32);assert.equal(state.height,state.width);assert.equal(state.alt,'');assert.match(state.anchorName,/SOTOJITAKU/);
+  const state=await page.evaluate(()=>{const img=[...document.querySelectorAll('header .official-brand__main,header .official-brand__symbol')].find(e=>e.getClientRects().length);const r=img.getBoundingClientRect();const b=document.querySelector('header .brand').getBoundingClientRect();return {width:r.width,height:r.height,brandRight:b.right,overflow:document.documentElement.scrollWidth>innerWidth,logo:img.currentSrc,alt:img.alt,anchorName:document.querySelector('header .brand').getAttribute('aria-label')||document.querySelector('header .brand').textContent.trim(),nav:[...document.querySelectorAll('header nav a')].filter(e=>e.getBoundingClientRect().width).map(e=>({left:e.getBoundingClientRect().left,right:e.getBoundingClientRect().right}))}});
+  assert.equal(state.overflow,false,`overflow ${path} ${width}`);const usesMain=path===''&&width>=360;assert.equal(state.logo.endsWith(usesMain?'/main-horizontal-original-white.png':'/mini-64.png'),true);assert.ok(Math.abs(state.width-(usesMain?(width>800?220:Math.min(188,Math.max(160,width*.48))):(width>800?40:32)))<1);assert.ok(Math.abs(state.height-(usesMain?state.width*94/368:state.width))<1);assert.equal(state.alt,'');assert.match(state.anchorName,/SOTOJITAKU/);
   for(const nav of state.nav){assert.ok(nav.left>=state.brandRight,`brand overlaps navigation ${path} ${width}`);assert.ok(nav.right<=width,`navigation outside viewport ${path} ${width}`)}
   assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);
   if(path==='camp/'){

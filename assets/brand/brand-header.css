@@ -72,3 +72,19 @@ header .official-brand:focus-visible {
   .topbar { gap: 8px; padding-left: 16px; padding-right: 16px; }
   .topbar .family-nav { gap: 5px; font-size: 9px; letter-spacing: .04em; }
 }
+
+/* HOME uses the approved horizontal logo where the header has room for it. */
+.home-main-header .official-brand__main { display: none; }
+@media (min-width: 360px) {
+  .home-main-header .official-brand__mark {
+    display: block; width: 220px; height: auto; flex: 0 0 auto;
+    padding: 0; border-radius: 0; background: transparent;
+  }
+  .home-main-header .official-brand__symbol,
+  .home-main-header .official-brand__text { display: none; }
+  .home-main-header .official-brand__main { display: block; width: 220px; height: auto; }
+}
+@media (min-width: 360px) and (max-width: 800px) {
+  .home-main-header .official-brand__mark,
+  .home-main-header .official-brand__main { width: clamp(160px, 48vw, 188px); }
+}
