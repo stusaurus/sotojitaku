@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 import {selectPlan,buildGearChecklist} from "../engine.js";
 import {buildProductRecommendations,applyProductCoverage} from "../products.js";
 
@@ -25,6 +26,7 @@ const ownedProfiles=[
 ];
 
 const failures=[];
+const knownGaps=[];
 let scenarios=0;
 
 for(const party of dimensions.party)
@@ -60,6 +62,9 @@ for(const profile of ownedProfiles){
   );
 
   const suspendedHole=((suspendedRod&&plan.methodId==="choi_nage")||(suspendedSabikiRod&&plan.methodId==="sabiki"))&&budget!=="low"&&!input.owned?.includes("rod_reel");
+  if(suspendedHole&&unresolved.some(item=>item.id==="rod_reel")){
+    knownGaps.push({method:plan.methodId,budget,profile:profile.name,input,category:"rod_reel"});
+  }
   const unexpected=unresolved.filter(x=>!(suspendedHole&&x.id==="rod_reel"));
   if(unexpected.length){
     failures.push({
@@ -102,6 +107,35 @@ for(const profile of ownedProfiles){
 console.log("FISHING exhaustive scenarios:",scenarios);
 console.log("Verified products:",(catalog.products||[]).length);
 
+// Passing regression gates is not proof that every basket has a purchasable rod.
+// Record actual unresolved items, not just whether a seed remains suspended.
+const grouped=new Map();
+for(const gap of knownGaps){
+  const key=[gap.method,gap.budget,gap.category].join("/");
+  grouped.set(key,(grouped.get(key)||0)+1);
+}
+const coverage={
+  checkedAt:new Date().toISOString(),
+  scenarioCount:scenarios,
+  verifiedProductCount:(catalog.products||[]).length,
+  safetyAndUnexpectedCoveragePassed:failures.length===0,
+  coverageComplete:failures.length===0&&knownGaps.length===0,
+  knownGapOccurrences:knownGaps.length,
+  knownGaps:[...grouped].map(([key,scenarioOccurrences])=>({key,scenarioOccurrences})),
+  knownGapExamples:knownGaps.slice(0,12),
+  unexpectedFailureCount:failures.length,
+  unexpectedFailureExamples:failures.slice(0,30),
+  note:"Synthetic scenarios, not visitors or demand. Never reactivate stopped listings or relax suitability to fill gaps."
+};
+const output=process.argv[2];
+if(output){
+  fs.mkdirSync(path.dirname(output),{recursive:true});
+  fs.writeFileSync(output,JSON.stringify(coverage,null,2)+"\n");
+}
+if(knownGaps.length){
+  console.warn("::warning::FISHING known rod coverage gaps: "+knownGaps.length+"/"+scenarios+" synthetic scenarios. Coverage is incomplete; human product verification required.");
+}
+
 if(failures.length){
   console.error("FISHING scenario failures:",failures.length);
   for(const failure of failures.slice(0,30)){
@@ -111,4 +145,7 @@ if(failures.length){
   process.exit(1);
 }
 
-console.log("FISHING scenarios pass safety/coverage gates; known suspended sabiki/choi-nage rod holes remain for balanced/long_term.");
+console.log(coverage.coverageComplete
+  ?"FISHING scenarios pass safety/coverage gates; no unresolved required products."
+  :"FISHING scenarios pass safety/unexpected-coverage gates; known rod coverage gaps remain: "+knownGaps.length);
+

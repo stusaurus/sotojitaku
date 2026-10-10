@@ -1,0 +1,232 @@
+{
+  "classification": "cached_partial_operator_unsegmented_not_real_user_funnel",
+  "requestedOnJst": "2026-10-11",
+  "rows": [
+    {
+      "date": "2026-10-10",
+      "event_name": "page_view",
+      "page_path": "/sotojitaku/",
+      "event_count": 6,
+      "totalusers": 5,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "session_start",
+      "page_path": "/sotojitaku/",
+      "event_count": 5,
+      "totalusers": 5,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "first_visit",
+      "page_path": "/sotojitaku/",
+      "event_count": 4,
+      "totalusers": 4,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "user_engagement",
+      "page_path": "/sotojitaku/",
+      "event_count": 4,
+      "totalusers": 3,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "page_view",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 15,
+      "totalusers": 2,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "scroll",
+      "page_path": "/sotojitaku/",
+      "event_count": 2,
+      "totalusers": 2,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "service_select",
+      "page_path": "/sotojitaku/",
+      "event_count": 2,
+      "totalusers": 2,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "carstay_step_complete",
+      "page_path": "/sotojitaku/car-stay/",
+      "event_count": 3,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "carstay_step_view",
+      "page_path": "/sotojitaku/car-stay/",
+      "event_count": 3,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "click",
+      "page_path": "/sotojitaku/car-stay/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "click",
+      "page_path": "/sotojitaku/fishing/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "fishing_question_answer",
+      "page_path": "/sotojitaku/fishing/",
+      "event_count": 2,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "journey_start",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "journey_step_complete",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 6,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "journey_step_complete",
+      "page_path": "/sotojitaku/car-stay/",
+      "event_count": 3,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "journey_step_complete",
+      "page_path": "/sotojitaku/fishing/",
+      "event_count": 2,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "journey_step_view",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 7,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "journey_step_view",
+      "page_path": "/sotojitaku/car-stay/",
+      "event_count": 3,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "journey_step_view",
+      "page_path": "/sotojitaku/fishing/",
+      "event_count": 2,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "plan_save",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "product_view",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "question_complete",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 6,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "scroll",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "simulator_start",
+      "page_path": "/sotojitaku/camp/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "trip_style_selected",
+      "page_path": "/sotojitaku/car-stay/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    },
+    {
+      "date": "2026-10-10",
+      "event_name": "vehicle_selected",
+      "page_path": "/sotojitaku/car-stay/",
+      "event_count": 1,
+      "totalusers": 1,
+      "data_fetched_at": "2026-10-10T09:34:10"
+    }
+  ],
+  "searchQueryRows": [
+    {
+      "page": "https://stusaurus.github.io/sotojitaku/",
+      "query": "site:github.io",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 16,
+      "data_fetched_at": "2026-10-10T15:14:32"
+    }
+  ],
+  "sitemapResponse": [],
+  "notes": [
+    "No conversion rates calculated",
+    "Missing rows are not zero events",
+    "Sitemap empty response is inconclusive"
+  ]
+}
+
