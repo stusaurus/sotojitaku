@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {recommend} from '../products.js';
 import {DEFAULT} from '../engine.js';
+import {recommendations as carRecommendations} from '../car-stay/products.js';
 import {selectPlan,buildGearChecklist} from '../fishing/engine.js';
 import {buildProductRecommendations} from '../fishing/products.js';
 const root=path.resolve(import.meta.dirname,'..');
@@ -78,6 +79,22 @@ for(const category of equipment.categories){
  if(missing.length)warnings.push('camp/'+category.id+': '+missing.length+'/'+n+' contexts have no eligible offer (fail-closed; never fill with mismatched goods)');
  if(multi>=20&&share>.9)warnings.push('camp/'+category.id+': same model ranks first in '+Math.round(share*100)+'% of multi-choice contexts; review fit scores');
 }
+const carProducts=json('car-stay/data/audited-products.json').products,vehicles=json('car-stay/data/vehicles.json').vehicles;
+for(const gap of ['privacy_full','floor_step','sleep_surface']){
+ const choices={},multiChoices={};let scenarios=0,multi=0;
+ for(const v of vehicles){
+  const configs=v.config?.validConfigs||((v.config?.seatCounts||[null]).flatMap(seatCount=>(v.config?.trims||[null]).map(trim=>({...(seatCount?{seatCount}:{}),...(trim?{trim}:{})}))));
+  for(const config of configs){
+   scenarios++;const recs=carRecommendations(carProducts,{gaps:[{id:gap}],vehicleId:v.vehicleId,config,status:'ALMOST_READY',now:Date.now(),allowUpgrades:false})[gap]||[];
+   if(!recs.length)continue;
+   choices[recs[0].productId]=(choices[recs[0].productId]||0)+1;
+   if(recs.length>1){multi++;multiChoices[recs[0].productId]=(multiChoices[recs[0].productId]||0)+1}
+  }
+ }
+ const dominant=Object.entries(multiChoices).sort((a,b)=>b[1]-a[1])[0],share=multi&&dominant?dominant[1]/multi:0;
+ bias.push({service:'car_stay',gap,scenarios,firstChoices:choices,multiChoiceScenarios:multi,dominantShare:share});
+ if(multi>=10&&share>.9)warnings.push('car_stay/'+gap+': one product dominates multi-choice contexts; inspect verified fit before changing order');
+}
 const fishingCatalog=json('fishing/data/audited-products.json').products,plans=json('fishing/data/plans.json'),gear=json('fishing/data/gear.json');
 const counts={};let fishN=0;
 for(const party of ['solo','pair','family_child','group'])for(const fun of ['easy_catch','cast_wait','choose_for_me'])for(const bait of ['okay','no_worm','low_mess'])for(const budget of ['low','balanced','long_term']){
@@ -96,5 +113,5 @@ if(process.argv.includes('--network')){
   else if(r.status!==200)warnings.push('item health inconclusive: HTTP '+r.status+' '+url);
  }catch(e){links.push({url,status:'inconclusive',error:e.message});warnings.push('item health inconclusive: '+url)}}}));
 }
-const out=process.env.GROWTH_AUDIT_OUT||'browser-proof/growth/audit.json';fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify(report,null,2));
+const out=process.env.GROWTH_AUDIT_OUT||(process.argv.includes('--network')?'browser-proof/growth/network-audit.json':'browser-proof/growth/audit.json');fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify(report,null,2));
 console.log(JSON.stringify({catalogs,seoPages:urls.length,errors,warnings,report:out},null,2));if(errors.length)process.exitCode=1;
