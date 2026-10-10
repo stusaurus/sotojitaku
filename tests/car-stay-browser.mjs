@@ -5,9 +5,9 @@ const base=process.env.CAR_STAY_BASE||'http://127.0.0.1:4173/car-stay/';
 const browser=await chromium.launch({headless:true});
 await fs.mkdir('browser-proof/car-stay',{recursive:true});
 const seed={version:1,step:5,vehicleId:'honda-nvan-jj1-jj2',config:{},people:[{type:'adult',height:171}],tripStyle:'sleep_only',date:'2026-10-17',region:'山梨県',placeType:'rv_park',weather:{status:'known',minC:12,maxC:20},ownedGear:['blanket','privacy_full'],devices:[],powerUse:{},floorObservation:'flat',measurements:{lengthMm:2300,widthMm:1200},sleepEngineOn:false,openFlameInside:false};
-for(const width of [1440,760,430,390,320]){
+for(const width of (process.env.CAR_STAY_WIDTHS?process.env.CAR_STAY_WIDTHS.split(',').map(Number):[1440,1024,768,760,430,390,375,320])){
  const context=await browser.newContext({viewport:{width,height:width>760?960:844}});
- await context.route('**/*',route=>/googletagmanager|google-analytics/.test(route.request().url())?route.fulfill({status:200,body:''}):route.continue());
+ await context.route('**/*',route=>/googletagmanager|google-analytics/.test(route.request().url())?route.fulfill({status:200,body:''}):route.fallback());
  await context.addInitScript(()=>{window.dataLayer=[];window.gtag=(...x)=>window.dataLayer.push(x);});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base+'?test=1');await page.locator('#startBtn:enabled').waitFor();

@@ -2,6 +2,7 @@ import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const browser=await chromium.launch({headless:true});
+const base=process.env.FISHING_BASE||'http://127.0.0.1:4173/fishing/';
 fs.mkdirSync('browser-proof',{recursive:true});
 const scenarios=[
  {name:'solo',values:['solo','easy_catch','okay','no','compact','low'],owned:[]},
@@ -11,13 +12,13 @@ const scenarios=[
 ];
 let count=0;
 try{
- for(const width of [320,390,1440]){
+ for(const width of (process.env.FISHING_WIDTHS?process.env.FISHING_WIDTHS.split(',').map(Number):[1440,1024,768,390,375,320])){
   for(const scenario of scenarios){
    const context=await browser.newContext({viewport:{width,height:844},reducedMotion:'reduce',permissions:['clipboard-read','clipboard-write']});
    const page=await context.newPage();const errors=[];
    page.on('pageerror',e=>errors.push(e.message));
    await page.route('https://www.googletagmanager.com/**',r=>r.fulfill({status:200,body:''}));
-   await page.goto('http://127.0.0.1:4173/fishing/');
+   await page.goto(base+'?test=1');
    await page.locator('#startBtn:not([disabled])').waitFor();
    const noOverflow=async()=>assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${width}/${scenario.name}: overflow`);
    await noOverflow();
@@ -68,9 +69,9 @@ try{
    }
    await page.locator('#shareBtn').click();
    const shared=await page.evaluate(()=>navigator.clipboard.readText());assert.match(shared,/#plan=/);
-   await page.goto(shared);await page.locator('.result-hero').waitFor();await noOverflow();
+   await page.goto('about:blank');await page.goto(shared);await page.locator('.result-hero').waitFor();await noOverflow();
    await page.locator('#saveBtn').click();assert.match(await page.locator('#saveBtn').innerText(),/保存しました/);
-   await page.goto('http://127.0.0.1:4173/fishing/');await page.locator('#savedBtn').click();await page.locator('.result-hero').waitFor();
+   await page.goto(base+'?test=1');await page.locator('#savedBtn').click();await page.locator('.result-hero').waitFor();
    await page.locator('#againBtn').click();assert.match(await page.locator('#panel h2').innerText(),/だれと/);
    assert.equal(await page.locator('.result-hero').count(),0);await noOverflow();
    assert.deepEqual(errors,[]);count++;console.log(`PASS ${width}px ${scenario.name}`);await context.close();
