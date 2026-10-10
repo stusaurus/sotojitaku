@@ -6,7 +6,7 @@ const fs=require('node:fs');
  const base=process.env.HOME_BASE||'http://127.0.0.1:4173/';
  fs.mkdirSync('browser-proof/home',{recursive:true});
  const results=[];
- try{for(const width of [1440,1280,1024,390,375,360]){
+ try{for(const width of [1440,1024,768,390,375,320]){
   const context=await browser.newContext({viewport:{width,height:844},deviceScaleFactor:width<800?3:1,isMobile:width<800,hasTouch:width<800,reducedMotion:'reduce'});
   const page=await context.newPage();const errors=[],bad=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
@@ -25,12 +25,14 @@ const fs=require('node:fs');
   assert(proof.image.src.includes(width<=800?'mobile':'desktop'));
   for(let i=0;i<3;i++){let w=proof.worlds[i];assert.equal(w.radius,'0px');assert(w.copy.x>=w.r.x&&w.copy.x+w.copy.w<=w.r.x+w.r.w+1);assert(w.copy.y>=w.r.y&&w.copy.b<=w.r.b+1);if(i>0){let prev=proof.worlds[i-1].r;assert(Math.abs(width<=800?w.r.y-prev.b:w.r.x-(prev.x+prev.w))<.1,'gap at boundary')}}
   await page.screenshot({path:`browser-proof/home/${width}.png`,fullPage:true});
-  for(const [service,path] of [['camp','camp/'],['car_stay','car-stay/'],['fishing','fishing/']]){
+  for(const placement of ['world','header'])for(const [service,path] of [['camp','camp/'],['car_stay','car-stay/'],['fishing','fishing/']]){
    // Capture the synchronous analytics queue without preventing real navigation.
    await page.evaluate(()=>{window.__events=[];const original=window.gtag;window.gtag=function(){window.__events.push(Array.from(arguments));original.apply(this,arguments)};window.addEventListener('pagehide',()=>sessionStorage.setItem('home-qa-events',JSON.stringify(window.__events)))});
-   await page.locator(`.world[data-service="${service}"]`).click();await page.waitForURL(new URL(path,base).href);await page.goBack({waitUntil:'networkidle'});
+   if(placement==='header' && width<=800)await page.locator('[data-brand-menu] summary').click();
+   const selector=placement==='world'?`.world[data-service="${service}"]`:`header ${width<=800?'[data-brand-menu]':'.brand-service-nav'} [data-service="${service}"]`;
+   await page.locator(selector).click();await page.waitForURL(new URL(path,base).href);await page.goBack({waitUntil:'networkidle'});
    const events=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('home-qa-events')||'[]'));
-   assert(events.some(e=>e[0]==='event'&&e[1]==='service_select'&&e[2].service===service),'missing event '+service);
+   assert(events.some(e=>e[0]==='event'&&e[1]==='service_select'&&e[2].service===service),'missing event '+placement+' '+service);
   }
   assert.deepEqual(bad,[]);assert.deepEqual(errors,[]);results.push({width,pass:true,image:proof.image.src});await context.close();
  }

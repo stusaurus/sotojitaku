@@ -10,22 +10,35 @@
   <meta property="og:description" content="いつものクルマを、今夜泊まれる小さな宿に。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://stusaurus.github.io/sotojitaku/car-stay/">
+  <meta property="og:image" content="https://stusaurus.github.io/sotojitaku/car-stay/assets/cabin-dusk.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#111923">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css?v=carstay-final-1">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6STQ5HXRDH"></script>
   <script>try{window['ga-disable-G-6STQ5HXRDH']=localStorage.getItem('sotojitaku_analytics_optout')==='1'}catch{}window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-6STQ5HXRDH',{site_id:'sotojitaku_car_stay',send_page_view:true});</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"SOTOJITAKU CAR STAY","url":"https://stusaurus.github.io/sotojitaku/car-stay/","applicationCategory":"TravelApplication","operatingSystem":"Web","description":"初心者向け車中泊準備ビルダー"}</script>
-<link rel="stylesheet" href="../assets/brand/brand-header.css?v=approved-20261010">
+<link rel="stylesheet" href="../assets/brand/brand-header.css?v=integration-20261010">
+<script defer src="../assets/brand/brand-navigation.js?v=integration-20261010"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へ</a>
-  <header class="site-header">
+  <header class="site-header brand-shell">
     <a class="brand official-brand" href="../" aria-label="SOTOJITAKU HOMEへ"><span class="official-brand__mark" aria-hidden="true"><img class="official-brand__symbol" src="../assets/brand/sotojitaku/mini-64.png" srcset="../assets/brand/sotojitaku/mini-64.png 1x, ../assets/brand/sotojitaku/mini-128.png 2x" alt="" width="40" height="40" decoding="async"></span><span class="official-brand__text"><span class="official-brand__name">SOTOJITAKU</span><small class="official-brand__service">CAR STAY</small></span></a>
-    <button id="resetTop" class="ghost tiny" type="button" hidden>最初から</button>
+    <nav class="brand-service-nav" aria-label="SOTOJITAKU サービス">
+      <a href="../">HOME</a><a href="../camp/">CAMP</a><a href="./" aria-current="page">CAR STAY</a><a href="../fishing/">FISHING</a>
+    </nav>
+    <details class="brand-mobile-menu" data-brand-menu>
+      <summary>サービス</summary>
+      <nav aria-label="SOTOJITAKU サービス">
+        <a href="../">HOME｜休日を選ぶ</a><a href="../camp/">CAMP｜キャンプ</a><a href="./" aria-current="page">CAR STAY｜車中泊</a><a href="../fishing/">FISHING｜釣り</a>
+      </nav>
+    </details>
+    <button id="resetTop" class="ghost tiny brand-reset" type="button" hidden>最初から</button>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <section id="hero" class="hero">
       <div class="hero-copy">
         <p class="eyebrow">QUIET ROAD TRIP · TINY CABIN</p>
