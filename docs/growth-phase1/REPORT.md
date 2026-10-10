@@ -1,5 +1,39 @@
 # SOTOJITAKU 集客・収益化 第1弾監査（2026-10-10）
 
+## Search Console画面による登録・サイトマップ監査（2026-10-10 17時台 JST）
+
+対象プロパティを https://stusaurus.github.io/sotojitaku/ に切り替えてURL検査を実施。以下はSearch Console画面の実測状態であり、検索結果を推測した値ではない。
+
+| ページ | Google登録状態 | クロール・今回の操作 |
+| --- | --- | --- |
+| HOME | 登録済み | 最終クロール表示 Oct 4, 2026, 8:13:12 PM（UI時刻、タイムゾーン未確認）。Googlebot smartphone、取得成功、クロール・登録許可あり、宣言・選択canonicalとも自身。参照サイトマップ未検出。 |
+| CAMP | 未登録・Googleに未認識 | クロール履歴なし。ライブテストは17:44 UI表示で「URL is available to Google」「Page can be indexed」。登録リクエストは「Indexing requested」で受付成功。登録完了を意味しない。 |
+| CAR STAY | 未登録・Googleに未認識 | クロール履歴なし。登録リクエストの取得可否検査後「We had a problem submitting your indexing request. Please try again later.」。受付失敗、原因未特定。取得拒否やrobots問題と断定しない。 |
+| FISHING | 未登録・Googleに未認識 | クロール履歴なし。登録リクエストでCAR STAYと同じ送信エラー。受付失敗、原因未特定。 |
+
+サイトマップ：
+- 10月4日送信分は「Couldn't fetch」、Type Unknown、発見ページ0。詳細のLast readは10/4/26。
+- 「Open Sitemap」で開いた実URLは https://stusaurus.github.io/sotojitaku/sitemap.xml 。XMLはブラウザで閲覧でき、正しいsitemap名前空間・50URL・主要4ページを確認。URLの二重パスはなかった。ブラウザでの取得成功はGoogleの取得成功の証明ではない。
+- 同じ正しいURLを一度再送信し、「Sitemap submitted successfully」を確認。送信日がOct 10, 2026へ更新したが、直後のテーブルはまだ「Couldn't fetch」・0件。受付成功と取得・インデックス成功を区別する。
+- 受付画面の証跡は sotojitaku-sitemap-submitted-20261010.jpg として保存。
+
+現時点の優先課題は3サービスの検索登録とサイトマップ取得。title変更等で成果が出たとは断定しない。次回は取得ステータス・発見ページ数・3サービスの登録状態を再確認し、CAR STAY/FISHINGの送信エラーは日を変えて一度確認する。サイトマップを繰り返し送信したり、原因未確認のURL・robots変更をしない。
+
+PR #259の実装head 22a69ba80b8bd21ec65e5fca66209c503915868a は audit / public-browser / brand-preview / verify / public-http の5チェック成功。説明文のみの変更で、既存診断・安全・推薦判定は維持。公開は承認待ち。
+
+## 3サービスのGA4実受信追記（2026-10-10 17時台 JST）
+
+前項のCAMPに続き、CAR STAYをN-BOX JF5/JF6・ひとり・寝るだけ・RVパーク・最低15/最高22°Cという仮のテスト条件で、FISHINGをひとり・サビキ・虫エサなし・持ち帰らない・低予算・手持ちなしで操作した。実際の旅行条件や一般利用者の行動ではない。
+
+- 共通 journey_start 3、journey_complete 3、result_view 3、journey_step_view 19、journey_step_complete 19の着信を確認。ステップ数はCAMP7＋CAR STAY5＋FISHING7。イベント合計から一般利用者の完了率を算出しない。
+- CAR STAYの carstay_start 1、carstay_step_view/complete 各5、builder_completed 1を確認。
+- FISHINGの fishing_diagnosis_start/complete 各1、fishing_product_view 6、fishing_plan_saved 1、fishing_plan_share 1、共通 plan_share 1を確認。plan_saveはCAMPと合わせ2。共有ボタンは共有準備の操作であり、他者へ送信したことの証明ではない。ツールで他者へ送信していない。
+- product_viewの集計12はCAMPカテゴリ1＋CAR STAY商品5＋FISHING商品6という異なる単位。人数や商品確認セッション12と扱わない。
+- 3サービスで楽天ボタンを各1回テスト。affiliate_click 3のパラメータ service_id を開き、camp 1 / car_stay 1 / fishing 1を確認。operator_testは値1が3件。すべて運営者テストとして除外する。楽天側にも各1回のテスト遷移が発生し、クリック・成約成果として利用実績に含めない。
+- 全イベントのパラメータを個別監査したわけではない。サービス別の順序付き探索・カスタム定義の通常レポート反映・運営者を除いた実利用ファネルは未確認。自動GA4受信監視が完成したとは主張しない。
+- CAR STAYの「まだ試していない／商品はまだ出しません」と段差候補の表示が不一致。engineでは車種の確認済み段差C/D、または本人のnoticeable/largeのいずれかで対策対象となる既存仕様だった。安全判定・推薦順位・商品を維持し、未試行の説明と結果説明だけを実際の仕様に合わせる修正を別PRに準備。公開はこの修正の承認後。
+- Search Console sitemap/URL検査、楽天確定報酬、不足するFISHING竿候補は残課題。通常集計の除外確認が残るため、効果測定のD0はまだ確定しない。
+
 ## GA4管理画面・実受信確認の追記（2026-10-10 17時台 JST）
 
 SOTOJITAKU（プロパティ558239521）の管理画面へログインできた。初回の認証結果をユーザーの見送りと説明したが、理由を判断できない結果だったため訂正し、再認証後の対象プロパティ表示で成功を確認した。
