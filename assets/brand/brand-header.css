@@ -1,0 +1,74 @@
+/* Approved raster mini mark. Shared across HOME, CAMP, CAR STAY and FISHING. */
+header .official-brand {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-height: 48px;
+  text-decoration: none;
+}
+header .official-brand__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  padding: 4px;
+  background: #F5F1E8;
+  border-radius: 12px;
+}
+header .official-brand__symbol {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  object-fit: contain;
+}
+header .official-brand__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  line-height: 1.25;
+}
+header .official-brand__name {
+  font-family: "Noto Serif JP", Georgia, serif;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+header .official-brand__service {
+  display: block;
+  margin: 0;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .25em;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+}
+header .official-brand:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+}
+@media (max-width: 800px) {
+  header .official-brand { gap: 8px; }
+  header .official-brand__mark {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 10px;
+  }
+  header .official-brand__symbol { width: 32px; height: 32px; }
+  header .official-brand__name { font-size: 14px; letter-spacing: .08em; }
+  header .official-brand__service { font-size: 8px; letter-spacing: .22em; }
+}
+@media (max-width: 359px) {
+  header .official-brand__name { font-size: 12px; letter-spacing: .06em; }
+  .topbar { gap: 8px; padding-left: 16px; padding-right: 16px; }
+  .topbar .family-nav { gap: 5px; font-size: 9px; letter-spacing: .04em; }
+}
