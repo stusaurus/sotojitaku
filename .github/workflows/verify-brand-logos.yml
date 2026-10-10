@@ -8,6 +8,10 @@ on:
       - 'fishing/index.html'
       - 'assets/brand/**'
       - 'tests/brand-header-browser.mjs'
+      - 'tests/car-stay-browser.mjs'
+      - 'tests/fishing-browser.mjs'
+      - 'tests/home-browser.cjs'
+      - 'tests/brand-integration.test.mjs'
       - '.github/workflows/verify-brand-logos.yml'
 permissions:
   contents: read
@@ -21,6 +25,8 @@ jobs:
           node-version: 22
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
+      - run: npm run check && npm test
+      - run: node --check assets/brand/brand-navigation.js
       - name: Serve under GitHub Pages subpath and check headers
         run: |
           mkdir -p /tmp/brand-preview
@@ -33,8 +39,13 @@ jobs:
             sleep 1
           done
           BRAND_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/brand-header-browser.mjs
+          HOME_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/home-browser.cjs
+          for width in 1440 1024 768 390 375 320; do
+            CAR_STAY_BASE=http://127.0.0.1:4173/sotojitaku/car-stay/ CAR_STAY_WIDTHS=$width node tests/car-stay-browser.mjs
+            FISHING_BASE=http://127.0.0.1:4173/sotojitaku/fishing/ FISHING_WIDTHS=$width node tests/fishing-browser.mjs
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: approved-brand-check-results
-          path: browser-proof/brand/
+          path: browser-proof/

@@ -73,18 +73,59 @@ header .official-brand:focus-visible {
   .topbar .family-nav { gap: 5px; font-size: 9px; letter-spacing: .04em; }
 }
 
-/* HOME uses the approved horizontal logo where the header has room for it. */
-.home-main-header .official-brand__main { display: none; }
-@media (min-width: 360px) {
-  .home-main-header .official-brand__mark {
-    display: block; width: 220px; height: auto; flex: 0 0 auto;
-    padding: 0; border-radius: 0; background: transparent;
-  }
-  .home-main-header .official-brand__symbol,
-  .home-main-header .official-brand__text { display: none; }
-  .home-main-header .official-brand__main { display: block; width: 220px; height: auto; }
+/* Presentation only: the approved artwork, including its white canvas, is unchanged. */
+.skip-link { position: fixed; top: -80px; left: 12px; z-index: 100; background: #FFFFFF; color: #20362c; padding: 12px 16px; }
+.skip-link:focus { top: 10px; }
+header.brand-shell { height: 80px; padding: 0 clamp(24px, 3vw, 40px); gap: 12px; }
+.home-main-header .official-brand__mark {
+  display: block; width: auto; height: auto; flex: 0 0 auto;
+  padding: 6px; border-radius: 12px; background: #FFFFFF;
 }
-@media (min-width: 360px) and (max-width: 800px) {
-  .home-main-header .official-brand__mark,
-  .home-main-header .official-brand__main { width: clamp(160px, 48vw, 188px); }
+.home-main-header .official-brand__main { display: block; width: 240px; height: auto; }
+header .brand-service-nav { display: flex; align-items: center; gap: 8px; padding: 0 6px; border-radius: 12px; background: #13231ccc; pointer-events: auto; }
+header .brand-service-nav a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 10px; font-size: 12px; line-height: 1.5;
+  letter-spacing: .08em; color: inherit; text-decoration: none; white-space: nowrap; opacity: 1;
+}
+header .brand-service-nav a:hover,
+header .brand-service-nav a[aria-current] { text-decoration: underline; text-underline-offset: 6px; }
+header .brand-mobile-menu { display: none; position: relative; flex: 0 0 auto; pointer-events: auto; }
+header .brand-mobile-menu summary {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  min-width: 80px; min-height: 44px; padding: 0 10px;
+  border: 1px solid #ffffff70; border-radius: 10px; background: #13231ccc;
+  color: #FFFFFF; font: inherit; font-size: 12px; font-weight: 500; line-height: 1.5; cursor: pointer;
+  list-style: none; white-space: nowrap;
+}
+header .brand-mobile-menu summary::-webkit-details-marker { display: none; }
+header .brand-mobile-menu summary::after { content: "⌄"; font-size: 15px; }
+header .brand-mobile-menu[open] summary::after { content: "⌃"; }
+header .brand-mobile-menu nav {
+  position: absolute; top: calc(100% + 8px); right: 0; display: grid; gap: 0;
+  width: min(224px, calc(100vw - 32px)); padding: 8px;
+  border: 1px solid #ffffff30; border-radius: 14px; background: #13231cf5;
+  box-shadow: 0 12px 32px #07100b40; color: #FFFFFF;
+}
+header .brand-mobile-menu:not([open]) nav { display: none; }
+header .brand-mobile-menu nav a {
+  display: flex; align-items: center; min-height: 48px; padding: 0 14px;
+  color: inherit; font-size: 13px; line-height: 1.5; letter-spacing: .06em;
+  text-decoration: none; white-space: nowrap; opacity: 1; border-radius: 8px;
+}
+header .brand-mobile-menu nav a:hover,
+header .brand-mobile-menu nav a[aria-current] { background: #ffffff18; }
+header .brand-service-nav a:focus-visible,
+header .brand-mobile-menu summary:focus-visible,
+header .brand-mobile-menu a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+header.brand-shell:not(.dark) .menu-toggle { background: #13231ccc; border: 1px solid #ffffff70; border-radius: 10px; }
+header.brand-shell:not(.dark) .official-brand__text { text-shadow: 0 1px 4px #07180be0, 0 0 12px #07180b70; }
+/* A diagnosis keeps its existing restart control; no extra service menu competes with it. */
+.brand-shell:has(.brand-reset:not([hidden])) .brand-service-nav,
+.brand-shell:has(.brand-reset:not([hidden])) .brand-mobile-menu { display: none; }
+@media (max-width: 800px) {
+  header.brand-shell { height: 72px; padding: 0 16px; gap: 8px; }
+  .home-main-header .official-brand__main { width: clamp(174px, 48vw, 196px); }
+  header .brand-service-nav { display: none; }
+  header .brand-mobile-menu { display: block; }
 }

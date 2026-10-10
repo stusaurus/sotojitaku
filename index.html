@@ -26,20 +26,29 @@
     gtag('config','G-6STQ5HXRDH',{site_id:'sotojitaku_home',operator_test:window.SOTOJITAKU_ANALYTICS.operatorTest?'1':'0',send_page_view:true});
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SOTOJITAKU","url":"https://stusaurus.github.io/sotojitaku/","description":"外遊び初心者のための支度サービス。CAMP、CAR STAY、FISHINGを提供。","inLanguage":"ja"}</script>
-<link rel="stylesheet" href="assets/brand/brand-header.css?v=home-main-logo-20261010">
+<link rel="stylesheet" href="assets/brand/brand-header.css?v=integration-20261010">
+<script defer src="assets/brand/brand-navigation.js?v=integration-20261010"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へ</a>
-  <header class="site-header home-main-header">
-    <a class="brand official-brand" href="./" aria-label="SOTOJITAKU ホーム"><span class="official-brand__mark" aria-hidden="true"><img class="official-brand__symbol" src="assets/brand/sotojitaku/mini-64.png" srcset="assets/brand/sotojitaku/mini-64.png 1x, assets/brand/sotojitaku/mini-128.png 2x" alt="" width="40" height="40" decoding="async"><img class="official-brand__main" src="assets/brand/sotojitaku/main-horizontal-original-white.png" alt="" width="368" height="94" decoding="async"></span><span class="official-brand__text"><span class="official-brand__name">SOTOJITAKU</span></span></a>
-    <nav aria-label="サービス">
+  <header class="site-header home-main-header brand-shell">
+    <a class="brand official-brand" href="./" aria-label="SOTOJITAKU ホーム"><span class="official-brand__mark" aria-hidden="true"><img class="official-brand__main" src="assets/brand/sotojitaku/main-horizontal-original-white.png" alt="" width="368" height="94" decoding="async"></span></a>
+    <nav class="brand-service-nav" aria-label="サービス">
       <a href="camp/" data-service="camp">CAMP</a>
       <a href="car-stay/" data-service="car_stay">CAR STAY</a>
       <a href="fishing/" data-service="fishing">FISHING</a>
     </nav>
+    <details class="brand-mobile-menu" data-brand-menu>
+      <summary>サービス</summary>
+      <nav aria-label="サービス">
+        <a href="camp/" data-service="camp">CAMP｜キャンプ</a>
+        <a href="car-stay/" data-service="car_stay">CAR STAY｜車中泊</a>
+        <a href="fishing/" data-service="fishing">FISHING｜釣り</a>
+      </nav>
+    </details>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <div class="landscape">
       <picture class="landscape-image" aria-hidden="true">
         <source media="(max-width:800px)" srcset="assets/home-world-mobile.webp">
