@@ -356,3 +356,17 @@ test("coverage report uses beginner recommendation rules instead of raw eligibil
   assert.match(source,/recommendations\(products/);
   assert.match(source,/allowUpgrades:false/);
 });
+
+
+test("N-BOX JOY does not inherit standard N-BOX sleep geometry",()=>{
+  const data=JSON.parse(fs.readFileSync(new URL("../car-stay/data/vehicles.json",import.meta.url),"utf8"));
+  const vehicle=data.vehicles.find(v=>v.vehicleId==="honda-nbox-jf5-jf6");
+  const standard=resolvedVehicleProfile(vehicle,{trim:"N-BOX"});
+  const custom=resolvedVehicleProfile(vehicle,{trim:"N-BOX Custom"});
+  const joy=resolvedVehicleProfile(vehicle,{trim:"N-BOX JOY"});
+  assert.equal(standard.geometry.usableLengthMm,1800);
+  assert.equal(custom.geometry.usableLengthMm,1800);
+  assert.equal(standard.floorGrade,"C");
+  assert.equal(joy.geometry.usableLengthMm,null);
+  assert.equal(joy.floorGrade,"unknown");
+});
