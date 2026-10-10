@@ -5,14 +5,14 @@ const DATA_BASE="./data/";
 const VERSION=1;
 const STORAGE_KEY="sotojitaku_car_stay_v1";
 const qs=new URLSearchParams(location.search);
-const operatorTest=qs.get("test")==="1";
+const operatorTest=window.SOTOJITAKU_ANALYTICS?.operatorTest??(qs.get("test")==="1");
 const presetVehicle=qs.get("vehicle");
 const presetSeatCount=qs.get("seatCount");
 const presetTrim=qs.get("trim");
 const presetParty=Number(qs.get("party"));
 const entrySource=(qs.get("from")||"direct").slice(0,30);
 const entryKey=(qs.get("entry")||"").slice(0,40);
-let analyticsEnabled=localStorage.getItem("sotojitaku_analytics_optout")!=="1";
+let analyticsEnabled=!window.SOTOJITAKU_ANALYTICS?.optedOut;
 const viewedProducts=new Set();
 const viewedGaps=new Set();
 const viewedFreeSolutions=new Set();
@@ -35,7 +35,7 @@ function track(name,params={}){
   const common={site_id:"sotojitaku_car_stay",service_id:"car_stay",operator_test:operatorTest?1:0,entry_source:entrySource,entry_key:entryKey,page_path:location.pathname,transport_type:"beacon",...params};
   if(name==="affiliate_click"&&!common.affiliate)common.affiliate="rakuten";
   window.gtag("event",name,common);
-  const alias={carstay_start:"journey_start",builder_completed:"journey_complete"}[name];
+  const alias={carstay_start:"journey_start",builder_completed:"journey_complete",carstay_step_view:"journey_step_view",carstay_step_complete:"journey_step_complete"}[name];
   if(alias)window.gtag("event",alias,common);
 }
 function funnelStepParams(step){
@@ -263,6 +263,7 @@ function renderResult(){
     }
   }
   state.step=5;progressBar.style.width="100%";stepLabel.textContent="YOUR CAR STAY";
+  track("result_view",{status:result.status,purchase_required:eligibleProductCount>0?1:0});
   track("builder_completed",{vehicle_id:v.vehicleId,status:result.status,gap_count:result.gaps.length,eligible_product_count:eligibleProductCount});
   setCabin();
 }
@@ -288,7 +289,7 @@ function renderProducts(items,gapId=""){
     const measureText=measured&&p.measurementPlan?"<small class='measure-fit-note'>実測スペースが "+p.measurementPlan.requiredLengthMm+"×"+p.measurementPlan.requiredWidthMm+"mm 以上のときのみ表示</small>":"";
     const fitExplanation=p.fitStrategy==="power"?"必要 "+(state.lastResult?.power?.requiredWh||0)+"Wh・"+(state.lastResult?.power?.requiredOutputW||0)+"Wに対し、容量 "+p.powerSpec.capacityWh+"Wh・定格 "+p.powerSpec.ratedOutputW+"Wを満たす候補です。":measured?"入力した寝床の長さ・幅で、"+qty+"枚を置ける寸法を確認しています。":(currentVehicle()?.shortLabel||"")+" "+(state.config.seatCount?state.config.seatCount+"人乗り ":"")+(state.config.trim||"")+"の適合確認済み候補です。";
     const firstPick=index===0?"<span class='top-pick-badge'>まず見る</span>":"";
-    return "<article class='product-card "+(index===0?"top-pick":"")+"'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'>"+firstPick+"<span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<p class='fit-explanation'>"+esc(fitExplanation)+"</p><div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で確認する <span>→</span></a></div></article>";
+    return "<article class='product-card "+(index===0?"top-pick":"")+"'><img src='"+esc(p.image)+"' alt='' loading='lazy'><div class='product-copy'><div class='product-badges'>"+firstPick+"<span class='pr-badge'>PR</span><span class='fit-badge'>"+fitLabel+"</span><span class='role-badge'>"+roleLabel+"</span>"+qtyText+"</div><b>"+esc(p.name)+"</b>"+measureText+"<p class='fit-explanation'>"+esc(fitExplanation)+"</p><div class='product-meta'><strong>"+yen((p.price||0)*qty)+(qty>1?" <small>（"+qty+"枚合計）</small>":"")+"</strong><small>確認 "+esc((p.verifiedAt||"").slice(0,10))+"</small></div><p class='fit-explanation'>確認時点の税込参考価格です。送料・在庫・最終金額は楽天でご確認ください。</p><a class='product-cta' href='"+esc(p.affiliateUrl)+"' target='_blank' rel='nofollow sponsored noopener' data-product='"+esc(p.productId)+"' data-gap='"+esc(gapId)+"' data-price='"+esc((p.price||0)*qty)+"' data-role='"+esc(p.recommendationRole||"")+"' data-rank='"+(index+1)+"' data-source='car_stay_"+esc(gapId)+"' data-qty='"+qty+"'>楽天で確認する <span>→</span></a></div></article>";
   }).join("")+"</div>";
 }
 function render(){
@@ -352,7 +353,7 @@ $("#startBtn").addEventListener("click",start);
 resetTop.addEventListener("click",reset);
 $("#analyticsOpt").addEventListener("click",()=>{
   analyticsEnabled=!analyticsEnabled;
-  window["ga-disable-G-GFVSZ8YDQ5"]=!analyticsEnabled;
+  window.SOTOJITAKU_ANALYTICS.setEnabled(analyticsEnabled);
   localStorage.setItem("sotojitaku_analytics_optout",analyticsEnabled?"0":"1");
   alert(analyticsEnabled?"アクセス計測を有効にしました。":"アクセス計測を無効にしました。");
 });

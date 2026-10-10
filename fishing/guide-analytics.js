@@ -1,5 +1,9 @@
 (()=>{
-  const measurementId="G-GFVSZ8YDQ5";
+  if(window.SOTOJITAKU_ANALYTICS?.optedOut)return;
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
+  window.gtag("set",{service_id:"fishing",operator_test:window.SOTOJITAKU_ANALYTICS?.operatorTest?"1":"0"});
+  const measurementId="G-6STQ5HXRDH";
   window.dataLayer=window.dataLayer||[];
   window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
   const script=document.createElement("script");

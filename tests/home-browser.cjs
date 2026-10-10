@@ -30,7 +30,7 @@ const fs=require('node:fs');
    await page.evaluate(()=>{window.__events=[];const original=window.gtag;window.gtag=function(){window.__events.push(Array.from(arguments));original.apply(this,arguments)};window.addEventListener('pagehide',()=>sessionStorage.setItem('home-qa-events',JSON.stringify(window.__events)))});
    if(placement==='header' && width<=800)await page.locator('[data-brand-menu] summary').click();
    const selector=placement==='world'?`.world[data-service="${service}"]`:`header ${width<=800?'[data-brand-menu]':'.brand-service-nav'} [data-service="${service}"]`;
-   await page.locator(selector).click();await page.waitForURL(new URL(path,base).href);await page.goBack({waitUntil:'networkidle'});
+   await page.locator(selector).click();await page.waitForURL(new URL(path,base).href);await page.locator(service==='camp'?'#main [data-start]':'#startBtn:enabled').first().waitFor();await page.goBack({waitUntil:'networkidle'});
    const events=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('home-qa-events')||'[]'));
    assert(events.some(e=>e[0]==='event'&&e[1]==='service_select'&&e[2].service===service),'missing event '+placement+' '+service);
   }

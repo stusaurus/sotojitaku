@@ -30,7 +30,7 @@ async function main(){
     const errors=[];
     page.on('pageerror',error=>errors.push(error.message));
     try{
-     const url=new URL(spec.path,BASE).href;
+     const url=new URL(spec.path,BASE).href+'?test=1';
      const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:45000});
      assert.equal(response&&response.status(),200,spec.id+' HTTP status');
      await page.locator(spec.ready).first().waitFor({timeout:30000});

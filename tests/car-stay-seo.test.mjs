@@ -182,7 +182,8 @@ test('N-BOX SEO copy treats Slope as a separate validation path',()=>{
 test('CAR STAY sitemap entries carry the current publish date',()=>{
   const sitemap=read('sitemap.xml');
   for(const line of sitemap.split('\n').filter(line=>line.includes('/car-stay/'))){
-    assert.match(line,/<lastmod>2026-10-06<\/lastmod>/);
+    const expected=line.includes('<loc>https://stusaurus.github.io/sotojitaku/car-stay/</loc>')?'2026-10-10':'2026-10-06';
+    assert.ok(line.includes('<lastmod>'+expected+'</lastmod>'));
   }
 });
 

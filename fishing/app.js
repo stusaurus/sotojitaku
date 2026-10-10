@@ -129,7 +129,7 @@ function readEntryAttribution(){
   return {entry_source:"direct",entry_guide_slug:""};
 }
 const entryAttribution=readEntryAttribution();
-const track=(name,params={})=>{try{const common={site_id:"sotojitaku_fishing",service_id:"fishing",operator_test:new URLSearchParams(location.search).get("test")==="1"?"1":"0",conversion_source:"fishing",page_path:location.pathname,transport_type:"beacon",...entryAttribution,...params};if(name==="affiliate_click"&&!common.affiliate)common.affiliate="rakuten";window.gtag?.("event",name,common);const alias={fishing_diagnosis_start:"journey_start",fishing_diagnosis_complete:"journey_complete",fishing_product_view:"product_view"}[name];if(alias)window.gtag?.("event",alias,common)}catch{}};
+const track=(name,params={})=>{if(window.SOTOJITAKU_ANALYTICS?.optedOut)return;try{const common={site_id:"sotojitaku_fishing",service_id:"fishing",operator_test:(window.SOTOJITAKU_ANALYTICS?.operatorTest??(new URLSearchParams(location.search).get("test")==="1"))?"1":"0",conversion_source:"fishing",page_path:location.pathname,transport_type:"beacon",...entryAttribution,...params};if(name==="affiliate_click"&&!common.affiliate)common.affiliate="rakuten";window.gtag?.("event",name,common);const alias={fishing_diagnosis_start:"journey_start",fishing_diagnosis_complete:"journey_complete",fishing_product_view:"product_view",fishing_plan_share:"plan_share"}[name];if(alias)window.gtag?.("event",alias,common)}catch{}};
 
 async function load(){
   const [q,p,g,h,c]=await Promise.all([
@@ -161,6 +161,7 @@ function clearDraft(){
   try{localStorage.removeItem(DRAFT_KEY)}catch{}
 }
 function start(){
+  lastStepIndex=-1;
   clearSharedPlanHash();
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
@@ -217,11 +218,13 @@ function updateVisual(){
   const caption=captions[index]||captions[captions.length-1];
   visualMessage.innerHTML=escapeHtml(caption[0])+"<br>"+escapeHtml(caption[1]);
 }
+let lastStepIndex=-1;
 function renderQuestion(){
   planner.classList.remove("is-result");
   document.body.dataset.screen="question";
   const questions=questionsData.questions;
   const q=questions[index];
+  if(index!==lastStepIndex){lastStepIndex=index;track("journey_step_view",{step_number:index+1,step_key:q.id});}
   const stepLabel=String(index+1).padStart(2,"0")+" / "+String(questions.length).padStart(2,"0");
   stepText.textContent=stepLabel;
   if(progressText)progressText.textContent=stepLabel;
@@ -274,6 +277,7 @@ function renderQuestion(){
       panel.querySelector(".desc").textContent="1つ選んでから進んでください。";
       return;
     }
+    track("journey_step_complete",{step_number:index+1,step_key:q.id});
     if(index<questions.length-1){index++;persistDraft("question");renderQuestion();scrollTo({top:0,behavior:"smooth"})}
     else{persistDraft("result");renderResult();scrollTo({top:0,behavior:"smooth"})}
   });
@@ -287,6 +291,7 @@ function renderResult({trackDiagnosis=true}={}){
   const resultKey=JSON.stringify(answers);
   const isNewResult=resultKey!==currentResultKey;
   if(trackDiagnosis&&isNewResult){
+    track("result_view",{party_type:answers.party});
     track("fishing_diagnosis_complete",{budget_tier:answers.budget,party_type:answers.party,bait_preference:answers.bait});
   }
   const plan=selectPlan(answers,plansData);
@@ -411,6 +416,7 @@ function renderResult({trackDiagnosis=true}={}){
       clearDraft();
       $("#saveBtn").textContent="保存しました";
       savedBtn.hidden=false;
+      track("plan_save",{save_method:"browser"});
       track("fishing_plan_saved",{fishing_method:plan.methodId,plan_id:plan.methodId+"-"+plan.variantKey});
     }catch{}
   });
