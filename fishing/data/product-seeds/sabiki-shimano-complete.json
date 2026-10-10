@@ -56,5 +56,8 @@
   "preferenceTags": [
     "no_worm",
     "low_mess"
-  ]
+  ],
+  "suspended": true,
+  "suspendedReason": "Direct item page availability=OutOfStock confirmed on 2026-10-10; shared catalog also omitted exact listing",
+  "suspendedAt": "2026-10-10"
 }

@@ -99,7 +99,9 @@ jobs:
           PY
 
       - name: Stage shared catalog for coverage validation
-        run: cp /tmp/fishing-products.json fishing/data/audited-products.json
+        run: |
+          cp /tmp/fishing-products.json fishing/data/audited-products.json
+          python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
 
       - name: Validate repository
         run: |
@@ -123,6 +125,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/fishing-products-ready.json fishing/data/audited-products.json
+            python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
             git add fishing/data/audited-products.json
             if git diff --cached --quiet; then
               echo "FISHING catalog already current."

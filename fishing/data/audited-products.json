@@ -3,7 +3,7 @@
   "updatedAt": "2026-10-08T01:53:24.917417+00:00",
   "status": "partial",
   "seedCount": 18,
-  "verifiedCount": 17,
+  "verifiedCount": 16,
   "products": [
     {
       "productId": "bluestorm-bs-j201ars-adult",
@@ -519,51 +519,6 @@
       }
     },
     {
-      "productId": "sabiki-shimano-complete-500528",
-      "name": "シマノで揃える　サビキ釣り完全釣り入門セット（竿・リール／サビキ／カゴ／アミ姫／バケツ他 全10点セット）",
-      "brand": "SHIMANO / つり具TEN",
-      "categoryId": "rod_reel",
-      "methodIds": [
-        "sabiki"
-      ],
-      "budgetTiers": [
-        "balanced",
-        "long_term"
-      ],
-      "audiences": [
-        "adult",
-        "family"
-      ],
-      "preferenceTags": [
-        "no_worm",
-        "low_mess"
-      ],
-      "fit": null,
-      "coverCategoryIds": [
-        "rod_reel",
-        "rig",
-        "bait",
-        "bucket",
-        "fish_grip"
-      ],
-      "recommendationRole": "beginner_default",
-      "score": 96,
-      "price": 15000,
-      "itemCode": "tsurigu-ten:10013255",
-      "itemUrl": "https://item.rakuten.co.jp/tsurigu-ten/500528/",
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u6huo.7cx6m2d3.g00u6huo.7cx6ne85/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftsurigu-ten%2F500528%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Ftsurigu-ten%2Fi%2F10013255%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/tsurigu-ten/cabinet/a50/500528.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-08T01:53:24.917417+00:00",
-      "specVerifiedAt": "2026-10-05",
-      "audit": {
-        "status": "verified_live",
-        "mode": "rakuten_api_exact_item_code",
-        "salesSource": "daily-cost-jp_github_actions",
-        "specEvidence": "https://item.rakuten.co.jp/tsurigu-ten/500528/",
-        "seedItemUrl": "https://item.rakuten.co.jp/tsurigu-ten/500528/"
-      }
-    },
-    {
       "productId": "shimano-holiday-cool-60-6l",
       "name": "シマノ　NJ-406U ホリデークール 60 ピュアホワイト 6L",
       "brand": "SHIMANO",
@@ -707,7 +662,8 @@
     }
   ],
   "failures": {
-    "choi-shimano-complete-500527": "manual_suspension: direct listing HTTP404 confirmed twice 2026-10-10"
+    "choi-shimano-complete-500527": "manual_suspension: direct listing HTTP404 confirmed twice 2026-10-10",
+    "sabiki-shimano-complete-500528": "manual_suspension: direct page OutOfStock confirmed 2026-10-10"
   },
   "linkAuditAt": "2026-10-10"
 }

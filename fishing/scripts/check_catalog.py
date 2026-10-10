@@ -8,6 +8,7 @@ catalog=json.loads((ROOT/"fishing/data/audited-products.json").read_text())
 products=catalog.get("products",[])
 
 suspended_seed=json.loads((ROOT/"fishing/data/product-seeds/choi-shimano-complete.json").read_text())
+suspended_sabiki=json.loads((ROOT/"fishing/data/product-seeds/sabiki-shimano-complete.json").read_text())
 required={
     "sabiki":["rod_reel","rig","bait","life_jacket_adult","bucket","fish_grip","scissors"],
     "choi_nage":["rod_reel","rig","bait","life_jacket_adult","fish_grip","scissors","pliers"],
@@ -25,7 +26,7 @@ missing=[]
 for method,categories in required.items():
     for budget in budgets:
         for category in categories:
-            if suspended_seed.get("suspended") is True and method=="choi_nage" and budget in ("balanced","long_term") and category=="rod_reel":
+            if ((suspended_seed.get("suspended") is True and method=="choi_nage") or (suspended_sabiki.get("suspended") is True and method=="sabiki")) and budget in ("balanced","long_term") and category=="rod_reel":
                 continue  # Explicitly suspended HTTP404 listing; never fabricate a replacement.
             if not supported(method,budget,category):
                 missing.append(f"{method}/{budget}/{category}")
@@ -57,4 +58,4 @@ if missing:
         print("-",item)
     raise SystemExit(1)
 
-print("Core FISHING product coverage:",len(products),"verified products; known choi-nage balanced/long_term rod hole")
+print("Core FISHING product coverage:",len(products),"verified products; known sabiki/choi-nage balanced/long_term rod holes")
