@@ -11,6 +11,13 @@ function auditFixture(change){
   try{
     fs.cpSync(path.join(repo,"fishing"),path.join(dir,"fishing"),{recursive:true});
     fs.writeFileSync(path.join(dir,"package.json"),JSON.stringify({type:"module"}));
+    // Explicit fixture suspension state; production seeds are never edited.
+    for(const name of ["sabiki-shimano-complete.json","choi-shimano-complete.json"]){
+      const seedFile=path.join(dir,"fishing/data/product-seeds",name);
+      const seed=JSON.parse(fs.readFileSync(seedFile,"utf8"));
+      seed.suspended=true;
+      fs.writeFileSync(seedFile,JSON.stringify(seed));
+    }
     const file=path.join(dir,"fishing/data/audited-products.json");
     const catalog=JSON.parse(fs.readFileSync(file,"utf8"));
     change?.(catalog);
@@ -25,7 +32,12 @@ function auditFixture(change){
   }
 }
 test("acknowledged gaps remain visible without claiming complete coverage",()=>{
-  const {result,report}=auditFixture();
+  const {result,report}=auditFixture(catalog=>{
+    // Remain deterministic when a future verified replacement closes the live gap.
+    for(const p of catalog.products.filter(p=>p.categoryId==="rod_reel")){
+      p.budgetTiers=p.budgetTiers.filter(tier=>tier==="low");
+    }
+  });
   assert.equal(result.status,0,result.stderr);
   assert.equal(report.scenarioCount,2916);
   assert.equal(report.safetyAndUnexpectedCoveragePassed,true);
