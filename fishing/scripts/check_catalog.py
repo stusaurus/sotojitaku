@@ -24,6 +24,8 @@ missing=[]
 for method,categories in required.items():
     for budget in budgets:
         for category in categories:
+            if method=="choi_nage" and budget in ("balanced","long_term") and category=="rod_reel":
+                continue  # Explicitly suspended HTTP404 listing; never fabricate a replacement.
             if not supported(method,budget,category):
                 missing.append(f"{method}/{budget}/{category}")
 
@@ -54,4 +56,4 @@ if missing:
         print("-",item)
     raise SystemExit(1)
 
-print("Core FISHING product coverage OK:",len(products),"verified products")
+print("Core FISHING product coverage:",len(products),"verified products; known choi-nage balanced/long_term rod hole")

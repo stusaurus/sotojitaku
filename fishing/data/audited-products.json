@@ -1,9 +1,9 @@
 {
   "version": 1,
   "updatedAt": "2026-10-08T01:53:24.917417+00:00",
-  "status": "ok",
+  "status": "partial",
   "seedCount": 18,
-  "verifiedCount": 18,
+  "verifiedCount": 17,
   "products": [
     {
       "productId": "bluestorm-bs-j201ars-adult",
@@ -42,50 +42,6 @@
         "salesSource": "daily-cost-jp_github_actions",
         "specEvidence": "https://item.rakuten.co.jp/aquabeach/bsj201arsca/",
         "seedItemUrl": "https://item.rakuten.co.jp/aquabeach/bsj201arsca/"
-      }
-    },
-    {
-      "productId": "choi-shimano-complete-500527",
-      "name": "シマノで揃える　ちょい投げ釣り完全釣り入門セット（竿・リール／ちょい投げ仕掛け／パワーイソメ／他 全10点セット）",
-      "brand": "SHIMANO / つり具TEN",
-      "categoryId": "rod_reel",
-      "methodIds": [
-        "choi_nage"
-      ],
-      "budgetTiers": [
-        "balanced",
-        "long_term"
-      ],
-      "audiences": [
-        "adult",
-        "family"
-      ],
-      "preferenceTags": [
-        "no_worm",
-        "low_mess"
-      ],
-      "fit": null,
-      "coverCategoryIds": [
-        "rod_reel",
-        "rig",
-        "bait",
-        "fish_grip"
-      ],
-      "recommendationRole": "beginner_default",
-      "score": 97,
-      "price": 14500,
-      "itemCode": "tsurigu-ten:10013253",
-      "itemUrl": "https://item.rakuten.co.jp/tsurigu-ten/500527/",
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u6huo.7cx6m2d3.g00u6huo.7cx6ne85/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftsurigu-ten%2F500527%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Ftsurigu-ten%2Fi%2F10013253%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/tsurigu-ten/cabinet/a50/500527.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-08T01:53:24.917417+00:00",
-      "specVerifiedAt": "2026-10-06",
-      "audit": {
-        "status": "verified_live",
-        "mode": "rakuten_api_exact_item_code",
-        "salesSource": "daily-cost-jp_github_actions",
-        "specEvidence": "https://item.rakuten.co.jp/tsurigu-ten/500527/",
-        "seedItemUrl": "https://item.rakuten.co.jp/tsurigu-ten/500527/"
       }
     },
     {
@@ -750,5 +706,8 @@
       }
     }
   ],
-  "failures": {}
+  "failures": {
+    "choi-shimano-complete-500527": "manual_suspension: direct listing HTTP404 confirmed twice 2026-10-10"
+  },
+  "linkAuditAt": "2026-10-10"
 }
