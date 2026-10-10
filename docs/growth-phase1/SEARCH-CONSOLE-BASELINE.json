@@ -1,0 +1,91 @@
+{
+  "property": "https://stusaurus.github.io/sotojitaku/",
+  "requestedRange": {
+    "from": "2026-09-12",
+    "to": "2026-10-09"
+  },
+  "source": "Windsor.ai Search Console",
+  "retrievedOn": "2026-10-10",
+  "queries": [
+    {
+      "kind": "daily",
+      "rows": [
+        {
+          "date": "2026-10-03",
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": null,
+          "position": 0
+        },
+        {
+          "date": "2026-10-04",
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 16
+        },
+        {
+          "date": "2026-10-05",
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "date": "2026-10-06",
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": null,
+          "position": 0
+        }
+      ]
+    },
+    {
+      "kind": "query_page",
+      "rows": [
+        {
+          "query": "site:github.io",
+          "page": "https://stusaurus.github.io/sotojitaku/",
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 16
+        }
+      ]
+    },
+    {
+      "kind": "sitemaps",
+      "rows": [
+        {
+          "path": null,
+          "last_submitted": null,
+          "last_downloaded": null,
+          "errors": 0,
+          "warnings": 0,
+          "submitted": 0
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "rows": [
+        {
+          "page": "https://stusaurus.github.io/sotojitaku/",
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 9,
+          "data_fetched_at": "2026-10-10T07:42:51"
+        }
+      ]
+    },
+    {
+      "kind": "recent_dates",
+      "rows": [],
+      "requestedRange": {
+        "from": "2026-10-07",
+        "to": "2026-10-09"
+      }
+    }
+  ]
+}
