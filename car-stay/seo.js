@@ -1,6 +1,9 @@
-const GA_ID="G-GFVSZ8YDQ5";
+const GA_ID="G-6STQ5HXRDH";
 const OPT_OUT_KEY="sotojitaku_analytics_optout";
-const enabled=localStorage.getItem(OPT_OUT_KEY)!=="1";
+const enabled=!window.SOTOJITAKU_ANALYTICS?.optedOut;
+window.dataLayer=window.dataLayer||[];
+window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
+window.gtag("set",{service_id:"car_stay",operator_test:window.SOTOJITAKU_ANALYTICS?.operatorTest?"1":"0"});
 
 function context(){
   const parts=location.pathname.split("/").filter(Boolean);

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>SOTOJITAKU｜外へ行く準備を、もっと楽しく。</title>
-  <meta name="description" content="キャンプ、車中泊、釣り。はじめての外遊びを、やりたい休日からあなた仕立てに。SOTOJITAKUは必要な支度を一緒につくるアウトドア準備サービスです。">
+  <title>SOTOJITAKU｜キャンプ・車中泊・釣りの初心者向け準備診断</title>
+  <meta name="description" content="キャンプ・車中泊・釣りをはじめたい方へ。人数、季節、予算、手持ちの道具から、必要な準備と具体的な商品候補を整理する無料診断。登録不要で、買わずに解決する方法も案内します。">
   <meta name="theme-color" content="#1f3329">
   <link rel="canonical" href="https://stusaurus.github.io/sotojitaku/">
-  <meta property="og:title" content="SOTOJITAKU｜外へ行く準備を、もっと楽しく。">
-  <meta property="og:description" content="今日は、どんな外へ行こう。CAMP・CAR STAY・FISHINGから、あなたの休日を選べます。">
+  <meta property="og:title" content="SOTOJITAKU｜キャンプ・車中泊・釣りの初心者向け準備診断">
+  <meta property="og:description" content="キャンプ・車中泊・釣りをはじめたい方へ。人数、季節、予算、手持ちの道具から、必要な準備と具体的な商品候補を整理する無料診断。登録不要で、買わずに解決する方法も案内します。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://stusaurus.github.io/sotojitaku/">
   <meta property="og:image" content="https://stusaurus.github.io/sotojitaku/assets/scene-morning-desktop.webp">
@@ -18,12 +18,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="home.css?v=5d7f14e9d55e">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6STQ5HXRDH"></script>
+  <script src="assets/analytics-context.js?v=b3ba61be0f9a"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-6STQ5HXRDH"></script>
   <script>
     window.dataLayer=window.dataLayer||[];
     function gtag(){dataLayer.push(arguments)}
     gtag('js',new Date());
-    gtag('config','G-6STQ5HXRDH',{site_id:'sotojitaku_home',operator_test:new URLSearchParams(location.search).get('test')==='1'?'1':'0',send_page_view:true});
+    gtag('config','G-6STQ5HXRDH',{site_id:'sotojitaku_home',operator_test:window.SOTOJITAKU_ANALYTICS.operatorTest?'1':'0',send_page_view:true});
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SOTOJITAKU","url":"https://stusaurus.github.io/sotojitaku/","description":"外遊び初心者のための支度サービス。CAMP、CAR STAY、FISHINGを提供。","inLanguage":"ja"}</script>
 <link rel="stylesheet" href="assets/brand/brand-header.css?v=home-main-logo-20261010">
@@ -131,7 +131,7 @@
   <script>
     document.querySelectorAll('[data-service]').forEach(function(a){
       a.addEventListener('click',function(){
-        if(window.gtag) gtag('event','service_select',{site_id:'sotojitaku_home',service:this.dataset.service,service_id:this.dataset.service,operator_test:new URLSearchParams(location.search).get('test')==='1'?'1':'0',transport_type:'beacon'});
+        if(!window.SOTOJITAKU_ANALYTICS.optedOut&&window.gtag) gtag('event','service_select',{site_id:'sotojitaku_home',service:this.dataset.service,service_id:this.dataset.service,operator_test:window.SOTOJITAKU_ANALYTICS.operatorTest?'1':'0',transport_type:'beacon'});
       });
     });
   </script>

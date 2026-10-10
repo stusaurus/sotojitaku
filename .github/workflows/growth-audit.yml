@@ -1,0 +1,55 @@
+name: Growth funnel and catalog audit
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '35 23 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: growth-audit-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify catalogs, SEO, event contracts and recommendation bias
+        run: |
+          python scripts/stamp_assets.py
+          npm run check
+          npm test
+          node scripts/growth-audit.mjs
+          node car-stay/scripts/report_coverage.mjs browser-proof/growth/car-coverage.json
+          node fishing/scripts/check_scenarios.mjs
+      - name: Check direct item destinations without generating affiliate clicks
+        if: github.event_name != 'pull_request'
+        run: node scripts/growth-audit.mjs --network
+      - name: Install browser runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Start isolated local server
+        run: python -m http.server 4173 > /tmp/growth-server.log 2>&1 &
+      - name: Verify mobile, operator isolation and funnel events
+        run: |
+          node tests/growth-browser.mjs
+          node tests/home-browser.cjs
+          node tests/car-stay-browser.mjs
+          node tests/fishing-browser.mjs
+      - name: Audit live layout without sending analytics
+        if: github.event_name != 'pull_request'
+        run: node tests/public-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: growth-audit-proof
+          path: browser-proof/
+          retention-days: 30

@@ -3,6 +3,13 @@ name: Public SOTOJITAKU smoke QA
 on:
   pull_request:
     paths:
+      - 'index.html'
+      - 'camp/**'
+      - 'car-stay/**'
+      - 'fishing/**'
+      - 'assets/analytics-context.js'
+      - 'sitemap.xml'
+      - 'robots.txt'
       - 'tests/public-smoke.cjs'
       - 'tests/public-http.mjs'
       - '.github/workflows/public-smoke.yml'

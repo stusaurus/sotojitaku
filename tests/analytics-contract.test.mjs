@@ -15,7 +15,8 @@ test('HOME uses a stable service_id while preserving the legacy service field', 
   assert.ok(home.includes("gtag('event','service_select'"));
   assert.ok(home.includes('service:this.dataset.service'));
   assert.ok(home.includes('service_id:this.dataset.service'));
-  assert.ok(home.includes("operator_test:new URLSearchParams(location.search).get('test')"));
+  assert.ok(home.includes('operator_test:window.SOTOJITAKU_ANALYTICS.operatorTest'));
+  assert.ok(home.indexOf('analytics-context.js')<home.indexOf("gtag('config'"));
 });
 test('all services preserve legacy events and expose shared journey and product events', () => {
   for (const app of ['camp/app.js','car-stay/app.js','fishing/app.js']) {
@@ -28,6 +29,6 @@ test('all services preserve legacy events and expose shared journey and product 
 test('FISHING cache fingerprint changes along with its operator-test tracking', () => {
   const html = read('fishing/index.html');
   const code = read('fishing/app.js');
-  assert.ok(html.includes('app.js?v=20261008-funnel-1'));
-  assert.ok(code.includes('operator_test:new URLSearchParams(location.search).get("test")'));
+  assert.match(html,/app\.js\?v=[a-f0-9]{12}/);
+  assert.ok(code.includes('window.SOTOJITAKU_ANALYTICS?.operatorTest'));
 });

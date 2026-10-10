@@ -16,3 +16,12 @@ p.write_text(s)
 p=ROOT/'index.html';s=p.read_text()
 s=re.sub(r'home\.css\?v=[a-zA-Z0-9-]+','home.css?v='+version('home.css'),s)
 p.write_text(s)
+
+# Journey scripts and shared analytics must never keep an obsolete browser cache.
+for relative in ['car-stay/index.html','fishing/index.html']:
+ p=ROOT/relative;s=p.read_text();asset=str(Path(relative).parent/'app.js')
+ s=re.sub(r'app\.js\?v=[a-zA-Z0-9-]+','app.js?v='+version(asset),s);p.write_text(s)
+for p in ROOT.rglob('*.html'):
+ if '.git' in p.parts or 'browser-proof' in p.parts:continue
+ s=p.read_text();updated=re.sub(r'analytics-context\.js\?v=[a-zA-Z0-9-]+','analytics-context.js?v='+version('assets/analytics-context.js'),s)
+ if updated!=s:p.write_text(updated)
