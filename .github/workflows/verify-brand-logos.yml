@@ -1,0 +1,40 @@
+name: Verify approved brand headers
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'camp/index.html'
+      - 'car-stay/index.html'
+      - 'fishing/index.html'
+      - 'assets/brand/**'
+      - 'tests/brand-header-browser.mjs'
+      - '.github/workflows/verify-brand-logos.yml'
+permissions:
+  contents: read
+jobs:
+  brand-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Serve under GitHub Pages subpath and check headers
+        run: |
+          mkdir -p /tmp/brand-preview
+          ln -s "$GITHUB_WORKSPACE" /tmp/brand-preview/sotojitaku
+          python -m http.server 4173 --directory /tmp/brand-preview >/tmp/brand-preview-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/sotojitaku/ >/dev/null; then break; fi
+            sleep 1
+          done
+          BRAND_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/brand-header-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved-brand-check-results
+          path: browser-proof/brand/
