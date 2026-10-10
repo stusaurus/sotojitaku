@@ -28,7 +28,7 @@ const fs=require('node:fs');
   for(const [service,path] of [['camp','camp/'],['car_stay','car-stay/'],['fishing','fishing/']]){
    // Capture the synchronous analytics queue without preventing real navigation.
    await page.evaluate(()=>{window.__events=[];const original=window.gtag;window.gtag=function(){window.__events.push(Array.from(arguments));original.apply(this,arguments)};window.addEventListener('pagehide',()=>sessionStorage.setItem('home-qa-events',JSON.stringify(window.__events)))});
-   await page.locator(`.world[data-service="${service}"]`).click();await page.waitForURL(new URL(path,base).href);await page.goBack({waitUntil:'networkidle'});
+   await page.locator(`.world[data-service="${service}"]`).click();await page.waitForURL(new URL(path,base).href);await page.locator(service==='camp'?'#main [data-start]':'#startBtn:enabled').first().waitFor();await page.goBack({waitUntil:'networkidle'});
    const events=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('home-qa-events')||'[]'));
    assert(events.some(e=>e[0]==='event'&&e[1]==='service_select'&&e[2].service===service),'missing event '+service);
   }

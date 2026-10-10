@@ -1,0 +1,99 @@
+{
+  "retrievedOn": "2026-10-10",
+  "checks": [
+    {
+      "path": "",
+      "status": 200,
+      "bytes": 7661,
+      "sha256": "f77bd44dfce06b718e2224ca914be962d80179a8c63e397c2a679a555dc68d89",
+      "title": [
+        "SOTOJITAKU｜外へ行く準備を、もっと楽しく。"
+      ]
+    },
+    {
+      "path": "camp/",
+      "status": 200,
+      "bytes": 4702,
+      "sha256": "99960a2de7bead867decc73e3f744c6e2e11280eef47dbb8dd2f845b686920b0",
+      "title": [
+        "SOTOJITAKU CAMP｜はじめてのキャンプを、あなた仕立てに。"
+      ]
+    },
+    {
+      "path": "car-stay/",
+      "status": 200,
+      "bytes": 7315,
+      "sha256": "5badf14ab57bb5757fb576865c5816edc362d9056809a4ca64dcd9e7e7116aae",
+      "title": [
+        "SOTOJITAKU CAR STAY｜いつものクルマを、今夜泊まれる小さな宿に。"
+      ]
+    },
+    {
+      "path": "fishing/",
+      "status": 200,
+      "bytes": 6046,
+      "sha256": "93bd420436fb40c6f1c6706968e903f8333ca6b83cfb7dde84d0146c7b4387b8",
+      "title": [
+        "SOTOJITAKU FISHING｜はじめての釣りを、あなた仕立てに。"
+      ]
+    },
+    {
+      "path": "sitemap.xml",
+      "status": 200,
+      "bytes": 5749,
+      "sha256": "62f9ca4480405675b1c148474f38ff4c04ea5a4cce7c53452625e373f202b5a4",
+      "title": []
+    },
+    {
+      "path": "robots.txt",
+      "status": 200,
+      "bytes": 172,
+      "sha256": "d91af49f92c75945803233afe2ad60ee010faf145c257f0e4828daaadec899c6",
+      "title": []
+    },
+    {
+      "path": "car-stay/sitemap.xml",
+      "status": 200,
+      "bytes": 3246,
+      "sha256": "6633ee974b88e4adce8e6177a566c02d7725ab13f9d775d82072be0243d90689",
+      "title": []
+    },
+    {
+      "path": "data/products.json",
+      "status": 200,
+      "bytes": 118084,
+      "sha256": "624ccf122e1cdd3598f0a5ab2fba3cfc3c55c4fc65a0a4b8d2858739d4ce7792",
+      "title": [],
+      "catalogCount": 49,
+      "updatedAt": "2026-10-07T13:41:19.389194+00:00",
+      "catalogStatus": "ok"
+    },
+    {
+      "path": "car-stay/data/audited-products.json",
+      "status": 200,
+      "bytes": 60523,
+      "sha256": "c5173b68b2d4fcc5247d64ee8da2b4f17ba47bb072458be575501e110282e179",
+      "title": [],
+      "catalogCount": 34,
+      "updatedAt": "2026-10-10T02:18:22.108802+00:00",
+      "catalogStatus": "partial"
+    },
+    {
+      "path": "fishing/data/audited-products.json",
+      "status": 200,
+      "bytes": 29264,
+      "sha256": "5d2756872641c529d8706b4d00e8fed9fe8359c500b5055b3df9480c28079a9a",
+      "title": [],
+      "catalogCount": 18,
+      "updatedAt": "2026-10-08T01:53:24.917417+00:00",
+      "catalogStatus": "ok"
+    },
+    {
+      "path": "camp/app.js",
+      "status": 200,
+      "bytes": 51720,
+      "sha256": "f918f49bfe8f5557572e39afbf4985be953bea992ee506c9610afdb9d78d72f4",
+      "title": []
+    }
+  ]
+}
