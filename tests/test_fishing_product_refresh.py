@@ -14,6 +14,13 @@ SPEC.loader.exec_module(refresh)
 
 
 class FishingProductRefreshTests(unittest.TestCase):
+    def test_suspended_listing_cannot_be_reintroduced_by_stale_api(self):
+        from datetime import datetime, timezone
+        seed=self.seed(); seed["suspended"]=True; seed["suspendedReason"]="confirmed HTTP404"
+        with mock.patch.object(refresh,"worker_exact_candidate") as lookup:
+            product,reason=refresh.audit_one(seed,datetime.now(timezone.utc),"2026-10-10")
+        self.assertIsNone(product); self.assertIn("manual_suspension",reason); lookup.assert_not_called()
+
     def seed(self):
         return {
             "productId":"test-product",

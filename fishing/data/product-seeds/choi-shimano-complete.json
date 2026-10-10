@@ -55,5 +55,8 @@
   "preferenceTags": [
     "no_worm",
     "low_mess"
-  ]
+  ],
+  "suspended": true,
+  "suspendedReason": "Direct item page HTTP404 confirmed twice on 2026-10-10; restore only after exact-page and sales verification",
+  "suspendedAt": "2026-10-10"
 }

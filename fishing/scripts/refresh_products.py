@@ -427,6 +427,8 @@ def spec_audit_fresh(seed: dict, now: datetime) -> bool:
 
 def audit_one(seed: dict, now_dt: datetime, now: str) -> tuple[dict | None, str | None]:
     product_id = seed.get("productId", "unknown")
+    if seed.get("suspended") is True:
+        return None, "manual_suspension: " + str(seed.get("suspendedReason", "review required"))
     try:
         if not spec_audit_fresh(seed, now_dt):
             raise ValueError("spec_audit_expired")

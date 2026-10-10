@@ -8,6 +8,7 @@ const plans=JSON.parse(fs.readFileSync(new URL("../fishing/data/plans.json",impo
 const gear=JSON.parse(fs.readFileSync(new URL("../fishing/data/gear.json",import.meta.url)));
 const catalog=JSON.parse(fs.readFileSync(new URL("../fishing/data/audited-products.json",import.meta.url)));
 
+const suspendedRod=JSON.parse(fs.readFileSync(new URL("../fishing/data/product-seeds/choi-shimano-complete.json",import.meta.url))).suspended===true;
 const parties=["solo","pair","family_child","group"];
 const funs=["easy_catch","cast_wait","choose_for_me"];
 const baits=["okay","no_worm","low_mess"];
@@ -15,7 +16,7 @@ const takeHomes=["yes","no","undecided"];
 const carries=["compact","normal","comfort"];
 const budgets=["low","balanced","long_term"];
 
-test("every first-trip diagnosis has purchasable coverage for all required monetizable gaps",()=>{
+test("all first-trip gaps have verified coverage or the explicitly suspended rod hole",()=>{
   const failures=[];
   let cases=0;
   for(const party of parties)
@@ -35,7 +36,10 @@ test("every first-trip diagnosis has purchasable coverage for all required monet
               const missing=covered.filter(
                 x=>x.priority==="required"&&x.monetizable&&x.state==="needed"
               );
-              if(missing.length){
+              const expectedHole=suspendedRod&&plan.methodId==="choi_nage"&&budget!=="low";
+              assert.deepEqual(missing.map(x=>x.id),expectedHole?["rod_reel"]:[],JSON.stringify(input));
+              assert.equal(result.selected.some(p=>p.productId==="choi-shimano-complete-500527"),false);
+              if(missing.length&&!expectedHole){
                 failures.push({
                   input,
                   method:plan.methodId,

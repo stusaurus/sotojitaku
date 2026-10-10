@@ -33,14 +33,14 @@ test("family low-budget sabiki gets a complete shoppable basket",()=>{
   assert.ok(r.products.selected.some(p=>p.categoryId==="cooler"));
 });
 
-test("balanced choi-nage gets a verified rod set and all required categories",()=>{
+test("balanced choi-nage reports missing rod set after the broken listing is suspended",()=>{
   const r=run({
     party:"pair",fun:"cast_wait",bait:"okay",take_home:"no",
     carry:"normal",budget:"balanced",owned:[]
   });
   assert.equal(r.plan.methodId,"choi_nage");
-  assert.deepEqual(r.products.unresolvedCategoryIds,[]);
-  assert.ok(r.products.selected.some(p=>p.productId==="choi-shimano-complete-500527"));
+  assert.deepEqual(r.products.unresolvedCategoryIds,["rod_reel"]);
+  assert.equal(r.products.selected.some(p=>p.productId==="choi-shimano-complete-500527"),false);
 });
 
 test("low-mess sabiki uses the Ami Hime already included in the verified complete bundle",()=>{
@@ -56,15 +56,15 @@ test("low-mess sabiki uses the Ami Hime already included in the verified complet
   assert.equal(r.products.selected.filter(p=>p.categoryId==="bait").length,0);
 });
 
-test("no-worm choi-nage uses the Power Isome already included in the verified complete bundle",()=>{
+test("no-worm choi-nage preserves artificial bait and reports the unavailable rod",()=>{
   const r=run({
     party:"pair",fun:"cast_wait",bait:"no_worm",take_home:"no",
     carry:"normal",budget:"balanced",owned:[]
   });
   assert.equal(r.plan.methodId,"choi_nage");
-  assert.deepEqual(r.products.unresolvedCategoryIds,[]);
-  const complete=r.products.selected.find(p=>p.productId==="choi-shimano-complete-500527");
-  assert.ok(complete);
-  assert.equal(complete.effectiveCoverCategoryIds.includes("bait"),true);
-  assert.equal(r.products.selected.filter(p=>p.categoryId==="bait").length,0);
+  assert.deepEqual(r.products.unresolvedCategoryIds,["rod_reel"]);
+  assert.equal(r.products.selected.some(p=>p.productId==="choi-shimano-complete-500527"),false);
+  const bait=r.products.selected.find(p=>p.categoryId==="bait");
+  assert.ok(bait);
+  assert.ok(bait.preferenceTags.includes("no_worm"));
 });
