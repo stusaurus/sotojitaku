@@ -1,5 +1,19 @@
 # SOTOJITAKU 集客・収益化 第1弾監査（2026-10-10）
 
+## GA4管理画面・実受信確認の追記（2026-10-10 17時台 JST）
+
+SOTOJITAKU（プロパティ558239521）の管理画面へログインできた。初回の認証結果をユーザーの見送りと説明したが、理由を判断できない結果だったため訂正し、再認証後の対象プロパティ表示で成功を確認した。
+
+- カスタム定義は当初0件。イベントスコープの `operator_test` と `service_id` を登録し、一覧で保存済み2件を確認した。登録前の履歴を遡及分離できるとは主張しない。
+- HOMEを `?test=1` で開いてCAMPへ遷移し、7問、所有品確認、食事・予算調整、最終結果、プラン保存、テント推薦まで操作した。
+- GA4 Realtimeで service_select 1、journey_start 1、journey_step_view 7、journey_step_complete 7、question_complete 7、journey_complete 1、result_view 1、plan_save 1、product_view 1、simulator_start 1、simulator_complete 1を確認した。集計画面の更新時点が異なるため、全イベント合計や完了率を計算しない。
+- journey_completeのイベントパラメータを開き、`operator_test` の値が `1`、件数1であることを確認。HOMEからCAMPへテスト識別が保持されている。
+- CAMPのテント「楽天で価格・在庫を確認」を1回だけテストクリックし、GA4 Realtimeに `affiliate_click` 1と自動外部リンク `click` 1を確認。両者を合算しない。今回は明示的な着信確認のため、従来の送信遮断した回帰テストと異なり、本番GA4と楽天へ1回のテスト遷移が発生した。実利用者・収益・成果として扱わない。
+- CAR STAY・FISHINGのサーバー着信、全イベントのパラメータ詳細、サービス別探索、Search Console sitemap/URL検査、楽天成果は引き続き未確認。CAMPのテスト成功を3サービス全体の受信成功と一般化しない。
+- 現時点では一般利用の流入・診断完了・収益の改善を断定しない。全サービス着信と除外条件の確認が終わるまで、30日効果測定のD0は未確定。
+
+この追記を以降の「GA4未確認」の記述より優先する。以降は当初監査・公開時点の記録。
+
 ## Search Console接続後の追記（2026-10-10）
 
 ユーザーによる接続完了後、Windsor.aiの対象一覧に `https://stusaurus.github.io/sotojitaku/` を確認した。9/12〜10/9を指定して検索実績を取得した（本文の「接続なし」は当初の監査時点の記録）。生データはSEARCH-CONSOLE-BASELINE.json。
