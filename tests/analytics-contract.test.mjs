@@ -32,3 +32,9 @@ test('FISHING cache fingerprint changes along with its operator-test tracking', 
   assert.match(html,/app\.js\?v=[a-f0-9]{12}/);
   assert.ok(code.includes('window.SOTOJITAKU_ANALYTICS?.operatorTest'));
 });
+
+test('CAMP keeps local QA event assertions while the production GA4 tag is blocked',()=>{
+  const app=read('camp/app.js');
+  assert.match(app,/function analyticsDisabled\(\)\{return window\.SOTOJITAKU_ANALYTICS\?\.optedOut/);
+  assert.match(app,/export function track\(name,params=\{\}\)/);
+});
