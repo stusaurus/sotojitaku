@@ -196,12 +196,17 @@ def candidate_identity_level(candidate: dict, seed: dict) -> int:
 def worker_search_candidate(seed: dict) -> dict | None:
     matches: list[tuple[int, dict]] = []
     seen: set[str] = set()
+    probe_errors: list[str] = []
 
     for query in seed_queries(seed):
-        payload = fetch_json_quick(
-            WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30}),
-            timeout=5,
-        ) or {}
+        try:
+            payload = fetch_json_quick(
+                WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30}),
+                timeout=5,
+            ) or {}
+        except WorkerProbeError as exc:
+            probe_errors.append(exc.code)
+            continue
         for raw in payload.get("products", []):
             candidate = normalize_worker_payload(raw)
             item_url = candidate.get("itemUrl", "")
@@ -230,12 +235,16 @@ def worker_search_candidate(seed: dict) -> dict | None:
 
     shipping_matches: list[tuple[int, dict]] = []
     for query in seed_queries(seed):
-        payload = fetch_json_quick(
-            SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
-                {"name": query, "brand": seed.get("brand", "")}
-            ),
-            timeout=5,
-        ) or {}
+        try:
+            payload = fetch_json_quick(
+                SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
+                    {"name": query, "brand": seed.get("brand", "")}
+                ),
+                timeout=5,
+            ) or {}
+        except WorkerProbeError as exc:
+            probe_errors.append(exc.code)
+            continue
         if payload.get("found") is not True:
             continue
         candidate = normalize_worker_payload(payload)
@@ -249,6 +258,8 @@ def worker_search_candidate(seed: dict) -> dict | None:
         shipping_matches.append((level, candidate))
 
     if not shipping_matches:
+        if probe_errors:
+            raise WorkerProbeError(",".join(dict.fromkeys(probe_errors)))
         return None
     shipping_matches.sort(
         key=lambda pair: (

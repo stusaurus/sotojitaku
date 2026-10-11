@@ -12,6 +12,27 @@ SPEC.loader.exec_module(refresh)
 
 
 class WorkerDiagnosticsTests(unittest.TestCase):
+    def test_search_recovers_after_first_query_failure(self):
+        seed = {
+            "itemUrl": "https://item.rakuten.co.jp/shop/rod/",
+            "searchQueries": ["first", "second"],
+            "identityGroups": [["verified rod"]],
+        }
+        payload = {"products": [{"name": "verified rod", "price": 1000, "url": seed["itemUrl"], "image": "https://example.com/item.jpg"}]}
+        with mock.patch.object(refresh, "fetch_json_quick", side_effect=[refresh.WorkerProbeError("rakuten_api_error"), payload]) as lookup:
+            self.assertEqual(refresh.worker_search_candidate(seed)["itemUrl"], seed["itemUrl"])
+        self.assertEqual(lookup.call_count, 2)
+
+    def test_shipping_recovers_after_search_failure(self):
+        seed = {
+            "itemUrl": "https://item.rakuten.co.jp/shop/rod/",
+            "searchQueries": ["first"],
+            "identityGroups": [["verified rod"]],
+        }
+        payload = {"found": True, "name": "verified rod", "price": 1000, "url": seed["itemUrl"], "image": "https://example.com/item.jpg"}
+        with mock.patch.object(refresh, "fetch_json_quick", side_effect=[refresh.WorkerProbeError("transport_error"), payload]):
+            self.assertEqual(refresh.worker_search_candidate(seed)["source"], "worker_shipping_exact_url")
+
     def response(self, payload):
         response = mock.MagicMock()
         response.__enter__.return_value.read.return_value = json.dumps(payload).encode()
