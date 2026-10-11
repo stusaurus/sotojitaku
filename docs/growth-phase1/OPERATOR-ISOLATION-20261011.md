@@ -23,6 +23,8 @@ Google公式: https://developers.google.com/tag-platform/security/guides/privacy
 
 `gtag` の呼び出しと `dataLayer` のイベントは残るので、送信遮断したブラウザ回帰テストで計測イベントの内容を検証できる。ただしQAモードのイベントがGA4 Realtimeへ到着することは期待しない。必要なら本番とは別の検証ストリームでテストすること（本PRでは新設しない）。
 
+CAMPのイベントキューはこれまで送信遮断フラグを解析同意の判定にも使っていたため、QA隔離でイベントそのものが消えないよう、解析同意の独立状態（`SOTOJITAKU_ANALYTICS.optedOut`）を参照するよう修正。これによりブラウザQAのイベント検証は継続できる。
+
 共通スクリプトのキャッシュキーは主要4ページで更新。`scripts/stamp_assets.py` は公開ビルド時に全HTML内のキーを現行ハッシュへ更新する既存処理である。新しいGA4のID・端末識別子・Cookie・外部送信先は追加しない。
 
 ## 受け入れ条件
