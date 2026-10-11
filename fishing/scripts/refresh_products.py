@@ -53,14 +53,33 @@ def fetch_json(url: str, headers: dict[str, str] | None = None) -> dict:
     return {}
 
 
+class WorkerProbeError(RuntimeError):
+    """A safe diagnostic code, without an upstream body or request URL."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__(code)
+
+
 def fetch_json_quick(url: str, headers: dict[str, str] | None = None, timeout: int = 5) -> dict | None:
-    """Single-attempt Worker probe. A failed probe simply falls through."""
+    """Single-attempt probe; audit_one records failures and tries the next source."""
     req = urllib.request.Request(url, headers=headers or HEADERS)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except Exception:
-        return None
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        raise WorkerProbeError(f"http_{exc.code}") from None
+    except (urllib.error.URLError, TimeoutError):
+        raise WorkerProbeError("transport_error") from None
+    except (ValueError, UnicodeError):
+        raise WorkerProbeError("invalid_json") from None
+    if not isinstance(payload, dict):
+        raise WorkerProbeError("invalid_response")
+    if payload.get("error"):
+        # Never copy an upstream message, request URL, or credentials into reports.
+        code = "rakuten_api_error" if payload["error"] == "rakuten_api_error" else "worker_api_error"
+        raise WorkerProbeError(code)
+    return payload
 
 
 def fetch_text(url: str) -> str:
@@ -446,7 +465,8 @@ def audit_one(seed: dict, now_dt: datetime, now: str) -> tuple[dict | None, str 
             try:
                 candidate = source_fn(seed)
             except Exception as exc:
-                source_errors.append(f"{source_name}:{type(exc).__name__}")
+                detail = exc.code if isinstance(exc, WorkerProbeError) else type(exc).__name__
+                source_errors.append(f"{source_name}:{detail}")
 
         if candidate is None:
             detail = f" [{' '.join(source_errors)}]" if source_errors else ""
