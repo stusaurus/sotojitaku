@@ -53,14 +53,33 @@ def fetch_json(url: str, headers: dict[str, str] | None = None) -> dict:
     return {}
 
 
+class WorkerProbeError(RuntimeError):
+    """A safe diagnostic code, without an upstream body or request URL."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__(code)
+
+
 def fetch_json_quick(url: str, headers: dict[str, str] | None = None, timeout: int = 5) -> dict | None:
-    """Single-attempt Worker probe. A failed probe simply falls through."""
+    """Single-attempt probe; audit_one records failures and tries the next source."""
     req = urllib.request.Request(url, headers=headers or HEADERS)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except Exception:
-        return None
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        raise WorkerProbeError(f"http_{exc.code}") from None
+    except (urllib.error.URLError, TimeoutError):
+        raise WorkerProbeError("transport_error") from None
+    except (ValueError, UnicodeError):
+        raise WorkerProbeError("invalid_json") from None
+    if not isinstance(payload, dict):
+        raise WorkerProbeError("invalid_response")
+    if payload.get("error"):
+        # Never copy an upstream message, request URL, or credentials into reports.
+        code = "rakuten_api_error" if payload["error"] == "rakuten_api_error" else "worker_api_error"
+        raise WorkerProbeError(code)
+    return payload
 
 
 def fetch_text(url: str) -> str:
@@ -177,12 +196,17 @@ def candidate_identity_level(candidate: dict, seed: dict) -> int:
 def worker_search_candidate(seed: dict) -> dict | None:
     matches: list[tuple[int, dict]] = []
     seen: set[str] = set()
+    probe_errors: list[str] = []
 
     for query in seed_queries(seed):
-        payload = fetch_json_quick(
-            WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30}),
-            timeout=5,
-        ) or {}
+        try:
+            payload = fetch_json_quick(
+                WORKER_SEARCH + "?" + urllib.parse.urlencode({"q": query, "hits": 30}),
+                timeout=5,
+            ) or {}
+        except WorkerProbeError as exc:
+            probe_errors.append(exc.code)
+            continue
         for raw in payload.get("products", []):
             candidate = normalize_worker_payload(raw)
             item_url = candidate.get("itemUrl", "")
@@ -211,12 +235,16 @@ def worker_search_candidate(seed: dict) -> dict | None:
 
     shipping_matches: list[tuple[int, dict]] = []
     for query in seed_queries(seed):
-        payload = fetch_json_quick(
-            SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
-                {"name": query, "brand": seed.get("brand", "")}
-            ),
-            timeout=5,
-        ) or {}
+        try:
+            payload = fetch_json_quick(
+                SHIPPING_LOOKUP + "?" + urllib.parse.urlencode(
+                    {"name": query, "brand": seed.get("brand", "")}
+                ),
+                timeout=5,
+            ) or {}
+        except WorkerProbeError as exc:
+            probe_errors.append(exc.code)
+            continue
         if payload.get("found") is not True:
             continue
         candidate = normalize_worker_payload(payload)
@@ -230,6 +258,8 @@ def worker_search_candidate(seed: dict) -> dict | None:
         shipping_matches.append((level, candidate))
 
     if not shipping_matches:
+        if probe_errors:
+            raise WorkerProbeError(",".join(dict.fromkeys(probe_errors)))
         return None
     shipping_matches.sort(
         key=lambda pair: (
@@ -446,7 +476,8 @@ def audit_one(seed: dict, now_dt: datetime, now: str) -> tuple[dict | None, str 
             try:
                 candidate = source_fn(seed)
             except Exception as exc:
-                source_errors.append(f"{source_name}:{type(exc).__name__}")
+                detail = exc.code if isinstance(exc, WorkerProbeError) else type(exc).__name__
+                source_errors.append(f"{source_name}:{detail}")
 
         if candidate is None:
             detail = f" [{' '.join(source_errors)}]" if source_errors else ""
