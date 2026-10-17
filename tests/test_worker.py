@@ -1,8 +1,31 @@
 import unittest,sys,json,io,urllib.error
 from unittest.mock import patch
+from datetime import datetime, timezone, timedelta
+from tempfile import TemporaryDirectory
+import refresh_worker as worker
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, name_lookup_allowed, worker_fallback_allowed, fetch_worker_json, UpstreamUnavailable, should_open_circuit
+class StaleEvidencePreflight(unittest.TestCase):
+ def test_old_blocked_sale_page_skips_worker_without_api_requests(self):
+  with TemporaryDirectory() as tmp:
+   root=Path(tmp)
+   (root/'data').mkdir()
+   audit={'category':'tent','model':'MODEL','itemUrl':'https://item.rakuten.co.jp/shop/sku/','listingAuditedAt':(datetime.now(timezone.utc)-timedelta(days=12)).isoformat()}
+   (root/'data'/'audited-products.json').write_text(json.dumps({'products':[audit]}))
+   (root/'data'/'equipment.json').write_text(json.dumps({'categories':[]}))
+   with patch.object(worker,'ROOT',root), patch.object(worker,'fetch_page',return_value='Access denied') as sales, patch.object(worker,'fetch_worker_json',side_effect=AssertionError('must not call Worker')) as api, patch.object(worker.time,'sleep',return_value=None):
+    catalog=worker.acquire()
+   self.assertEqual(sales.call_count,1)
+   self.assertEqual(api.call_count,0)
+   self.assertEqual(catalog['products'],[])
+   self.assertEqual(catalog['itemFailures']['tent:MODEL'],'stale_sales_evidence_unavailable')
+ def test_old_audit_requires_live_seller_page_sku_and_model(self):
+  self.assertTrue(worker.stale_sales_page_preflight_required(12,'Blocked','ST-310'))
+  self.assertTrue(worker.stale_sales_page_preflight_required(12,'"itemInfoSku": {}','ST-310'))
+  self.assertFalse(worker.stale_sales_page_preflight_required(12,'ST-310 "itemInfoSku": {}','ST-310'))
+  self.assertFalse(worker.stale_sales_page_preflight_required(3,'Blocked','ST-310'))
+
 class RateLimitCircuit(unittest.TestCase):
  def make_error(self, status, body):
   return urllib.error.HTTPError('https://example.invalid/safe',status,'upstream',None,io.BytesIO(body.encode()))
