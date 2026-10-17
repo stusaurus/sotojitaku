@@ -43,6 +43,20 @@ class SellerEvidenceCircuit(unittest.TestCase):
   self.assertEqual(sum(v=='stale_sales_evidence_unavailable' for v in report['itemFailures'].values()),3)
   self.assertEqual(sum(v=='seller_host_evidence_circuit_open' for v in report['itemFailures'].values()),6)
   self.assertEqual(report['status'],'partial_error')
+ def test_bounded_category_probe_keeps_recovery_opportunity(self):
+  audits=self.stale_audits(7)
+  audits[4]['category']='chair'
+  audits[5]['category']='chair'
+  audits[6]['category']='mat'
+  report,sales,api=self.run_catalog(audits)
+  # Three initial same-host misses, plus at most one probe for each new
+  # category, rather than hammering all seven SKUs or skipping all categories.
+  self.assertEqual(sales.call_count,5)
+  self.assertEqual(api.call_count,0)
+  self.assertEqual(report['itemFailures']['tent:MODEL-3'],'seller_host_evidence_circuit_open')
+  self.assertEqual(report['itemFailures']['chair:MODEL-4'],'stale_sales_evidence_unavailable')
+  self.assertEqual(report['itemFailures']['chair:MODEL-5'],'seller_host_evidence_circuit_open')
+  self.assertEqual(report['itemFailures']['mat:MODEL-6'],'stale_sales_evidence_unavailable')
  def test_non_evidence_host_circuit_does_not_suppress_another_host(self):
   audits=self.stale_audits(5)+self.stale_audits(2,'other.example.invalid')
   report,sales,_=self.run_catalog(audits)
