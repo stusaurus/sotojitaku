@@ -9,7 +9,9 @@ test('partial CAMP publication contains no stale sellers and honestly records un
  assert.equal(catalog.status,'partial_error');
  const byCategory=new Set(catalog.products.map(p=>p.category));
  const all=new Set(equipment.categories.map(c=>c.id));
- assert.ok(catalog.products.length>0,'one verified seller is now available');
+ // An expired offer must disappear after a failed recheck, rather than
+ // retaining a stale recommendation just to satisfy a coverage assertion.
+ assert.ok(catalog.products.length<=audits.length,'no invented products');
  assert.ok(byCategory.size<all.size,'this is not complete category coverage');
  assert.deepEqual(new Set(catalog.failedCategories),new Set([...all].filter(x=>!byCategory.has(x))));
  for(const missing of catalog.failedCategories)assert.equal(catalog.failureReasons[missing],'fresh_seller_evidence_missing');
