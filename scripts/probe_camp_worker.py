@@ -11,7 +11,11 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKER = ""\nWORKER_HOSTS = [\n    "https://daily-cost-api.kiyo0625puma.workers.dev",\n    "https://daily-cost-api.stuffedsaurus.workers.dev",\n]
+WORKER = ""
+WORKER_HOSTS = [
+    "https://daily-cost-api.kiyo0625puma.workers.dev",
+    "https://daily-cost-api.stuffedsaurus.workers.dev",
+]
 HEADERS = {
     "Origin": "https://stusaurus.github.io",
     "Referer": "https://stusaurus.github.io/sotojitaku/",
