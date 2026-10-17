@@ -1,0 +1,43 @@
+name: Verify one CAMP seller page in a real browser
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_camp_seller_browser.py'
+      - 'tests/test_probe_camp_seller_browser.py'
+      - '.github/workflows/probe-camp-seller-browser.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/probe_camp_seller_browser.py'
+      - '.github/workflows/probe-camp-seller-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-seller-proof-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  one-item-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test single seller's strict variant, price and availability proof
+        run: python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
+      - name: Install normal browser driver (no bypass tools)
+        if: github.event_name != 'pull_request'
+        run: python -m pip install playwright==1.55.0
+      - name: Probe one original seller URL and exact official Item API once
+        if: github.event_name != 'pull_request'
+        run: python scripts/probe_camp_seller_browser.py
+      - name: Preserve research-only independent seller-page proof
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-original-seller-browser-proof
+          path: reports/camp-seller-page-browser-proof.json
+          retention-days: 14
+          if-no-files-found: error
