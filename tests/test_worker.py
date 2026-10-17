@@ -50,6 +50,12 @@ class SalesAudit(unittest.TestCase):
   a={'category':'burner','model':'ST-310','lookupCode':'4953571073101','identityTerms':['レギュレーターストーブ','ST-310'],'itemUrl':'https://item.rakuten.co.jp/shop/body/','referencePrice':7480}
   m={'found':True,'lookup_method':'product_code_verified','shipping_match_name':'SOTO レギュレーターストーブ ST-310','shipping_included_url':'https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fshop%2Fbody%2F','shipping_included_price':7480,'shipping_included_image':'https://thumbnail.image.rakuten.co.jp/x.jpg'}
   self.assertTrue(code_lookup_allowed(a,m,e))
+  verified_by_search=dict(m,lookup_method='product_code_search_name_specs_verified')
+  self.assertTrue(code_lookup_allowed(a,verified_by_search,e))
+  wrong_by_search=dict(verified_by_search,shipping_included_url='https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fshop%2Fother%2F')
+  self.assertFalse(code_lookup_allowed(a,wrong_by_search,e))
+  unrelated_by_search=dict(verified_by_search,shipping_match_name='SOTO ST-310 専用 風防')
+  self.assertFalse(code_lookup_allowed(a,unrelated_by_search,e))
   bad=dict(m);bad['shipping_match_name']='SOTO ST-310 専用 風防'
   self.assertFalse(code_lookup_allowed(a,bad,e))
   wrong=dict(m);wrong['shipping_included_url']='https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fshop%2Fother%2F'

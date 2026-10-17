@@ -1,0 +1,22 @@
+name: Probe CAMP exact item verification
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_camp_worker.py'
+      - '.github/workflows/probe-camp-worker.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact-only sale and lookup acceptance rules
+        run: python -m unittest discover -s tests -p test_worker.py -v
+      - name: Probe actual Worker endpoints (read only)
+        run: python scripts/probe_camp_worker.py
