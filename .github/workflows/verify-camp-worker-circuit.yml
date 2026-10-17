@@ -1,0 +1,21 @@
+name: Verify CAMP upstream circuit protection
+on:
+  pull_request:
+    paths:
+      - 'scripts/refresh_worker.py'
+      - 'tests/test_worker.py'
+      - '.github/workflows/verify-camp-worker-circuit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate strict CAMP catalog and upstream rate-limit handling
+        run: python -m unittest discover -s tests -p 'test_worker.py' -v

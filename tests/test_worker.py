@@ -1,7 +1,31 @@
-import unittest,sys,json
+import unittest,sys,json,io,urllib.error
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, name_lookup_allowed, worker_fallback_allowed
+from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, name_lookup_allowed, worker_fallback_allowed, fetch_worker_json, UpstreamUnavailable, should_open_circuit
+class RateLimitCircuit(unittest.TestCase):
+ def make_error(self, status, body):
+  return urllib.error.HTTPError('https://example.invalid/safe',status,'upstream',None,io.BytesIO(body.encode()))
+ def test_worker_upstream_429_short_circuits(self):
+  def fetch(_):raise self.make_error(502,'{"error":"rakuten_api_error","upstream_status":429}')
+  with self.assertRaisesRegex(UpstreamUnavailable,'upstream_rate_limited'):
+   fetch_worker_json(None,fetch=fetch)
+  self.assertTrue(should_open_circuit('upstream_rate_limited',1))
+ def test_repeated_transient_failures_open_after_three(self):
+  def fetch(_):raise self.make_error(502,'{"error":"rakuten_api_error"}')
+  with self.assertRaisesRegex(UpstreamUnavailable,'upstream_api_unavailable'):
+   fetch_worker_json(None,fetch=fetch)
+  self.assertFalse(should_open_circuit('upstream_api_unavailable',1))
+  self.assertFalse(should_open_circuit('upstream_api_unavailable',2))
+  self.assertTrue(should_open_circuit('upstream_api_unavailable',3))
+ def test_unrelated_worker_502_still_raises(self):
+  def fetch(_):raise self.make_error(502,'{"error":"invalid_query"}')
+  with self.assertRaises(urllib.error.HTTPError):
+   fetch_worker_json(None,fetch=fetch)
+ def test_permanent_403_still_raises(self):
+  def fetch(_):raise self.make_error(403,'{"error":"forbidden"}')
+  with self.assertRaises(urllib.error.HTTPError):
+   fetch_worker_json(None,fetch=fetch)
+
 class SalesAudit(unittest.TestCase):
  def info(self):
   return {'itemId':1,'sellType':'NORMAL','inventoryType':'single','sku':[],'purchaseInfo':{'purchaseBySellType':{'purchaseCondition':'enabled','normalPurchase':{'price':{'minPrice':1000}}},'variantMappedInventories':[{'quantity':1}]}}

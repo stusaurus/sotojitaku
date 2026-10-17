@@ -2,12 +2,36 @@
 Only exact manufacturer-audited models and canonical listings may pass, after a
 fresh independent sales-page audit. Missing or changed evidence empties that item.
 """
-import json, re, time, unicodedata, urllib.parse, urllib.request
+import json, re, time, unicodedata, urllib.parse, urllib.request, urllib.error
 from datetime import datetime, timezone
 from acquire import ROOT, fetch_with_retry, canonical_item_url
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
 SHIPPING_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
 HEADERS={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-camp/1.0'}
+class UpstreamUnavailable(Exception):
+    """The Worker reached an upstream limit/outage; do not hammer remaining items."""
+    pass
+
+def fetch_worker_json(req, fetch=fetch_with_retry):
+    try:
+        return fetch(req)
+    except urllib.error.HTTPError as error:
+        if error.code == 429:
+            raise UpstreamUnavailable('upstream_rate_limited') from None
+        if error.code in (502,503):
+            try:
+                body=json.loads(error.read(4096).decode('utf-8'))
+            except (ValueError,UnicodeError):
+                body={}
+            if body.get('upstream_status') == 429:
+                raise UpstreamUnavailable('upstream_rate_limited') from None
+            if body.get('error') == 'rakuten_api_error':
+                raise UpstreamUnavailable('upstream_api_unavailable') from None
+        raise
+
+def should_open_circuit(reason, failures):
+    return reason == 'upstream_rate_limited' or failures >= 3
+
 def parse_listing(page, model, expected_price, expected_id=None):
     marker='"itemInfoSku":'
     if marker not in page:raise ValueError('missing_sales_evidence')
@@ -118,7 +142,14 @@ def acquire():
     now=datetime.now(timezone.utc).isoformat();products=[];item_failures={};reasons={}
     audits=json.loads((ROOT/'data/audited-products.json').read_text())['products']
     equipment=json.loads((ROOT/'data/equipment.json').read_text())
+    upstream_failures=0
+    circuit_open=False
     for audit in audits:
+        if circuit_open:
+            reason='upstream_circuit_open'
+            item_failures[f"{audit['category']}:{audit.get('model','?')}"]=reason
+            reasons[audit['category']]=reason
+            continue
         try:
             # Manufacturer audit expires after one year; sales evidence is rechecked now.
             age=(datetime.now(timezone.utc)-datetime.fromisoformat(audit['listingAuditedAt'])).days
@@ -126,7 +157,7 @@ def acquire():
             if audit.get('lookupCode') or audit.get('lookupName'):
                 params={'code':audit.get('lookupCode',''),'name':audit.get('name',''),'brand':audit.get('brand','')}
                 req=urllib.request.Request(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode(params),headers=HEADERS)
-                matched=fetch_with_retry(req)
+                matched=fetch_worker_json(req)
                 allowed=code_lookup_allowed(audit,matched,equipment) if audit.get('lookupCode') else name_lookup_allowed(audit,matched,equipment)
                 if not allowed:
                     safe={'url':canonical_item_url(matched.get('shipping_included_url')),'name':matched.get('shipping_match_name'),'price':matched.get('shipping_included_price'),'method':matched.get('lookup_method')}
@@ -134,7 +165,7 @@ def acquire():
                     raise ValueError('unmatched_listing')
             else:
                 req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode({'q':audit['query'],'hits':30}),headers=HEADERS)
-                result=fetch_with_retry(req)
+                result=fetch_worker_json(req)
                 model_candidates=[p for p in result.get('products',[]) if p.get('product_no')==audit['model']]
                 matched=next((p for p in model_candidates if canonical_item_url(p.get('shipping_included_url'))==audit['itemUrl']),None)
                 if not matched or not identity_gate(matched.get('shipping_match_name',''),audit,equipment):
@@ -162,8 +193,20 @@ def acquire():
                 print('SALES_EVIDENCE_FALLBACK',audit['category'],audit['model'],canonical_item_url(affiliate))
             review_count=matched.get('review_count') if isinstance(matched.get('review_count'),(int,float)) else audit.get('reviewCount')
             review_average=matched.get('review_average') if isinstance(matched.get('review_average'),(int,float)) else audit.get('reviewAverage')
+            upstream_failures=0
             products.append({**audit,'itemCode':code,'name':audit.get('name') or matched.get('shipping_match_name') or matched.get('name'),'price':price,'affiliateUrl':affiliate,'image':matched['shipping_included_image'].replace('_ex=128x128','_ex=500x500'),'reviewCount':review_count,'reviewAverage':review_average,'verifiedAt':now,'shipping':'included','verificationMode':verification_mode})
+        except UpstreamUnavailable as error:
+            upstream_failures+=1
+            reason=str(error)
+            item_failures[f"{audit['category']}:{audit.get('model','?')}"]=reason
+            reasons[audit['category']]=reason
+            # A definite 429 opens the breaker immediately. Three other API failures
+            # also stop repeated requests while preserving the fail-closed output.
+            if should_open_circuit(reason, upstream_failures):
+                circuit_open=True
+                print('UPSTREAM_CIRCUIT_OPEN',reason,'after',upstream_failures,'failures')
         except Exception as error:
+            upstream_failures=0
             reason=('http_'+str(error.code) if hasattr(error,'code') else str(error) if isinstance(error,ValueError) else type(error).__name__)
             item_failures[f"{audit['category']}:{audit.get('model','?')}"]=reason
             reasons[audit['category']]=reason
