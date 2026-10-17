@@ -38,7 +38,17 @@ jobs:
         run: python scripts/refresh_worker.py
       - name: Stamp asset fingerprints before release checks
         run: python scripts/stamp_assets.py
+      - name: Summarize product evidence failures without secrets
+        run: python scripts/report_camp_refresh.py
       - run: npm test
+      - name: Save CAMP refresh audit report, including when catalog checks fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-refresh-health
+          path: reports/camp-refresh-health.json
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Save refreshed catalog
         run: |
           cp data/products.json /tmp/products.json
