@@ -17,7 +17,7 @@ from pathlib import Path
 from acquire import ROOT
 from refresh_worker import identity_gate
 
-WORKER = "https://daily-cost-api.stuffedsaurus.workers.dev/api/item-lookup"
+WORKER = "https://daily-cost-api.stuffedsaurus.workers.dev/api/item-evidence"
 HEADERS = {
     "Origin": "https://stusaurus.github.io",
     "Referer": "https://stusaurus.github.io/sotojitaku/",
@@ -67,7 +67,7 @@ def affiliate_destination(url):
         return None
 
 def request_exact(audit, fetch=None):
-    params={'url':audit['itemUrl'],'itemCode':audit['itemCode'],'q':audit['model']}
+    params={'url':audit['itemUrl'],'itemCode':audit['itemCode']}
     req=urllib.request.Request(WORKER+'?'+urllib.parse.urlencode(params),headers=HEADERS)
     if fetch is not None:
         return fetch(req)
@@ -95,6 +95,8 @@ def validate_candidate(audit, live, equipment, observed_at):
         return outcome('worker_unavailable')
     if live.get('found') is not True:
         return outcome('exact_item_not_found')
+    if live.get('lookup_method') != 'exact_item_code_only':
+        return outcome('untrusted_lookup_method')
     expected=canonical_item_url(audit.get('itemUrl'))
     actual=canonical_item_url(live.get('item_url'))
     if not expected or actual!=expected or affiliate_destination(live.get('affiliate_url'))!=expected:
