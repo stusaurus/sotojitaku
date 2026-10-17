@@ -37,6 +37,11 @@ def fetch_worker_json(req, fetch=None):
 def should_open_circuit(reason, failures):
     return reason == 'upstream_rate_limited' or failures >= 3
 
+def stale_sales_page_preflight_required(audit_age, page, model):
+    # An audit older than seven days cannot use the Worker-only fallback. If
+    # the sales page is blocked, no amount of API searching can validate it.
+    return audit_age > 7 and ('"itemInfoSku":' not in page or str(model) not in page)
+
 def parse_listing(page, model, expected_price, expected_id=None):
     marker='"itemInfoSku":'
     if marker not in page:raise ValueError('missing_sales_evidence')
@@ -159,6 +164,11 @@ def acquire():
             # Manufacturer audit expires after one year; sales evidence is rechecked now.
             age=(datetime.now(timezone.utc)-datetime.fromisoformat(audit['listingAuditedAt'])).days
             if not 0<=age<=365:raise ValueError('spec_audit_expired')
+            page=None
+            if age>7:
+                page=fetch_page(audit['itemUrl'])
+                if stale_sales_page_preflight_required(age,page,audit['model']):
+                    raise ValueError('stale_sales_evidence_unavailable')
             if audit.get('lookupCode') or audit.get('lookupName'):
                 params={'code':audit.get('lookupCode',''),'name':audit.get('name',''),'brand':audit.get('brand','')}
                 req=urllib.request.Request(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode(params),headers=HEADERS)
@@ -184,7 +194,8 @@ def acquire():
             expected_id=None
             try: expected_id=int(code.split(':',1)[1])
             except (ValueError,IndexError): pass
-            page=fetch_page(audit['itemUrl'])
+            if page is None:
+                page=fetch_page(audit['itemUrl'])
             verification_mode='sales_page'
             try:
                 parse_listing(page,audit['model'],price,expected_id)
