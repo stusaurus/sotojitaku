@@ -1,4 +1,5 @@
 import unittest,sys,json,io,urllib.error
+from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, name_lookup_allowed, worker_fallback_allowed, fetch_worker_json, UpstreamUnavailable, should_open_circuit
@@ -10,6 +11,15 @@ class RateLimitCircuit(unittest.TestCase):
   with self.assertRaisesRegex(UpstreamUnavailable,'upstream_rate_limited'):
    fetch_worker_json(None,fetch=fetch)
   self.assertTrue(should_open_circuit('upstream_rate_limited',1))
+ def test_live_call_to_worker_attempts_once_when_wrapped_429(self):
+  calls=[]
+  def opener(*args,**kwargs):
+   calls.append(args)
+   raise self.make_error(502,'{"error":"rakuten_api_error","upstream_status":429}')
+  with patch('refresh_worker.urllib.request.urlopen', side_effect=opener):
+   with self.assertRaisesRegex(UpstreamUnavailable,'upstream_rate_limited'):
+    fetch_worker_json(None)
+  self.assertEqual(len(calls),1)
  def test_repeated_transient_failures_open_after_three(self):
   def fetch(_):raise self.make_error(502,'{"error":"rakuten_api_error"}')
   with self.assertRaisesRegex(UpstreamUnavailable,'upstream_api_unavailable'):
