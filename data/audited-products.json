@@ -38,8 +38,8 @@
         "value": 0.8,
         "trust": 0.9
       },
-      "listingAuditedAt": "2026-10-17T14:47:35.835907+00:00",
-      "listingAudit": "2026-10-17 original naturum-outdoor seller: Rakuten 20260701 official Item API exact itemCode+URL+affiliate PC match, availability=1, taxFlag=0, postageFlag=0, single purchasable price ¥5,490; normal Chromium seller page itemInfoSku confirms enabled normal sale, fixed single SKU, positive stock and same ¥5,490. Evidence: GitHub Actions run 39042240199, artifact 12103973065. Manufacturer specification audit is retained.",
+      "listingAuditedAt": "2026-10-17T15:43:42.411237+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 39046299192",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
       "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
       "identityTerms": [

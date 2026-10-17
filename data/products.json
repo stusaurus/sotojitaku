@@ -38,8 +38,8 @@
         "value": 0.8,
         "trust": 0.9
       },
-      "listingAuditedAt": "2026-10-17T14:47:35.835907+00:00",
-      "listingAudit": "2026-10-17 original naturum-outdoor seller: Rakuten 20260701 official Item API exact itemCode+URL+affiliate PC match, availability=1, taxFlag=0, postageFlag=0, single purchasable price ¥5,490; normal Chromium seller page itemInfoSku confirms enabled normal sale, fixed single SKU, positive stock and same ¥5,490. Evidence: GitHub Actions run 39042240199, artifact 12103973065. Manufacturer specification audit is retained.",
+      "listingAuditedAt": "2026-10-17T15:43:42.411237+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 39046299192",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
       "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
       "identityTerms": [
@@ -52,36 +52,36 @@
       ],
       "price": 5490,
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=500x500",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=128x128",
       "reviewCount": null,
       "reviewAverage": null,
-      "verifiedAt": "2026-10-17T14:47:35.835907+00:00",
+      "verifiedAt": "2026-10-17T15:43:42.411237+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
     }
   ],
   "status": "partial_error",
   "failedCategories": [
-    "tent",
-    "mat",
-    "chair",
-    "table",
-    "led_lantern",
     "burner",
+    "chair",
     "cooler",
     "fire_pit",
-    "hot_sandwich_maker"
+    "hot_sandwich_maker",
+    "led_lantern",
+    "mat",
+    "table",
+    "tent"
   ],
   "failureReasons": {
-    "tent": "fresh_seller_evidence_missing",
-    "mat": "fresh_seller_evidence_missing",
-    "chair": "fresh_seller_evidence_missing",
-    "table": "fresh_seller_evidence_missing",
-    "led_lantern": "fresh_seller_evidence_missing",
     "burner": "fresh_seller_evidence_missing",
+    "chair": "fresh_seller_evidence_missing",
     "cooler": "fresh_seller_evidence_missing",
     "fire_pit": "fresh_seller_evidence_missing",
-    "hot_sandwich_maker": "fresh_seller_evidence_missing"
+    "hot_sandwich_maker": "fresh_seller_evidence_missing",
+    "led_lantern": "fresh_seller_evidence_missing",
+    "mat": "fresh_seller_evidence_missing",
+    "table": "fresh_seller_evidence_missing",
+    "tent": "fresh_seller_evidence_missing"
   },
   "itemFailures": {
     "mat:2000032354": "not_reverified",
@@ -135,5 +135,5 @@
     "cooler:2238145": "not_reverified",
     "fire_pit:ST-032RS": "not_reverified"
   },
-  "updatedAt": "2026-10-17T14:47:35.835907+00:00"
+  "updatedAt": "2026-10-17T15:43:42.411237+00:00"
 }
