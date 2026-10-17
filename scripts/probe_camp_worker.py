@@ -31,7 +31,14 @@ def request(endpoint, params):
         with urllib.request.urlopen(req, timeout=35) as response:
             return response.status, json.loads(response.read(500_000).decode())
     except urllib.error.HTTPError as error:
-        return error.code, {}
+        # Only retain publicly safe machine status fields. Never print upstream
+        # messages, request URLs or authentication/affiliate credentials.
+        try:
+            body = json.loads(error.read(20_000).decode("utf-8"))
+            safe = {k: body.get(k) for k in ("error", "upstream_status", "reason")}
+        except (ValueError, UnicodeError):
+            safe = {}
+        return error.code, safe
     except (TimeoutError, urllib.error.URLError, ValueError):
         return 0, {}
 
@@ -75,6 +82,7 @@ for WORKER in WORKER_HOSTS:
         print("EXACT_ITEM", model, json.dumps({
             "http": status, **item_flags(item, audit),
             "reason": item.get("reason"), "upstream_error": item.get("error"),
+            "upstream_status": item.get("upstream_status"),
         }, ensure_ascii=False))
         status, lookup = request("/api/shipping-lookup", {
             "code": audit.get("lookupCode", ""), "name": audit.get("name", ""),
@@ -86,4 +94,5 @@ for WORKER in WORKER_HOSTS:
             "method": lookup.get("lookup_method"),
             "exact_item_url": canonical_affiliate_url(matched) == audit["itemUrl"],
             "upstream_error": lookup.get("error"),
+            "upstream_status": lookup.get("upstream_status"),
         }, ensure_ascii=False))
