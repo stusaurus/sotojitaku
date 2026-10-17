@@ -3,7 +3,9 @@ name: Refresh audited camping products
 on:
   push:
     branches: [main]
-    paths: ['scripts/**', 'data/audited-products.json', 'data/equipment.json', '.github/workflows/refresh-products.yml']
+    # Avoid quota-heavy refreshes for unrelated helper scripts, asset stamps and
+    # other services' changes. Keep nightly and explicit manual refresh.
+    paths: ['scripts/refresh_worker.py', 'data/audited-products.json', '.github/workflows/refresh-products.yml']
   workflow_dispatch:
   schedule:
     - cron: '15 21 * * *'
