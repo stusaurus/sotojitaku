@@ -20,6 +20,13 @@ import probe_camp_seller_browser as seller
 
 TARGET_CATEGORY = "sleeping_bag"
 TARGET_MODEL = "2000034774"
+# Independently proven in GitHub Actions #39042240199 and #39048471797.
+# No new seller or SKU may enter the renewal loop without a strict audit.
+TARGETS = (
+    ("sleeping_bag", "2000034774"),
+    ("tent", "2206745"),
+    ("chair", "2190857"),
+)
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
     "exact_item_not_found", "wrong_item_or_affiliate_url",
@@ -58,14 +65,15 @@ def eligible_existing(product, audit):
     )
 
 def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser_get=None,
-                     now=None, run_id="local"):
+                     now=None, run_id="local",
+                     target_category=TARGET_CATEGORY, target_model=TARGET_MODEL):
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("observed_time_must_be_aware")
     observed = observed.astimezone(timezone.utc)
     audited = audits_doc["products"]
-    target = next((a for a in audited if a.get("category") == TARGET_CATEGORY
-                   and a.get("model") == TARGET_MODEL), None)
+    target = next((a for a in audited if a.get("category") == target_category
+                   and a.get("model") == target_model), None)
     if not target or not target.get("itemCode") or not target.get("itemUrl"):
         raise ValueError("original_target_missing")
     # Keep other independently verified products only while *their own*
@@ -73,8 +81,8 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
     prior = [p for p in existing.get("products", [])
              if valid_existing(p, observed)]
     previous_target = next((p for p in prior if eligible_existing(p, target)), None)
-    other = [p for p in prior if not (p.get("category") == TARGET_CATEGORY
-             and p.get("model") == TARGET_MODEL)]
+    other = [p for p in prior if not (p.get("category") == target_category
+             and p.get("model") == target_model)]
 
     api = stage.request_exact(target, fetch=api_fetch)
     api_status = stage.validate_candidate(target, api, equipment, observed.isoformat())["status"]
@@ -151,14 +159,14 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
     missed = sorted(categories - covered)
 
     failures = dict(existing.get("itemFailures") or {})
-    marker = f"{TARGET_CATEGORY}:{TARGET_MODEL}"
+    marker = f"{target_category}:{target_model}"
     if replacement:
         failures.pop(marker, None)
     else:
         failures[marker] = reason if reason != "api_confirmed_seller_variant_audit_required" else seller_status
     statuses = existing.get("failureReasons") or {}
     reason_by_category = {
-        c: (failures[marker] if c == TARGET_CATEGORY else
+        c: (failures[marker] if c == target_category else
             statuses.get(c, "fresh_seller_evidence_missing"))
         for c in missed
     }
@@ -171,7 +179,7 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
         "updatedAt": observed.isoformat() if data_changed else existing.get("updatedAt"),
     }
     report = {
-        "schemaVersion": 1, "model": TARGET_MODEL,
+        "schemaVersion": 1, "model": target_model,
         "type": "automatic_original_seller_proof",
         "attempted": 1, "apiStatus": api_status, "sellerStatus": seller_status,
         "result": "renewed" if replacement else "retired" if adverse or not previous_target else "previous_still_fresh",
@@ -180,11 +188,39 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
     }
     return audits_doc, refreshed, report
 
+def refresh_verified_offers(audits_doc, existing, equipment, *,
+                            api_fetch=None, browser_get=None, now=None, run_id="local"):
+    """Bounded three-SKU renewal; a confirmed 429 stops further API requests.
+
+    The first check also removes expired OTHER SKUs from the snapshot,
+    even when the subsequent requests are skipped for quota protection.
+    """
+    observed = now or datetime.now(timezone.utc)
+    results = []
+    limit = len(TARGETS)
+    for category, model in TARGETS[:limit]:
+        audits_doc, existing, result = refresh_snapshot(
+            audits_doc, existing, equipment,
+            api_fetch=api_fetch, browser_get=browser_get, now=observed,
+            run_id=run_id, target_category=category, target_model=model,
+        )
+        results.append(result)
+        if result["apiStatus"] == "rate_limited":
+            break
+    return audits_doc, existing, {
+        "schemaVersion": 1,
+        "type": "automatic_original_seller_proof_batch",
+        "attempted": len(results), "maximumApiCalls": limit,
+        "stoppedByRateLimit": bool(results and results[-1]["apiStatus"] == "rate_limited"),
+        "verifiedCount": len(existing.get("products") or []),
+        "results": results,
+    }
+
 def main(root=ROOT):
     audits = json.loads((root / "data/audited-products.json").read_text(encoding="utf-8"))
     catalog = json.loads((root / "data/products.json").read_text(encoding="utf-8"))
     equipment = json.loads((root / "data/equipment.json").read_text(encoding="utf-8"))
-    audits_new, catalog_new, report = refresh_snapshot(
+    audits_new, catalog_new, report = refresh_verified_offers(
         audits, catalog, equipment, run_id=os.environ.get("GITHUB_RUN_ID", "local")
     )
     report_path = root / "reports/camp-verified-offer-refresh.json"

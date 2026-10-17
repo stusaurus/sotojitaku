@@ -1381,8 +1381,8 @@
       ],
       "reviewCount": 1,
       "reviewAverage": 5,
-      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "listingAuditedAt": "2026-10-17T16:13:42.462505+00:00",
+      "listingAudit": "2026-10-17 original naturum-outdoor seller itemInfoSku normal sale, exact numeric itemId and fixed SKU, current stock and API tax-included postage-included price 37680 JPY; independent browser + official Rakuten Item API evidence: GitHub Actions run 39048471797, artifact 12105684948.",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
       "specSummary": "定員4〜5人 / 約9kg / 収納約φ23×70cm。アルミ合金メインポールの定番ドーム。",
       "identityTerms": [
@@ -1848,8 +1848,8 @@
       ],
       "reviewCount": 87,
       "reviewAverage": 4.61,
-      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
-      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "listingAuditedAt": "2026-10-17T16:13:42.462505+00:00",
+      "listingAudit": "2026-10-17 original naturum-outdoor seller itemInfoSku normal sale, exact numeric itemId and fixed SKU, current stock and API tax-included postage-included price 5090 JPY; independent browser + official Rakuten Item API evidence: GitHub Actions run 39048471797, artifact 12105684948.",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
       "specSummary": "約2.5kg / 収納約25×14×65cm / 耐荷重約100kg。背もたれも折れて比較的コンパクト。",
       "identityTerms": [
