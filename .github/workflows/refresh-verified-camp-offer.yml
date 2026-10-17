@@ -1,0 +1,106 @@
+name: Renew one strictly verified CAMP seller offer
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh_verified_camp_offer.py'
+      - '.github/workflows/refresh-verified-camp-offer.yml'
+  workflow_dispatch:
+  schedule:
+    # 09:40 JST; avoid the shared Worker nightly cross-site catalog burst.
+    - cron: '40 0 * * *'
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: sotojitaku-products
+  cancel-in-progress: false
+jobs:
+  renew-first-seller:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync original main
+        run: git pull --ff-only origin main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Snapshot exact validation inputs for safe commit
+        run: |
+          cat scripts/refresh_verified_camp_offer.py scripts/stage_camp_api_evidence.py scripts/probe_camp_seller_browser.py scripts/refresh_worker.py data/audited-products.json data/products.json data/equipment.json | sha256sum | cut -d ' ' -f1 > /tmp/verified-camp-input.sha
+      - name: Verify local renewal rules without network
+        run: |
+          python -m unittest discover -s tests -p 'test_refresh_verified_camp_offer.py' -v
+          python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
+          python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
+      - name: Install ordinary browser for exact original seller only
+        run: python -m pip install playwright==1.55.0
+      - name: Recheck exactly one original seller using two independent sources
+        run: python scripts/refresh_verified_camp_offer.py
+      - name: Verify safe partial catalog, code and original seller link
+        run: |
+          npm run check
+          npm run test:non-camp-live
+          node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
+      - name: Record safe renewal/expiry reasons even on failed checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-single-seller-refresh
+          path: reports/camp-verified-offer-refresh.json
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Atomically commit only tested changes on unchanged source
+        id: commit
+        run: |
+          cp data/audited-products.json /tmp/camp-audited-products.json
+          cp data/products.json /tmp/camp-products.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            current="$(cat scripts/refresh_verified_camp_offer.py scripts/stage_camp_api_evidence.py scripts/probe_camp_seller_browser.py scripts/refresh_worker.py data/audited-products.json data/products.json data/equipment.json | sha256sum | cut -d ' ' -f1)"
+            if [ "$current" != "$(cat /tmp/verified-camp-input.sha)" ]; then
+              echo "The catalog source changed: refuse to publish a stale validation result."
+              exit 1
+            fi
+            cp /tmp/camp-audited-products.json data/audited-products.json
+            cp /tmp/camp-products.json data/products.json
+            git add data/audited-products.json data/products.json
+            if git diff --cached --quiet; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              echo "No independently verified catalog changes."
+              exit 0
+            fi
+            git commit -m 'Renew independently verified CAMP seller offer'
+            if git push origin HEAD:main; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          echo "Cannot safely push independently validated evidence."
+          exit 1
+      - name: Prepare original Pages site with refreshed data
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          mkdir -p public
+          cp home.css index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml googlef35e71acece62b67.html .nojekyll public/
+          cp -r assets data guides camp car-stay fishing public/
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.commit.outputs.changed == 'true'
+        with:
+          path: public
+      - name: Deploy verified product data to Pages
+        id: deployment
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4
