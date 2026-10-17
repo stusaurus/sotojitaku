@@ -38,8 +38,8 @@
         "value": 0.8,
         "trust": 0.9
       },
-      "listingAuditedAt": "2026-10-17T15:43:42.411237+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 39046299192",
+      "listingAuditedAt": "2026-10-17T16:22:51.916076+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 39049135466",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
       "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
       "identityTerms": [
@@ -55,7 +55,7 @@
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=128x128",
       "reviewCount": null,
       "reviewAverage": null,
-      "verifiedAt": "2026-10-17T15:43:42.411237+00:00",
+      "verifiedAt": "2026-10-17T16:22:51.916076+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
     },
@@ -101,8 +101,8 @@
       ],
       "reviewCount": null,
       "reviewAverage": null,
-      "listingAuditedAt": "2026-10-17T16:13:42.462505+00:00",
-      "listingAudit": "2026-10-17 original naturum-outdoor seller itemInfoSku normal sale, exact numeric itemId and fixed SKU, current stock and API tax-included postage-included price 37680 JPY; independent browser + official Rakuten Item API evidence: GitHub Actions run 39048471797, artifact 12105684948.",
+      "listingAuditedAt": "2026-10-17T16:22:51.916076+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 39049135466",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
       "specSummary": "定員4〜5人 / 約9kg / 収納約φ23×70cm。アルミ合金メインポールの定番ドーム。",
       "identityTerms": [
@@ -112,7 +112,7 @@
       "price": 37680,
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3454294%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10712574%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/034542/94_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-17T16:13:42.462505+00:00",
+      "verifiedAt": "2026-10-17T16:22:51.916076+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
     },
@@ -159,8 +159,8 @@
       ],
       "reviewCount": null,
       "reviewAverage": null,
-      "listingAuditedAt": "2026-10-17T16:13:42.462505+00:00",
-      "listingAudit": "2026-10-17 original naturum-outdoor seller itemInfoSku normal sale, exact numeric itemId and fixed SKU, current stock and API tax-included postage-included price 5090 JPY; independent browser + official Rakuten Item API evidence: GitHub Actions run 39048471797, artifact 12105684948.",
+      "listingAuditedAt": "2026-10-17T16:22:51.916076+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 39049135466",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
       "specSummary": "約2.5kg / 収納約25×14×65cm / 耐荷重約100kg。背もたれも折れて比較的コンパクト。",
       "identityTerms": [
@@ -170,7 +170,7 @@
       "price": 5090,
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3360729%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10639044%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/033607/29_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-10-17T16:13:42.462505+00:00",
+      "verifiedAt": "2026-10-17T16:22:51.916076+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
     }
@@ -244,5 +244,5 @@
     "cooler:2238145": "not_reverified",
     "fire_pit:ST-032RS": "not_reverified"
   },
-  "updatedAt": "2026-10-17T16:13:42.462505+00:00"
+  "updatedAt": "2026-10-17T16:22:51.916076+00:00"
 }
