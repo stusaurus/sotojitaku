@@ -1,0 +1,30 @@
+name: Verify first independently audited CAMP offer
+on:
+  pull_request:
+    paths:
+      - 'data/products.json'
+      - 'data/audited-products.json'
+      - 'tests/verified-camp-snapshot.test.mjs'
+      - '.github/workflows/verify-camp-first-recovery.yml'
+permissions:
+  contents: read
+jobs:
+  verify-safe-partial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify repository code
+        run: npm run check
+      - name: Strict no-stale partial-publication tests and all isolated unit cases
+        run: npm run test:non-camp-live
+      - name: Strict live product suitability and affiliate link test
+        run: node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
+      - name: Original CAMP seller and product verifier regressions
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
