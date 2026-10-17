@@ -11,6 +11,12 @@ on:
       - 'scripts/stage_camp_api_evidence.py'
       - '.github/workflows/stage-camp-api-evidence.yml'
   workflow_dispatch:
+    inputs:
+      offset:
+        description: "Number of distinct CAMP categories to skip (0, 2, 4, 6 or 8)"
+        type: number
+        required: false
+        default: 0
 permissions:
   contents: read
 concurrency:
@@ -29,7 +35,7 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
       - name: Stage at most two separate CAMP categories (read only)
         if: github.event_name != 'pull_request'
-        run: python scripts/stage_camp_api_evidence.py --limit 2
+        run: python scripts/stage_camp_api_evidence.py --offset "${{ inputs.offset || 0 }}" --limit 2
       - name: Preserve research-only candidate report
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
