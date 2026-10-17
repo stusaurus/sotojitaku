@@ -1,0 +1,35 @@
+name: Verify CAMP exact seller renewal safeguards
+on:
+  pull_request:
+    paths:
+      - 'scripts/refresh_verified_camp_offer.py'
+      - 'tests/test_refresh_verified_camp_offer.py'
+      - 'tests/verified-camp-snapshot.test.mjs'
+      - '.github/workflows/refresh-verified-camp-offer.yml'
+      - '.github/workflows/verify-camp-auto-renew.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test no-drift seller renewal, outages, 429, expiry and wrong listing
+        run: python -m unittest discover -s tests -p 'test_refresh_verified_camp_offer.py' -v
+      - name: Regress current browser, official API and strict seller identity safeguards
+        run: |
+          python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
+          python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
+      - name: Verify site and audited partial catalog
+        run: |
+          npm run check
+          npm run test:non-camp-live
+          node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
