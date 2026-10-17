@@ -1,0 +1,40 @@
+name: Stage CAMP official API evidence
+on:
+  pull_request:
+    paths:
+      - 'scripts/stage_camp_api_evidence.py'
+      - 'tests/test_stage_camp_api_evidence.py'
+      - '.github/workflows/stage-camp-api-evidence.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/stage_camp_api_evidence.py'
+      - '.github/workflows/stage-camp-api-evidence.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-api-evidence-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify-and-stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact identity, postage, ranges and throttling protections
+        run: python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
+      - name: Stage at most two separate CAMP categories (read only)
+        if: github.event_name != 'pull_request'
+        run: python scripts/stage_camp_api_evidence.py --limit 2
+      - name: Preserve research-only candidate report
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-api-evidence-candidates
+          path: reports/camp-api-evidence-candidates.json
+          if-no-files-found: error
+          retention-days: 14
