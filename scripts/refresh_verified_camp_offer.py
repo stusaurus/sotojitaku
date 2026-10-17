@@ -66,7 +66,7 @@ def eligible_existing(product, audit):
 
 def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser_get=None,
                      now=None, run_id="local",
-                     target_category=target_category, target_model=target_model):
+                     target_category=TARGET_CATEGORY, target_model=TARGET_MODEL):
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("observed_time_must_be_aware")
