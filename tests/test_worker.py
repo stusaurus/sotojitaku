@@ -2,9 +2,9 @@ import unittest,sys,json,io,urllib.error
 from unittest.mock import patch
 from datetime import datetime, timezone, timedelta
 from tempfile import TemporaryDirectory
-import refresh_worker as worker
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+import refresh_worker as worker
 from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, name_lookup_allowed, worker_fallback_allowed, fetch_worker_json, UpstreamUnavailable, should_open_circuit
 class StaleEvidencePreflight(unittest.TestCase):
  def test_old_blocked_sale_page_skips_worker_without_api_requests(self):
