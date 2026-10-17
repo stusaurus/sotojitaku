@@ -4,7 +4,7 @@ fresh independent sales-page audit. Missing or changed evidence empties that ite
 """
 import json, re, time, unicodedata, urllib.parse, urllib.request, urllib.error
 from datetime import datetime, timezone
-from acquire import ROOT, fetch_with_retry, canonical_item_url
+from acquire import ROOT, canonical_item_url
 WORKER='https://daily-cost-api.kiyo0625puma.workers.dev/api/product-search'
 SHIPPING_LOOKUP='https://daily-cost-api.kiyo0625puma.workers.dev/api/shipping-lookup'
 HEADERS={'Origin':'https://stusaurus.github.io','Referer':'https://stusaurus.github.io/sotojitaku/','User-Agent':'sotojitaku-camp/1.0'}
@@ -12,9 +12,14 @@ class UpstreamUnavailable(Exception):
     """The Worker reached an upstream limit/outage; do not hammer remaining items."""
     pass
 
-def fetch_worker_json(req, fetch=fetch_with_retry):
+def fetch_worker_json(req, fetch=None):
+    # Make a single request. Retrying 502 three times hides a wrapped Rakuten
+    # 429, wastes the same shared quota and can make unrelated sites fail.
     try:
-        return fetch(req)
+        if fetch is not None:
+            return fetch(req)
+        with urllib.request.urlopen(req, timeout=25) as response:
+            return json.loads(response.read().decode('utf-8'))
     except urllib.error.HTTPError as error:
         if error.code == 429:
             raise UpstreamUnavailable('upstream_rate_limited') from None
