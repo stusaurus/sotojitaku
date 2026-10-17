@@ -11,7 +11,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKER = "https://daily-cost-api.kiyo0625puma.workers.dev"
+WORKER = ""\nWORKER_HOSTS = [\n    "https://daily-cost-api.kiyo0625puma.workers.dev",\n    "https://daily-cost-api.stuffedsaurus.workers.dev",\n]
 HEADERS = {
     "Origin": "https://stusaurus.github.io",
     "Referer": "https://stusaurus.github.io/sotojitaku/",
@@ -57,27 +57,29 @@ def item_flags(product, audit):
 
 
 audits = json.loads((ROOT / "data/audited-products.json").read_text())["products"]
-status, health = request("/health", {})
-print("WORKER_HEALTH", json.dumps({
-    "http": status, "ok": health.get("ok"), "matching": health.get("matching"),
-}, ensure_ascii=False))
-for model in SAMPLES:
-    audit = next(p for p in audits if p.get("model") == model)
-    status, item = request("/api/item-lookup", {
-        "url": audit["itemUrl"], "itemCode": audit.get("itemCode", ""), "q": audit.get("model", ""),
-    })
-    print("EXACT_ITEM", model, json.dumps({
-        "http": status, **item_flags(item, audit),
-        "reason": item.get("reason"), "upstream_error": item.get("error"),
+for WORKER in WORKER_HOSTS:
+    print('WORKER_HOST', WORKER.split('//', 1)[-1])
+    status, health = request("/health", {})
+    print("WORKER_HEALTH", json.dumps({
+        "http": status, "ok": health.get("ok"), "matching": health.get("matching"),
     }, ensure_ascii=False))
-    status, lookup = request("/api/shipping-lookup", {
-        "code": audit.get("lookupCode", ""), "name": audit.get("name", ""),
-        "brand": audit.get("brand", ""),
-    })
-    matched = lookup.get("shipping_included_url", "")
-    print("SHIPPING_LOOKUP", model, json.dumps({
-        "http": status, "found": lookup.get("found"),
-        "method": lookup.get("lookup_method"),
-        "exact_item_url": canonical_affiliate_url(matched) == audit["itemUrl"],
-        "upstream_error": lookup.get("error"),
-    }, ensure_ascii=False))
+    for model in SAMPLES:
+        audit = next(p for p in audits if p.get("model") == model)
+        status, item = request("/api/item-lookup", {
+            "url": audit["itemUrl"], "itemCode": audit.get("itemCode", ""), "q": audit.get("model", ""),
+        })
+        print("EXACT_ITEM", model, json.dumps({
+            "http": status, **item_flags(item, audit),
+            "reason": item.get("reason"), "upstream_error": item.get("error"),
+        }, ensure_ascii=False))
+        status, lookup = request("/api/shipping-lookup", {
+            "code": audit.get("lookupCode", ""), "name": audit.get("name", ""),
+            "brand": audit.get("brand", ""),
+        })
+        matched = lookup.get("shipping_included_url", "")
+        print("SHIPPING_LOOKUP", model, json.dumps({
+            "http": status, "found": lookup.get("found"),
+            "method": lookup.get("lookup_method"),
+            "exact_item_url": canonical_affiliate_url(matched) == audit["itemUrl"],
+            "upstream_error": lookup.get("error"),
+        }, ensure_ascii=False))
