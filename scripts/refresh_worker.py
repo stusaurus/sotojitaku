@@ -29,6 +29,9 @@ def fetch_worker_json(req, fetch=fetch_with_retry):
                 raise UpstreamUnavailable('upstream_api_unavailable') from None
         raise
 
+def should_open_circuit(reason, failures):
+    return reason == 'upstream_rate_limited' or failures >= 3
+
 def parse_listing(page, model, expected_price, expected_id=None):
     marker='"itemInfoSku":'
     if marker not in page:raise ValueError('missing_sales_evidence')
@@ -199,7 +202,7 @@ def acquire():
             reasons[audit['category']]=reason
             # A definite 429 opens the breaker immediately. Three other API failures
             # also stop repeated requests while preserving the fail-closed output.
-            if reason=='upstream_rate_limited' or upstream_failures>=3:
+            if should_open_circuit(reason, upstream_failures):
                 circuit_open=True
                 print('UPSTREAM_CIRCUIT_OPEN',reason,'after',upstream_failures,'failures')
         except Exception as error:
