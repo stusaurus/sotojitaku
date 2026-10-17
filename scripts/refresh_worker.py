@@ -167,6 +167,7 @@ def acquire():
     circuit_open=False
     seller_failure_counts={}
     blocked_seller_hosts=set()
+    seller_category_probes=set()
     for audit in audits:
         if circuit_open:
             reason='upstream_circuit_open'
@@ -183,8 +184,13 @@ def acquire():
                 # seller's current SKU/price evidence cannot be read. The
                 # Worker cannot independently prove variants and stock.
                 seller_host=urllib.parse.urlparse(audit['itemUrl']).hostname or ''
-                if seller_host in blocked_seller_hosts:
+                # On an apparently blocked host, still try one carefully
+                # bounded listing per untested category. If the seller
+                # recovers, the later models in that category are not missed.
+                probe_key=(seller_host,audit['category'])
+                if seller_host in blocked_seller_hosts and probe_key in seller_category_probes:
                     raise ValueError('seller_host_evidence_circuit_open')
+                seller_category_probes.add(probe_key)
                 try:
                     page=fetch_page(audit['itemUrl'],attempts=1)
                 except urllib.error.HTTPError as error:
@@ -206,6 +212,7 @@ def acquire():
                         seller_failure_counts[seller_host]=0
                     raise ValueError('stale_sales_evidence_unavailable')
                 seller_failure_counts[seller_host]=0
+                blocked_seller_hosts.discard(seller_host)
             if audit.get('lookupCode') or audit.get('lookupName'):
                 params={'code':audit.get('lookupCode',''),'name':audit.get('name',''),'brand':audit.get('brand','')}
                 req=urllib.request.Request(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode(params),headers=HEADERS)
