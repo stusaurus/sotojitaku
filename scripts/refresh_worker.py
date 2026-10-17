@@ -37,6 +37,17 @@ def fetch_worker_json(req, fetch=None):
 def should_open_circuit(reason, failures):
     return reason == 'upstream_rate_limited' or failures >= 3
 
+# Three consecutive short non-evidence responses from the same seller host
+# indicate this run cannot verify old listings there. Stop probing that host
+# without claiming the listing is unavailable or inventing its current price.
+MAX_SELLER_EVIDENCE_FAILURES=3
+
+def short_seller_evidence_failure(page):
+    return len(str(page or '').strip())<=512 and '"itemInfoSku":' not in str(page or '')
+
+def should_open_seller_evidence_circuit(consecutive_failures):
+    return consecutive_failures>=MAX_SELLER_EVIDENCE_FAILURES
+
 def stale_sales_page_preflight_required(audit_age, page, model):
     # An audit older than seven days cannot use the Worker-only fallback. If
     # the sales page is blocked, no amount of API searching can validate it.
@@ -136,16 +147,16 @@ def worker_fallback_allowed(audit, matched, equipment, audit_age, page):
     if not isinstance(image,str) or not image.startswith('https://thumbnail.image.rakuten.co.jp/'):return False
     return True
 
-def fetch_page(url):
+def fetch_page(url, attempts=3):
     req=urllib.request.Request(url,headers=HEADERS)
-    for attempt in range(3):
+    for attempt in range(attempts):
         try:
             with urllib.request.urlopen(req,timeout=25) as response:raw=response.read()
             match=re.search(br'charset\s*=\s*["\']?([\w-]+)',raw[:10000],re.I)
             return raw.decode(match.group(1).decode() if match else 'utf-8',errors='replace')
         except Exception as e:
             code=getattr(e,'code',None)
-            if attempt==2 or code and code not in (429,500,502,503,504):raise
+            if attempt==attempts-1 or code and code not in (429,500,502,503,504):raise
             time.sleep(1+attempt*2)
 
 def acquire():
@@ -154,6 +165,9 @@ def acquire():
     equipment=json.loads((ROOT/'data/equipment.json').read_text())
     upstream_failures=0
     circuit_open=False
+    seller_failure_counts={}
+    blocked_seller_hosts=set()
+    seller_category_probes=set()
     for audit in audits:
         if circuit_open:
             reason='upstream_circuit_open'
@@ -166,9 +180,39 @@ def acquire():
             if not 0<=age<=365:raise ValueError('spec_audit_expired')
             page=None
             if age>7:
-                page=fetch_page(audit['itemUrl'])
+                # Preflight only: a stale listing is ineligible when its own
+                # seller's current SKU/price evidence cannot be read. The
+                # Worker cannot independently prove variants and stock.
+                seller_host=urllib.parse.urlparse(audit['itemUrl']).hostname or ''
+                # On an apparently blocked host, still try one carefully
+                # bounded listing per untested category. If the seller
+                # recovers, the later models in that category are not missed.
+                probe_key=(seller_host,audit['category'])
+                if seller_host in blocked_seller_hosts and probe_key in seller_category_probes:
+                    raise ValueError('seller_host_evidence_circuit_open')
+                seller_category_probes.add(probe_key)
+                try:
+                    page=fetch_page(audit['itemUrl'],attempts=1)
+                except urllib.error.HTTPError as error:
+                    if error.code in (403,429):
+                        failures=seller_failure_counts.get(seller_host,0)+1
+                        seller_failure_counts[seller_host]=failures
+                        if should_open_seller_evidence_circuit(failures):
+                            blocked_seller_hosts.add(seller_host)
+                            print('SELLER_EVIDENCE_CIRCUIT_OPEN','http_'+str(error.code),'after',failures,'failures')
+                    raise
                 if stale_sales_page_preflight_required(age,page,audit['model']):
+                    if short_seller_evidence_failure(page):
+                        failures=seller_failure_counts.get(seller_host,0)+1
+                        seller_failure_counts[seller_host]=failures
+                        if should_open_seller_evidence_circuit(failures):
+                            blocked_seller_hosts.add(seller_host)
+                            print('SELLER_EVIDENCE_CIRCUIT_OPEN','short_non_evidence_page','after',failures,'failures')
+                    else:
+                        seller_failure_counts[seller_host]=0
                     raise ValueError('stale_sales_evidence_unavailable')
+                seller_failure_counts[seller_host]=0
+                blocked_seller_hosts.discard(seller_host)
             if audit.get('lookupCode') or audit.get('lookupName'):
                 params={'code':audit.get('lookupCode',''),'name':audit.get('name',''),'brand':audit.get('brand','')}
                 req=urllib.request.Request(SHIPPING_LOOKUP+'?'+urllib.parse.urlencode(params),headers=HEADERS)

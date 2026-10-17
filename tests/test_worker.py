@@ -5,7 +5,79 @@ from tempfile import TemporaryDirectory
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import refresh_worker as worker
+import report_camp_refresh as reporter
 from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, name_lookup_allowed, worker_fallback_allowed, fetch_worker_json, UpstreamUnavailable, should_open_circuit
+class SafeRecoveryReport(unittest.TestCase):
+ def test_report_counts_failure_causes_but_omits_product_urls(self):
+  catalog={'status':'partial_error','updatedAt':'2026-10-17T12:00:00Z','products':[],
+   'failedCategories':['tent','chair'], 'itemFailures':{
+    'tent:MODEL1':'stale_sales_evidence_unavailable',
+    'tent:MODEL2':'seller_host_evidence_circuit_open',
+    'chair:MODEL3':'seller_host_evidence_circuit_open',
+   }, 'secret':'SHOULD_NOT_LEAK','itemUrl':'https://item.rakuten.co.jp/shop/private/'}
+  report=reporter.build_report(catalog)
+  self.assertEqual(report['verifiedProductCount'],0)
+  self.assertEqual(report['failedAuditCount'],3)
+  self.assertEqual(report['failureReasonCounts']['seller_host_evidence_circuit_open'],2)
+  self.assertNotIn('SHOULD_NOT_LEAK',json.dumps(report))
+  self.assertNotIn('item.rakuten.co.jp',json.dumps(report))
+
+class SellerEvidenceCircuit(unittest.TestCase):
+ def stale_audits(self, count, host='item.rakuten.co.jp'):
+  stamp=(datetime.now(timezone.utc)-timedelta(days=12)).isoformat()
+  return [{'category':'tent','model':f'MODEL-{n}','itemUrl':f'https://{host}/shop/{n}/','listingAuditedAt':stamp} for n in range(count)]
+ def run_catalog(self, audits, sale_page='Access denied'):
+  with TemporaryDirectory() as tmp:
+   root=Path(tmp)
+   (root/'data').mkdir()
+   (root/'data'/'audited-products.json').write_text(json.dumps({'products':audits}))
+   (root/'data'/'equipment.json').write_text(json.dumps({'categories':[]}))
+   with patch.object(worker,'ROOT',root), patch.object(worker,'fetch_page',return_value=sale_page) as sales, patch.object(worker,'fetch_worker_json',side_effect=AssertionError('Worker must not be called')) as api, patch.object(worker.time,'sleep',return_value=None):
+    report=worker.acquire()
+   return report,sales,api
+ def test_tiny_missing_sku_pages_open_host_circuit_after_three(self):
+  report,sales,api=self.run_catalog(self.stale_audits(9),sale_page='Access denied')
+  self.assertEqual(sales.call_count,3)
+  self.assertEqual(api.call_count,0)
+  self.assertEqual(len(report['products']),0)
+  self.assertEqual(sum(v=='stale_sales_evidence_unavailable' for v in report['itemFailures'].values()),3)
+  self.assertEqual(sum(v=='seller_host_evidence_circuit_open' for v in report['itemFailures'].values()),6)
+  self.assertEqual(report['status'],'partial_error')
+ def test_bounded_category_probe_keeps_recovery_opportunity(self):
+  audits=self.stale_audits(7)
+  audits[4]['category']='chair'
+  audits[5]['category']='chair'
+  audits[6]['category']='mat'
+  report,sales,api=self.run_catalog(audits)
+  # Three initial same-host misses, plus at most one probe for each new
+  # category, rather than hammering all seven SKUs or skipping all categories.
+  self.assertEqual(sales.call_count,5)
+  self.assertEqual(api.call_count,0)
+  self.assertEqual(report['itemFailures']['tent:MODEL-3'],'seller_host_evidence_circuit_open')
+  self.assertEqual(report['itemFailures']['chair:MODEL-4'],'stale_sales_evidence_unavailable')
+  self.assertEqual(report['itemFailures']['chair:MODEL-5'],'seller_host_evidence_circuit_open')
+  self.assertEqual(report['itemFailures']['mat:MODEL-6'],'stale_sales_evidence_unavailable')
+ def test_non_evidence_host_circuit_does_not_suppress_another_host(self):
+  audits=self.stale_audits(5)+self.stale_audits(2,'other.example.invalid')
+  report,sales,_=self.run_catalog(audits)
+  self.assertEqual(sales.call_count,5)
+  self.assertEqual(report['itemFailures']['tent:MODEL-4'],'seller_host_evidence_circuit_open')
+  # A separate seller host still gets its own independent evidence attempts.
+  self.assertEqual(report['itemFailures']['tent:MODEL-1'],'stale_sales_evidence_unavailable')
+ def test_short_response_with_current_sku_is_not_a_block_signature(self):
+  self.assertFalse(worker.short_seller_evidence_failure('MODEL "itemInfoSku":{}'))
+  self.assertTrue(worker.short_seller_evidence_failure('Access denied'))
+  self.assertFalse(worker.short_seller_evidence_failure('X'*513))
+  self.assertFalse(worker.should_open_seller_evidence_circuit(2))
+  self.assertTrue(worker.should_open_seller_evidence_circuit(3))
+ def test_stale_preflight_uses_one_network_attempt_after_429(self):
+  def blocked(*args,**kwargs):
+   raise urllib.error.HTTPError('https://item.rakuten.co.jp/shop/a/',429,'Too Many Requests',None,io.BytesIO(b''))
+  with patch.object(worker.urllib.request,'urlopen',side_effect=blocked) as opener, patch.object(worker.time,'sleep',return_value=None):
+   with self.assertRaises(urllib.error.HTTPError):
+    worker.fetch_page('https://item.rakuten.co.jp/shop/a/', attempts=1)
+  self.assertEqual(opener.call_count,1)
+
 class StaleEvidencePreflight(unittest.TestCase):
  def test_old_blocked_sale_page_skips_worker_without_api_requests(self):
   with TemporaryDirectory() as tmp:
