@@ -5,7 +5,23 @@ from tempfile import TemporaryDirectory
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import refresh_worker as worker
+import report_camp_refresh as reporter
 from refresh_worker import parse_listing, live_item_code, body_gate, identity_gate, code_lookup_allowed, name_lookup_allowed, worker_fallback_allowed, fetch_worker_json, UpstreamUnavailable, should_open_circuit
+class SafeRecoveryReport(unittest.TestCase):
+ def test_report_counts_failure_causes_but_omits_product_urls(self):
+  catalog={'status':'partial_error','updatedAt':'2026-10-17T12:00:00Z','products':[],
+   'failedCategories':['tent','chair'], 'itemFailures':{
+    'tent:MODEL1':'stale_sales_evidence_unavailable',
+    'tent:MODEL2':'seller_host_evidence_circuit_open',
+    'chair:MODEL3':'seller_host_evidence_circuit_open',
+   }, 'secret':'SHOULD_NOT_LEAK','itemUrl':'https://item.rakuten.co.jp/shop/private/'}
+  report=reporter.build_report(catalog)
+  self.assertEqual(report['verifiedProductCount'],0)
+  self.assertEqual(report['failedAuditCount'],3)
+  self.assertEqual(report['failureReasonCounts']['seller_host_evidence_circuit_open'],2)
+  self.assertNotIn('SHOULD_NOT_LEAK',json.dumps(report))
+  self.assertNotIn('item.rakuten.co.jp',json.dumps(report))
+
 class SellerEvidenceCircuit(unittest.TestCase):
  def stale_audits(self, count, host='item.rakuten.co.jp'):
   stamp=(datetime.now(timezone.utc)-timedelta(days=12)).isoformat()
