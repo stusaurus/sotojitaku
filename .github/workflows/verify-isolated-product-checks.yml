@@ -1,0 +1,33 @@
+name: Verify isolated product checks
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'scripts/test_non_camp_live.mjs'
+      - '.github/workflows/refresh-car-stay-products.yml'
+      - '.github/workflows/refresh-fishing-products.yml'
+      - '.github/workflows/sync-car-stay-shared-products.yml'
+      - '.github/workflows/verify-isolated-product-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify syntax and services independent of expired CAMP listings
+        run: |
+          python scripts/stamp_assets.py
+          npm run check
+          npm run test:non-camp-live
+          python -m unittest discover -s tests -p 'test_*.py' -v
