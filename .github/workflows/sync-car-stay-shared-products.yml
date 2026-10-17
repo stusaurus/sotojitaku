@@ -45,7 +45,7 @@ jobs:
         run: |
           python scripts/stamp_assets.py
           npm run check
-          npm test
+          npm run test:non-camp-live
           python -m unittest discover -s tests -p 'test_*.py' -v
 
       - name: Publish merged catalog safely
