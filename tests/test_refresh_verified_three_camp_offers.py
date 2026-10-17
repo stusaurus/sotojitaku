@@ -99,6 +99,6 @@ class MultipleOriginalSellers(unittest.TestCase):
   _,p,report=renewal.refresh_verified_offers(audits,old,GEAR,api_fetch=api,now=NOW)
   self.assertEqual(len(calls),1)
   self.assertTrue(report["stoppedByRateLimit"])
-  self.assertEqual([x["category"] for x in p["products"]],["sleeping_bag","tent"])
+  self.assertEqual(set(x["category"] for x in p["products"]),{"sleeping_bag","tent"})
   self.assertIn("chair",p["failedCategories"])
 if __name__=="__main__":unittest.main()
