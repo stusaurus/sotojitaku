@@ -14,7 +14,7 @@ AUDIT={"category":"burner","model":"ST-310","itemCode":"realshop:st-310","itemUr
  "referencePrice":7480,"audited":True,"bodyConfirmed":True,"fixedVariant":True,
  "available":True,"priceAudit":True,"condition":"new","quantityPerListing":1}
 EQUIPMENT={"global_exclude_terms":["中古"],"categories":[{"id":"burner","include_any":["バーナー","レギュレーターストーブ"],"exclude_any":["風防","ケース"]}]}
-LIVE={"found":True,"item_url":ITEM,"affiliate_url":AFFILIATE,"item_code":AUDIT["itemCode"],
+LIVE={"found":True,"lookup_method":"exact_item_code_only","item_url":ITEM,"affiliate_url":AFFILIATE,"item_code":AUDIT["itemCode"],
  "name":"SOTO レギュレーターストーブ ST-310","price":7480,"availability":1,
  "tax_flag":0,"postage_flag":0,"purchasable_min_price":7480,
  "purchasable_max_price":7480,"image":"https://thumbnail.image.rakuten.co.jp/seller/x.jpg",
@@ -31,6 +31,8 @@ class EvidenceSafety(unittest.TestCase):
   self.assertNotIn('verifiedAt',x)
   self.assertNotIn('listingAuditedAt',x)
   self.assertEqual(x['currentApiPrice'],7480)
+ def test_fuzzy_worker_lookup_is_not_considered_official_exact_evidence(self):
+  self.assertEqual(self.evaluate({'lookup_method':'item_url_shop_search'})['status'],'untrusted_lookup_method')
  def test_wrong_rakuten_product_link_and_affiliate_pc_are_rejected(self):
   self.assertEqual(self.evaluate({'item_url':'https://item.rakuten.co.jp/realshop/other/'})['status'],'wrong_item_or_affiliate_url')
   self.assertEqual(self.evaluate({'affiliate_url':'https://hb.afl.rakuten.co.jp/hgc/x/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frealshop%2Fother%2F'})['status'],'wrong_item_or_affiliate_url')
