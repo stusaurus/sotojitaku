@@ -8,7 +8,7 @@ on:
     # The independently reverified single seller has a dedicated daily
     # workflow; historical bulk refresh must not be triggered by its audit
     # timestamp update.
-    paths: ['scripts/refresh_worker.py', '.github/workflows/refresh-products.yml']
+    paths: ['scripts/refresh_worker.py']
   workflow_dispatch:
   schedule:
     # Weekly diagnostic only. Daily bulk attempts cannot currently validate
