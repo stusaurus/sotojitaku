@@ -5,10 +5,15 @@ on:
     branches: [main]
     # Avoid quota-heavy refreshes for unrelated helper scripts, asset stamps and
     # other services' changes. Keep nightly and explicit manual refresh.
-    paths: ['scripts/refresh_worker.py', 'data/audited-products.json', '.github/workflows/refresh-products.yml']
+    # The independently reverified single seller has a dedicated daily
+    # workflow; historical bulk refresh must not be triggered by its audit
+    # timestamp update.
+    paths: ['scripts/refresh_worker.py', '.github/workflows/refresh-products.yml']
   workflow_dispatch:
   schedule:
-    - cron: '15 21 * * *'
+    # Weekly diagnostic only. Daily bulk attempts cannot currently validate
+    # the 50 outdated seller pages and would compete for shared Rakuten quota.
+    - cron: '15 21 * * 0'
 permissions:
   contents: write
   pages: write
