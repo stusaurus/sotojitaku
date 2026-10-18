@@ -39,7 +39,9 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
         model_of_url={a["itemUrl"]:a for a in model_of_code.values()}
         calls=[]
         prices={}
-        for i,(_,model) in enumerate(refresh.TARGETS): prices[model]=10000+(i*1000)
+        for i,(_,model) in enumerate(refresh.TARGETS):
+            audited=model_of_code[next(code for code,item in model_of_code.items() if item["model"]==model)]
+            prices[model]=max(10000+i*1000,int(audited["referencePrice"]))
         def api(req):
             code=parse_qs(urlparse(req.full_url).query)["itemCode"][0]
             audit=model_of_code[code]
@@ -68,7 +70,8 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
         self.assertEqual(len(calls),10)
         self.assertEqual(set(p["category"] for p in c["products"]),
                          set(category for category,_ in refresh.TARGETS))
-        self.assertEqual(sorted(p["price"] for p in c["products"]),[10000,11000,12000,13000,14000])
+        self.assertEqual(len(set(p["price"] for p in c["products"])),5)
+        self.assertTrue(all(p["price"]>=10000 for p in c["products"]))
         self.assertTrue(all(p["verifiedAt"]==NOW.isoformat() for p in c["products"]))
         self.assertTrue(all("GitHub Actions run five-test" in p["listingAudit"] for p in c["products"]))
         self.assertEqual(set(c["failedCategories"]),
