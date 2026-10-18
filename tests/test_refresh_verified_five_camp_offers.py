@@ -16,7 +16,10 @@ def fixtures():
     audits=copy.deepcopy(json.loads((ROOT/"data/audited-products.json").read_text(encoding="utf-8")))
     catalog=copy.deepcopy(json.loads((ROOT/"data/products.json").read_text(encoding="utf-8")))
     equipment=copy.deepcopy(json.loads((ROOT/"data/equipment.json").read_text(encoding="utf-8")))
-    assert len(refresh.TARGETS)==5
+    assert len(refresh.TARGETS)>=5
+    first_five=set(refresh.TARGETS[:5])
+    catalog["products"]=[p for p in catalog["products"]
+                         if (p["category"],p["model"]) in first_five]
     assert len(catalog["products"])==5
     return audits,catalog,equipment
 
@@ -35,11 +38,11 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
         audits,catalog,equipment=fixtures()
         if catalog_override is not None:
             catalog=catalog_override
-        model_of_code={a["itemCode"]:a for a in audits["products"] if (a["category"],a["model"]) in refresh.TARGETS}
+        model_of_code={a["itemCode"]:a for a in audits["products"] if (a["category"],a["model"]) in refresh.TARGETS[:5]}
         model_of_url={a["itemUrl"]:a for a in model_of_code.values()}
         calls=[]
         prices={}
-        for i,(_,model) in enumerate(refresh.TARGETS):
+        for i,(_,model) in enumerate(refresh.TARGETS[:5]):
             audited=model_of_code[next(code for code,item in model_of_code.items() if item["model"]==model)]
             prices[model]=max(10000+i*1000,int(audited["referencePrice"]))
         def api(req):
@@ -59,7 +62,7 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
             audit=model_of_url[url];calls.append(("browser",audit["model"]))
             return test_browser(audit,prices[audit["model"]])
         a,p,report=refresh.refresh_verified_offers(audits,catalog,equipment,
-                     api_fetch=api,browser_get=browser,now=NOW,run_id="five-test")
+                     api_fetch=api,browser_get=browser,now=NOW,run_id="five-test",targets=refresh.TARGETS[:5])
         return a,p,report,calls
 
     def test_five_exact_independent_proofs_renew_all_prices_and_categories(self):
@@ -69,14 +72,14 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
         self.assertEqual(report["verifiedCount"],5)
         self.assertEqual(len(calls),10)
         self.assertEqual(set(p["category"] for p in c["products"]),
-                         set(category for category,_ in refresh.TARGETS))
+                         set(category for category,_ in refresh.TARGETS[:5]))
         self.assertEqual(len(set(p["price"] for p in c["products"])),5)
         self.assertTrue(all(p["price"]>=10000 for p in c["products"]))
         self.assertTrue(all(p["verifiedAt"]==NOW.isoformat() for p in c["products"]))
         self.assertTrue(all("GitHub Actions run five-test" in p["listingAudit"] for p in c["products"]))
         self.assertEqual(set(c["failedCategories"]),
                          set(x["id"] for x in fixtures()[2]["categories"])-
-                         set(category for category,_ in refresh.TARGETS))
+                         set(category for category,_ in refresh.TARGETS[:5]))
 
     def test_429_before_table_stops_remaining_requests_no_false_renewal(self):
         a,c,report,calls=self.run_snapshot(blocked="2000036153")

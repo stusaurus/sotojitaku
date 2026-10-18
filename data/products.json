@@ -292,22 +292,134 @@
       "verifiedAt": "2026-10-18T03:10:18.558983+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "cooler",
+      "itemCode": "naturum-outdoor:10744086",
+      "model": "2238149",
+      "query": "2238149",
+      "family": "cooler-2238149",
+      "name": "Coleman アルティメイトアイスクーラーII 25L アイスブルー 2238149",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 6990,
+      "spec": {
+        "capacity_l": 25,
+        "weight": 1300
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000041/",
+        "specification": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html",
+        "fields": {
+          "capacity_l": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html",
+          "weight": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.96,
+        "comfort": 0.94,
+        "portability": 0.9,
+        "value": 0.92,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "compact",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-10-18T03:27:28.859252+00:00",
+      "listingAudit": "2026-10-18 original seller: normal Chrome itemInfoSku confirms numeric itemId, normal sale, fixed single SKU, enabled purchase and positive inventory. Official Rakuten exact itemCode/URL API confirms availability, tax included, postage included and price JPY 6990. GitHub Actions run 39093674946, artifact 12124200593.",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000041/",
+      "specSummary": "容量約25L / 約1.3kg。",
+      "identityTerms": [
+        "アルティメイトアイスクーラーII",
+        "25L",
+        "2238149"
+      ],
+      "price": 6990,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F10000041%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10744086%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/100000/41_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-10-18T03:27:28.859252+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "led_lantern",
+      "itemCode": "naturum:18742983",
+      "model": "2218364",
+      "query": "2218364",
+      "family": "lantern-2218364",
+      "name": "Coleman クアッドマルチパネルランタンplus グリーン 2218364",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 12870,
+      "spec": {
+        "brightness_lm": 800,
+        "runtime_hours": 20,
+        "power_type": "USB電源・アルカリ単1形乾電池",
+        "weight": 1200
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/9969972/",
+        "specification": "https://ec.coleman.co.jp/category/222/2218364.html",
+        "fields": {
+          "brightness_lm": "https://ec.coleman.co.jp/category/222/2218364.html",
+          "runtime_hours": "https://ec.coleman.co.jp/category/222/2218364.html",
+          "power_type": "https://ec.coleman.co.jp/category/222/2218364.html"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.96,
+        "comfort": 1,
+        "portability": 0.55,
+        "value": 0.76,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "easy"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-10-18T03:27:28.859252+00:00",
+      "listingAudit": "2026-10-18 original seller: normal Chrome itemInfoSku confirms numeric itemId, normal sale, fixed single SKU, enabled purchase and positive inventory. Official Rakuten exact itemCode/URL API confirms availability, tax included, postage included and price JPY 10454. GitHub Actions run 39093674946, artifact 12124200593.",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/9969972/",
+      "specSummary": "High約800lm / 約20時間 / USB・乾電池2WAY / 約1.2kg。4枚の着脱パネルで家族サイト向け。",
+      "identityTerms": [
+        "クアッドマルチパネルランタンplus"
+      ],
+      "price": 10454,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00pn5fo.7cx6m0ea.g00pn5fo.7cx6n596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum%2F9969972%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum%2Fi%2F18742983%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum/cabinet/goods/099699/72_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-10-18T03:27:28.859252+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
     }
   ],
   "status": "partial_error",
   "failedCategories": [
     "burner",
-    "cooler",
     "fire_pit",
-    "hot_sandwich_maker",
-    "led_lantern"
+    "hot_sandwich_maker"
   ],
   "failureReasons": {
     "burner": "fresh_seller_evidence_missing",
-    "cooler": "fresh_seller_evidence_missing",
     "fire_pit": "fresh_seller_evidence_missing",
-    "hot_sandwich_maker": "fresh_seller_evidence_missing",
-    "led_lantern": "fresh_seller_evidence_missing"
+    "hot_sandwich_maker": "fresh_seller_evidence_missing"
   },
   "itemFailures": {
     "mat:2000032354": "not_reverified",
@@ -326,7 +438,6 @@
     "sleeping_bag:2000034772": "not_reverified",
     "mat:2000038137": "not_reverified",
     "cooler:2238147": "not_reverified",
-    "cooler:2238149": "not_reverified",
     "fire_pit:2000037404": "not_reverified",
     "burner:ST-340": "not_reverified",
     "burner:ST-350": "not_reverified",
@@ -344,7 +455,6 @@
     "chair:2190856": "not_reverified",
     "chair:2000038838": "not_reverified",
     "chair:2219647": "not_reverified",
-    "led_lantern:2218364": "not_reverified",
     "sleeping_bag:2000034775": "not_reverified",
     "chair:2199216": "not_reverified",
     "chair:2000033139": "not_reverified",
@@ -357,5 +467,5 @@
     "cooler:2238145": "not_reverified",
     "fire_pit:ST-032RS": "not_reverified"
   },
-  "updatedAt": "2026-10-18T03:10:18.558983+00:00"
+  "updatedAt": "2026-10-18T03:27:28.859252+00:00"
 }
