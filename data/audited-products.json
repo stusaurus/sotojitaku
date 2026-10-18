@@ -1063,8 +1063,8 @@
       ],
       "reviewCount": 107,
       "reviewAverage": 4.6,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-10-18T04:53:18.524152+00:00",
+      "listingAudit": "2026-10-18 original seller Kanedestore verified by exact Rakuten Item API and ordinary Chrome HTML: numeric itemId, fixed single SKU, positive stock, enabled normal sale, tax and postage included, price JPY 4,869; GitHub Actions run 39098638954, evidence artifact 12125493604.",
       "itemUrl": "https://item.rakuten.co.jp/kanedestore/kaaaf5196875/",
       "specSummary": "約0.9kg / 収納約φ32×10cm。火気ルールと消火用品を確認。",
       "identityTerms": [
