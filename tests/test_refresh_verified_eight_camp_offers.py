@@ -13,14 +13,17 @@ def fixtures():
  audits=json.loads((ROOT/"data/audited-products.json").read_text(encoding="utf-8"))
  products=json.loads((ROOT/"data/products.json").read_text(encoding="utf-8"))
  equipment=json.loads((ROOT/"data/equipment.json").read_text(encoding="utf-8"))
- assert len(renew.TARGETS)==8 and len(products["products"])==8
+ assert len(renew.TARGETS)>=8
+ products["products"]=[p for p in products["products"]
+      if (p["category"],p["model"]) in renew.TARGETS[:8]]
+ assert len(products["products"])==8
  return audits,products,equipment
 
 class EightCertifiedOriginalSellers(unittest.TestCase):
  def verify(self,*,blocked=None,unavailable=None,existing=None):
   audited,old,gear=fixtures()
   if existing is not None:old=existing
-  originals={a["itemCode"]:a for a in audited["products"] if (a["category"],a["model"]) in renew.TARGETS}
+  originals={a["itemCode"]:a for a in audited["products"] if (a["category"],a["model"]) in renew.TARGETS[:8]}
   prices={v["model"]:max(6500,int(v["referencePrice"])+100) for v in originals.values()}
   pages={v["itemUrl"]:v for v in originals.values()}
   calls=[]
@@ -43,7 +46,7 @@ class EightCertifiedOriginalSellers(unittest.TestCase):
        "variantMappedInventories":[{"quantity":3}]}}
    return url,a["name"]+' "itemInfoSku":'+json.dumps(info)
   a,p,r=renew.refresh_verified_offers(audited,old,gear,
-      api_fetch=api,browser_get=browser,now=NOW,run_id="eight-test")
+      api_fetch=api,browser_get=browser,now=NOW,run_id="eight-test",targets=renew.TARGETS[:8])
   return a,p,r,calls
 
  def test_eight_item_codes_renew_independently_only_three_gaps_left_as_two(self):
@@ -53,7 +56,7 @@ class EightCertifiedOriginalSellers(unittest.TestCase):
   self.assertEqual(r["verifiedCount"],8)
   self.assertEqual(len(calls),16)
   self.assertEqual({x["category"] for x in p["products"]},
-      {cat for cat,_ in renew.TARGETS})
+      {cat for cat,_ in renew.TARGETS[:8]})
   self.assertEqual(set(p["failedCategories"]),{"burner","hot_sandwich_maker"})
   self.assertTrue(all(x["verifiedAt"]==NOW.isoformat() for x in p["products"]))
   self.assertTrue(all("GitHub Actions run eight-test" in x["listingAudit"] for x in p["products"]))
