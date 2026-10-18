@@ -2,7 +2,7 @@
 
 ## Current independently verified catalog (2026-10-17)
 
-CAMP now has **eight independently reverified original seller listings**, each requiring its own strict API + browser evidence:
+CAMP now has **nine independently reverified original seller listings**, each requiring its own strict API + browser evidence:
 
 | Category | Model | Seller item code | Last checked price |
 | --- | --- | --- | ---: |
@@ -14,14 +14,15 @@ CAMP now has **eight independently reverified original seller listings**, each r
 | Cooler | Coleman Ultimate Ice Cooler II 25L 2238149 | naturum-outdoor:10744086 | ¥6,990 |
 | LED lantern | Coleman Quad Multi Panel Lantern plus 2218364 | naturum:18742983 | ¥10,454 |
 | Fire pit | Coleman Fire Disk Solo 2000037404 | kanedestore:10014957 | ¥4,869 |
+| Hot sandwich maker | Coleman Hot Sandwich Cooker 1709435 | sorabostore:10004146 | ¥4,548 |
 
-Tent/chair evidence: [GitHub Actions run #39048471797](https://github.com/stusaurus/sotojitaku/actions/runs/39048471797), artifact #12105684948. Mat/table evidence: [GitHub Actions run #39092237517](https://github.com/stusaurus/sotojitaku/actions/runs/39092237517), artifact #12123132877. Cooler/LED evidence: [GitHub Actions run #39093674946](https://github.com/stusaurus/sotojitaku/actions/runs/39093674946), artifact #12124200593. Fire pit proof: [GitHub Actions run #39098638954](https://github.com/stusaurus/sotojitaku/actions/runs/39098638954), artifact #12125493604. All eight are now included in the bounded daily renewal loop. A confirmed Rakuten 429 stops further requests for that run, rather than consuming shared quota. If any independently verified product expires without successful renewal, its old timestamp is **never extended** and it is not recommended. **Two CAMP categories remain unverified: burner and hot sandwich maker.**; full catalog diversity tests still correctly fail.
+Tent/chair evidence: [GitHub Actions run #39048471797](https://github.com/stusaurus/sotojitaku/actions/runs/39048471797), artifact #12105684948. Mat/table evidence: [GitHub Actions run #39092237517](https://github.com/stusaurus/sotojitaku/actions/runs/39092237517), artifact #12123132877. Cooler/LED evidence: [GitHub Actions run #39093674946](https://github.com/stusaurus/sotojitaku/actions/runs/39093674946), artifact #12124200593. Fire pit proof: [GitHub Actions run #39098638954](https://github.com/stusaurus/sotojitaku/actions/runs/39098638954), artifact #12125493604. Sandwich proof: [GitHub Actions run #39101633436](https://github.com/stusaurus/sotojitaku/actions/runs/39101633436), artifact #12127055461. All nine are now included in the bounded daily renewal loop. A confirmed Rakuten 429 stops further requests for that run, rather than consuming shared quota. If any independently verified product expires without successful renewal, its old timestamp is **never extended** and it is not recommended. **One CAMP category remains unverified: burner.**; full catalog diversity tests still correctly fail.
 
 
-The original one-item renewal has been extended to the eight explicitly certified original merchant SKUs listed above. Other categories remain unavailable until independent current sales evidence exists.
+The original one-item renewal has been extended to the nine explicitly certified original merchant SKUs listed above. Other categories remain unavailable until independent current sales evidence exists.
 
 ## Automatic cycle
-- GitHub Actions: [Renew one strictly verified CAMP seller offer](../../.github/workflows/refresh-verified-camp-offer.yml) runs once daily around **09:40 JST** and checks only the eight certified original SKUs (at most eight Item API requests per run), plus on initial deployment or deliberate manual dispatch.
+- GitHub Actions: [Renew one strictly verified CAMP seller offer](../../.github/workflows/refresh-verified-camp-offer.yml) runs once daily around **09:40 JST** and checks only the nine certified original SKUs (at most nine Item API requests per run), plus on initial deployment or deliberate manual dispatch.
 - It uses the **exact original merchant item code** in a single read-only Rakuten Item API request. It accepts only unchanged original shop, item code, destination URL, valid matching model and seller identity; explicit stock, tax-included and shipping-included flags; a plausible price and one fixed purchasable price range.
 - Only if the API passes does it open the seller's original page using standard headless Chrome **once**, without proxy, stealth, captcha bypass, carts or affiliate clicks.
 - It validates `itemInfoSku` with the pre-existing strict seller rules **including itemId matching the old merchant item code**, NORMAL/allowed purchase, exactly one fixed in-stock variant, same current price and model.
