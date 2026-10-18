@@ -28,6 +28,8 @@ TARGETS = (
     ("chair", "2190857"),
     ("mat", "2000036153"),
     ("table", "2205816"),
+    ("cooler", "2238149"),
+    ("led_lantern", "2218364"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
