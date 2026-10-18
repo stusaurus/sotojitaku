@@ -60,7 +60,7 @@ class MultipleOriginalSellers(unittest.TestCase):
        "variantMappedInventories":[{"quantity":2}]}}
    return url,f"本体 {obj['model']} \"itemInfoSku\":"+json.dumps(info)
   fresh,live,report=renewal.refresh_verified_offers(audits,old,GEAR,api_fetch=api,
-      browser_get=browser,now=now,run_id="three-test")
+      browser_get=browser,now=now,run_id="three-test",targets=renewal.TARGETS[:3])
   return fresh,live,report,calls
  def test_three_verified_sellers_get_independent_current_price_and_proof_time(self):
   a,p,report,calls=self.execute()
@@ -96,7 +96,7 @@ class MultipleOriginalSellers(unittest.TestCase):
   def api(req):
    calls.append(req.full_url)
    return {"error":"worker_unavailable","upstream_status":429}
-  _,p,report=renewal.refresh_verified_offers(audits,old,GEAR,api_fetch=api,now=NOW)
+  _,p,report=renewal.refresh_verified_offers(audits,old,GEAR,api_fetch=api,now=NOW,targets=renewal.TARGETS[:3])
   self.assertEqual(len(calls),1)
   self.assertTrue(report["stoppedByRateLimit"])
   self.assertEqual(set(x["category"] for x in p["products"]),{"sleeping_bag","tent"})
