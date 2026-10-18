@@ -20,6 +20,11 @@ class TestBrowserDiagnostics(unittest.TestCase):
   self.assertEqual(res["exceptionClass"],"TimeoutError")
   self.assertNotIn("COOKIE",json.dumps(res))
   self.assertNotIn("private",json.dumps(res))
+ def test_known_good_page_and_two_exact_unverified_sandwich_origins(self):
+  self.assertEqual(d.TARGETS,(
+    ("sleeping_bag","2000034774"),
+    ("hot_sandwich_maker","1709435"),
+    ("hot_sandwich_maker","UG-3086")))
  def test_probes_only_three_fixed_historic_items_without_catalog_change(self):
   with TemporaryDirectory() as temp:
    root=Path(temp);(root/"data").mkdir()
