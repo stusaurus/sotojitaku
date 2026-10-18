@@ -5,8 +5,10 @@ item API before using an ordinary browser for original seller HTML.
 """
 import json
 from datetime import datetime, timezone
+import time
 from acquire import ROOT
 from probe_camp_next_categories import probe_one
+from probe_camp_seller_browser import read_seller_page_once
 
 MAX_API_CALLS = 4
 # Original audited listings only. Backup for each category is checked only
@@ -18,6 +20,20 @@ TARGETS = (
     ("led_lantern", "2000038854"), # Coleman Battery Guard LED 600
 )
 PASS = "independent_proof_complete_ready_for_review"
+
+def original_seller_browser_with_one_retry(url, reader=None, pause=None):
+    """Retry only a browser/network exception, not failed sales evidence.
+
+    Ordinary Chrome page navigation only. Never bypass access controls,
+    retry a rejected SKU, or make another official Rakuten API request.
+    """
+    reader = reader or read_seller_page_once
+    pause = pause or time.sleep
+    try:
+        return reader(url)
+    except Exception:
+        pause(2)
+        return reader(url)
 
 def probe(*, root=ROOT, fetch=None, browse=None, now=None):
     audits = json.loads((root/"data/audited-products.json").read_text(encoding="utf-8"))["products"]
@@ -32,7 +48,9 @@ def probe(*, root=ROOT, fetch=None, browse=None, now=None):
             results.append({"category":category,"model":model,"status":"missing_original_item_code",
                             "verifiedForPublication":False})
             continue
-        result=probe_one(row,equipment,fetch=fetch,browse=browse,now=observed)
+        result=probe_one(row,equipment,fetch=fetch,
+                         browse=browse or original_seller_browser_with_one_retry,
+                         now=observed)
         results.append(result)
         if result.get("status")==PASS:
             proven.add(category)
