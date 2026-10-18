@@ -1,4 +1,4 @@
-"""Read-only Chrome evidence diagnostics for one proven and two blocked sellers.
+"""Read-only browser diagnostics for proven CAMP seller and two sandwich listings.
 
 This does not call the Rakuten API, click affiliate links or modify catalogs.
 It never records seller HTML, credentials, full network errors or cookies.
@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse
 from acquire import ROOT
 
-TARGETS=(("sleeping_bag","2000034774"),("cooler","2238149"),("led_lantern","2218364"))
+TARGETS=(("sleeping_bag","2000034774"),("hot_sandwich_maker","1709435"),("hot_sandwich_maker","UG-3086"))
 MAX_PAGES=3
 def safe_diagnosis(category,model,url,*,browser=None):
     if browser is None:
