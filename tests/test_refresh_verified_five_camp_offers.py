@@ -9,7 +9,9 @@ from urllib.parse import parse_qs, quote, urlparse
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import refresh_verified_camp_offer as refresh
 
-NOW=datetime(2026,10,18,4,0,tzinfo=timezone.utc)
+# Simulation time must follow real product proofs: otherwise a new valid
+# verifiedAt timestamp appears 'in the future' to an obsolete test clock.
+NOW=datetime.now(timezone.utc)
 ROOT=Path(__file__).resolve().parents[1]
 
 def fixtures():
