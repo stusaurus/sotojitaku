@@ -1,0 +1,39 @@
+name: Diagnose original CAMP seller browser access
+on:
+  pull_request:
+    paths:
+      - scripts/diagnose_camp_seller_browser.py
+      - tests/test_diagnose_camp_seller_browser.py
+      - .github/workflows/diagnose-camp-seller-browser.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/diagnose_camp_seller_browser.py
+      - .github/workflows/diagnose-camp-seller-browser.yml
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate redaction and no publication
+        run: python -m unittest discover -s tests -p test_diagnose_camp_seller_browser.py -v
+      - name: Install ordinary Playwright Chrome without bypass
+        if: github.event_name != 'pull_request'
+        run: python -m pip install playwright==1.55.0
+      - name: Compare known good seller against two blocked categories
+        if: github.event_name != 'pull_request'
+        run: python scripts/diagnose_camp_seller_browser.py
+      - name: Retain sanitized diagnostics for 14 days
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-original-browser-diagnostics
+          path: reports/camp-browser-diagnostics.json
+          retention-days: 14
+          if-no-files-found: error
