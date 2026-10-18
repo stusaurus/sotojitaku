@@ -79,7 +79,7 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
         self.assertTrue(all("GitHub Actions run five-test" in p["listingAudit"] for p in c["products"]))
         self.assertEqual(set(c["failedCategories"]),
                          set(x["id"] for x in fixtures()[2]["categories"])-
-                         set(category for category,_ in refresh.TARGETS))
+                         set(category for category,_ in refresh.TARGETS[:5]))
 
     def test_429_before_table_stops_remaining_requests_no_false_renewal(self):
         a,c,report,calls=self.run_snapshot(blocked="2000036153")
