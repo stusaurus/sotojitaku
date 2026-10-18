@@ -16,7 +16,10 @@ def fixtures():
     audit=copy.deepcopy(json.loads((ROOT/"data/audited-products.json").read_text(encoding="utf-8")))
     catalog=copy.deepcopy(json.loads((ROOT/"data/products.json").read_text(encoding="utf-8")))
     equipment=copy.deepcopy(json.loads((ROOT/"data/equipment.json").read_text(encoding="utf-8")))
-    assert len(renewal.TARGETS)==7 and len(catalog["products"])==7
+    assert len(renewal.TARGETS)>=7
+    catalog["products"]=[p for p in catalog["products"]
+        if (p["category"],p["model"]) in renewal.TARGETS[:7]]
+    assert len(catalog["products"])==7
     return audit,catalog,equipment
 
 class SevenSellerRenewal(unittest.TestCase):
@@ -24,7 +27,7 @@ class SevenSellerRenewal(unittest.TestCase):
         audits,original,gear=fixtures()
         if catalog is None:catalog=original
         active={a["itemCode"]:a for a in audits["products"]
-                if (a["category"],a["model"]) in renewal.TARGETS}
+                if (a["category"],a["model"]) in renewal.TARGETS[:7]}
         by_url={a["itemUrl"]:a for a in active.values()}
         prices={a["model"]:max(5000,int(a["referencePrice"])+100)
                 for a in active.values()}
@@ -53,7 +56,8 @@ class SevenSellerRenewal(unittest.TestCase):
                       "variantMappedInventories":[{"quantity":3}]}}
             return url,("販売中 "+a["model"]+' "itemInfoSku":'+json.dumps(data))
         a,c,report=renewal.refresh_verified_offers(audits,catalog,gear,
-               api_fetch=api,browser_get=browse,now=NOW,run_id="seven-test")
+               api_fetch=api,browser_get=browse,now=NOW,run_id="seven-test",
+               targets=renewal.TARGETS[:7])
         return a,c,report,calls
 
     def test_seven_original_shop_codes_are_independently_verified(self):
@@ -63,7 +67,7 @@ class SevenSellerRenewal(unittest.TestCase):
         self.assertEqual(report["verifiedCount"],7)
         self.assertEqual(len(calls),14)
         self.assertEqual({x["category"] for x in c["products"]},
-                         {category for category,model in renewal.TARGETS})
+                         {category for category,model in renewal.TARGETS[:7]})
         self.assertEqual(set(c["failedCategories"]),{"burner","fire_pit","hot_sandwich_maker"})
         self.assertTrue(all(p["verifiedAt"]==NOW.isoformat() for p in c["products"]))
         self.assertTrue(all("GitHub Actions run seven-test" in p["listingAudit"] for p in c["products"]))
