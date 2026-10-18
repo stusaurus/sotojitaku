@@ -1,0 +1,42 @@
+name: Probe three original-model SOTO burner sellers
+on:
+  pull_request:
+    paths:
+      - scripts/probe_camp_burner_sellers.py
+      - tests/test_probe_camp_burner_sellers.py
+      - .github/workflows/probe-camp-burner-sellers.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/probe_camp_burner_sellers.py
+      - .github/workflows/probe-camp-burner-sellers.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify strict bounded current merchant ID discovery and no publication
+        run: |
+          python -m unittest discover -s tests -p 'test_probe_camp_burner_sellers.py' -v
+          python -m unittest discover -s tests -p 'test_probe_camp_new_merchant.py' -v
+      - name: Install ordinary Chrome driver
+        if: github.event_name != 'pull_request'
+        run: python -m pip install playwright==1.55.0
+      - name: Check three explicit SOTO ST-340 sale pages against exact Item API
+        if: github.event_name != 'pull_request'
+        run: python scripts/probe_camp_burner_sellers.py
+      - name: Save research-only merchant qualification evidence
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-burner-new-merchant-proofs
+          path: reports/camp-burner-new-seller-proof.json
+          retention-days: 14
+          if-no-files-found: error
