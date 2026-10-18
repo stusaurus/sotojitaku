@@ -6,6 +6,7 @@ on:
       - 'tests/test_refresh_verified_camp_offer.py'
       - 'tests/test_refresh_verified_three_camp_offers.py'
       - 'tests/test_refresh_verified_five_camp_offers.py'
+      - 'tests/test_refresh_verified_seven_camp_offers.py'
       - 'tests/verified-camp-snapshot.test.mjs'
       - '.github/workflows/refresh-verified-camp-offer.yml'
       - '.github/workflows/verify-camp-auto-renew.yml'
@@ -30,6 +31,8 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_refresh_verified_three_camp_offers.py' -v
       - name: Verify all five original sellers and five-call ceiling
         run: python -m unittest discover -s tests -p 'test_refresh_verified_five_camp_offers.py' -v
+      - name: Verify all seven original seller codes and seven-call ceiling
+        run: python -m unittest discover -s tests -p 'test_refresh_verified_seven_camp_offers.py' -v
       - name: Regress current browser, official API and strict seller identity safeguards
         run: |
           python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
