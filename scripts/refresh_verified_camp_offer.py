@@ -30,6 +30,7 @@ TARGETS = (
     ("table", "2205816"),
     ("cooler", "2238149"),
     ("led_lantern", "2218364"),
+    ("fire_pit", "2000037404"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
