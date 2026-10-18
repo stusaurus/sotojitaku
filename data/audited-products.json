@@ -642,8 +642,8 @@
       ],
       "reviewCount": 13,
       "reviewAverage": 4.69,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-10-18T03:03:11.297202+00:00",
+      "listingAudit": "2026-10-18 original seller and Rakuten exact Item API verified by standard Chrome: itemCode, seller numeric itemId, normal sale, fixed single SKU, positive stock, tax included, shipping included, live price JPY 8800. GitHub Actions run 39092237517, artifact 12123132877.",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454307/",
       "specSummary": "使用約90×70×41/60/70cm / 約4.1kg / 収納約70×6.5×45.5cm。",
       "identityTerms": [
@@ -855,8 +855,8 @@
       ],
       "reviewCount": 221,
       "reviewAverage": 4.68,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-10-18T03:03:11.297202+00:00",
+      "listingAudit": "2026-10-18 original seller and Rakuten exact Item API verified by standard Chrome: itemCode, seller numeric itemId, normal sale, fixed single SKU, positive stock, tax included, shipping included, live price JPY 15238. GitHub Actions run 39092237517, artifact 12123132877.",
       "itemUrl": "https://item.rakuten.co.jp/cross-one/csbf936d818e/",
       "specSummary": "約198×68cm / 約2.7kg。",
       "identityTerms": [

@@ -2,21 +2,23 @@
 
 ## Current independently verified catalog (2026-10-17)
 
-CAMP now has **three independently reverified original seller listings**, each requiring its own strict API + browser evidence:
+CAMP now has **five independently reverified original seller listings**, each requiring its own strict API + browser evidence:
 
 | Category | Model | Seller item code | Last checked price |
 | --- | --- | --- | ---: |
 | Sleeping bag | Coleman Performer III/C5 2000034774 | naturum-outdoor:10241000 | ¥5,490 |
 | Tent | Coleman Tough Dome VI/3025 2206745 | naturum-outdoor:10712574 | ¥37,680 |
 | Chair | Coleman Healing Chair NX Olive 2190857 | naturum-outdoor:10639044 | ¥5,090 |
+| Mat | Coleman Camper Inflator Mat High Peak/Single 2000036153 | cross-one:10020252 | ¥15,238 |
+| Table | Coleman Natural Puzzle Table/90 2205816 | naturum-outdoor:10697876 | ¥8,800 |
 
-Tent/chair evidence: [GitHub Actions run #39048471797](https://github.com/stusaurus/sotojitaku/actions/runs/39048471797), artifact #12105684948. All three are now included in the bounded daily renewal loop. A confirmed Rakuten 429 stops further requests for that run, rather than consuming shared quota. If any independently verified product expires without successful renewal, its old timestamp is **never extended** and it is not recommended. **Seven CAMP categories remain unverified**; full catalog diversity tests still correctly fail.
+Tent/chair evidence: [GitHub Actions run #39048471797](https://github.com/stusaurus/sotojitaku/actions/runs/39048471797), artifact #12105684948. Mat/table evidence: [GitHub Actions run #39092237517](https://github.com/stusaurus/sotojitaku/actions/runs/39092237517), artifact #12123132877. All five are now included in the bounded daily renewal loop. A confirmed Rakuten 429 stops further requests for that run, rather than consuming shared quota. If any independently verified product expires without successful renewal, its old timestamp is **never extended** and it is not recommended. **Five CAMP categories remain unverified**; full catalog diversity tests still correctly fail.
 
 
-The original one-item renewal has been extended to the three explicitly certified original merchant SKUs listed above. Other categories remain unavailable until independent current sales evidence exists.
+The original one-item renewal has been extended to the five explicitly certified original merchant SKUs listed above. Other categories remain unavailable until independent current sales evidence exists.
 
 ## Automatic cycle
-- GitHub Actions: [Renew one strictly verified CAMP seller offer](../../.github/workflows/refresh-verified-camp-offer.yml) runs once daily around **09:40 JST** and checks only the three certified original SKUs (at most three Item API requests per run), plus on initial deployment or deliberate manual dispatch.
+- GitHub Actions: [Renew one strictly verified CAMP seller offer](../../.github/workflows/refresh-verified-camp-offer.yml) runs once daily around **09:40 JST** and checks only the five certified original SKUs (at most five Item API requests per run), plus on initial deployment or deliberate manual dispatch.
 - It uses the **exact original merchant item code** in a single read-only Rakuten Item API request. It accepts only unchanged original shop, item code, destination URL, valid matching model and seller identity; explicit stock, tax-included and shipping-included flags; a plausible price and one fixed purchasable price range.
 - Only if the API passes does it open the seller's original page using standard headless Chrome **once**, without proxy, stealth, captcha bypass, carts or affiliate clicks.
 - It validates `itemInfoSku` with the pre-existing strict seller rules **including itemId matching the old merchant item code**, NORMAL/allowed purchase, exactly one fixed in-stock variant, same current price and model.

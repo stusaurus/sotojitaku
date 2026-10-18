@@ -26,6 +26,8 @@ TARGETS = (
     ("sleeping_bag", "2000034774"),
     ("tent", "2206745"),
     ("chair", "2190857"),
+    ("mat", "2000036153"),
+    ("table", "2205816"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
@@ -189,16 +191,19 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
     return audits_doc, refreshed, report
 
 def refresh_verified_offers(audits_doc, existing, equipment, *,
-                            api_fetch=None, browser_get=None, now=None, run_id="local"):
-    """Bounded three-SKU renewal; a confirmed 429 stops further API requests.
+                            api_fetch=None, browser_get=None, now=None, run_id="local",
+                            targets=TARGETS):
+    """Bounded certified-SKU renewal; a confirmed 429 stops further API requests.
 
     The first check also removes expired OTHER SKUs from the snapshot,
     even when the subsequent requests are skipped for quota protection.
     """
     observed = now or datetime.now(timezone.utc)
     results = []
-    limit = len(TARGETS)
-    for category, model in TARGETS[:limit]:
+    limit = len(targets)
+    if limit > len(TARGETS) or len(set(targets)) != limit or any(item not in TARGETS for item in targets):
+        raise ValueError("unaudited_or_duplicate_target")
+    for category, model in targets:
         audits_doc, existing, result = refresh_snapshot(
             audits_doc, existing, equipment,
             api_fetch=api_fetch, browser_get=browser_get, now=observed,
