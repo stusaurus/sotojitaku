@@ -173,6 +173,125 @@
       "verifiedAt": "2026-10-17T16:22:51.916076+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "mat",
+      "itemCode": "cross-one:10020252",
+      "model": "2000036153",
+      "query": "2000036153",
+      "family": "mat-2000036153",
+      "name": "Coleman キャンパーインフレーターマットハイピーク/シングル 2000036153",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15238,
+      "spec": {
+        "length": 198,
+        "width": 68,
+        "weight": 2700
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/cross-one/csbf936d818e/",
+        "specification": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
+        "fields": {
+          "length": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
+          "width": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
+          "weight": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.95,
+        "comfort": 0.98,
+        "portability": 0.3,
+        "value": 0.7,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "easy"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-10-18T03:03:11.297202+00:00",
+      "listingAudit": "2026-10-18 original seller and Rakuten exact Item API verified by standard Chrome: itemCode, seller numeric itemId, normal sale, fixed single SKU, positive stock, tax included, shipping included, live price JPY 15238. GitHub Actions run 39092237517, artifact 12123132877.",
+      "itemUrl": "https://item.rakuten.co.jp/cross-one/csbf936d818e/",
+      "specSummary": "約198×68cm / 約2.7kg。",
+      "identityTerms": [
+        "キャンパーインフレーターマットハイピーク",
+        "シングル",
+        "2000036153"
+      ],
+      "price": 15238,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u2doo.7cx6m858.g00u2doo.7cx6ne19/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcross-one%2Fcsbf936d818e%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fcross-one%2Fi%2F10020252%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/cross-one/cabinet/onesell007/csbf936d818e.jpg?_ex=128x128",
+      "verifiedAt": "2026-10-18T03:03:11.297202+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "table",
+      "itemCode": "naturum-outdoor:10697876",
+      "model": "2205816",
+      "query": "2205816",
+      "family": "table-2205816",
+      "name": "Coleman ナチュラルパズルテーブル/90 2205816",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 8800,
+      "spec": {
+        "table_size": "約90×70×41/60/70cm",
+        "weight": 4100,
+        "packed_size": "約70×6.5×45.5cm",
+        "table_capacity": 2
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3454307/",
+        "specification": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
+          "weight": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
+          "packed_size": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 0.95,
+        "comfort": 0.84,
+        "portability": 0.35,
+        "value": 0.84,
+        "trust": 0.95
+      },
+      "traits": [
+        "easy",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-10-18T03:03:11.297202+00:00",
+      "listingAudit": "2026-10-18 original seller and Rakuten exact Item API verified by standard Chrome: itemCode, seller numeric itemId, normal sale, fixed single SKU, positive stock, tax included, shipping included, live price JPY 8800. GitHub Actions run 39092237517, artifact 12123132877.",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454307/",
+      "specSummary": "使用約90×70×41/60/70cm / 約4.1kg / 収納約70×6.5×45.5cm。",
+      "identityTerms": [
+        "ナチュラルパズルテーブル",
+        "90",
+        "2205816"
+      ],
+      "price": 8800,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3454307%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10697876%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/034543/07_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-10-18T03:03:11.297202+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
     }
   ],
   "status": "partial_error",
@@ -181,18 +300,14 @@
     "cooler",
     "fire_pit",
     "hot_sandwich_maker",
-    "led_lantern",
-    "mat",
-    "table"
+    "led_lantern"
   ],
   "failureReasons": {
     "burner": "fresh_seller_evidence_missing",
     "cooler": "fresh_seller_evidence_missing",
     "fire_pit": "fresh_seller_evidence_missing",
     "hot_sandwich_maker": "fresh_seller_evidence_missing",
-    "led_lantern": "fresh_seller_evidence_missing",
-    "mat": "fresh_seller_evidence_missing",
-    "table": "fresh_seller_evidence_missing"
+    "led_lantern": "fresh_seller_evidence_missing"
   },
   "itemFailures": {
     "mat:2000032354": "not_reverified",
@@ -206,11 +321,9 @@
     "tent:2000038139": "not_reverified",
     "chair:2190858": "not_reverified",
     "chair:2238314": "not_reverified",
-    "table:2205816": "not_reverified",
     "table:2205813": "not_reverified",
     "table:2000038844": "not_reverified",
     "sleeping_bag:2000034772": "not_reverified",
-    "mat:2000036153": "not_reverified",
     "mat:2000038137": "not_reverified",
     "cooler:2238147": "not_reverified",
     "cooler:2238149": "not_reverified",
@@ -244,5 +357,5 @@
     "cooler:2238145": "not_reverified",
     "fire_pit:ST-032RS": "not_reverified"
   },
-  "updatedAt": "2026-10-17T16:22:51.916076+00:00"
+  "updatedAt": "2026-10-18T03:03:11.297202+00:00"
 }
