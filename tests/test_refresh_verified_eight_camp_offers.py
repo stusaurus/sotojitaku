@@ -6,7 +6,9 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import refresh_verified_camp_offer as renew
 
 ROOT=Path(__file__).resolve().parents[1]
-NOW=datetime(2026,10,18,6,0,0,tzinfo=timezone.utc)
+# Simulation time must follow real product proofs: otherwise a new valid
+# verifiedAt timestamp appears 'in the future' to an obsolete test clock.
+NOW=datetime.now(timezone.utc)
 def fixtures():
  audits=json.loads((ROOT/"data/audited-products.json").read_text(encoding="utf-8"))
  products=json.loads((ROOT/"data/products.json").read_text(encoding="utf-8"))
