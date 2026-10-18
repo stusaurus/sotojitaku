@@ -1,0 +1,42 @@
+name: Reverify original CAMP sandwich sellers
+on:
+  pull_request:
+    paths:
+      - scripts/probe_camp_sandwich_final.py
+      - tests/test_probe_camp_sandwich_final.py
+      - .github/workflows/probe-camp-sandwich-final.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/probe_camp_sandwich_final.py
+      - .github/workflows/probe-camp-sandwich-final.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reverify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test original seller exact evidence and quota stops
+        run: |
+          python -m unittest discover -s tests -p 'test_probe_camp_sandwich_final.py' -v
+          python -m unittest discover -s tests -p 'test_probe_camp_next_categories.py' -v
+      - name: Install normal Chrome driver
+        if: github.event_name != 'pull_request'
+        run: python -m pip install playwright==1.55.0
+      - name: Recheck at most two independently audited original sandwich sellers
+        if: github.event_name != 'pull_request'
+        run: python scripts/probe_camp_sandwich_final.py
+      - name: Save exact item and seller evidence for review
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-original-sandwich-reproof
+          path: reports/camp-sandwich-exact-reproof.json
+          retention-days: 14
+          if-no-files-found: error
