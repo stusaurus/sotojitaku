@@ -1222,8 +1222,8 @@
       ],
       "reviewCount": 0,
       "reviewAverage": 0,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-10-18T05:45:23.621568+00:00",
+      "listingAudit": "2026-10-18 original sorabostore seller: official Rakuten exact Item API and ordinary Chrome itemInfoSku confirmed numeric itemId, fixed one SKU, normal purchase enabled, positive stock, tax included, postage included, current price JPY 4,548. GitHub Actions run 39101633436, research evidence artifact 12127055461.",
       "itemUrl": "https://item.rakuten.co.jp/sorabostore/b004iwr4ve/",
       "specSummary": "約550g / 直火対応。使用するバーナーの安定性も確認。",
       "identityTerms": [
