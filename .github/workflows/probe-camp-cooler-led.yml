@@ -1,0 +1,45 @@
+name: Probe CAMP cooler and LED lantern original sellers
+on:
+  pull_request:
+    paths:
+      - scripts/probe_camp_cooler_led.py
+      - tests/test_probe_camp_cooler_led.py
+      - .github/workflows/probe-camp-cooler-led.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/probe_camp_cooler_led.py
+      - .github/workflows/probe-camp-cooler-led.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-cooler-led-research-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test strict bounded research and blocked requests
+        run: |
+          python -m unittest discover -s tests -p 'test_probe_camp_cooler_led.py' -v
+          python -m unittest discover -s tests -p 'test_probe_camp_next_categories.py' -v
+      - name: Install standard Chrome without access workarounds
+        if: github.event_name != 'pull_request'
+        run: python -m pip install playwright==1.55.0
+      - name: Verify at most four original cooler and lantern listings
+        if: github.event_name != 'pull_request'
+        run: python scripts/probe_camp_cooler_led.py
+      - name: Keep sanitized research report for audit
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-cooler-led-seller-evidence
+          path: reports/camp-cooler-led-proof.json
+          retention-days: 14
+          if-no-files-found: error
