@@ -1010,8 +1010,8 @@
       ],
       "reviewCount": 73,
       "reviewAverage": 4.59,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-10-18T03:27:28.859252+00:00",
+      "listingAudit": "2026-10-18 original seller: normal Chrome itemInfoSku confirms numeric itemId, normal sale, fixed single SKU, enabled purchase and positive inventory. Official Rakuten exact itemCode/URL API confirms availability, tax included, postage included and price JPY 6990. GitHub Actions run 39093674946, artifact 12124200593.",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000041/",
       "specSummary": "容量約25L / 約1.3kg。",
       "identityTerms": [
@@ -2058,8 +2058,8 @@
       ],
       "reviewCount": 14,
       "reviewAverage": 4.43,
-      "listingAuditedAt": "2026-10-04T14:47:00+00:00",
-      "listingAudit": "公式仕様と楽天Workerの型番一致販売結果を照合。",
+      "listingAuditedAt": "2026-10-18T03:27:28.859252+00:00",
+      "listingAudit": "2026-10-18 original seller: normal Chrome itemInfoSku confirms numeric itemId, normal sale, fixed single SKU, enabled purchase and positive inventory. Official Rakuten exact itemCode/URL API confirms availability, tax included, postage included and price JPY 10454. GitHub Actions run 39093674946, artifact 12124200593.",
       "itemUrl": "https://item.rakuten.co.jp/naturum/9969972/",
       "specSummary": "High約800lm / 約20時間 / USB・乾電池2WAY / 約1.2kg。4枚の着脱パネルで家族サイト向け。",
       "identityTerms": [
