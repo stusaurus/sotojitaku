@@ -11,8 +11,10 @@ test('CAMP publication contains no stale sellers and honestly records unavailabl
  // An expired offer must disappear after a failed recheck, rather than
  // retaining a stale recommendation just to satisfy a coverage assertion.
  assert.ok(catalog.products.length<=audits.length,'no invented products');
- assert.equal(catalog.status,byCategory.size<all.size?'partial_error':'ok');
- assert.deepEqual(new Set(catalog.failedCategories),new Set([...all].filter(x=>!byCategory.has(x))));
+ const missing=[...all].filter(x=>!byCategory.has(x));
+ assert.ok([...byCategory].every(x=>all.has(x)),'no unknown categories');
+ assert.equal(catalog.status,missing.length?'partial_error':'ok');
+ assert.deepEqual(new Set(catalog.failedCategories),new Set(missing));
  for(const missing of catalog.failedCategories)assert.equal(catalog.failureReasons[missing],'fresh_seller_evidence_missing');
  for(const p of catalog.products){
    const source=audits.find(a=>a.category===p.category&&a.model===p.model&&a.itemUrl===p.itemUrl&&a.itemCode===p.itemCode);
