@@ -35,6 +35,10 @@ TARGETS = (
     # New merchant independently requalified in run 39102282964, attempt 2,
     # artifact 12416777012 (2026-10-22). Recheck both sources before publishing.
     ("burner", "ST-340"),
+    # Independent exact API + current seller SKU + manufacturer review,
+    # documented in CAMP-CANDIDATE-RECOVERY-20261022.md. No fit rules change.
+    ("tent", "2000038141"),
+    ("table", "2205813"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
