@@ -32,6 +32,9 @@ TARGETS = (
     ("led_lantern", "2218364"),
     ("fire_pit", "2000037404"),
     ("hot_sandwich_maker", "1709435"),
+    # New merchant independently requalified in run 39102282964, attempt 2,
+    # artifact 12416777012 (2026-10-22). Recheck both sources before publishing.
+    ("burner", "ST-340"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
