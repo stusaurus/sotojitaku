@@ -2465,7 +2465,8 @@
         "fields": {
           "table_size": "https://ec.coleman.co.jp/item/2205811.html",
           "weight": "https://ec.coleman.co.jp/item/2205811.html",
-          "packed_size": "https://ec.coleman.co.jp/item/2205811.html"
+          "packed_size": "https://ec.coleman.co.jp/item/2205811.html",
+          "table_capacity": "https://ec.coleman.co.jp/sc/natural_puzzle.html"
         }
       },
       "scores": {
@@ -2481,8 +2482,8 @@
       ],
       "reviewCount": 16,
       "reviewAverage": 4.69,
-      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "listingAuditedAt": "2026-10-22T11:00:48.238+00:00",
+      "listingAudit": "STEP17: independently matched current exact official Item API and same seller fixed SKU, enabled NORMAL sale, positive stock, exact tax/postage-inclusive price, itemId/model and affiliate destination. Manufacturer separately confirms family table or overnight cooler suitability. See STEP17-PROVISIONAL-CATALOG-20261022.md. Repeat both sources before publication.",
       "itemUrl": "https://item.rakuten.co.jp/naturum/3454309/",
       "specSummary": "約150×70cm / 約6.1kg / 3つ折り収納。家族4人でも食卓に余裕を取りたい人向け。",
       "identityTerms": [
@@ -2567,7 +2568,8 @@
         "specification": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html",
         "fields": {
           "capacity_l": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html",
-          "weight": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html"
+          "weight": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html",
+          "overnight_suitability": "https://ec.coleman.co.jp/category/COOLER_JUG_SCENE/2238145.html"
         }
       },
       "scores": {
@@ -2584,8 +2586,8 @@
       ],
       "reviewCount": 78,
       "reviewAverage": 4.59,
-      "listingAuditedAt": "2026-10-04T22:16:00+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "listingAuditedAt": "2026-10-22T11:02:13.153+00:00",
+      "listingAudit": "STEP17: independently matched current exact official Item API and same seller fixed SKU, enabled NORMAL sale, positive stock, exact tax/postage-inclusive price, itemId/model and affiliate destination. Manufacturer separately confirms family table or overnight cooler suitability. See STEP17-PROVISIONAL-CATALOG-20261022.md. Repeat both sources before publication.",
       "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000044/",
       "specSummary": "容量約35L / 約1.4kg / 保冷力約49時間。1泊の家族キャンプで保冷力を優先したい人向け。",
       "identityTerms": [
