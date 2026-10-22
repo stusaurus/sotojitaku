@@ -45,6 +45,10 @@ TARGETS = (
     ("tent", "2000038429"),
     ("fire_pit", "ST-032RS"),
     ("table", "2000038844"),
+    # STEP17: exact API + seller SKU + explicit manufacturer family/overnight
+    # suitability. The day-use cooler 2244060 is deliberately not approved.
+    ("table", "2205811"),
+    ("cooler", "2238145"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
