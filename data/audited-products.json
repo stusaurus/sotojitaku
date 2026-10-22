@@ -380,8 +380,8 @@
       ],
       "reviewCount": 196,
       "reviewAverage": 4.67,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-10-22T10:23:23+00:00",
+      "listingAudit": "2026-10-22 exact official Rakuten Item API and same seller current browser itemInfoSku independently reviewed: one fixed in-stock SKU, enabled NORMAL sale, matching itemId/model/tax-inclusive price and postage included; see CAMP-CANDIDATE-RECOVERY-20261022.md. Publication must repeat both checks.",
       "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
       "specSummary": "定員2人 / 約4.0kg / 収納約φ19×49cm。",
       "identityTerms": [
@@ -679,7 +679,8 @@
         "fields": {
           "table_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
           "weight": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
-          "packed_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html"
+          "packed_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
+          "table_capacity": "https://ec.coleman.co.jp/sc/natural_puzzle.html"
         }
       },
       "scores": {
@@ -696,8 +697,8 @@
       ],
       "reviewCount": 17,
       "reviewAverage": 4.41,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-10-22T10:23:23+00:00",
+      "listingAudit": "2026-10-22 exact official Rakuten Item API and same seller current browser itemInfoSku independently reviewed: one fixed in-stock SKU, enabled NORMAL sale, matching itemId/model/tax-inclusive price and postage included; see CAMP-CANDIDATE-RECOVERY-20261022.md. Publication must repeat both checks.",
       "itemUrl": "https://item.rakuten.co.jp/naturum/3454308/",
       "specSummary": "使用約120×70×41/60/70cm / 約5.0kg / 収納約70×7×60.5cm。",
       "identityTerms": [
