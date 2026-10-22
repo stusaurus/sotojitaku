@@ -11,6 +11,7 @@ on:
       - 'tests/test_refresh_verified_nine_camp_offers.py'
       - 'tests/test_refresh_verified_ten_camp_offers.py'
       - 'tests/test_refresh_verified_twelve_camp_offers.py'
+      - 'tests/test_requalified_camp_sellers.py'
       - 'tests/verified-camp-snapshot.test.mjs'
       - '.github/workflows/refresh-verified-camp-offer.yml'
       - '.github/workflows/verify-camp-auto-renew.yml'
@@ -49,6 +50,8 @@ jobs:
           python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
       - name: Verify requalified walking tent and family table without relaxing fit
         run: python -m unittest discover -s tests -p 'test_refresh_verified_twelve_camp_offers.py' -v
+      - name: Verify all requalified alternatives and no API-only stock approval
+        run: python -m unittest discover -s tests -p 'test_requalified_camp_sellers.py' -v
       - name: Verify site and audited partial catalog
         run: |
           npm run check
