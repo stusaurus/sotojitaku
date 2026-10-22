@@ -11,11 +11,13 @@ def fixture():
  a=json.loads((ROOT/"data/audited-products.json").read_text(encoding="utf-8"))
  p=json.loads((ROOT/"data/products.json").read_text(encoding="utf-8"))
  e=json.loads((ROOT/"data/equipment.json").read_text(encoding="utf-8"))
- assert len(renewal.TARGETS)==9 and len(p["products"])==9
+ assert len(renewal.TARGETS)>=9
+ p["products"]=[x for x in p["products"] if (x["category"],x["model"]) in renewal.TARGETS[:9]]
+ assert len(p["products"])==9
  return a,p,e
 
 class NineIndependentSellers(unittest.TestCase):
- def simulate(self,*,blocked=None,out_of_stock=None,original=None):
+ def simulate(self,*,blocked=None,out_of_stock=None,original=None,targets=None):
   audited,existing,gear=fixture()
   if original is not None:existing=original
   lookup={a["itemCode"]:a for a in audited["products"]
@@ -45,7 +47,8 @@ class NineIndependentSellers(unittest.TestCase):
            "variantMappedInventories":[{"quantity":2}]}}
    return url,a["name"]+' "itemInfoSku":'+json.dumps(obj)
   a,p,r=renewal.refresh_verified_offers(audited,existing,gear,api_fetch=api,
-                                         browser_get=browser,now=NOW,run_id="nine-test")
+                                         browser_get=browser,now=NOW,run_id="nine-test",
+                                         targets=targets or renewal.TARGETS[:9])
   return a,p,r,calls
 
  def test_nine_exact_original_sellers_renew_without_approving_burner(self):
@@ -55,7 +58,7 @@ class NineIndependentSellers(unittest.TestCase):
   self.assertEqual(r["verifiedCount"],9)
   self.assertEqual(len(calls),18)
   self.assertEqual({x["category"] for x in p["products"]},
-                   {cat for cat,_ in renewal.TARGETS})
+                   {cat for cat,_ in renewal.TARGETS[:9]})
   self.assertEqual(p["failedCategories"],["burner"])
   self.assertTrue(all(x["verifiedAt"]==NOW.isoformat() for x in p["products"]))
   self.assertTrue(all("GitHub Actions run nine-test" in x["listingAudit"] for x in p["products"]))
