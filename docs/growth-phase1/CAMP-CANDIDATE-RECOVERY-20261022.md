@@ -75,7 +75,7 @@ observation and completed before 10:23:23Z. No cart/purchase/affiliate click.
 This PR adds these two exact sellers to the existing strict renewal allowlist.
 Fresh prices, affiliate URLs and verifiedAt must be obtained again by that
 renewal before publication; research prices are not copied into products.json.
-The bounded ceiling becomes 12; any confirmed 429 stops remaining calls.
+The final bounded ceiling becomes 18; any confirmed 429 stops remaining calls.
 Seven-day expiry, fixed quantity, single SKU, exact model, shipping and fit
 rules remain unchanged. Historical nine/ten tests retain their original scope.
 New twelve-seller tests cover successful independent checks, a 429 before the
@@ -91,9 +91,57 @@ preference IDs are not rewritten and diversity tests are not disabled.
 Additional bounded exact API observations on the same day returned eligible
 API evidence for family tents 2000036439, 2000039087, 2185614, 2000038429,
 fire pit ST-032RS, walking mat 1124667 and walking table 2000038844.
-Those API results alone are insufficient: current seller fixed-SKU proof,
-model-specific manufacturer specs, and suitability review remain separate.
-They are not added to the renewal allowlist or counted as published choices.
+The additional seven calls were exact-code only, at least two seconds apart,
+with no retry and a 429 stop. No 429 was observed. Manufacturer and current
+same-seller browser review subsequently completed before 10:28:49Z:
+
+| Model | Item code | Price JPY | Current SKU stock | Result |
+| --- | --- | ---: | ---: | --- |
+| 2000036439 | goose:10002974 | 32800 | 1 | requalified |
+| 2000039087 | naturum:18699395 | 54780 | 15 | requalified |
+| 2185614 | sproutsllc:10034068 | 35836 | 2 | requalified |
+| 2000038429 | naturum-outdoor:10006523 | 23250 | 10 | requalified |
+| ST-032RS | naturum-outdoor:10524068 | 20008 | 3 | requalified |
+| 1124667 | import-ss-shop:10048152 | 10800 | 0 | REJECTED |
+| 2000038844 | lb77:10020377 | 4777 | 3 | requalified |
+
+All six successful seller pages contain NORMAL sale, enabled purchase,
+inventoryType=single, empty SKU list, one positive inventory, matching itemId
+and model, exact price, taxIncluded=true and postageIncluded=true. They join
+the existing renewal allowlist; their research observations still are not
+copied into the published products snapshot. No safety or ranking score changes.
+
+Manufacturer checks matched the stored specifications independently:
+
+- 2000036439: 4–5 persons, 16.5 kg, packed 24 x 21 x 100 cm;
+  https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/
+- 2000039087: 4–5 persons, 9.8 kg, packed diameter 24 x 70 cm;
+  https://www.coleman.co.jp/customersupport/howtomovie/2000039087/
+- 2185614: 3–4 persons, 6.3 kg, packed diameter 20 x 60 cm;
+  https://ec.coleman.co.jp/category/BEGINNER/2185614.html
+- 2000038429: 4–5 persons, 10 kg, packed diameter 23 x 68 cm;
+  https://ec.coleman.co.jp/item/2000038429.html
+  The seller describes a different packed measurement; retain the explicit
+  manufacturer specification, not the seller's incompatible old dimensions.
+- ST-032RS: explicit 3–4-person title, 5.5 kg, packed 560 x 640 x 32 mm;
+  https://ec.snowpeak.co.jp/item/SNP0120A0737
+  Add the missing field-level capacity source without changing capacity.
+- 2000038844: 405 x 290 x 305 mm, 1 kg, packed 330 x 120 x 140 mm;
+  https://ec.coleman.co.jp/item/2000038844.html
+
+The walking mat exposes a genuine source disagreement. Although the official
+API says availability=1, current seller itemInfoSku has itemId=10048152,
+one non-hidden variant `-1-1` with model 1124667, stock=0 and unit=0.
+The existing strict parser correctly rejects it as inventory_unknown. Set
+the audit's available=false and document the negative finding; do not treat
+API availability or manufacturer-shop stock as this merchant's inventory.
+It is not allowlisted, counted as a choice, or assigned a fresh verifiedAt.
+No second current, independently proven walking mat is established.
+
+Even after all 18 allowlisted offers are successfully rebuilt, walking mat
+coverage, a second suitable family table/fire pit/cooler, and preference
+diversity in every category still require evidence and testing. The current
+published nine-offer counts above are not hypothetical post-merge counts.
 
 Keep Draft until all original CI tests, actual product build, 180-context
 audit, three viewport browser tests, Lighthouse and purchase-path checks pass.
