@@ -4,7 +4,7 @@ import test_refresh_verified_nine_camp_offers as nine
 
 class TenCertifiedSellers(unittest.TestCase):
  def simulate(self, **kwargs):
-  return nine.NineIndependentSellers().simulate(targets=nine.renewal.TARGETS, **kwargs)
+  return nine.NineIndependentSellers().simulate(targets=nine.renewal.TARGETS[:10], **kwargs)
 
  def test_new_merchant_renews_after_independent_api_and_fixed_sku_evidence(self):
   audits,catalog,report,calls=self.simulate()
