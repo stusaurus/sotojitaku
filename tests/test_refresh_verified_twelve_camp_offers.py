@@ -4,7 +4,7 @@ import test_refresh_verified_nine_camp_offers as nine
 
 class TwelveCertifiedSellers(unittest.TestCase):
  def simulate(self, **kwargs):
-  return nine.NineIndependentSellers().simulate(targets=nine.renewal.TARGETS, **kwargs)
+  return nine.NineIndependentSellers().simulate(targets=nine.renewal.TARGETS[:12], **kwargs)
 
  def test_requalified_sellers_keep_original_specs_and_identity(self):
   audits,catalog,report,calls=self.simulate()
