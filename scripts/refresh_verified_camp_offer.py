@@ -39,6 +39,12 @@ TARGETS = (
     # documented in CAMP-CANDIDATE-RECOVERY-20261022.md. No fit rules change.
     ("tent", "2000038141"),
     ("table", "2205813"),
+    ("tent", "2000036439"),
+    ("tent", "2000039087"),
+    ("tent", "2185614"),
+    ("tent", "2000038429"),
+    ("fire_pit", "ST-032RS"),
+    ("table", "2000038844"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
