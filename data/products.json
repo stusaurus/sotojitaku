@@ -574,7 +574,16 @@
     "table:2205811": "not_reverified",
     "cooler:2244060": "not_reverified",
     "cooler:2238145": "not_reverified",
-    "fire_pit:ST-032RS": "not_reverified"
+    "fire_pit:ST-032RS": "not_reverified",
+    "sleeping_bag:2000034774": "seller_browser_fetch_failed",
+    "tent:2206745": "seller_browser_fetch_failed",
+    "chair:2190857": "seller_browser_fetch_failed",
+    "mat:2000036153": "seller_browser_fetch_failed",
+    "table:2205816": "seller_browser_fetch_failed",
+    "cooler:2238149": "seller_browser_fetch_failed",
+    "led_lantern:2218364": "seller_browser_fetch_failed",
+    "fire_pit:2000037404": "seller_browser_fetch_failed",
+    "hot_sandwich_maker:1709435": "seller_browser_fetch_failed"
   },
-  "updatedAt": "2026-10-22T05:20:36.448148+00:00"
+  "updatedAt": "2026-10-23T05:20:19.392096+00:00"
 }
