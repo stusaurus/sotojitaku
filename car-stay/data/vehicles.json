@@ -31,12 +31,49 @@
         }
       },
       "geometry": {
-        "usableLengthMm": 1800,
+        "usableLengthMm": null,
         "usableWidthMm": null,
-        "confidence": "B",
-        "note": "Honda 2023年検証の後席〜ダッシュボード約180cm参考値。横幅は未確認。"
+        "confidence": "D",
+        "note": "仕様別sleepProfileを優先。未確認仕様へ通常N-BOXの車中泊参考値を流用しない。"
       },
-      "floorGrade": "C"
+      "floorGrade": "unknown",
+      "sleepProfiles": [
+        {
+          "when": {
+            "trims": [
+              "N-BOX",
+              "N-BOX Custom"
+            ]
+          },
+          "geometry": {
+            "usableLengthMm": 1800,
+            "usableWidthMm": null,
+            "confidence": "B",
+            "note": "Honda 2023年検証の後席〜ダッシュボード約180cm参考値。横幅は未確認。"
+          },
+          "floorGrade": "C",
+          "source": {
+            "url": "https://www.honda.co.jp/outdoor/stay-car/n-box.html",
+            "checkedAt": "2026-10-06"
+          }
+        },
+        {
+          "when": {
+            "trim": "N-BOX JOY"
+          },
+          "geometry": {
+            "usableLengthMm": null,
+            "usableWidthMm": null,
+            "confidence": "D",
+            "note": "Honda公式はJOYのふらっとテラスを標準N-BOXとは別設計として案内。荷室参考値はあるが睡眠有効長としては流用せずQUICK MEASUREする。"
+          },
+          "floorGrade": "unknown",
+          "source": {
+            "url": "https://www.honda.co.jp/Nbox/webcatalog/utility/",
+            "checkedAt": "2026-10-06"
+          }
+        }
+      ]
     },
     {
       "vehicleId": "toyota-sienta-10-15",
