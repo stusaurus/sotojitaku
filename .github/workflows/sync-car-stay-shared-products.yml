@@ -8,6 +8,7 @@ on:
     paths:
       - 'car-stay/scripts/import_shared_catalog.py'
       - 'car-stay/scripts/report_coverage.mjs'
+      - 'car-stay/data/product-seeds/**'
       - '.github/workflows/sync-car-stay-shared-products.yml'
   schedule:
     # daily-cost-jp exports at 22:40 UTC; sync after it finishes.
