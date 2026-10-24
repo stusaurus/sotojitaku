@@ -1,4 +1,4 @@
-name: Renew nine strictly verified CAMP seller offers
+name: Renew twenty strictly verified CAMP seller offers
 on:
   push:
     branches: [main]
@@ -44,11 +44,14 @@ jobs:
           python -m unittest discover -s tests -p 'test_refresh_verified_seven_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_eight_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_nine_camp_offers.py' -v
+          python -m unittest discover -s tests -p 'test_refresh_verified_ten_camp_offers.py' -v
+          python -m unittest discover -s tests -p 'test_refresh_verified_twelve_camp_offers.py' -v
+          python -m unittest discover -s tests -p 'test_requalified_camp_sellers.py' -v
           python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
           python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
       - name: Install ordinary browser for exact original seller only
         run: python -m pip install playwright==1.55.0
-      - name: Recheck each of nine original sellers using two independent sources
+      - name: Recheck each of twenty audited sellers using two independent sources
         run: python scripts/refresh_verified_camp_offer.py
       - name: Verify safe partial catalog, code and original seller link
         run: |

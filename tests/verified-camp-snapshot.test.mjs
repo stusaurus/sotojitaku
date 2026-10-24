@@ -5,15 +5,16 @@ const catalog=JSON.parse(fs.readFileSync(new URL('../data/products.json',import.
 const audits=JSON.parse(fs.readFileSync(new URL('../data/audited-products.json',import.meta.url))).products;
 const equipment=JSON.parse(fs.readFileSync(new URL('../data/equipment.json',import.meta.url)));
 
-test('partial CAMP publication contains no stale sellers and honestly records unavailable categories',()=>{
- assert.equal(catalog.status,'partial_error');
+test('CAMP publication contains no stale sellers and honestly records unavailable categories',()=>{
  const byCategory=new Set(catalog.products.map(p=>p.category));
  const all=new Set(equipment.categories.map(c=>c.id));
  // An expired offer must disappear after a failed recheck, rather than
  // retaining a stale recommendation just to satisfy a coverage assertion.
  assert.ok(catalog.products.length<=audits.length,'no invented products');
- assert.ok(byCategory.size<all.size,'this is not complete category coverage');
- assert.deepEqual(new Set(catalog.failedCategories),new Set([...all].filter(x=>!byCategory.has(x))));
+ const missing=[...all].filter(x=>!byCategory.has(x));
+ assert.ok([...byCategory].every(x=>all.has(x)),'no unknown categories');
+ assert.equal(catalog.status,missing.length?'partial_error':'ok');
+ assert.deepEqual(new Set(catalog.failedCategories),new Set(missing));
  for(const missing of catalog.failedCategories)assert.equal(catalog.failureReasons[missing],'fresh_seller_evidence_missing');
  for(const p of catalog.products){
    const source=audits.find(a=>a.category===p.category&&a.model===p.model&&a.itemUrl===p.itemUrl&&a.itemCode===p.itemCode);
