@@ -11,9 +11,9 @@
   } catch {}
   const context={measurementId,operatorTest,optedOut,setEnabled(enabled){
     this.optedOut=!enabled;
-    window['ga-disable-'+measurementId]=!enabled;
+    window['ga-disable-'+measurementId]=operatorTest||!enabled;
     try { for(const key of ['sotojitaku_analytics_off','sotojitaku_analytics_optout'])localStorage.setItem(key,enabled?'0':'1'); } catch {}
   }};
-  window['ga-disable-'+measurementId]=optedOut;
+  window['ga-disable-'+measurementId]=operatorTest||optedOut;
   window.SOTOJITAKU_ANALYTICS=context;
 })();
