@@ -52,13 +52,16 @@ async function load(){
 
   target.innerHTML=cards.map(card=>{
     const itemNames=card.products.slice(0,4).map(p=>clean(p.name)).join("・");
-    const status=card.unresolved.length?"一部未解決":"現在の確認済み商品で成立";
+    const incomplete=card.unresolved.length>0;
+    const status=incomplete?"必要な商品が一部未確認（総額未算出）":"現在の確認済み商品で必要品が揃います";
+    const amountLabel=incomplete?"確認済み分の小計":"選定商品の合計";
+    const amount=card.products.length?money(card.total):"未算出";
     return `<section class="live-budget-card">
       <span class="live-budget-label">${escapeHtml(card.label)}</span>
       <h3>${escapeHtml(card.title)}</h3>
       <p class="live-budget-note">${escapeHtml(card.note)} · ${escapeHtml(card.plan.methodName)}</p>
-      <strong class="live-budget-price">${money(card.total)}</strong>
-      <p class="live-budget-status">${escapeHtml(status)} · ${card.products.length}商品</p>
+      <strong class="live-budget-price">${amount}</strong>
+      <p class="live-budget-status">${escapeHtml(amountLabel)} · ${escapeHtml(status)} · ${card.products.length}商品</p>
       <p class="live-budget-items">${escapeHtml(itemNames)}</p>
     </section>`;
   }).join("");
