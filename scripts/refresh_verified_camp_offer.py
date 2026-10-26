@@ -32,6 +32,23 @@ TARGETS = (
     ("led_lantern", "2218364"),
     ("fire_pit", "2000037404"),
     ("hot_sandwich_maker", "1709435"),
+    # New merchant independently requalified in run 39102282964, attempt 2,
+    # artifact 12416777012 (2026-10-22). Recheck both sources before publishing.
+    ("burner", "ST-340"),
+    # Independent exact API + current seller SKU + manufacturer review,
+    # documented in CAMP-CANDIDATE-RECOVERY-20261022.md. No fit rules change.
+    ("tent", "2000038141"),
+    ("table", "2205813"),
+    ("tent", "2000036439"),
+    ("tent", "2000039087"),
+    ("tent", "2185614"),
+    ("tent", "2000038429"),
+    ("fire_pit", "ST-032RS"),
+    ("table", "2000038844"),
+    # STEP17: exact API + seller SKU + explicit manufacturer family/overnight
+    # suitability. The day-use cooler 2244060 is deliberately not approved.
+    ("table", "2205811"),
+    ("cooler", "2238145"),
 )
 TTL = timedelta(days=7)
 ADVERSE_API_STATUSES = {
