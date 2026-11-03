@@ -337,7 +337,7 @@ function renderResult({trackDiagnosis=true}={}){
         <h3 class="section-title">出発前の安全確認</h3>
         <div class="safety-box">
           釣り禁止区域・利用時間・採捕ルール・足場・天候は場所ごとに違います。テトラ・磯・荒天・立入禁止場所は、この初心者プランの対象外です。
-          ${renderChildPfdSafety()}
+          ${renderChildPfdSafety(productResult)}
           <div class="confirm-row">
             <input id="rulesCheck" type="checkbox" ${localRulesConfirmed?"checked":""}>
             <label for="rulesCheck">行く釣り場の公式ルールを確認した</label>
@@ -432,7 +432,8 @@ function renderResult({trackDiagnosis=true}={}){
   bindAffiliateClicks();
 }
 
-function renderChildPfdSafety(){
+function renderChildPfdSafety(productResult){
+  const hasVerifiedChildPfd=Boolean(productResult?.selected?.some(p=>p.categoryId==='life_jacket_child'));
   if(answers.party!=="family_child")return "";
   if((answers.owned||[]).includes("life_jacket_child")){
     return `<div class="child-fit-note"><strong>子ども用ライフジャケットは「持っている」を選択済みです。</strong><br>出発前に、子ども全員が体格に合うサイズを着用できるか、股ベルト・バックルを含めて再確認してください。</div>`;
@@ -464,7 +465,9 @@ function renderChildPfdSafety(){
     ${fit==="unknown_mixed"
       ?'<p class="child-fit-warning">この条件では安全のため特定商品を出しません。子どもごとにメーカーサイズ表を確認し、可能なら試着してください。</p>'
       :fit
-        ?'<p class="child-fit-confirmed">選んだ体格範囲に合う販売確認済み商品だけを、下の必須品に追加します。</p>'
+        ?hasVerifiedChildPfd
+          ?'<p class="child-fit-confirmed">選んだ体格範囲に合う販売確認済み商品だけを、下の必須品に追加します。</p>'
+          :'<p class="child-fit-warning">選んだ体格範囲に合う販売確認済みの候補がありません。出発前に子ども全員の体格に合うライフジャケットを別途準備し、メーカーのサイズ表と現物を確認してください。</p>'
         :'<p class="child-fit-warning">体格を選ぶまで、子ども用ライフジャケットの商品は表示しません。</p>'}
     <a class="child-fit-link" href="https://fish.shimano.com/ja-JP/product/wear_footwear/lifevest_vest/floatingvestsolidtype/a155f00000cb4xzqar.html" target="_blank" rel="noopener">SHIMANO公式サイズ表を確認 ↗</a>
   </div>`;
@@ -517,6 +520,19 @@ function renderProducts(productResult,checklist){
   const selected=productResult.selected||[];
   const requiredProducts=selected.filter(p=>productCoversRequiredGap(p,checklist));
   const optionalProducts=selected.filter(p=>!productCoversRequiredGap(p,checklist));
+  // The raw checklist still marks selected purchase candidates as "needed".
+  // An item is unverified only when no eligible selected product covers it.
+  const verifiedCoverIds=new Set(selected.flatMap(product=>
+    product.effectiveCoverCategoryIds||product.coverCategoryIds||[product.categoryId]
+  ));
+  const unverifiedRequired=requiredGaps.filter(item=>
+    item.state==="needed"&&!verifiedCoverIds.has(item.id)
+  );
+  const missingSellerNote=unverifiedRequired.length
+    ?'<div class="empty-products" role="status"><strong>必須品に販売確認済みの候補がありません：</strong> '
+      +unverifiedRequired.map(item=>escapeHtml(item.label)).join("・")
+      +'。これらは購入リストに含まれていません。体格・安全条件を確認して別途準備してください。</div>'
+    :"";
 
   if(!requiredGaps.length){
     const stillNeeded=nonShoppingRequiredGaps.length
@@ -528,10 +544,10 @@ function renderProducts(productResult,checklist){
   }
 
   if(!requiredProducts.length){
-    return `<div class="empty-products">販売状況を確認できた商品だけを表示します。現在、必須品に合う確認済み商品がありません。未確認の商品を無理に出すことはしません。</div>`;
+    return missingSellerNote+`<div class="empty-products">販売状況を確認できた商品だけを表示します。現在、必須品に合う確認済み商品がありません。未確認の商品を無理に出すことはしません。</div>`;
   }
 
-  return `<div class="purchase-group">
+  return `${missingSellerNote}<div class="purchase-group">
     <div class="purchase-group-head"><div><span>まず揃える</span><strong>必須品だけを先に</strong></div><b>${requiredProducts.length}点</b></div>
     ${renderProductCards(requiredProducts,neededIds,checklist)}
   </div>${
