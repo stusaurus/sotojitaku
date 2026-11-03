@@ -50,10 +50,11 @@ jobs:
         run: python -m pip install playwright==1.55.0
       - name: Recheck each of nine original sellers using two independent sources
         run: python scripts/refresh_verified_camp_offer.py
-      - name: Verify safe partial catalog, code and original seller link
+      - name: Verify safe renewed CAMP catalog and original-seller identity
         run: |
           npm run check
-          npm run test:non-camp-live
+          # Expiry, pricing, and affiliate identity are checked on the refreshed catalog.
+          node --test tests/verified-camp-snapshot.test.mjs
           node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
       - name: Record safe renewal/expiry reasons even on failed checks
         if: always()

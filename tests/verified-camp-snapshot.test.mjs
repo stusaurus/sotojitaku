@@ -14,7 +14,13 @@ test('partial CAMP publication contains no stale sellers and honestly records un
  assert.ok(catalog.products.length<=audits.length,'no invented products');
  assert.ok(byCategory.size<all.size,'this is not complete category coverage');
  assert.deepEqual(new Set(catalog.failedCategories),new Set([...all].filter(x=>!byCategory.has(x))));
- for(const missing of catalog.failedCategories)assert.equal(catalog.failureReasons[missing],'fresh_seller_evidence_missing');
+ // Different exact-seller failures (429, redirect, stock, unknown variant) must
+ // be reported accurately instead of being relabeled as generic missing proof.
+ for(const missing of catalog.failedCategories){
+   const reason=catalog.failureReasons?.[missing];
+   assert.ok(typeof reason==='string'&&reason.length>0,'missing cause for '+missing);
+   assert.notEqual(reason,'renewed_exact_original_seller','a failed category cannot claim renewal');
+ }
  for(const p of catalog.products){
    const source=audits.find(a=>a.category===p.category&&a.model===p.model&&a.itemUrl===p.itemUrl&&a.itemCode===p.itemCode);
    assert.ok(source,'every live offer must match its individually reaudited original seller');

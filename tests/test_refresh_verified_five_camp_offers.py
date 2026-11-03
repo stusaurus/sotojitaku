@@ -84,12 +84,17 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
                          set(category for category,_ in refresh.TARGETS[:5]))
 
     def test_429_before_table_stops_remaining_requests_no_false_renewal(self):
-        a,c,report,calls=self.run_snapshot(blocked="2000036153")
+        # The checked-in 2026-10-25 offers are expired by November.
+        # Simulate a *still fresh* unvisited seller without changing published data.
+        _,fresh,equipment=fixtures()
+        table=next(x for x in fresh["products"] if x["model"]=="2205816")
+        table["verifiedAt"]=(NOW-timedelta(hours=1)).isoformat()
+        a,c,report,calls=self.run_snapshot(blocked="2000036153",catalog_override=fresh)
         self.assertTrue(report["stoppedByRateLimit"])
         self.assertEqual(report["attempted"],4)
         self.assertEqual(len([x for x in calls if x[0]=="api"]),4)
         self.assertNotIn(("api","2205816"),calls)
-        old=json.loads((ROOT/"data/products.json").read_text())
+        old=fresh
         previous_table=next(x for x in old["products"] if x["model"]=="2205816")
         current_table=next(x for x in c["products"] if x["model"]=="2205816")
         self.assertEqual(current_table["verifiedAt"],previous_table["verifiedAt"])
