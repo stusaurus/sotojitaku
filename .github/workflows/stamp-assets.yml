@@ -1,48 +1,54 @@
-name: Stamp static asset fingerprints
+name: Validate content fingerprints (read only)
 on:
-  push:
-    branches: [main]
+  pull_request:
     paths:
       - 'app.js'
       - 'camp/app.js'
+      - 'camp/index.html'
+      - 'index.html'
       - 'home.css'
       - 'style.css'
       - 'engine.js'
       - 'products.js'
       - 'scripts/stamp_assets.py'
+      - 'tests/assets.test.mjs'
       - '.github/workflows/stamp-assets.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'app.js'
+      - 'camp/app.js'
+      - 'camp/index.html'
+      - 'index.html'
+      - 'home.css'
+      - 'style.css'
+      - 'engine.js'
+      - 'products.js'
+      - 'scripts/stamp_assets.py'
+      - 'tests/assets.test.mjs'
+      - '.github/workflows/stamp-assets.yml'
+  workflow_dispatch:
 permissions:
-  contents: write
-concurrency:
-  group: sotojitaku-asset-stamp
-  cancel-in-progress: true
+  contents: read
 jobs:
-  stamp:
+  fingerprints:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Stamp latest main safely
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Candidate/production artifacts get correctly fingerprinted on their own
+      # runner. No bot push to main, and no race with the Pages release workflow.
+      - name: Regenerate asset fingerprints for the checked-out candidate
+        run: python scripts/stamp_assets.py
+      - name: Verify content fingerprints against actual asset bytes
+        run: node --test tests/assets.test.mjs
+      - name: Report regenerated files (no commit, no push)
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git reset --hard origin/main
-            python scripts/stamp_assets.py
-            git add app.js camp/app.js camp/index.html index.html
-            if git diff --cached --quiet; then
-              echo "Asset fingerprints already current."
-              exit 0
-            fi
-            git commit -m 'Stamp static asset fingerprints'
-            if git push origin HEAD:main; then
-              exit 0
-            fi
-            echo "Main moved during asset stamp; retrying ($attempt/3)."
-            sleep $((attempt * 2))
-          done
-          echo "Could not publish asset fingerprints after three retries."
-          exit 1
+          echo 'Asset references that needed regeneration in this runner:'
+          git diff --name-only
+          echo 'The static publishing workflow repeats stamping before packaging.'
