@@ -1,4 +1,5 @@
 import importlib.util
+import json
 from pathlib import Path
 import unittest
 
@@ -26,3 +27,28 @@ class SuspensionTests(unittest.TestCase):
         result = module.apply_suspensions({'products': []}, [{'productId': 'stop', 'suspended': True}])
         self.assertIn('stop', result['failures'])
         self.assertEqual(result['products'], [])
+
+    def test_unconfirmed_lumica_reel_must_not_be_sold_as_rod_reel(self):
+        """Seller verification alone cannot establish missing bundle components."""
+        seed_file = Path(__file__).resolve().parents[1]/'fishing/data/product-seeds/choi-lumica-start.json'
+        seed = json.loads(seed_file.read_text())
+        self.assertEqual(seed['productId'], 'lumica-choi-start-g09224')
+        self.assertEqual(seed['categoryId'], 'rod_reel')
+        self.assertTrue(seed['suspended'])
+        self.assertIn('reel', seed['suspendedReason'].lower())
+        imported = {
+            'updatedAt': '2026-11-03T10:00:00Z',
+            'status': 'verified',
+            'products': [
+                {'productId': seed['productId'], 'verifiedAt': '2026-11-03T10:00:00Z',
+                 'audit': {'status': 'verified_live'}, 'price': 3720}
+            ],
+        }
+        output = module.apply_suspensions(imported, [seed])
+        self.assertEqual(output['products'], [])
+        self.assertEqual(output['verifiedCount'], 0)
+        self.assertEqual(output['status'], 'partial')
+        self.assertEqual(output['updatedAt'], imported['updatedAt'])
+        self.assertIn('manual_suspension:', output['failures'][seed['productId']])
+        self.assertIn('reel', output['failures'][seed['productId']].lower())
+
