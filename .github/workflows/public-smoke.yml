@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'index.html'
+      - 'home.css'
+      - 'scripts/stamp_assets.py'
       - 'camp/**'
       - 'car-stay/**'
       - 'fishing/**'
@@ -20,6 +22,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: soto-public-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   public-http:
@@ -54,15 +60,17 @@ jobs:
         run: |
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
-      - name: Verify candidate HOME guide entries in 3 PR-preview viewports
+      - name: Verify candidate HOME guide and calculator entry at Pages subpath
         if: github.event_name == 'pull_request'
         run: |
-          python3 -m http.server 4173 > /tmp/soto-guide-preview.log 2>&1 &
-          HOME_BASE=http://127.0.0.1:4173/ node tests/home-guide-browser.cjs
+          python scripts/stamp_assets.py
+          mkdir -p /tmp/soto-guide-preview
+          ln -s "$GITHUB_WORKSPACE" /tmp/soto-guide-preview/sotojitaku
+          python3 -m http.server 4173 --directory /tmp/soto-guide-preview > /tmp/soto-guide-preview.log 2>&1 &
+          HOME_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/home-guide-browser.cjs
       - name: Inspect all four published experiences and catalog links
         env:
           SOTOJITAKU_BASE: https://stusaurus.github.io/sotojitaku/
-          REQUIRE_HOME_GUIDES: ${{ github.event_name != 'pull_request' && '1' || '0' }}
         run: node tests/public-smoke.cjs
       - name: Save browser proof and JSON results
         uses: actions/upload-artifact@v4

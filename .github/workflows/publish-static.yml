@@ -1,20 +1,10 @@
 name: Publish verified SOTOJITAKU site
 on:
+  # Every main update must queue a new publish run. Otherwise a docs-only push
+  # could supersede an in-flight release without matching path filters, leaving
+  # the necessary older deployment skipped and no replacement scheduled.
   push:
     branches: [main]
-    paths:
-      - 'index.html'
-      - 'home.css'
-      - 'assets/home-world-*'
-      - 'camp/**'
-      - 'tests/home-browser.cjs'
-      - 'tests/home-guide-browser.cjs'
-      - 'fishing/**'
-      - 'car-stay/**'
-      - 'tests/car-stay-browser.mjs'
-      - 'tests/fishing-browser.mjs'
-      - 'tests/fishing-published-catalog.mjs'
-      - '.github/workflows/publish-static.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -62,18 +52,34 @@ jobs:
         with:
           name: fishing-browser-proof
           path: browser-proof/
+      # Both the catalog refresh and a content PR may update main. Never
+      # publish an artifact built from a superseded main commit.
+      - name: Check latest main before packaging
+        id: release_head
+        run: python scripts/check_release_head.py
       - name: Prepare complete static site
+        if: steps.release_head.outputs.publish == 'true'
         run: |
           mkdir public
           cp home.css index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml googlef35e71acece62b67.html .nojekyll public/
           cp -r assets data guides camp car-stay fishing public/
       - uses: actions/upload-pages-artifact@v3
+        if: steps.release_head.outputs.publish == 'true'
         with:
           path: public
+      # A product update can land while the Pages artifact is uploading.
+      # Recheck immediately before deploy; concurrency cancels older runs
+      # when the newer push schedules its own release.
+      - name: Recheck latest main immediately before deployment
+        id: release_head_final
+        if: steps.release_head.outputs.publish == 'true'
+        run: python scripts/check_release_head.py
       - name: Publish complete site
+        if: steps.release_head_final.outputs.publish == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Verify published HOME editorial links and their destinations
+        if: steps.release_head_final.outputs.publish == 'true'
         env:
           HOME_BASE: https://stusaurus.github.io/sotojitaku/
         run: node tests/home-guide-browser.cjs
@@ -83,20 +89,29 @@ jobs:
           name: home-published-guide-proof
           path: browser-proof/public/home-guide-links-*.png
           retention-days: 14
+      - name: Verify published CAR STAY catalog exactly matches verified main
+        if: steps.release_head_final.outputs.publish == 'true'
+        env:
+          CAR_STAY_BASE: https://stusaurus.github.io/sotojitaku/car-stay/
+        run: node tests/car-stay-published-catalog.mjs
       - name: Verify published FISHING catalog exactly matches verified main
+        if: steps.release_head_final.outputs.publish == 'true'
         env:
           FISHING_BASE: https://stusaurus.github.io/sotojitaku/fishing/
         run: node tests/fishing-published-catalog.mjs
       - name: Verify published FISHING desktop and mobile purchase journeys
+        if: steps.release_head_final.outputs.publish == 'true'
         env:
           FISHING_BASE: https://stusaurus.github.io/sotojitaku/fishing/
           FISHING_WIDTHS: '320,390,1440'
         run: node tests/fishing-browser.mjs
       - name: Verify published CAR STAY desktop and mobile journeys
+        if: steps.release_head_final.outputs.publish == 'true'
         env:
           CAR_STAY_BASE: https://stusaurus.github.io/sotojitaku/car-stay/
         run: node tests/car-stay-browser.mjs
       - name: Verify published CAR STAY power calculator at three screen widths
+        if: steps.release_head_final.outputs.publish == 'true'
         env:
           CAR_STAY_POWER_BASE: https://stusaurus.github.io/sotojitaku/car-stay/power/
         run: node tests/car-stay-power-browser.mjs
