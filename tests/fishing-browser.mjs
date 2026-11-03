@@ -71,7 +71,7 @@ try{
    const initialOfferCount=await page.locator('.buy').count();
    if(!initialOfferCount){
     assert.equal(await page.locator('.product-card').count(),0,'expired products must not produce purchase cards');
-    assert.match(await page.locator('.empty-products').first().innerText(),/確認済み商品がありません/);
+    assert.match((await page.locator('.empty-products').allInnerTexts()).join(' '),/確認済みの候補がありません|確認済み商品がありません/);
    }
    if(mockCatalog)assert.ok(initialOfferCount>0,'isolated synthetic catalog must cover affiliate UI');
    if(scenario.name==='owned')assert.equal(await page.locator('.buy[data-category="rod_reel"]').count(),0);
