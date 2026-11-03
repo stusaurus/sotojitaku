@@ -1,21 +1,10 @@
 import {buildGearChecklist} from "../../engine.js";
 import {productCoverageForInput} from "../../products.js";
+import {starterScenario,requiredCoverageScore} from "./selection.js";
 
 const target=document.querySelector("#starterSets");
 const updated=document.querySelector("#starterUpdated");
 const methodLabel={sabiki:"サビキ",choi_nage:"ちょい投げ"};
-
-function baseInput(method,budget){
-  return {
-    party:"solo",
-    fun:method==="sabiki"?"easy_catch":"cast_wait",
-    bait:method==="sabiki"?"low_mess":"no_worm",
-    take_home:"no",
-    carry:"compact",
-    budget,
-    owned:[]
-  };
-}
 
 async function load(){
   const [gear,catalog]=await Promise.all([
@@ -23,29 +12,29 @@ async function load(){
     fetch("../../data/audited-products.json").then(r=>r.json())
   ]);
 
+  const now=Date.now();
   const sets=(catalog.products||[])
-    .filter(p=>p.categoryId==="rod_reel"&&(p.coverCategoryIds||[]).length>=2)
+    .map(product=>({product,scenario:starterScenario(product,now)}))
+    .filter(item=>item.scenario)
     .sort((a,b)=>{
-      const ac=(a.coverCategoryIds||[]).length,bc=(b.coverCategoryIds||[]).length;
-      return bc-ac||a.price-b.price;
+      const ac=a.product.coverCategoryIds.length,bc=b.product.coverCategoryIds.length;
+      return bc-ac||a.product.price-b.product.price;
     });
 
   if(!sets.length){
-    target.innerHTML='<div class="live-budget-loading">現在、販売確認できた初心者セットがありません。</div>';
+    target.innerHTML='<div class="live-budget-loading">現在、購入先と販売確認が有効な初心者セットはありません。診断で不足品を確認してください。</div>';
     return;
   }
 
-  target.innerHTML=sets.map(product=>{
-    const method=(product.methodIds||[])[0];
-    const budget=(product.budgetTiers||[]).includes("balanced")?"balanced":(product.budgetTiers||[])[0]||"low";
-    const input=baseInput(method,budget);
+  target.innerHTML=sets.map(({product,scenario})=>{
+    const {method,input}=scenario;
     const checklist=buildGearChecklist(input,{methodId:method},gear);
     const byId=new Map(checklist.map(x=>[x.id,x]));
     const covered=productCoverageForInput(product,input);
     const included=covered.map(id=>byId.get(id)?.label).filter(Boolean);
     const required=checklist.filter(x=>x.priority==="required");
     const remaining=required.filter(x=>!covered.includes(x.id)).map(x=>x.label);
-    const coverageScore=required.length?Math.round(included.length/required.length*100):0;
+    const coverageScore=requiredCoverageScore(checklist,covered);
 
     return `<section class="starter-set-card">
       <div class="starter-set-top"><span>${escapeHtml(methodLabel[method]||method)}</span><strong>¥${Number(product.price).toLocaleString("ja-JP")}</strong></div>
