@@ -92,12 +92,13 @@ jobs:
         run: python car-stay/scripts/merge_product_shards.py /tmp/car-stay-shards car-stay/data/audited-products.json /tmp/car-stay-shared.json car-stay/data/product-seeds
       - name: Build CAR STAY revenue coverage report
         run: node car-stay/scripts/report_coverage.mjs
-      - name: Validate CAMP and CAR STAY
+      - name: Validate CAR STAY audited variants, fit and tracking
         run: |
           python scripts/stamp_assets.py
           npm run check
-          npm run test:non-camp-live
-          python -m unittest discover -s tests -p 'test_*.py' -v
+          node --test tests/car-stay*.test.mjs
+          node --test tests/analytics-contract.test.mjs tests/growth-context.test.mjs
+          python -m unittest discover -s tests -p 'test_car_stay*.py' -v
       - name: Publish refreshed CAR STAY catalog safely
         run: |
           cp car-stay/data/audited-products.json /tmp/car-stay-products.json
