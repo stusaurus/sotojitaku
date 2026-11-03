@@ -6,7 +6,7 @@ import path from "node:path";
 import {spawnSync} from "node:child_process";
 
 const repo=path.resolve(import.meta.dirname,"..");
-function auditFixture(change){
+function auditFixture(change,{live=false}={}){
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"soto-fishing-coverage-"));
   try{
     fs.cpSync(path.join(repo,"fishing"),path.join(dir,"fishing"),{recursive:true});
@@ -23,7 +23,7 @@ function auditFixture(change){
     change?.(catalog);
     fs.writeFileSync(file,JSON.stringify(catalog));
     const output=path.join(dir,"report.json");
-    const result=spawnSync(process.execPath,[path.join(dir,"fishing/scripts/check_scenarios.mjs"),output],{encoding:"utf8"});
+    const result=spawnSync(process.execPath,[path.join(dir,"fishing/scripts/check_scenarios.mjs"),output,...(live?[]:['--as-of-snapshot'])],{encoding:"utf8"});
     assert.ok(fs.existsSync(output),result.stderr);
     return {result,report:JSON.parse(fs.readFileSync(output,"utf8"))};
   }finally{
@@ -40,6 +40,7 @@ test("acknowledged gaps remain visible without claiming complete coverage",()=>{
   });
   assert.equal(result.status,0,result.stderr);
   assert.equal(report.scenarioCount,2916);
+  assert.equal(report.evaluationMode,"historical_fixture");
   assert.equal(report.safetyAndUnexpectedCoveragePassed,true);
   assert.equal(report.coverageComplete,false);
   assert.ok(report.knownGapOccurrences>0);
@@ -70,4 +71,16 @@ test("a new required-product gap fails and still produces its report",()=>{
   assert.equal(report.coverageComplete,false);
   assert.ok(report.unexpectedFailureCount>0);
   assert.ok(report.unexpectedFailureExamples.some(f=>f.unresolved?.includes("life_jacket_adult")));
+});
+
+test("real-time FISHING audit exposes expired seller coverage instead of inventing recommendations",()=>{
+  const source=JSON.parse(fs.readFileSync(path.join(repo,"fishing/data/audited-products.json"),"utf8"));
+  const expired=source.products.every(p=>Date.now()-Date.parse(p.verifiedAt)>7*86400000);
+  const {result,report}=auditFixture(null,{live:true});
+  assert.equal(report.evaluationMode,"live_current");
+  if(expired){
+    assert.equal(result.status,1,"all expired seller evidence must be reported as a live gap");
+    assert.equal(report.coverageComplete,false);
+    assert.ok(report.unexpectedFailureCount>0,"missing required gear must remain visible");
+  }
 });
