@@ -40,10 +40,12 @@ try{
    page.on('pageerror',e=>errors.push(e.message));
    await page.route('https://www.googletagmanager.com/**',r=>r.fulfill({status:200,body:''}));
    const mockCatalog=width===390 && ["solo","family"].includes(scenario.name);
-   if(mockCatalog){
+   const partialCatalog=width===320 && scenario.name==="pair";
+   if(mockCatalog||partialCatalog){
+    const products=partialCatalog?testOnlyProducts().filter(p=>p.categoryId!=="rod_reel"):testOnlyProducts();
     await page.route('**/fishing/data/audited-products.json',route=>route.fulfill({
       status:200,contentType:'application/json',
-      body:JSON.stringify({updatedAt:new Date().toISOString(),products:testOnlyProducts(),status:"test_fixture"})
+      body:JSON.stringify({updatedAt:new Date().toISOString(),products,status:"test_fixture"})
     }));
    }
    await page.goto(base+'?test=1');
@@ -84,6 +86,13 @@ try{
      assert.ok(!missingText.includes(label),
        width+'/'+scenario.name+': verified product covers '+label+' but is falsely labelled missing');
     }
+   }
+   if(partialCatalog){
+    assert.ok(initialOfferCount>0,'valid partial basket retains valid purchase links');
+    assert.equal(await page.locator('.buy[data-category="rod_reel"]').count(),0,'missing rod must never have an invented buy link');
+    assert.match((await page.locator('.empty-products[role="status"]').allInnerTexts()).join(' '),/竿・リール/);
+    assert.match(await page.locator('.basket-summary').innerText(),/必要な商品すべての総額ではありません/);
+    assert.match((await page.locator('.section-title').allInnerTexts()).join(' '),/まだ不足する必須品/);
    }
    if(scenario.name==='owned')assert.equal(await page.locator('.buy[data-category="rod_reel"]').count(),0);
    if(scenario.name==='family'){
