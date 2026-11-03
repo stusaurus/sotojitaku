@@ -100,17 +100,19 @@ jobs:
           print('shared catalog verified:',len(products),'failed seeds:',len(data.get('failures',{})))
           PY
 
-      - name: Stage shared catalog for coverage validation
-        run: |
-          cp /tmp/fishing-products.json fishing/data/audited-products.json
-          python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
-
-      - name: Validate repository
+      - name: Validate repository's dated regression fixtures before importing live stock
+        # The current shared catalog can legitimately have fewer verified items.
+        # The following core and live scenario gates assess it independently.
         run: |
           python scripts/stamp_assets.py
           npm run check
           npm run test:non-camp-live
           python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Stage shared catalog for coverage validation
+        run: |
+          cp /tmp/fishing-products.json fishing/data/audited-products.json
+          python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
 
       - name: Require core live product coverage
         run: python fishing/scripts/check_catalog.py
