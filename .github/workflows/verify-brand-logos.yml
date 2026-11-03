@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'index.html'
+      - 'home.css'
+      - 'scripts/stamp_assets.py'
       - 'camp/index.html'
       - 'car-stay/index.html'
       - 'fishing/index.html'
@@ -27,6 +29,9 @@ jobs:
       - run: npx playwright install --with-deps chromium
       # Live CAMP seller shortage is reported by Growth audit; header UI
       # regression must still run when no current merchant is verified.
+      # Candidate pages must be fingerprinted before checking their assets.
+      # CSS-only edits previously failed because HTML held an old cache key.
+      - run: python scripts/stamp_assets.py
       - run: npm run check && npm run test:non-camp-live
       - run: node --check assets/brand/brand-navigation.js
       - name: Serve under GitHub Pages subpath and check headers
