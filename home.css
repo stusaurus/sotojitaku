@@ -86,3 +86,10 @@ footer p{font-size:11px;color:#b8c0b9;margin:0}footer nav{grid-column:2;grid-row
   .pathways-card li a{padding:12px 0}
 }
 @media(prefers-reduced-motion:reduce){.pathways-card li a{transition:none}}
+
+/* Rare-card UX: direct preparation-guide entry without requiring a questionnaire. */
+.hero-quick-actions{display:flex;align-items:center;gap:10px 26px;flex-wrap:wrap;margin-top:18px}
+.hero-quick-actions .hero-cta{margin-top:0;min-height:44px}
+.hero-guide-link{display:inline-flex;align-items:center;min-height:44px;border-bottom:1px solid rgba(255,255,255,.72);font-size:13px;font-weight:600;letter-spacing:.03em;text-decoration:none}
+.hero-quick-actions a:focus-visible{outline:3px solid white;outline-offset:3px}
+@media(max-width:800px){.hero-quick-actions{gap:2px 20px;margin-top:12px}.hero-quick-actions .hero-cta,.hero-guide-link{font-size:12px;min-height:40px}}
