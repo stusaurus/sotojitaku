@@ -4,6 +4,7 @@ from pathlib import Path
 from urllib.parse import parse_qs,quote,urlparse
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import refresh_verified_camp_offer as renewal
+from camp_renewal_fixtures import restore_expired_test_baselines
 ROOT=Path(__file__).resolve().parents[1]
 NOW=datetime.now(timezone.utc)
 
@@ -11,6 +12,7 @@ def fixture():
  a=json.loads((ROOT/"data/audited-products.json").read_text(encoding="utf-8"))
  p=json.loads((ROOT/"data/products.json").read_text(encoding="utf-8"))
  e=json.loads((ROOT/"data/equipment.json").read_text(encoding="utf-8"))
+ p=restore_expired_test_baselines(a,p,renewal.TARGETS,NOW)
  assert len(renewal.TARGETS)==9 and len(p["products"])==9
  return a,p,e
 
