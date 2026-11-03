@@ -41,5 +41,9 @@
     "ジャンク"
   ],
   "specCheckedAt": "2026-10-05",
-  "specEvidenceUrl": "https://item.rakuten.co.jp/aquabeach/g09224/"
+  "specEvidenceUrl": "https://item.rakuten.co.jp/aquabeach/g09224/",
+  "suspended": true,
+  "suspendedAt": "2026-11-03",
+  "suspendedReason": "Manufacturer and merchant component lists for G09224 describe 1.8m rod, rigs, sinkers, bucket, gripper and scissors but do not confirm a reel. The rod_reel category requires a verified rod AND reel, so prohibit automatic selection until reel inclusion and exact Rakuten seller availability are independently verified.",
+  "suspensionEvidenceUrl": "https://item.rakuten.co.jp/aquabeach/g09224/"
 }
