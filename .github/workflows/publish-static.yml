@@ -55,6 +55,7 @@ jobs:
           node tests/home-browser.cjs
           node tests/fishing-browser.mjs
           node tests/car-stay-browser.mjs
+          node tests/car-stay-power-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
