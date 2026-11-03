@@ -1,8 +1,15 @@
 name: Verify CAR STAY protected journeys
 on:
+  pull_request:
+    paths:
+      - 'car-stay/**'
+      - 'tests/car-stay*.test.mjs'
+      - '.github/workflows/verify-car-stay.yml'
+      - '.github/workflows/sync-car-stay-shared-products.yml'
+      - '.github/workflows/refresh-car-stay-products.yml'
   push:
     branches: [main, car-stay-final-20261007]
-    paths: ['car-stay/**', 'tests/car-stay-browser.mjs', '.github/workflows/verify-car-stay.yml']
+    paths: ['car-stay/**', 'tests/car-stay-browser.mjs', '.github/workflows/verify-car-stay.yml', '.github/workflows/sync-car-stay-shared-products.yml', '.github/workflows/refresh-car-stay-products.yml']
 permissions:
   contents: read
 jobs:
