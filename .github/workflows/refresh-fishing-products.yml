@@ -54,6 +54,10 @@ jobs:
           python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
           python fishing/scripts/check_partial_catalog.py
           node fishing/scripts/check_scenarios.mjs browser-proof/fishing-pr-live-coverage.json --partial-release
+      - name: Prove isolated tests also pass AFTER the 13-product catalog swap
+        run: |
+          npm run test:non-camp-live
+          python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Install Chromium for real empty-catalog and synthetic purchase QA
         run: |
           npm install --no-save --package-lock=false playwright@1.58.2
