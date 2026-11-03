@@ -1,0 +1,12 @@
+/* Separate A8 advertising from verified product recommendations. */
+.soto-xebio-ad{margin:32px 0 24px;padding:24px;border:1px solid #d8cbb8;border-radius:20px;background:#fbfaf7;color:#23382d}
+.soto-xebio-ad .soto-xebio-label{margin:0 0 6px;font-size:12px;letter-spacing:.04em;font-weight:700}
+.soto-xebio-ad h2{font-size:clamp(19px,2.3vw,26px);line-height:1.4;margin:0 0 10px}
+.soto-xebio-ad p{font-size:14px;line-height:1.75}
+.soto-xebio-creative{position:relative;max-width:728px;margin:18px auto 12px}
+.soto-xebio-creative a{display:block;line-height:0;max-width:100%}
+.soto-xebio-creative a:focus-visible{outline:3px solid #a95332;outline-offset:4px}
+.soto-xebio-creative a img{display:block;width:100%;max-width:728px;height:auto}
+.soto-xebio-creative>img[width="1"]{position:absolute;bottom:0;left:0;width:1px;height:1px;pointer-events:none}
+.soto-xebio-ad .soto-xebio-note{font-size:12px;color:#5d6b5c;margin:0}
+@media(max-width:600px){.soto-xebio-ad{padding:18px 12px;margin:24px 0}.soto-xebio-ad p{font-size:13px}}
