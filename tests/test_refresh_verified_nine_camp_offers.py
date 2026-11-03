@@ -69,10 +69,14 @@ class NineIndependentSellers(unittest.TestCase):
   self.assertIn("fire_pit",{x["category"] for x in p["products"]})
 
  def test_429_before_last_sandwich_does_not_forge_verification_date(self):
-  _,p,r,calls=self.simulate(blocked="2000037404")
+  # Real 2026-10-25 offers are expired. Test the still-fresh 429 branch by
+  # changing only the in-memory simulation, never the published seller proof.
+  old=copy.deepcopy(fixture()[1])
+  original=next(x for x in old["products"] if x["model"]=="1709435")
+  original["verifiedAt"]=(NOW-timedelta(hours=1)).isoformat()
+  _,p,r,calls=self.simulate(blocked="2000037404",original=old)
   self.assertTrue(r["stoppedByRateLimit"])
   self.assertNotIn(("api","1709435"),calls)
-  original=next(x for x in fixture()[1]["products"] if x["model"]=="1709435")
   current=next(x for x in p["products"] if x["model"]=="1709435")
   self.assertEqual(original["verifiedAt"],current["verifiedAt"])
 
