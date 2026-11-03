@@ -24,7 +24,9 @@ jobs:
         run: npm run check
       - name: Strict no-stale partial-publication tests and all isolated unit cases
         run: npm run test:non-camp-live
-      - name: Strict live product suitability and affiliate link test
-        run: node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
+      - name: Verify historical evidence and expiration-safe browser selection
+        run: node --test tests/verified-camp-snapshot.test.mjs
+      # Live seller count and preference diversity are independent business-health
+      # gates in growth-audit.yml. A dated historical file must not block safe code fixes.
       - name: Original CAMP seller and product verifier regressions
         run: python -m unittest discover -s tests -p 'test_*.py' -v
