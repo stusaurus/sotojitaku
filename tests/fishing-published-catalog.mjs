@@ -32,7 +32,7 @@ function validateCatalog(data){
     assert.equal(aff.protocol,"https:");
     assert.equal(aff.hostname,"hb.afl.rakuten.co.jp");
     const dest = new URL(aff.searchParams.get("pc"));
-    assert.equal(dest.origin+dest.pathname.replace(/\\/+$/,""),item.origin+item.pathname.replace(/\\/+$/,""),"affiliate destination mismatch");
+    assert.equal(dest.origin+dest.pathname.replace(/[/]+$/,""),item.origin+item.pathname.replace(/[/]+$/,""),"affiliate destination mismatch");
   }
 }
 validateCatalog(local);
