@@ -134,7 +134,7 @@ const coverage={
   unexpectedFailureExamples:failures.slice(0,30),
   note:"Synthetic scenarios, not visitors or demand. Historical fixture mode is opt-in only; production uses real expiry. Never reactivate stopped listings or relax suitability to fill gaps."
 };
-const output=process.argv[2];
+const output=process.argv.slice(2).find(arg=>!arg.startsWith('--'));
 if(output){
   fs.mkdirSync(path.dirname(output),{recursive:true});
   fs.writeFileSync(output,JSON.stringify(coverage,null,2)+"\n");
