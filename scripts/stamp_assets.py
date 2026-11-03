@@ -7,6 +7,8 @@ for app_name,prefix in [('app.js','./'),('camp/app.js','../')]:
  p=ROOT/app_name;s=p.read_text()
  for name in ['engine.js','products.js']:
   s=re.sub(r"("+re.escape(prefix+name)+r")(?:(?:\?v=)[a-z0-9]+)?",r'\1?v='+version(name),s)
+ extra=prefix+'assets/a8-hinata-rental.js'
+ s=re.sub(r"("+re.escape(extra)+r")(?:(?:\?v=)[a-z0-9]+)?",r'\1?v='+version('assets/a8-hinata-rental.js'),s)
  p.write_text(s)
 p=ROOT/'camp/index.html';s=p.read_text()
 for name in ['app.js','style.css']:
