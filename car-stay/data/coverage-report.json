@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-28T02:12:22.625Z",
-  "catalogUpdatedAt": "2026-10-28T02:12:22.557725+00:00",
-  "liveProductCount": 34,
+  "generatedAt": "2026-11-03T08:56:51.034Z",
+  "catalogUpdatedAt": "2026-11-03T08:56:50.954864+00:00",
+  "liveProductCount": 31,
   "summary": {
     "configurations": 18,
     "privacyCovered": 18,
@@ -366,24 +366,24 @@
         "count": 3,
         "productIds": [
           "freed-gt5-cartist-jr00280029",
-          "freed-gt-crosstar-5-cellutane-premo-a1609",
-          "freed-gt-crosstar-5-suwariba-o010"
+          "freed-gt-crosstar-5-suwariba-o010",
+          "freed-gt-crosstar-5-presidente-xy0723202"
         ]
       },
       "floor": {
         "count": 3,
         "productIds": [
           "freed-gt5-cartist-jr00280029",
-          "freed-gt-crosstar-5-cellutane-premo-a1609",
-          "freed-gt-crosstar-5-suwariba-o010"
+          "freed-gt-crosstar-5-suwariba-o010",
+          "freed-gt-crosstar-5-presidente-xy0723202"
         ]
       },
       "surface": {
         "count": 3,
         "productIds": [
           "freed-gt5-cartist-jr00280029",
-          "freed-gt-crosstar-5-cellutane-premo-a1609",
-          "freed-gt-crosstar-5-suwariba-o010"
+          "freed-gt-crosstar-5-suwariba-o010",
+          "freed-gt-crosstar-5-presidente-xy0723202"
         ]
       }
     },
@@ -402,23 +402,20 @@
         ]
       },
       "sleep": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-crosstar-6-cellutane-a1612",
           "freed-gt6-atmys-kurumat"
         ]
       },
       "floor": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-crosstar-6-cellutane-a1612",
           "freed-gt6-atmys-kurumat"
         ]
       },
       "surface": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-crosstar-6-cellutane-a1612",
           "freed-gt6-atmys-kurumat"
         ]
       }
