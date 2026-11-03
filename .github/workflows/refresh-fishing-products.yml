@@ -42,8 +42,10 @@ jobs:
           npm run test:non-camp-live
           python -m unittest discover -s tests -p 'test_*.py' -v
 
-      - name: Validate exhaustive diagnosis-to-product scenarios
-        run: node fishing/scripts/check_scenarios.mjs
+      - name: Validate exhaustive FISHING regression using dated fixture evidence
+        run: node fishing/scripts/check_scenarios.mjs --as-of-snapshot
+      # refresh-main still runs the default real-time audit after loading fresh
+      # shared catalog. No unverified product can be published.
 
   refresh-main:
     if: github.event_name != 'pull_request'
