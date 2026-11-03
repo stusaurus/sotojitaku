@@ -57,7 +57,7 @@ async function main(){
        // plain crawlable anchors, independently of JavaScript diagnosis flow.
        const guides=[
          'guides/','guides/gear/','guides/budget/',
-         'car-stay/car/','car-stay/car/n-box/mat/','car-stay/car/sienta/2people/',
+         'car-stay/car/','car-stay/car/n-box/mat/','car-stay/car/sienta/2people/','car-stay/power/',
          'fishing/guides/','fishing/guides/gear/','fishing/guides/kids/'
        ];
        assert.equal(await cards.count(),3,'three visually separate guide choices');
@@ -68,7 +68,7 @@ async function main(){
            rect:node.getBoundingClientRect().toJSON()
          }))
        );
-       assert.equal(guideLinks.length,9,'all nine editorial entry links');
+       assert.equal(guideLinks.length,9,'all editorial entry links');
        for(const href of guides){
          const link=guideLinks.find(entry=>entry.path.endsWith('/sotojitaku/'+href));
          assert.ok(link&&link.text.length>8,'missing meaningful editorial link: '+href);
