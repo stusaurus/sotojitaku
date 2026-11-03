@@ -68,8 +68,22 @@ class EightCertifiedOriginalSellers(unittest.TestCase):
   self.assertTrue(r["stoppedByRateLimit"])
   self.assertNotIn(("api","2000037404"),calls)
   old=next(x for x in fixtures()[1]["products"] if x["model"]=="2000037404")
+  fire=next((x for x in p["products"] if x["model"]=="2000037404"),None)
+  if renew.valid_existing(old,NOW):
+   self.assertIsNotNone(fire)
+   self.assertEqual(fire["verifiedAt"],old["verifiedAt"])
+  else:
+   self.assertIsNone(fire,"expired eighth seller must not be kept after quota stop")
+
+ def test_429_preserves_only_current_eighth_seller_without_new_timestamp(self):
+  original=copy.deepcopy(fixtures()[1])
+  entry=next(x for x in original["products"] if x["model"]=="2000037404")
+  entry["verifiedAt"]=(NOW-timedelta(days=1)).isoformat()
+  _,p,r,calls=self.verify(blocked="2218364",existing=original)
+  self.assertTrue(r["stoppedByRateLimit"])
+  self.assertNotIn(("api","2000037404"),calls)
   fire=next(x for x in p["products"] if x["model"]=="2000037404")
-  self.assertEqual(fire["verifiedAt"],old["verifiedAt"])
+  self.assertEqual(fire["verifiedAt"],entry["verifiedAt"])
 
  def test_fire_pit_out_of_stock_retires_it_and_preserves_other_seven(self):
   _,p,r,calls=self.verify(unavailable="2000037404")
