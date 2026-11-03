@@ -101,7 +101,6 @@ try {
      await page.locator('[data-gear-tab="rent"]').click();
      assert.equal(await page.locator('[data-hinata-choice]').count(),0,'No rent choice means no rental ad');
      await page.locator('[data-gear-tab="buy"]').click();
-     await page.locator('[data-go="gear"]').first().click().catch(()=>{});
      // Use browser history to return to planning screen and choose rental.
      await page.evaluate(()=>{
        history.pushState({},'',location.pathname+location.search+'#gear');
