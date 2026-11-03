@@ -46,6 +46,14 @@ jobs:
 
       - name: Validate exhaustive FISHING regression using dated fixture evidence
         run: node fishing/scripts/check_scenarios.mjs --as-of-snapshot
+      - name: Rehearse CURRENT verified partial catalog, without publishing
+        run: |
+          curl --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            https://raw.githubusercontent.com/stusaurus/daily-cost-jp/main/shared-data/sotojitaku-fishing-products.json \
+            -o fishing/data/audited-products.json
+          python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
+          python fishing/scripts/check_partial_catalog.py
+          node fishing/scripts/check_scenarios.mjs browser-proof/fishing-pr-live-coverage.json --partial-release
       - name: Install Chromium for real empty-catalog and synthetic purchase QA
         run: |
           npm install --no-save --package-lock=false playwright@1.58.2
