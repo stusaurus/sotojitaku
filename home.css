@@ -57,3 +57,32 @@ footer p{font-size:11px;color:#b8c0b9;margin:0}footer nav{grid-column:2;grid-row
 .steps{border:0;gap:26px 32px}.steps article{border:0;min-height:0;padding:10px 0 20px}
 @media(max-width:800px){.hero h1{font-size:clamp(30px,8.6vw,42px);white-space:nowrap}.philosophy h2{font-size:clamp(24px,6.5vw,31px)}.steps{grid-template-columns:1fr 1fr;gap:24px}.steps article{padding:0;min-height:0}.philosophy{gap:32px;padding-top:60px;padding-bottom:60px}}
 @media(min-width:801px) and (max-width:1150px){.landscape{height:75vw;min-height:0}.hero{height:43%}.choose{height:57%}.hero h1{font-size:44px}.hero .eyebrow{margin-bottom:14px}.hero-copy{padding-top:88px}.hero-cta{margin-top:12px}.philosophy h2{font-size:26px}}
+
+/* Search-to-guide entry: real editorial links, not a second service switcher. */
+.pathways{background:var(--canvas);padding:100px clamp(20px,6vw,100px) 110px}
+.pathways-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);align-items:end;gap:clamp(20px,5vw,72px);max-width:1280px;margin:0 auto}
+.pathways-intro h2{font-family:var(--serif);font-size:clamp(28px,3.5vw,48px);font-weight:500;line-height:1.55;letter-spacing:.02em;margin:0}
+.pathways-intro>p{max-width:510px;margin:0 0 4px;font-size:14px;color:#4c5b50}
+.pathways-grid{max-width:1280px;margin:40px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pathways-card{min-width:0;background:var(--paper);border:1px solid var(--sand);padding:32px clamp(20px,2.5vw,35px)}
+.pathways-label{font-size:10px;letter-spacing:.2em;color:var(--moss);font-weight:600;margin:0}
+.pathways-card h3{font-family:var(--serif);font-size:clamp(23px,2vw,29px);font-weight:500;line-height:1.5;margin:12px 0}
+.pathways-description{min-height:3.6em;margin:0 0 18px;font-size:12px;color:#4c5b50}
+.pathways-card ul{margin:0;padding:0;list-style:none}
+.pathways-card li{border-top:1px solid var(--sand)}
+.pathways-card li a{display:block;text-decoration:none;padding:14px 0;overflow-wrap:anywhere;transition:color .2s ease}
+.pathways-card li a strong{display:block;font-size:13px;font-weight:600}
+.pathways-card li a span{display:block;margin-top:3px;font-size:11px;color:#536456}
+.pathways-card li a:hover{color:#28694f}
+.pathways-card li a:focus-visible{outline:2px solid #28694f;outline-offset:3px;border-radius:2px}
+@media(max-width:900px){
+  .pathways{padding:64px 20px 72px}
+  .pathways-intro{grid-template-columns:1fr;gap:20px}
+  .pathways-intro h2{font-size:clamp(27px,6vw,38px)}
+  .pathways-intro>p{font-size:13px}
+  .pathways-grid{grid-template-columns:1fr;gap:16px;margin-top:26px}
+  .pathways-card{padding:25px 22px}
+  .pathways-description{min-height:0}
+  .pathways-card li a{padding:12px 0}
+}
+@media(prefers-reduced-motion:reduce){.pathways-card li a{transition:none}}

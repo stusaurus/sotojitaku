@@ -8,6 +8,7 @@ on:
       - 'assets/home-world-*'
       - 'camp/**'
       - 'tests/home-browser.cjs'
+      - 'tests/home-guide-browser.cjs'
       - 'fishing/**'
       - 'car-stay/**'
       - 'tests/car-stay-browser.mjs'
@@ -72,6 +73,16 @@ jobs:
       - name: Publish complete site
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published HOME editorial links and their destinations
+        env:
+          HOME_BASE: https://stusaurus.github.io/sotojitaku/
+        run: node tests/home-guide-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: home-published-guide-proof
+          path: browser-proof/public/home-guide-links-*.png
+          retention-days: 14
       - name: Verify published FISHING catalog exactly matches verified main
         env:
           FISHING_BASE: https://stusaurus.github.io/sotojitaku/fishing/
