@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const base=process.env.HOME_BASE||'http://127.0.0.1:4173/';
 const urls=[
   'guides/','guides/gear/','guides/budget/',
-  'car-stay/car/','car-stay/car/n-box/mat/','car-stay/car/sienta/2people/',
+  'car-stay/car/','car-stay/car/n-box/mat/','car-stay/car/sienta/2people/','car-stay/power/',
   'fishing/guides/','fishing/guides/gear/','fishing/guides/kids/'
 ];
 const widths=[1440,390,320];
@@ -32,7 +32,7 @@ const browserPromise=chromium.launch({headless:true});
           rect:node.getBoundingClientRect().toJSON()
         }))
       );
-      assert.equal(links.length,urls.length,'must link to 9 existing guides');
+      assert.equal(links.length,urls.length,'must link to all existing guide and tool entries');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'HOME overflow '+width);
       for(const path of urls){
         const href=new URL(path,base).href;
