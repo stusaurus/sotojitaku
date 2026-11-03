@@ -13,6 +13,7 @@ try{
   await page.locator('.world[data-service="camp"]').click();
   await page.locator('#main [data-start]').first().waitFor();
   assert.equal(await page.evaluate(()=>window.SOTOJITAKU_ANALYTICS.operatorTest),true,'test context lost on navigation');
+  assert.equal(await page.evaluate(()=>window['ga-disable-G-6STQ5HXRDH']),true,'operator test must suppress GA4 sends');
   await page.locator('#main [data-start]').first().click();
   // Default answers are intentional in CAMP; choose a valid experience at the multi step.
   for(let step=0;step<7;step++){
@@ -41,6 +42,8 @@ try{
   await page.locator('#main [data-start]').first().click();
   assert.equal(await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event').length),0,'CAMP custom events ignore common opt-out');
   assert.equal(await page.evaluate(()=>window.SOTOJITAKU_ANALYTICS.operatorTest),false);
+  await page.evaluate(()=>window.SOTOJITAKU_ANALYTICS.setEnabled(true));
+  assert.equal(await page.evaluate(()=>window['ga-disable-G-6STQ5HXRDH']),false,'normal visitor must remain measurable after test=0');
   assert.deepEqual(errors,[]);proof.push({width,status:'PASS',campQuestions:7,operatorCrossService:true,optOut:true});
   await context.close();
  }
