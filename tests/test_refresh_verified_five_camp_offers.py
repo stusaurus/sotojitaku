@@ -91,8 +91,26 @@ class FiveIndependentOriginalSellers(unittest.TestCase):
         self.assertNotIn(("api","2205816"),calls)
         old=json.loads((ROOT/"data/products.json").read_text())
         previous_table=next(x for x in old["products"] if x["model"]=="2205816")
-        current_table=next(x for x in c["products"] if x["model"]=="2205816")
-        self.assertEqual(current_table["verifiedAt"],previous_table["verifiedAt"])
+        current_table=next((x for x in c["products"] if x["model"]=="2205816"),None)
+        if refresh.valid_existing(previous_table,NOW):
+            self.assertIsNotNone(current_table)
+            self.assertEqual(current_table["verifiedAt"],previous_table["verifiedAt"])
+        else:
+            # A quota stop must not preserve an already expired fifth seller.
+            self.assertIsNone(current_table)
+            self.assertIn("table",c["failedCategories"])
+
+    def test_429_keeps_only_still_fresh_unvisited_table_without_forging_audit(self):
+        _,old,_=fixtures()
+        old_table=next(x for x in old["products"] if x["model"]=="2205816")
+        old_table["verifiedAt"]=(NOW-timedelta(days=1)).isoformat()
+        _,c,report,calls=self.run_snapshot(
+            blocked="2000036153",catalog_override=old
+        )
+        self.assertTrue(report["stoppedByRateLimit"])
+        self.assertNotIn(("api","2205816"),calls)
+        table=next(x for x in c["products"] if x["model"]=="2205816")
+        self.assertEqual(table["verifiedAt"],old_table["verifiedAt"])
 
     def test_out_of_stock_mat_retires_only_mat(self):
         _,c,report,calls=self.run_snapshot(not_in_stock="2000036153")
