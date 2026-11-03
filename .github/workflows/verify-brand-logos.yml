@@ -25,7 +25,9 @@ jobs:
           node-version: 22
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
-      - run: npm run check && npm test
+      # Live CAMP seller shortage is reported by Growth audit; header UI
+      # regression must still run when no current merchant is verified.
+      - run: npm run check && npm run test:non-camp-live
       - run: node --check assets/brand/brand-navigation.js
       - name: Serve under GitHub Pages subpath and check headers
         run: |
