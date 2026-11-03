@@ -54,3 +54,8 @@
 
 .builder-scene img{object-position:100% center}.site-header:has(+main #builder:not([hidden])){background:linear-gradient(90deg,#11192385 43%,#f4f0e7ef 43%)}.site-header:has(+main #builder:not([hidden])) .ghost{color:#23382d;border-color:#aab5a8;background:#fbfaf7}@media(max-width:760px){.builder-scene img{object-position:center 58%}.site-header:has(+main #builder:not([hidden])){background:linear-gradient(180deg,#111923bb,transparent)}.site-header:has(+main #builder:not([hidden])) .ghost{color:white;border-color:#ffffff65;background:#11192380}}
 @media(max-width:760px){.hero-scene img{object-position:85% center}}
+
+/* Search-to-builder entry: a factual power-need tool outside the five-step flow. */
+.hero-extra-link{margin:15px 0 8px;font-size:13px}
+.hero-extra-link a{color:#ffddae;text-underline-offset:5px;font-weight:700}
+.hero-extra-link a:focus-visible{outline:3px solid #a2ecd5;outline-offset:4px}
