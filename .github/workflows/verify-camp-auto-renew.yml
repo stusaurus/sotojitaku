@@ -47,4 +47,6 @@ jobs:
         run: |
           npm run check
           npm run test:non-camp-live
-          node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
+          # This pre-refresh/PR job checks provenance and fail-closed expiry.
+          # The live coverage and diversity gate remains in growth-audit.yml.
+          node --test tests/verified-camp-snapshot.test.mjs
