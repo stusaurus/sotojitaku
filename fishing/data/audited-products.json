@@ -521,7 +521,7 @@
   ],
   "failures": {
     "choi-shimano-complete-500527": "manual_suspension: Direct item page HTTP404 confirmed twice on 2026-10-10; restore only after exact-page and sales verification",
-    "lumica-choi-start-g09224": "live_identity_listing_not_found",
+    "lumica-choi-start-g09224": "manual_suspension: Manufacturer and merchant component lists for G09224 describe 1.8m rod, rigs, sinkers, bucket, gripper and scissors but do not confirm a reel. The rod_reel category requires a verified rod AND reel, so prohibit automatic selection until reel inclusion and exact Rakuten seller availability are independently verified.",
     "sabiki-shimano-complete-500528": "manual_suspension: Direct item page availability=OutOfStock confirmed on 2026-10-10; shared catalog also omitted exact listing",
     "shimano-vf098v-kids-l": "HTTPError",
     "shimano-vf098v-kids-m": "HTTPError"
