@@ -10,6 +10,11 @@ function auditFixture(change,{live=false}={}){
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"soto-fishing-coverage-"));
   try{
     fs.cpSync(path.join(repo,"fishing"),path.join(dir,"fishing"),{recursive:true});
+    // check_scenarios --as-of-snapshot loads the immutable fixture by path.
+    // The isolated fixture workspace must include the same evidence file.
+    fs.mkdirSync(path.join(dir,"tests/fixtures"),{recursive:true});
+    fs.copyFileSync(path.join(repo,"tests/fixtures/fishing-20261022-snapshot.json"),
+      path.join(dir,"tests/fixtures/fishing-20261022-snapshot.json"));
     fs.writeFileSync(path.join(dir,"package.json"),JSON.stringify({type:"module"}));
     // Explicit fixture suspension state; production seeds are never edited.
     for(const name of ["sabiki-shimano-complete.json","choi-shimano-complete.json"]){
