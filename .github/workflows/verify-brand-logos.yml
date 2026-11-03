@@ -17,6 +17,10 @@ on:
       - '.github/workflows/verify-brand-logos.yml'
 permissions:
   contents: read
+concurrency:
+  group: soto-brand-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   brand-preview:
     runs-on: ubuntu-latest
