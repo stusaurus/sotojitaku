@@ -14,16 +14,19 @@
 
 .supply-chip{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border-radius:999px;background:#d8cbb844;color:var(--moss);font-size:12px;white-space:nowrap}.supply-guide{margin:36px 0;padding:26px;border:1px solid var(--sand);border-radius:22px;background:#fbfaf7}.supply-guide h2{font-size:24px;margin-bottom:12px}.supply-guide>p:not(.eyebrow){font-size:13px;color:var(--moss)}.supply-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.supply-list span{display:inline-flex;padding:8px 12px;border-radius:999px;background:#f4f0e7;color:var(--forest);font-size:12px}
 
-/* A8 hinata rental card: shown only when a CAMP plan contains rented gear. */
-.hinata-rental-card{max-width:800px;margin:30px auto;padding:clamp(18px,3.5vw,28px);border:1px solid #b8cab7;border-radius:20px;background:#f2f7ef;color:#213b2c}
-.hinata-rental-card h2{font-size:clamp(20px,3vw,26px);line-height:1.5;margin:8px 0 15px}
-.hinata-rental-card p{margin:8px 0 12px;line-height:1.85}
-.hinata-rental-card .hinata-rental-disclosure{display:inline-block;font-size:12px;font-weight:800;color:#49644e}
-.hinata-rental-card .hinata-rental-note{font-size:13px;color:#4c6053}
-.hinata-rental-banner{display:flex;flex-direction:column;gap:0;align-items:flex-start;max-width:100%;margin:18px 0 12px}
-.hinata-rental-banner>a{display:block;width:300px;max-width:100%;line-height:0}
-.hinata-rental-banner>a img{display:block;width:300px;max-width:100%;height:auto}
-.hinata-rental-banner img[width="1"]{width:1px;height:1px}
-.hinata-rental-banner>a:focus-visible{outline:3px solid #9eb99f;outline-offset:4px}
-@media(max-width:390px){.hinata-rental-card{margin:22px 0;padding:16px}.hinata-rental-banner{align-items:center}}
-@media print{.hinata-rental-card{display:none}}
+/* Two A8 CAMP offers: a smaller buy banner and a larger rent banner.
+   Display them only for the corresponding planned gear status. */
+.hinata-choice-card{max-width:800px;margin:30px auto;padding:clamp(18px,3.5vw,28px);border:1px solid #b8cab7;border-radius:20px;background:#f2f7ef;color:#213b2c}
+.hinata-choice-card--buy{background:#faf5e9;border-color:#dbcaac}
+.hinata-choice-card h2{font-size:clamp(20px,3vw,26px);line-height:1.5;margin:8px 0 15px}
+.hinata-choice-card p{margin:8px 0 12px;line-height:1.85}
+.hinata-choice-card .hinata-choice-disclosure{display:inline-block;font-size:12px;font-weight:800;color:#49644e}
+.hinata-choice-card .hinata-choice-note{font-size:13px;color:#4c6053}
+.hinata-choice-banner{display:flex;flex-direction:column;align-items:flex-start;gap:0;max-width:100%;margin:18px 0 12px;overflow-wrap:anywhere}
+.hinata-choice-banner>a{display:block;width:300px;max-width:100%;line-height:0}
+.hinata-choice-banner--rent>a{width:600px}
+.hinata-choice-banner>a img{display:block;max-width:100%;height:auto}
+.hinata-choice-banner img[width="1"]{width:1px;height:1px}
+.hinata-choice-banner>a:focus-visible{outline:3px solid #9eb99f;outline-offset:4px}
+@media(max-width:390px){.hinata-choice-card{margin:22px 0;padding:16px}.hinata-choice-banner{align-items:center}}
+@media print{.hinata-choice-card{display:none}}
