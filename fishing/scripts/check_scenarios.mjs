@@ -6,11 +6,14 @@ import {buildProductRecommendations,applyProductCoverage} from "../products.js";
 const readJson=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url),"utf8"));
 const plans=readJson("../data/plans.json");
 const gear=readJson("../data/gear.json");
-const catalog=readJson("../data/audited-products.json");
-// Historical synthetic fixtures may explicitly test their dated evidence set.
-// Scheduled production audits use real time and still fail on stale sellers.
+// Historical regression must read the immutable fixture, never today's
+// evolving live stock catalog. Scheduled production audits still use real
+// timestamps and preserve all incomplete-basket failures.
 const snapshotMode=process.argv.includes("--as-of-snapshot");
 const partialReleaseMode=process.argv.includes("--partial-release");
+const catalog=readJson(snapshotMode
+  ?"../../tests/fixtures/fishing-20261022-snapshot.json"
+  :"../data/audited-products.json");
 if(snapshotMode&&partialReleaseMode)throw new Error("Historical tests cannot authorize live partial publication");
 const evaluationNow=snapshotMode?Date.parse(catalog.updatedAt):Date.now();
 if(!Number.isFinite(evaluationNow))throw new Error("invalid_fishing_catalog_timestamp");

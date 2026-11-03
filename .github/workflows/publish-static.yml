@@ -12,6 +12,7 @@ on:
       - 'car-stay/**'
       - 'tests/car-stay-browser.mjs'
       - 'tests/fishing-browser.mjs'
+      - 'tests/fishing-published-catalog.mjs'
       - '.github/workflows/publish-static.yml'
   workflow_dispatch:
 permissions:
@@ -70,6 +71,15 @@ jobs:
       - name: Publish complete site
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published FISHING catalog exactly matches verified main
+        env:
+          FISHING_BASE: https://stusaurus.github.io/sotojitaku/fishing/
+        run: node tests/fishing-published-catalog.mjs
+      - name: Verify published FISHING desktop and mobile purchase journeys
+        env:
+          FISHING_BASE: https://stusaurus.github.io/sotojitaku/fishing/
+          FISHING_WIDTHS: '320,390,1440'
+        run: node tests/fishing-browser.mjs
       - name: Verify published CAR STAY desktop and mobile journeys
         env:
           CAR_STAY_BASE: https://stusaurus.github.io/sotojitaku/car-stay/

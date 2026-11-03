@@ -11,6 +11,7 @@ on:
       - 'fishing/**'
       - 'tests/fishing-*.test.mjs'
       - 'tests/fishing-browser.mjs'
+      - 'tests/fishing-published-catalog.mjs'
       - 'tests/test_fishing_*.py'
       - '.github/workflows/refresh-fishing-products.yml'
   workflow_dispatch:
@@ -41,6 +42,7 @@ jobs:
         run: |
           python scripts/stamp_assets.py
           npm run check
+          node --check tests/fishing-published-catalog.mjs
           npm run test:non-camp-live
           python -m unittest discover -s tests -p 'test_*.py' -v
 
