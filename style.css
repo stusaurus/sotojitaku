@@ -13,3 +13,15 @@
 @media(max-width:760px){.preference-box{padding:20px}.preference-options{grid-template-columns:1fr 1fr}.preference-options button{padding:12px;min-height:70px}.top-pick>h2{font-size:28px}.product-card-head .badge{font-size:21px}.product-actions{grid-template-columns:1fr}.purchase-progress{display:block}.purchase-progress .secondary{width:100%;margin-top:16px}.shopping-item{grid-template-columns:34px 84px 1fr;gap:12px}.shopping-item img{width:84px;height:72px}.shopping-item h2{font-size:13px}.shopping-item .primary,.shopping-item .back{grid-column:2/4}.shopping-total strong{font-size:32px}}
 
 .supply-chip{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border-radius:999px;background:#d8cbb844;color:var(--moss);font-size:12px;white-space:nowrap}.supply-guide{margin:36px 0;padding:26px;border:1px solid var(--sand);border-radius:22px;background:#fbfaf7}.supply-guide h2{font-size:24px;margin-bottom:12px}.supply-guide>p:not(.eyebrow){font-size:13px;color:var(--moss)}.supply-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.supply-list span{display:inline-flex;padding:8px 12px;border-radius:999px;background:#f4f0e7;color:var(--forest);font-size:12px}
+
+/* hinata rental A8: separate from inspected purchase recommendations. */
+.camp-rental-ad{max-width:850px;margin:30px auto;padding:clamp(18px,3.5vw,28px);background:#f2f5ed;border:1px solid #b8cab7;border-radius:18px;box-shadow:0 7px 24px rgba(28,49,35,.06)}
+.camp-rental-ad h2{font-size:clamp(21px,3vw,28px);line-height:1.5;margin:4px 0 14px}
+.camp-rental-ad p{line-height:1.8;margin:10px 0}
+.camp-rental-ad__label{color:#415d46;font:800 12px/1.5 var(--sans);letter-spacing:.04em}
+.camp-rental-ad__creative{width:min(300px,100%);margin:18px auto 14px}
+.camp-rental-ad__creative>a{display:block;width:100%;max-width:300px;line-height:0}
+.camp-rental-ad__creative>a img{display:block;max-width:100%;height:auto}
+.camp-rental-ad__creative>a:focus-visible{outline:3px solid #a95332;outline-offset:4px}
+.camp-rental-ad__disclaimer{font-size:12px;color:#57685a;line-height:1.8}
+@media(max-width:480px){.camp-rental-ad{margin:22px 0;padding:17px 14px}.camp-rental-ad__creative{margin:17px auto}}
