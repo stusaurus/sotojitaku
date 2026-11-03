@@ -13,6 +13,10 @@ class ReleaseWorkflowContractTest(unittest.TestCase):
     def test_publishing_has_two_latest_main_guards_and_matching_catalog_gate(self):
         workflow = read(".github/workflows/publish-static.yml")
         self.assertIn("cancel-in-progress: true", workflow)
+        # If a docs-only commit supersedes this release, a replacement must
+        # still be scheduled; no path-filtered main pushes.
+        self.assertIn("branches: [main]", workflow)
+        self.assertNotIn("    paths:", workflow)
         self.assertIn("id: release_head\n", workflow)
         self.assertIn("id: release_head_final\n", workflow)
         self.assertIn(
