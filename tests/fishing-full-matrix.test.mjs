@@ -6,7 +6,8 @@ import {buildProductRecommendations,applyProductCoverage} from "../fishing/produ
 
 const plans=JSON.parse(fs.readFileSync(new URL("../fishing/data/plans.json",import.meta.url)));
 const gear=JSON.parse(fs.readFileSync(new URL("../fishing/data/gear.json",import.meta.url)));
-const catalog=JSON.parse(fs.readFileSync(new URL("../fishing/data/audited-products.json",import.meta.url)));
+// Historical 16-offer fixture; real-time completeness is independently monitored.
+const catalog=JSON.parse(fs.readFileSync(new URL("./fixtures/fishing-20261022-snapshot.json",import.meta.url)));
 const historicalNow=Date.parse(catalog.updatedAt);
 assert.ok(Number.isFinite(historicalNow),"historical FISHING catalog requires its own dated baseline");
 

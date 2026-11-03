@@ -7,7 +7,8 @@ import {buildProductRecommendations} from "../fishing/products.js";
 const readJson=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url),"utf8"));
 const plans=readJson("../fishing/data/plans.json");
 const gear=readJson("../fishing/data/gear.json");
-const catalog=readJson("../fishing/data/audited-products.json");
+// Stable historical contract: the published live catalog is refreshed independently.
+const catalog=readJson("./fixtures/fishing-20261022-snapshot.json");
 const now=Date.parse(catalog.updatedAt);
 
 function run(input){

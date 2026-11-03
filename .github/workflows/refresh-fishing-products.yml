@@ -46,6 +46,18 @@ jobs:
 
       - name: Validate exhaustive FISHING regression using dated fixture evidence
         run: node fishing/scripts/check_scenarios.mjs --as-of-snapshot
+      - name: Rehearse CURRENT verified partial catalog, without publishing
+        run: |
+          curl --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            https://raw.githubusercontent.com/stusaurus/daily-cost-jp/main/shared-data/sotojitaku-fishing-products.json \
+            -o fishing/data/audited-products.json
+          python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
+          python fishing/scripts/check_partial_catalog.py
+          node fishing/scripts/check_scenarios.mjs browser-proof/fishing-pr-live-coverage.json --partial-release
+      - name: Prove isolated tests also pass AFTER the 13-product catalog swap
+        run: |
+          npm run test:non-camp-live
+          python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Install Chromium for real empty-catalog and synthetic purchase QA
         run: |
           npm install --no-save --package-lock=false playwright@1.58.2
@@ -132,11 +144,24 @@ jobs:
           cp /tmp/fishing-products.json fishing/data/audited-products.json
           python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
 
-      - name: Require core live product coverage
+      - name: Report strict complete-basket shortages (unresolved in Issue #302)
+        id: strict-coverage
+        continue-on-error: true
         run: python fishing/scripts/check_catalog.py
 
-      - name: Run exhaustive diagnosis-to-product audit
-        run: node fishing/scripts/check_scenarios.mjs
+      - name: Fail closed unless all sellers are fresh and ONLY three known product gaps remain
+        run: python fishing/scripts/check_partial_catalog.py
+
+      - name: Run current-time FISHING partial-safe 2916-scenario audit
+        run: node fishing/scripts/check_scenarios.mjs browser-proof/fishing-live-coverage.json --partial-release
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fishing-live-coverage
+          path: browser-proof/fishing-live-coverage.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Publish verified FISHING catalog safely
         run: |

@@ -346,10 +346,10 @@ function renderResult({trackDiagnosis=true}={}){
       </div>
 
       <div class="section">
-        <h3 class="section-title">足りないものは、これで揃える</h3>
+        <h3 class="section-title">${productResult.unresolvedRequiredCategoryIds.length||checklist.some(item=>item.priority==="required"&&!item.monetizable&&item.state!=="owned")?"販売確認済みの候補と、まだ不足する必須品":"足りないものは、これで揃える"}</h3>
         ${renderQuantityGuidance()}
         ${renderBudgetSwitch(plan,rawChecklist,productResult)}
-        ${renderBasketSummary(basket)}
+        ${renderBasketSummary(basket,productResult,checklist)}
         ${renderProducts(productResult,rawChecklist)}
       </div>
 
@@ -663,7 +663,7 @@ function renderBudgetSwitch(plan,checklist,currentResult){
       <div class="budget-switch-copy">
         <span>いまの買い方</span>
         <strong>${escapeHtml(budgetLabel(answers.budget))}</strong>
-        <p>${escapeHtml(config.note)}</p>
+        <p>${escapeHtml(currentResult.unresolvedRequiredCategoryIds.length?"不足している必須品は含まれていません。販売確認済みの商品のみで比較しています。":config.note)}</p>
       </div>
       <span class="budget-switch-status">別予算でも、現在の確認済み商品では同じ構成が最適です</span>
     </div>`;
@@ -686,12 +686,14 @@ function renderBudgetSwitch(plan,checklist,currentResult){
   </div>`;
 }
 
-function renderBasketSummary(basket){
+function renderBasketSummary(basket,productResult,checklist){
   if(!basket.count)return "";
+  const missing=(productResult.unresolvedRequiredCategoryIds||[]).length
+    ||checklist.some(item=>item.priority==="required"&&!item.monetizable&&item.state!=="owned");
   return `<div class="basket-summary">
     <div><span>必須の購入候補</span><strong>${basket.count}点</strong></div>
     <div><span>表示商品の1点ずつ合計</span><strong>¥${basket.total.toLocaleString("ja-JP")}</strong></div>
-    <p>送料・ポイント・価格変動は楽天の商品ページで確認してください。ライフジャケットは同行者全員分が必要で、人数分の追加数量はこの合計に含めていません。${basket.optionalCount?" 「あると快適」な任意品もこの合計に含めていません。":""}</p>
+    <p>${missing?"必要な商品すべての総額ではありません。未確認・未準備の必須品はこの金額に含まれません。":""}送料・ポイント・価格変動は楽天の商品ページで確認してください。ライフジャケットは同行者全員分が必要で、人数分の追加数量はこの合計に含めていません。${basket.optionalCount?" 「あると快適」な任意品もこの合計に含めていません。":""}</p>
   </div>`;
 }
 

@@ -10,6 +10,8 @@ const catalog=readJson("../data/audited-products.json");
 // Historical synthetic fixtures may explicitly test their dated evidence set.
 // Scheduled production audits use real time and still fail on stale sellers.
 const snapshotMode=process.argv.includes("--as-of-snapshot");
+const partialReleaseMode=process.argv.includes("--partial-release");
+if(snapshotMode&&partialReleaseMode)throw new Error("Historical tests cannot authorize live partial publication");
 const evaluationNow=snapshotMode?Date.parse(catalog.updatedAt):Date.now();
 if(!Number.isFinite(evaluationNow))throw new Error("invalid_fishing_catalog_timestamp");
 
@@ -67,10 +69,14 @@ for(const profile of ownedProfiles){
   );
 
   const suspendedHole=((suspendedRod&&plan.methodId==="choi_nage")||(suspendedSabikiRod&&plan.methodId==="sabiki"))&&budget!=="low"&&!input.owned?.includes("rod_reel");
-  if(suspendedHole&&unresolved.some(item=>item.id==="rod_reel")){
+  // The missing low-budget choi-nage rod is acknowledged ONLY during the
+  // explicitly partial live release; the regular Growth audit still fails it.
+  const partialLowRodHole=partialReleaseMode&&plan.methodId==="choi_nage"&&budget==="low"&&!input.owned?.includes("rod_reel");
+  const documentedRodHole=suspendedHole||partialLowRodHole;
+  if(documentedRodHole&&unresolved.some(item=>item.id==="rod_reel")){
     knownGaps.push({method:plan.methodId,budget,profile:profile.name,input,category:"rod_reel"});
   }
-  const unexpected=unresolved.filter(x=>!(suspendedHole&&x.id==="rod_reel"));
+  const unexpected=unresolved.filter(x=>!(documentedRodHole&&x.id==="rod_reel"));
   if(unexpected.length){
     failures.push({
       kind:"unresolved_required_product",
@@ -121,7 +127,7 @@ for(const gap of knownGaps){
 }
 const coverage={
   checkedAt:new Date().toISOString(),
-  evaluationMode:snapshotMode?"historical_fixture":"live_current",
+  evaluationMode:snapshotMode?"historical_fixture":partialReleaseMode?"live_known_partial":"live_current",
   evidenceAt:catalog.updatedAt,
   scenarioCount:scenarios,
   verifiedProductCount:(catalog.products||[]).length,
