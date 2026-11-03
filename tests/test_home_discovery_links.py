@@ -15,6 +15,7 @@ TARGETS = {
     "car-stay/car/": "車種から車中泊を考える",
     "car-stay/car/n-box/mat/": "N-BOXの車中泊マット・段差対策",
     "car-stay/car/sienta/2people/": "シエンタで2人の車中泊",
+    "car-stay/power/": "電気毛布のポータブル電源・必要Wh計算",
     "fishing/guides/": "釣り初心者の入門ガイド",
     "fishing/guides/gear/": "海釣り初心者の道具一式",
     "fishing/guides/kids/": "子どもと釣りに行く準備",
@@ -42,7 +43,7 @@ class HomepageDiscoveryLinksTest(unittest.TestCase):
         self.assertIn('id="find-guide"', self.home)
         self.assertIn('aria-labelledby="pathways-title"', self.home)
 
-    def test_all_nine_descriptive_plain_html_links_exist(self):
+    def test_all_descriptive_plain_html_links_exist(self):
         self.assertEqual(len(self.links), len(TARGETS))
         self.assertEqual({href for href, _ in self.links}, set(TARGETS))
         for href, body in self.links:
