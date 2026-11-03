@@ -29,6 +29,7 @@ jobs:
         run: |
           python -m http.server 4173 > /tmp/car-stay-server.log 2>&1 &
           node tests/car-stay-browser.mjs
+          node tests/car-stay-power-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

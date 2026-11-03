@@ -55,6 +55,7 @@ jobs:
           node tests/home-browser.cjs
           node tests/fishing-browser.mjs
           node tests/car-stay-browser.mjs
+          node tests/car-stay-power-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -84,6 +85,10 @@ jobs:
         env:
           CAR_STAY_BASE: https://stusaurus.github.io/sotojitaku/car-stay/
         run: node tests/car-stay-browser.mjs
+      - name: Verify published CAR STAY power calculator at three screen widths
+        env:
+          CAR_STAY_POWER_BASE: https://stusaurus.github.io/sotojitaku/car-stay/power/
+        run: node tests/car-stay-power-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
