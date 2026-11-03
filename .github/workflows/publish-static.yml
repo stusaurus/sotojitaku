@@ -7,6 +7,10 @@ on:
       - 'home.css'
       - 'assets/home-world-*'
       - 'camp/**'
+      - 'assets/a8-hinata-rental.js'
+      - 'style.css'
+      - 'app.js'
+      - 'tests/hinata-rental-browser.mjs'
       - 'tests/home-browser.cjs'
       - 'fishing/**'
       - 'car-stay/**'
@@ -48,6 +52,7 @@ jobs:
         run: |
           python -m http.server 4173 > /tmp/fishing-server.log 2>&1 &
           node tests/home-browser.cjs
+          node tests/hinata-rental-browser.mjs
           node tests/fishing-browser.mjs
           node tests/car-stay-browser.mjs
       - uses: actions/upload-artifact@v4
