@@ -28,7 +28,7 @@ function track(status){
     operator_test:window.SOTOJITAKU_ANALYTICS?.operatorTest?"1":"0",
   });
 }
-function show(){
+function show({trackInteraction=true}={}){
   const watts=numeric("watts",{min:1,max:300});
   const hours=numeric("hours",{min:0.5,max:24});
   const count=numeric("count",{min:1,max:4});
@@ -69,7 +69,7 @@ function show(){
       assessment.textContent=`手持ち電源は${gaps}が計算上の目安を下回ります。使用時間の短縮や電気毛布を使わない寝具など、買わずに解決する方法も検討してください。`;
     }
   }
-  track(status);
+  if(trackInteraction)track(status);
 }
 form.addEventListener("submit",event=>{event.preventDefault();show();});
-show();
+show({trackInteraction:false});
