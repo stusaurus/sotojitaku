@@ -82,8 +82,22 @@ class SevenSellerRenewal(unittest.TestCase):
         self.assertNotIn(("api","2218364"),calls)
         original=fixtures()[1]
         old=next(p for p in original["products"] if p["model"]=="2218364")
+        lantern=next((p for p in c["products"] if p["model"]=="2218364"),None)
+        if renewal.valid_existing(old,NOW):
+            self.assertIsNotNone(lantern)
+            self.assertEqual(lantern["verifiedAt"],old["verifiedAt"])
+        else:
+            self.assertIsNone(lantern,"stale seventh seller must be retired when quota stops")
+
+    def test_rate_limited_fresh_seventh_seller_retains_only_old_proof(self):
+        original=fixtures()[1]
+        entry=next(p for p in original["products"] if p["model"]=="2218364")
+        entry["verifiedAt"]=(NOW-timedelta(days=1)).isoformat()
+        _,c,report,calls=self.run_simulation(blocked="2238149",catalog=original)
+        self.assertTrue(report["stoppedByRateLimit"])
+        self.assertNotIn(("api","2218364"),calls)
         lantern=next(p for p in c["products"] if p["model"]=="2218364")
-        self.assertEqual(lantern["verifiedAt"],old["verifiedAt"])
+        self.assertEqual(lantern["verifiedAt"],entry["verifiedAt"])
     def test_lantern_out_of_stock_immediately_retires_only_lantern(self):
         a,c,report,calls=self.run_simulation(out_of_stock="2218364")
         self.assertEqual(report["attempted"],7)
