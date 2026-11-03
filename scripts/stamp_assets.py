@@ -11,7 +11,7 @@ for app_name,prefix in [('app.js','./'),('camp/app.js','../')]:
 # The rental-creative module is a CAMP-specific import: stamp its own version
 # whenever the official banner or renderer changes.
 p=ROOT/'camp/app.js';s=p.read_text()
-s=re.sub(r'(\\./hinata-rental\\.js)(?:\\?v=[a-z0-9]+)?',r'\\1?v='+version('camp/hinata-rental.js'),s)
+s=re.sub(r'(\./hinata-rental\.js)(?:\?v=[a-z0-9]+)?',r'\1?v='+version('camp/hinata-rental.js'),s)
 p.write_text(s)
 p=ROOT/'camp/index.html';s=p.read_text()
 for name in ['app.js','style.css']:
