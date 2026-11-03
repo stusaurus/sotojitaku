@@ -73,7 +73,18 @@ try{
     assert.equal(await page.locator('.product-card').count(),0,'expired products must not produce purchase cards');
     assert.match((await page.locator('.empty-products').allInnerTexts()).join(' '),/確認済みの候補がありません|確認済み商品がありません/);
    }
-   if(mockCatalog)assert.ok(initialOfferCount>0,'isolated synthetic catalog must cover affiliate UI');
+   if(mockCatalog){
+    assert.ok(initialOfferCount>0,'isolated synthetic catalog must cover affiliate UI');
+    // Products listed as "これで揃う" must never also appear under
+    // "販売確認済みの候補がありません" after partial or full coverage.
+    const coveredLabels=await page.locator('.product-card .coverage-row:not(.overlap) b').allInnerTexts();
+    assert.ok(coveredLabels.length>0,'synthetic fixture should cover required gear');
+    const missingText=(await page.locator('.empty-products[role="status"]').allInnerTexts()).join(' ');
+    for(const label of coveredLabels){
+     assert.ok(!missingText.includes(label),
+       width+'/'+scenario.name+': verified product covers '+label+' but is falsely labelled missing');
+    }
+   }
    if(scenario.name==='owned')assert.equal(await page.locator('.buy[data-category="rod_reel"]').count(),0);
    if(scenario.name==='family'){
     assert.equal(await page.locator('.buy[data-category="life_jacket_child"]').count(),0);
