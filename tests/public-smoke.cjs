@@ -49,18 +49,16 @@ async function main(){
        for(const [service,path] of [['camp','camp/'],['car_stay','car-stay/'],['fishing','fishing/']]){
          assert.ok(links.some(x=>x.service===service&&x.path.endsWith('/sotojitaku/'+path)),service+' navigation');
        }
-       // This workflow checks the *current published* site on PRs. The PR
-       // preview is checked by Python and local Playwright separately.
-       const cards=page.locator('.pathways-card');
-       if(process.env.REQUIRE_HOME_GUIDES==='1'||await cards.count()){
-       // Verify that new visitors can discover real editorial pages using
-       // plain crawlable anchors, independently of JavaScript diagnosis flow.
+       // This is an audit of the currently published baseline, not the PR
+       // candidate. Future additions are verified by PR-preview and post-deploy
+       // browser tests; never silently skip the published baseline.
        const guides=[
          'guides/','guides/gear/','guides/budget/',
-         'car-stay/car/','car-stay/car/n-box/mat/','car-stay/car/sienta/2people/','car-stay/power/',
+         'car-stay/car/','car-stay/car/n-box/mat/','car-stay/car/sienta/2people/',
          'fishing/guides/','fishing/guides/gear/','fishing/guides/kids/'
        ];
-       assert.equal(await cards.count(),3,'three visually separate guide choices');
+       const cards=page.locator('.pathways-card');
+       assert.equal(await cards.count(),3,'three published guide categories required');
        const guideLinks=await page.locator('.pathways-card li a[href]').evaluateAll(nodes=>
          nodes.map(node=>({
            path:new URL(node.href).pathname,
@@ -68,13 +66,12 @@ async function main(){
            rect:node.getBoundingClientRect().toJSON()
          }))
        );
-       assert.equal(guideLinks.length,9,'all editorial entry links');
+       assert.ok(guideLinks.length>=guides.length,'missing stable published editorial entries');
        for(const href of guides){
          const link=guideLinks.find(entry=>entry.path.endsWith('/sotojitaku/'+href));
          assert.ok(link&&link.text.length>8,'missing meaningful editorial link: '+href);
          assert.ok(link.rect.width>0,'guide link not visible: '+href);
          assert.ok(link.rect.left>=-1&&link.rect.right<=width+1,'guide link overflows viewport: '+href+' '+width);
-       }
        }
      }else{
        const start=spec.id==='camp'?'#main [data-start]':'#startBtn';
