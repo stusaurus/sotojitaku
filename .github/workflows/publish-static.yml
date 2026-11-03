@@ -1,23 +1,10 @@
 name: Publish verified SOTOJITAKU site
 on:
+  # Every main update must queue a new publish run. Otherwise a docs-only push
+  # could supersede an in-flight release without matching path filters, leaving
+  # the necessary older deployment skipped and no replacement scheduled.
   push:
     branches: [main]
-    paths:
-      - 'index.html'
-      - 'home.css'
-      - 'assets/home-world-*'
-      - 'camp/**'
-      - 'tests/home-browser.cjs'
-      - 'tests/home-guide-browser.cjs'
-      - 'scripts/check_release_head.py'
-      - 'tests/car-stay-published-catalog.mjs'
-      - 'tests/test_release_head_guard.py'
-      - 'fishing/**'
-      - 'car-stay/**'
-      - 'tests/car-stay-browser.mjs'
-      - 'tests/fishing-browser.mjs'
-      - 'tests/fishing-published-catalog.mjs'
-      - '.github/workflows/publish-static.yml'
   workflow_dispatch:
 permissions:
   contents: read
