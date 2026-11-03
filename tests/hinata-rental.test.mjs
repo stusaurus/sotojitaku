@@ -47,7 +47,7 @@ test('buy and rent decisions show only their matching, fully disclosed A8 creati
   }
   assert.match(bought,/購入先/);
   assert.match(rented,/レンタル先/);
-  assert.ok(!bought.includes('購入より安いこと'));
+  assert.ok(bought.includes('楽天での購入より安いことは保証しません'));
   assert.ok(rented.includes('購入より安いこと'));
 });
 
