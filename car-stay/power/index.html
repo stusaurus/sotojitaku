@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>車中泊の電気毛布に必要なポータブル電源は何Wh？無料容量計算｜SOTOJITAKU</title>
+<meta name="description" content="電気毛布の消費電力W・使用時間・枚数と手持ちの電源容量Whから、必要Whと定格出力Wを無料で計算。買い替え前の不足確認、変換損失、低温やけどの注意点も解説。">
+<link rel="canonical" href="https://stusaurus.github.io/sotojitaku/car-stay/power/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="車中泊の電気毛布・ポータブル電源必要容量を計算｜SOTOJITAKU">
+<meta property="og:description" content="実際の消費電力と時間から、容量Wh・定格出力W・手持ち機器の不足を確かめる。">
+<meta property="og:url" content="https://stusaurus.github.io/sotojitaku/car-stay/power/">
+<meta name="theme-color" content="#10202a">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/brand/brand-header.css?v=integration-20261010">
+<link rel="stylesheet" href="./style.css">
+<script src="../../assets/analytics-context.js?v=b3ba61be0f9a"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6STQ5HXRDH"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-6STQ5HXRDH',{site_id:'sotojitaku_car_stay',service_id:'car_stay',operator_test:window.SOTOJITAKU_ANALYTICS?.operatorTest?'1':'0',send_page_view:true});</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"車中泊の電気毛布・ポータブル電源容量計算","url":"https://stusaurus.github.io/sotojitaku/car-stay/power/","inLanguage":"ja","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"description":"電気毛布の消費電力・使用時間・枚数から必要Whと定格出力を概算し、手持ちの電源と比較する無料計算ツール。"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SOTOJITAKU","item":"https://stusaurus.github.io/sotojitaku/"},{"@type":"ListItem","position":2,"name":"CAR STAY","item":"https://stusaurus.github.io/sotojitaku/car-stay/"},{"@type":"ListItem","position":3,"name":"電気毛布の必要Wh計算","item":"https://stusaurus.github.io/sotojitaku/car-stay/power/"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<header class="power-header brand-shell">
+  <a class="power-brand" href="../../" aria-label="SOTOJITAKU ホーム">SOTOJITAKU <span>/ CAR STAY</span></a>
+  <nav aria-label="サイト内メニュー"><a href="../">車中泊診断</a><a href="../car/">車種別ガイド</a><a href="../../fishing/">FISHING</a></nav>
+</header>
+<main id="main">
+<div class="hero">
+  <nav class="breadcrumb" aria-label="パンくず"><a href="../../">SOTOJITAKU</a><span> / </span><a href="../">CAR STAY</a><span> / 必要Wh計算</span></nav>
+  <div class="hero-grid">
+    <div>
+      <p class="kicker">CAR STAY / POWER PLANNER</p>
+      <h1>車中泊の電気毛布、<br><em>ポータブル電源は何Wh必要？</em></h1>
+      <p class="intro">「500Whで足りる？」「家にある電源は使える？」を、あなたの機器の<strong>W・時間・枚数</strong>から計算。定格出力も一緒に確認します。</p>
+      <p class="disclaimer">この計算は容量検討用です。睡眠中の電気毛布の使用を推奨するものではありません。NITEは低温やけど防止のため、就寝中はスイッチを切るよう注意喚起しています。</p>
+    </div>
+    <aside class="hero-summary" aria-label="容量計算の基本">
+      <span class="hero-summary-label">必要容量の概算</span>
+      <strong>W × 時間 × 枚数 <span>÷ 0.8</span></strong>
+      <p>蓄電池の公称容量すべてを取り出せるわけではないため、利用できる容量を<strong>80%</strong>と仮定した計算です。実機の効率を保証する数字ではありません。</p>
+    </aside>
+  </div>
+</div>
+<section class="calculator-wrap" aria-labelledby="calculator-heading">
+ <div class="section-heading"><p class="kicker">01 / INPUT</p><h2 id="calculator-heading">手持ちの条件で計算する</h2><p>製品の定格ラベルを確認してください。入力値はこの端末上で計算し、商品購入には進みません。</p></div>
+ <form id="powerForm" novalidate>
+   <div class="form-grid">
+     <label class="field"><span>電気毛布1枚の消費電力 <b>W</b></span><input id="watts" name="watts" type="number" inputmode="decimal" min="1" max="300" step="1" value="50" required><small>例：50W。定格値で計算すると保守的な目安になります。</small></label>
+     <label class="field"><span>使用する時間 <b>h</b></span><input id="hours" name="hours" type="number" inputmode="decimal" min="0.5" max="24" step="0.5" value="2" required><small>例：就寝前に2時間だけ予熱。実際の使用を推奨する時間ではありません。</small></label>
+     <label class="field"><span>同時に使う枚数</span><select id="count" name="count"><option value="1">1枚</option><option value="2">2枚</option><option value="3">3枚</option><option value="4">4枚</option></select><small>定格出力Wは同時使用分の合計を確認します。</small></label>
+     <label class="field"><span>手持ちの電源容量 <b>Wh</b></span><input id="ownedWh" name="ownedWh" type="number" inputmode="decimal" min="1" max="100000" step="1" placeholder="未所有・不明なら空欄"><small>持っていない／わからない場合は空欄。ゼロ扱いにしません。</small></label>
+     <label class="field"><span>手持ち電源の定格出力 <b>W</b></span><input id="ownedOutput" name="ownedOutput" type="number" inputmode="decimal" min="1" max="100000" step="1" placeholder="未確認なら空欄"><small>容量Whが十分でも、出力Wが不足すると使用できません。</small></label>
+   </div>
+   <p class="form-note">※ 入力の1枚あたりWは、メーカーが公表する消費電力や製品表示を使ってください。AC/DC出力・連続使用条件・温度設定によって結果は変わります。</p>
+   <button class="calculate" type="submit">必要Whを計算する <span aria-hidden="true">→</span></button>
+ </form>
+ <div id="powerResult" class="result" aria-live="polite" aria-atomic="true" hidden>
+   <p class="kicker">02 / RESULT</p>
+   <div class="result-grid"><div class="result-number"><span>必要容量の目安</span><strong id="requiredWh">—</strong><small>公称容量・Wh以上</small></div><div class="result-number"><span>必要な定格出力</span><strong id="outputW">—</strong><small>W以上</small></div></div>
+   <p id="powerEquation" class="equation"></p>
+   <p id="ownedAssessment" class="assessment" role="status"></p>
+   <p class="fine-print">実際の電源の利用効率・気温・残量・製品の出力端子・定格出力を確認してください。「Whを満たす」は安全な車中泊や連続使用の保証ではありません。</p>
+   <a class="diagnosis-link" href="../?from=power-calculator&amp;entry=blanket-power">車種・気温・寝具まで含めて車中泊の準備を診断する <span aria-hidden="true">→</span></a>
+ </div>
+ <p id="powerError" class="error" role="alert" hidden></p>
+</section>
+<section class="explain" aria-labelledby="explain-heading">
+ <div class="section-heading"><p class="kicker">03 / HOW IT WORKS</p><h2 id="explain-heading">容量Whと出力Wは別の数字</h2></div>
+ <div class="info-grid">
+ <article><span>01</span><h3>消費電力量Wh</h3><p>50Wを2時間・1枚使う計算では100Wh消費。変換効率80%の仮定なら、公称容量は <strong>125Wh以上</strong>が計算値です。</p></article>
+ <article><span>02</span><h3>定格出力W</h3><p>50Wの電気毛布2枚を同時につなぐなら、必要な定格出力は<strong>少なくとも100W</strong>。容量Whだけで選ばないでください。</p></article>
+ <article><span>03</span><h3>手持ち品が先</h3><p>まず所持品の容量と定格出力を確認。条件に届かない場合も、使用時間を短くする、電気毛布を使わない寝具にするなど、<strong>新規購入しない方法</strong>を検討できます。</p></article>
+ </div>
+ <h3>容量早見表（50W・1枚、80%利用可能と仮定）</h3>
+ <div class="table-scroll"><table><thead><tr><th scope="col">使用時間（計算上の例）</th><th scope="col">消費電力量</th><th scope="col">必要な公称容量</th></tr></thead><tbody><tr><th scope="row">1時間</th><td>50Wh</td><td>63Wh以上</td></tr><tr><th scope="row">2時間</th><td>100Wh</td><td>125Wh以上</td></tr><tr><th scope="row">4時間</th><td>200Wh</td><td>250Wh以上</td></tr><tr><th scope="row">8時間（比較用の仮定）</th><td>400Wh</td><td>500Wh以上</td></tr></tbody></table></div>
+ <p class="fine-print">8時間の値は製品の容量を比較するための算術例であり、就寝中8時間の電気毛布使用を勧めるものではありません。</p>
+ <h3>安全に使うための確認</h3>
+ <ul class="safety-list">
+  <li><b>就寝中は電源を切る。</b> NITEは電気毛布・電気あんかの低温やけどを注意喚起しています。使用前に取扱説明書を確認してください。</li>
+  <li><b>車内の燃焼器具や就寝中のエンジン稼働を前提にしない。</b> 車内の換気・天候・駐車場所のルールも確認しましょう。</li>
+  <li><b>電源本体の安全条件を優先。</b> 定格出力、低温環境、出力端子、過負荷保護などは製品ごとに異なります。</li>
+ </ul>
+ <h3>計算の根拠と参考資料</h3>
+ <p>使用時間の概算法は「公称容量Wh × 0.8 ÷ 消費電力W」です。変換効率80%は一定の仮定であり、商品が必ずその時間使えるという意味ではありません。計算根拠はメーカーの説明も参照しています。</p>
+ <ul class="sources">
+   <li><a href="https://www.jackery.jp/blogs/outdoor/how-many-hours-can-you-use-electric-blanket-while-camping" rel="noopener noreferrer">Jackery公式：電気毛布の消費電力・ポータブル電源の使用時間</a></li>
+   <li><a href="https://www.nite.go.jp/jiko/chuikanki/mailmagazin/2025fy/vol493_260127.html" rel="noopener noreferrer">NITE（製品評価技術基盤機構）：電気毛布の低温やけど・コード事故の注意喚起</a></li>
+ </ul>
+ <p class="fine-print">調査日：2026年11月3日。商品価格・販売可否のランキングではありません。掲載商品を推薦する場合は、別途、販売先・在庫・適合を確認します。</p>
+</section>
+<section class="next-step"><p class="kicker">SOTOJITAKU / NEXT</p><h2>容量が分かったら、<br>クルマ全体の準備を。</h2><p>電源だけ整っても、寒さや寝床・目隠しが足りない場合があります。車種・人数・気温・手持ち品から必要な準備を整理します。</p><a href="../?from=power-calculator&amp;entry=blanket-power">無料の車中泊診断を始める →</a></section>
+</main>
+<footer><a href="../../">SOTOJITAKU</a><nav><a href="../">車中泊診断</a><a href="../car/">車種別</a><a href="../../camp/">CAMP</a><a href="../../fishing/">FISHING</a></nav><small>PR：当サイトの診断先にはアフィリエイト広告が含まれることがあります。この計算ページは商品購入リンクを掲載していません。</small></footer>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
