@@ -19,6 +19,10 @@ function auditFixture(change,{live=false}={}){
       fs.writeFileSync(seedFile,JSON.stringify(seed));
     }
     const file=path.join(dir,"fishing/data/audited-products.json");
+    if(!live){
+      // Test the dated engine contract, never the mutable production stock.
+      fs.copyFileSync(path.join(repo,"tests/fixtures/fishing-20261022-snapshot.json"),file);
+    }
     const catalog=JSON.parse(fs.readFileSync(file,"utf8"));
     change?.(catalog);
     fs.writeFileSync(file,JSON.stringify(catalog));
