@@ -63,13 +63,18 @@ class EightCertifiedOriginalSellers(unittest.TestCase):
   self.assertIn("fire_pit",{x["category"] for x in p["products"]})
 
  def test_429_before_fire_pit_stops_8th_call_without_timestamp_forgery(self):
-  _,p,r,calls=self.verify(blocked="2218364")
+  # The live snapshot has expired; only a fresh, independently audited offer
+  # may survive a later 429. Set a fresh timestamp in the test copy, never main.
+  old=copy.deepcopy(fixtures()[1])
+  fire=next(x for x in old["products"] if x["model"]=="2000037404")
+  fire["verifiedAt"]=(NOW-timedelta(hours=1)).isoformat()
+  _,p,r,calls=self.verify(blocked="2218364",existing=old)
   self.assertEqual(r["attempted"],7)
   self.assertTrue(r["stoppedByRateLimit"])
   self.assertNotIn(("api","2000037404"),calls)
-  old=next(x for x in fixtures()[1]["products"] if x["model"]=="2000037404")
-  fire=next(x for x in p["products"] if x["model"]=="2000037404")
-  self.assertEqual(fire["verifiedAt"],old["verifiedAt"])
+  previous=next(x for x in old["products"] if x["model"]=="2000037404")
+  current=next(x for x in p["products"] if x["model"]=="2000037404")
+  self.assertEqual(current["verifiedAt"],previous["verifiedAt"])
 
  def test_fire_pit_out_of_stock_retires_it_and_preserves_other_seven(self):
   _,p,r,calls=self.verify(unavailable="2000037404")
