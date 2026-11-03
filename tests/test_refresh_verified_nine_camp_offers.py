@@ -73,8 +73,24 @@ class NineIndependentSellers(unittest.TestCase):
   self.assertTrue(r["stoppedByRateLimit"])
   self.assertNotIn(("api","1709435"),calls)
   original=next(x for x in fixture()[1]["products"] if x["model"]=="1709435")
+  current=next((x for x in p["products"] if x["model"]=="1709435"),None)
+  if renewal.valid_existing(original,NOW):
+   self.assertIsNotNone(current)
+   self.assertEqual(original["verifiedAt"],current["verifiedAt"])
+  else:
+   # An expired, unvisited ninth seller must not survive a 429 stop.
+   self.assertIsNone(current)
+   self.assertIn("hot_sandwich_maker",p["failedCategories"])
+
+ def test_429_retains_only_independently_fresh_unvisited_sandwich(self):
+  old=copy.deepcopy(fixture()[1])
+  target=next(x for x in old["products"] if x["model"]=="1709435")
+  target["verifiedAt"]=(NOW-timedelta(days=1)).isoformat()
+  _,p,r,calls=self.simulate(blocked="2000037404",original=old)
+  self.assertTrue(r["stoppedByRateLimit"])
+  self.assertNotIn(("api","1709435"),calls)
   current=next(x for x in p["products"] if x["model"]=="1709435")
-  self.assertEqual(original["verifiedAt"],current["verifiedAt"])
+  self.assertEqual(current["verifiedAt"],target["verifiedAt"])
 
  def test_old_unvisited_sandwich_expires_if_429_before_it(self):
   old=copy.deepcopy(fixture()[1])
