@@ -4,6 +4,7 @@ on:
     paths:
       - 'car-stay/**'
       - 'tests/car-stay*.test.mjs'
+      - 'tests/car-stay-browser.mjs'
       - '.github/workflows/verify-car-stay.yml'
       - '.github/workflows/sync-car-stay-shared-products.yml'
       - '.github/workflows/refresh-car-stay-products.yml'
