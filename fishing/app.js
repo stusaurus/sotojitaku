@@ -520,8 +520,13 @@ function renderProducts(productResult,checklist){
   const selected=productResult.selected||[];
   const requiredProducts=selected.filter(p=>productCoversRequiredGap(p,checklist));
   const optionalProducts=selected.filter(p=>!productCoversRequiredGap(p,checklist));
-  const unverifiedRequired=checklist.filter(item=>
-    item.monetizable&&item.priority==="required"&&item.state==="needed"
+  // The raw checklist still marks selected purchase candidates as "needed".
+  // An item is unverified only when no eligible selected product covers it.
+  const verifiedCoverIds=new Set(selected.flatMap(product=>
+    product.effectiveCoverCategoryIds||product.coverCategoryIds||[product.categoryId]
+  ));
+  const unverifiedRequired=requiredGaps.filter(item=>
+    item.state==="needed"&&!verifiedCoverIds.has(item.id)
   );
   const missingSellerNote=unverifiedRequired.length
     ?'<div class="empty-products" role="status"><strong>必須品に販売確認済みの候補がありません：</strong> '
