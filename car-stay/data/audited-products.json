@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-03T08:56:52.968744+00:00",
+  "updatedAt": "2026-11-03T10:03:08.722063+00:00",
   "auditPolicyVersion": "carstay-2026-10-06-official-manual-affiliate-v2",
   "status": "partial",
   "products": [
@@ -51,7 +51,7 @@
       "itemUrl": "https://item.rakuten.co.jp/atmys/im10cm-maker/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qzcdo.7cx6mdfc.g00qzcdo.7cx6nd5a/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fatmys%2Fim10cm-maker%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fatmys%2Fi%2F10027203%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/atmys/cabinet/07683010/07k-sam/07k-a000-ca.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-03T08:56:50.945161+00:00",
+      "verifiedAt": "2026-11-03T10:02:58.227887+00:00",
       "fitVerifiedAt": "2026-10-06",
       "fitStrategy": "measurement",
       "measurementFit": {
@@ -85,7 +85,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr00280029/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00280029%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000843%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640901/jr00280029_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-03T08:56:52.968744+00:00",
+      "verifiedAt": "2026-11-03T10:02:57.595133+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
@@ -322,14 +322,15 @@
       "recommendationRole": "beginner_alternative",
       "score": 91,
       "price": 8800,
-      "itemCode": "autorder:10001966",
+      "itemCode": "",
       "itemUrl": "https://item.rakuten.co.jp/autorder/au1175/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u1rfo.7cx6m2b8.g00u1rfo.7cx6n238/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fautorder%2Fau1175%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fautorder%2Fi%2F10001966%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/autorder/cabinet/au1175/au1175_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-03T03:41:02.396209+00:00",
+      "verifiedAt": "2026-11-03T10:02:56.864006+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
+      "powerSpec": null,
       "vehicleFit": [
         {
           "vehicleId": "honda-freed-gt",
@@ -348,11 +349,9 @@
       ],
       "audit": {
         "status": "verified_live",
-        "mode": "rakuten_api_exact_url_search",
-        "salesSource": "daily-cost-jp_github_actions",
-        "fitEvidence": "https://item.rakuten.co.jp/autorder/au1175/",
-        "seedItemUrl": "https://item.rakuten.co.jp/autorder/au1175/",
-        "sharedCatalog": true
+        "mode": "exact_feed_fallback",
+        "salesSource": "worker",
+        "fitEvidence": "https://item.rakuten.co.jp/autorder/au1175/"
       }
     },
     {
@@ -747,14 +746,15 @@
       "recommendationRole": "beginner_default",
       "score": 95,
       "price": 9580,
-      "itemCode": "jroad:10000437",
+      "itemCode": "",
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr-car14971498%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000437%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12594710/car14971498_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-03T03:41:02.396209+00:00",
+      "verifiedAt": "2026-11-03T10:03:07.566091+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
+      "powerSpec": null,
       "vehicleFit": [
         {
           "vehicleId": "suzuki-every-da17v",
@@ -777,11 +777,9 @@
       ],
       "audit": {
         "status": "verified_live",
-        "mode": "rakuten_api_exact_url_search",
-        "salesSource": "daily-cost-jp_github_actions",
-        "fitEvidence": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
-        "seedItemUrl": "https://item.rakuten.co.jp/jroad/jr-car14971498/",
-        "sharedCatalog": true
+        "mode": "exact_feed_fallback",
+        "salesSource": "worker",
+        "fitEvidence": "https://item.rakuten.co.jp/jroad/jr-car14971498/"
       }
     },
     {
@@ -1064,7 +1062,7 @@
       "itemUrl": "https://item.rakuten.co.jp/jroad/jr00310032/",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00usruo.7cx6m5fe.g00usruo.7cx6n707/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjroad%2Fjr00310032%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fjroad%2Fi%2F10000845%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/jroad/cabinet/12640914/jr00310032_01.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-03T08:56:51.620844+00:00",
+      "verifiedAt": "2026-11-03T10:03:00.692143+00:00",
       "fitVerifiedAt": "2026-10-05",
       "fitStrategy": "vehicle",
       "measurementFit": null,
