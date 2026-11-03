@@ -1,3 +1,5 @@
+import {estimateBlanketPower} from "./power-calculator.js";
+
 export const DEFAULT_RULES={heatBlockMinC:25,heatBlockMaxC:35,coldChallengeC:5,coldSevereC:0,lengthComfortMarginMm:100,adultWidthMm:550,childWidthMm:450};
 
 const hasCapability=(gear,capability)=>gear.some(g=>Array.isArray(g.capabilities)&&g.capabilities.includes(capability));
@@ -133,8 +135,9 @@ export function evaluate(input,vehicle,rules=DEFAULT_RULES){
   const powerUse=input.powerUse||{};
   const blanketW=Number(powerUse.blanketW)||0;
   const blanketHours=Number(powerUse.hours)||0;
-  const requiredWh=blanketW>0&&blanketHours>0?Math.ceil(blanketW*blanketHours*1.25):null;
-  const requiredOutputW=blanketW>0?blanketW:null;
+  const powerEstimate=estimateBlanketPower({watts:blanketW,hours:blanketHours});
+  const requiredWh=powerEstimate.requiredWh;
+  const requiredOutputW=powerEstimate.requiredOutputW;
   const ownsPortablePower=hasCapability(gear,"portable_power");
   const ownedWh=Number(powerUse.ownedWh)||0;
   const ownedOutputW=Number(powerUse.ownedOutputW)||0;
