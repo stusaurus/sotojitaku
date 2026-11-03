@@ -1,0 +1,41 @@
+name: CAMP hinata rental A8 preflight
+on:
+  pull_request:
+    paths:
+      - 'camp/**'
+      - 'style.css'
+      - 'scripts/stamp_assets.py'
+      - 'tests/hinata-rental*'
+      - '.github/workflows/hinata-rental-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rental-a8-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify existing CAMP and affiliate contract
+        run: |
+          npm run check
+          python scripts/stamp_assets.py
+          npm test
+      - name: Install Chromium for isolated local browser QA
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify A8 hinata rental card and GA4 on three viewports
+        run: node tests/hinata-rental-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hinata-rental-preflight
+          path: browser-proof/hinata-rental
+          if-no-files-found: warn
