@@ -43,8 +43,12 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
           python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
-      - name: Verify site and audited partial catalog
+      - name: Verify safe code and expiry guards before contacting live sellers
         run: |
           npm run check
-          npm run test:non-camp-live
-          node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
+          # This PR does not claim that the historical 2026-10-25 offers are fresh.
+          # Real CAMP live catalog checks run after seller re-verification in the
+          # publication workflow; independent FISHING availability is checked by FISHING.
+          node --test --test-name-pattern='^old listings fail closed and extreme low price not ranked
+ tests/engine.test.mjs
+          node --test tests/fishing-products.test.mjs
