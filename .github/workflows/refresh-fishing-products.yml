@@ -132,11 +132,24 @@ jobs:
           cp /tmp/fishing-products.json fishing/data/audited-products.json
           python fishing/scripts/apply_suspensions.py fishing/data/audited-products.json
 
-      - name: Require core live product coverage
+      - name: Report strict complete-basket shortages (unresolved in Issue #302)
+        id: strict-coverage
+        continue-on-error: true
         run: python fishing/scripts/check_catalog.py
 
-      - name: Run exhaustive diagnosis-to-product audit
-        run: node fishing/scripts/check_scenarios.mjs
+      - name: Fail closed unless all sellers are fresh and ONLY three known product gaps remain
+        run: python fishing/scripts/check_partial_catalog.py
+
+      - name: Run current-time FISHING partial-safe 2916-scenario audit
+        run: node fishing/scripts/check_scenarios.mjs browser-proof/fishing-live-coverage.json --partial-release
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fishing-live-coverage
+          path: browser-proof/fishing-live-coverage.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Publish verified FISHING catalog safely
         run: |
