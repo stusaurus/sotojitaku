@@ -54,7 +54,10 @@ jobs:
         run: |
           npm run check
           npm run test:non-camp-live
-          node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
+          # After an API outage, publishing a verified empty/partial catalog is
+          # safer than keeping an expired seller in the repository. Historical
+          # identity, price, affiliate and live-expiry gates remain tested above.
+          node --test tests/verified-camp-snapshot.test.mjs
       - name: Record safe renewal/expiry reasons even on failed checks
         if: always()
         uses: actions/upload-artifact@v4
