@@ -28,6 +28,17 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SOTOJITAKU","url":"https://stusaurus.github.io/sotojitaku/","description":"外遊び初心者のための支度サービス。CAMP、CAR STAY、FISHINGを提供。","inLanguage":"ja"}</script>
 <link rel="stylesheet" href="assets/brand/brand-header.css?v=integration-20261010">
 <script defer src="assets/brand/brand-navigation.js?v=integration-20261010"></script>
+<style id="soto-a8-home-style">
+.soto-sponsored{padding:32px 16px;background:#f4f0e7;text-align:center;color:#1b211d}
+.soto-sponsored__inner{max-width:640px;margin:auto;padding:20px 14px;border:1px solid #d8cbb8;border-radius:16px;background:#fbfaf6}
+.soto-sponsored__label{font-size:12px;font-weight:600;letter-spacing:.06em;margin:0 0 12px}
+.soto-sponsored__link{display:block;width:fit-content;max-width:100%;margin:auto;line-height:0}
+.soto-sponsored__link:focus-visible{outline:3px solid #426851;outline-offset:4px}
+.soto-sponsored__link img{display:block;max-width:100%;height:auto}
+.soto-sponsored__note{max-width:420px;margin:12px auto 0;font-size:11px;line-height:1.7;color:#5f6f63;text-align:left}
+.soto-sponsored__pixel{position:absolute;width:1px;height:1px}
+@media(max-width:360px){.soto-sponsored{padding:26px 12px}.soto-sponsored__inner{padding:16px 10px}}
+</style>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へ</a>
@@ -124,6 +135,17 @@
       <h2>外へ行く準備を、<br>もっと楽しく。</h2>
       <a href="#choose">今日の休日を選ぶ →</a>
     </section>
+<!-- a8-sotojitaku-home-4NJ4 -->
+    <section id="soto-a8-home" class="soto-sponsored" aria-label="スポンサー広告">
+      <div class="soto-sponsored__inner">
+        <p class="soto-sponsored__label">広告｜A8.netアフィリエイト</p>
+        <a class="soto-sponsored__link" data-a8-home-link href="https://px.a8.net/svt/ejp?a8mat=4BGCF2+6HZHDM+4NJ4+609HT" rel="nofollow sponsored" aria-label="広告主のサイトを開く">
+          <img border="0" width="300" height="250" alt="" loading="lazy" decoding="async" src="https://www22.a8.net/svt/bgt?aid=261103070393&wid=006&eno=01&mid=s00000021712001009000&mc=1">
+        </a>
+        <img class="soto-sponsored__pixel" border="0" width="1" height="1" src="https://www14.a8.net/0.gif?a8mat=4BGCF2+6HZHDM+4NJ4+609HT" alt="">
+        <p class="soto-sponsored__note">この枠は外部広告です。SOTOJITAKUの準備診断や商品比較の判定には影響しません。リンク先での購入・申込み等により、運営者に報酬が発生する場合があります。</p>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -143,6 +165,19 @@
         if(!window.SOTOJITAKU_ANALYTICS.optedOut&&window.gtag) gtag('event','service_select',{site_id:'sotojitaku_home',service:this.dataset.service,service_id:this.dataset.service,operator_test:window.SOTOJITAKU_ANALYTICS.operatorTest?'1':'0',transport_type:'beacon'});
       });
     });
+    const bannerLink = document.querySelector('#soto-a8-home a');
+    function recordA8Click(event) {
+      if(event.type==='auxclick' && event.button!==1) return;
+      if(window.SOTOJITAKU_ANALYTICS?.optedOut || typeof gtag!=='function') return;
+      gtag('event','affiliate_click',{
+        site_id:'sotojitaku_home',affiliate:'a8',program:'4NJ4',
+        ad_placement:'home_footer_banner',conversion_source:'homepage_banner',
+        operator_test:window.SOTOJITAKU_ANALYTICS.operatorTest?'1':'0',
+        transport_type:'beacon'
+      });
+    }
+    bannerLink?.addEventListener('click',recordA8Click);
+    bannerLink?.addEventListener('auxclick',recordA8Click);
   </script>
 </body>
 </html>
