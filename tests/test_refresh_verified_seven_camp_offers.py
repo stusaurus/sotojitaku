@@ -75,15 +75,19 @@ class SevenSellerRenewal(unittest.TestCase):
         self.assertTrue(all("GitHub Actions run seven-test" in p["listingAudit"] for p in c["products"]))
         self.assertTrue(all(p["price"]>0 for p in c["products"]))
     def test_cooler_429_stops_lantern_call_and_keeps_its_old_timestamp(self):
-        a,c,report,calls=self.run_simulation(blocked="2238149")
+        # Keep the unvisited seller recently verified *within this simulated
+        # test only*. Historical production offers must still expire after 7 days.
+        original=fixtures()[1]
+        lantern=next(p for p in original["products"] if p["model"]=="2218364")
+        lantern["verifiedAt"]=(NOW-timedelta(hours=1)).isoformat()
+        a,c,report,calls=self.run_simulation(blocked="2238149",catalog=original)
         self.assertTrue(report["stoppedByRateLimit"])
         self.assertEqual(report["attempted"],6)
         self.assertEqual(len([x for x in calls if x[0]=="api"]),6)
         self.assertNotIn(("api","2218364"),calls)
-        original=fixtures()[1]
         old=next(p for p in original["products"] if p["model"]=="2218364")
-        lantern=next(p for p in c["products"] if p["model"]=="2218364")
-        self.assertEqual(lantern["verifiedAt"],old["verifiedAt"])
+        current=next(p for p in c["products"] if p["model"]=="2218364")
+        self.assertEqual(current["verifiedAt"],old["verifiedAt"])
     def test_lantern_out_of_stock_immediately_retires_only_lantern(self):
         a,c,report,calls=self.run_simulation(out_of_stock="2218364")
         self.assertEqual(report["attempted"],7)
