@@ -20,5 +20,8 @@ jobs:
       - run: npm run check
       - name: Stamp asset fingerprints before release checks
         run: python scripts/stamp_assets.py
-      - run: npm test
+      # Inventory availability is a live business-health gate, not a source-code
+      # regression. Growth audit still runs the unfiltered npm test and alerts.
+      - name: Verify static safety and dated catalog regression contracts
+        run: npm run test:non-camp-live
       - run: python -m unittest discover -s tests -p 'test_*.py' -v

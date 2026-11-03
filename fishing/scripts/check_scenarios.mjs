@@ -7,6 +7,11 @@ const readJson=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url),"u
 const plans=readJson("../data/plans.json");
 const gear=readJson("../data/gear.json");
 const catalog=readJson("../data/audited-products.json");
+// Historical synthetic fixtures may explicitly test their dated evidence set.
+// Scheduled production audits use real time and still fail on stale sellers.
+const snapshotMode=process.argv.includes("--as-of-snapshot");
+const evaluationNow=snapshotMode?Date.parse(catalog.updatedAt):Date.now();
+if(!Number.isFinite(evaluationNow))throw new Error("invalid_fishing_catalog_timestamp");
 
 const suspendedRod=readJson("../data/product-seeds/choi-shimano-complete.json").suspended===true;
 const suspendedSabikiRod=readJson("../data/product-seeds/sabiki-shimano-complete.json").suspended===true;
@@ -50,7 +55,7 @@ for(const profile of ownedProfiles){
 
   const checklist=buildGearChecklist(input,plan,gear);
   const result=buildProductRecommendations(catalog.products||[],{
-    input,plan,checklist,now:Date.now()
+    input,plan,checklist,now:evaluationNow
   });
   const covered=applyProductCoverage(checklist,result.selected);
 
@@ -116,6 +121,8 @@ for(const gap of knownGaps){
 }
 const coverage={
   checkedAt:new Date().toISOString(),
+  evaluationMode:snapshotMode?"historical_fixture":"live_current",
+  evidenceAt:catalog.updatedAt,
   scenarioCount:scenarios,
   verifiedProductCount:(catalog.products||[]).length,
   safetyAndUnexpectedCoveragePassed:failures.length===0,
@@ -125,9 +132,9 @@ const coverage={
   knownGapExamples:knownGaps.slice(0,12),
   unexpectedFailureCount:failures.length,
   unexpectedFailureExamples:failures.slice(0,30),
-  note:"Synthetic scenarios, not visitors or demand. Never reactivate stopped listings or relax suitability to fill gaps."
+  note:"Synthetic scenarios, not visitors or demand. Historical fixture mode is opt-in only; production uses real expiry. Never reactivate stopped listings or relax suitability to fill gaps."
 };
-const output=process.argv[2];
+const output=process.argv.slice(2).find(arg=>!arg.startsWith('--'));
 if(output){
   fs.mkdirSync(path.dirname(output),{recursive:true});
   fs.writeFileSync(output,JSON.stringify(coverage,null,2)+"\n");

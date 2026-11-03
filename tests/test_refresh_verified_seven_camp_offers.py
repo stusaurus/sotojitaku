@@ -8,6 +8,7 @@ from urllib.parse import parse_qs,quote,urlparse
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import refresh_verified_camp_offer as renewal
+from camp_renewal_fixtures import restore_expired_test_baselines
 
 ROOT=Path(__file__).resolve().parents[1]
 # Simulation time must follow real product proofs: otherwise a new valid
@@ -21,6 +22,7 @@ def fixtures():
     assert len(renewal.TARGETS)>=7
     catalog["products"]=[p for p in catalog["products"]
         if (p["category"],p["model"]) in renewal.TARGETS[:7]]
+    catalog=restore_expired_test_baselines(audit,catalog,renewal.TARGETS[:7],NOW)
     assert len(catalog["products"])==7
     return audit,catalog,equipment
 

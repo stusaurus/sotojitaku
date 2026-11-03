@@ -8,6 +8,7 @@ from urllib.parse import parse_qs, quote, urlparse
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import refresh_verified_camp_offer as refresh
+from camp_renewal_fixtures import restore_expired_test_baselines
 
 # Simulation time must follow real product proofs: otherwise a new valid
 # verifiedAt timestamp appears 'in the future' to an obsolete test clock.
@@ -22,6 +23,7 @@ def fixtures():
     first_five=set(refresh.TARGETS[:5])
     catalog["products"]=[p for p in catalog["products"]
                          if (p["category"],p["model"]) in first_five]
+    catalog=restore_expired_test_baselines(audits,catalog,refresh.TARGETS[:5],NOW)
     assert len(catalog["products"])==5
     return audits,catalog,equipment
 

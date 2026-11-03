@@ -1,12 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import {selectPlan,buildGearChecklist} from "../fishing/engine.js";
+import {selectPlan,buildGearChecklist,productEligible} from "../fishing/engine.js";
 import {buildProductRecommendations,applyProductCoverage} from "../fishing/products.js";
 
 const plans=JSON.parse(fs.readFileSync(new URL("../fishing/data/plans.json",import.meta.url)));
 const gear=JSON.parse(fs.readFileSync(new URL("../fishing/data/gear.json",import.meta.url)));
 const catalog=JSON.parse(fs.readFileSync(new URL("../fishing/data/audited-products.json",import.meta.url)));
+const historicalNow=Date.parse(catalog.updatedAt);
+assert.ok(Number.isFinite(historicalNow),"historical FISHING catalog requires its own dated baseline");
 
 const suspendedRod=JSON.parse(fs.readFileSync(new URL("../fishing/data/product-seeds/choi-shimano-complete.json",import.meta.url))).suspended===true;
 const suspendedSabikiRod=JSON.parse(fs.readFileSync(new URL("../fishing/data/product-seeds/sabiki-shimano-complete.json",import.meta.url))).suspended===true;
@@ -31,7 +33,7 @@ test("all first-trip gaps have verified coverage or the explicitly suspended rod
               const plan=selectPlan(input,plans);
               const checklist=buildGearChecklist(input,plan,gear);
               const result=buildProductRecommendations(catalog.products,{
-                input,plan,checklist,now:Date.now()
+                input,plan,checklist,now:historicalNow
               });
               const covered=applyProductCoverage(checklist,result.selected);
               const missing=covered.filter(
@@ -70,7 +72,7 @@ test("owned safety and handling gear are never emitted as standalone recommendat
   };
   const plan=selectPlan(input,plans);
   const checklist=buildGearChecklist(input,plan,gear);
-  const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:Date.now()});
+  const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:historicalNow});
   const standaloneCategories=new Set(result.selected.map(x=>x.categoryId));
   for(const category of ["life_jacket_adult","life_jacket_child","cooler","bucket","fish_grip","scissors","bag"]){
     assert.equal(standaloneCategories.has(category),false,category+" must not be recommended standalone when owned");
@@ -91,7 +93,7 @@ test("all supported child fit bands resolve to the matching verified PFD",()=>{
               assert.ok(child);
               assert.equal(child.monetizable,true);
 
-              const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:Date.now()});
+              const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:historicalNow});
               const childProduct=result.selected.find(p=>p.categoryId==="life_jacket_child");
               assert.ok(childProduct,"child PFD must be selected for "+child_fit+" "+JSON.stringify(input));
               const expectedTag=child_fit==="m_all"?"child_m":"child_l";
@@ -116,6 +118,21 @@ test("mixed, unknown or out-of-band child fit never auto-selects a child PFD",()
   assert.ok(child);
   assert.equal(child.monetizable,false);
 
-  const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:Date.now()});
+  const result=buildProductRecommendations(catalog.products,{input,plan,checklist,now:historicalNow});
   assert.equal(result.selected.some(p=>p.categoryId==="life_jacket_child"),false);
+});
+
+test("historically valid FISHING seller expires after seven days in production",()=>{
+  const adult=catalog.products.find(p=>p.categoryId==="life_jacket_adult");
+  assert.ok(adult);
+  const criteria={
+    methodId:adult.methodIds[0],categoryId:adult.categoryId,
+    budgetTier:adult.budgetTiers[0],audience:"adult",baitPreference:"okay",
+    childFit:null
+  };
+  assert.equal(productEligible(adult,{...criteria,now:historicalNow}),true,
+    "snapshot baseline must be usable for coverage regression");
+  const old={...adult,verifiedAt:new Date(Date.now()-8*86400000).toISOString()};
+  assert.equal(productEligible(old,{...criteria,now:Date.now()}),false,
+    "an offer whose proof expired must not be presented as shoppable");
 });
