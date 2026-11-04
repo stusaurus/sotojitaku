@@ -13,3 +13,17 @@
 @media(max-width:760px){.preference-box{padding:20px}.preference-options{grid-template-columns:1fr 1fr}.preference-options button{padding:12px;min-height:70px}.top-pick>h2{font-size:28px}.product-card-head .badge{font-size:21px}.product-actions{grid-template-columns:1fr}.purchase-progress{display:block}.purchase-progress .secondary{width:100%;margin-top:16px}.shopping-item{grid-template-columns:34px 84px 1fr;gap:12px}.shopping-item img{width:84px;height:72px}.shopping-item h2{font-size:13px}.shopping-item .primary,.shopping-item .back{grid-column:2/4}.shopping-total strong{font-size:32px}}
 
 .supply-chip{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border-radius:999px;background:#d8cbb844;color:var(--moss);font-size:12px;white-space:nowrap}.supply-guide{margin:36px 0;padding:26px;border:1px solid var(--sand);border-radius:22px;background:#fbfaf7}.supply-guide h2{font-size:24px;margin-bottom:12px}.supply-guide>p:not(.eyebrow){font-size:13px;color:var(--moss)}.supply-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.supply-list span{display:inline-flex;padding:8px 12px;border-radius:999px;background:#f4f0e7;color:var(--forest);font-size:12px}
+
+/* CAMP: grounded buy-vs-own-vs-rent decisions, hidden detail by default. */
+.purchase-insight{margin:24px 0;padding:22px 24px;border:1px solid var(--sand);border-radius:20px;background:var(--white)}
+.purchase-insight .eyebrow{display:block;margin-bottom:5px}
+.purchase-insight h2{font-size:clamp(20px,2.7vw,28px);margin-bottom:10px}
+.purchase-insight p{font-size:14px;line-height:1.75;margin:0 0 7px}
+.purchase-insight p strong{font-size:26px;color:var(--forest);font-variant-numeric:tabular-nums}
+.purchase-insight small{display:block;font-size:12px;line-height:1.8;color:var(--moss)}
+.purchase-insight .warning{margin-top:12px}
+.gear-decision{margin:8px 0 0;padding:5px 0;color:var(--forest);max-width:65ch}
+.gear-decision summary{cursor:pointer;font-size:12px;line-height:1.65;font-weight:700;min-height:32px}
+.gear-decision summary:focus-visible{outline:3px solid var(--ember);outline-offset:2px}
+.gear-decision p{font-size:12px;line-height:1.7;color:var(--moss);margin:4px 0 7px}
+@media(max-width:480px){.purchase-insight{margin:18px 0;padding:17px}.purchase-insight p strong{font-size:23px}}
