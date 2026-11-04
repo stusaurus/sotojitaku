@@ -35,6 +35,29 @@ const browserPromise=chromium.launch({headless:true});
       const actualVersion=crypto.createHash('sha256').update(css).digest('hex').slice(0,12);
       assert.equal(new URL(stylesheet,base).searchParams.get('v'),actualVersion,
         'HOME stylesheet fingerprint does not match served CSS; stale deployment/cache');
+      // The two entry choices must both work without starting a diagnosis.
+      // Test actual anchor navigation on narrow screens, not just existence
+      // of corresponding hrefs in the source HTML.
+      const actions=page.locator('.hero-quick-actions a');
+      assert.equal(await actions.count(),2,'choose activity and guide shortcuts');
+      const guideAction=page.locator('.hero-guide-link[href="#find-guide"]');
+      const chooseAction=page.locator('.hero-quick-actions a[href="#choose"]');
+      assert.ok(await guideAction.isVisible(),'guide entry should be visible');
+      assert.ok(await chooseAction.isVisible(),'activity entry should be visible');
+      await guideAction.click();
+      await page.waitForFunction(()=>{
+        const node=document.querySelector('#find-guide');
+        if(!node||location.hash!=='#find-guide') return false;
+        const box=node.getBoundingClientRect();
+        return box.top<innerHeight&&box.bottom>0;
+      },null,{timeout:10000});
+      await chooseAction.click();
+      await page.waitForFunction(()=>{
+        const node=document.querySelector('#choose');
+        if(!node||location.hash!=='#choose') return false;
+        const box=node.getBoundingClientRect();
+        return box.top<innerHeight&&box.bottom>0;
+      },null,{timeout:10000});
       await page.locator('.pathways-card').first().waitFor({timeout:15000});
       assert.equal(await page.locator('.pathways-card').count(),3,'one guide card per service');
       const links=await page.locator('.pathways-card li a[href]').evaluateAll(nodes=>
