@@ -5,6 +5,20 @@ on:
   # the necessary older deployment skipped and no replacement scheduled.
   push:
     branches: [main]
+  # An Actions job that pushes with GITHUB_TOKEN does NOT trigger push
+  # workflows. These completion events explicitly hand off each nightly
+  # verified catalog refresh to the whole-site release QA pipeline.
+  workflow_run:
+    workflows:
+      - Refresh CAR STAY products
+      - Sync CAR STAY shared Rakuten catalog
+      - Refresh FISHING products
+      - Renew nine strictly verified CAMP seller offers
+    types: [completed]
+    branches: [main]
+  # Scheduled reconciliation also covers temporary event delivery failures.
+  schedule:
+    - cron: '35 8 * * *'
   workflow_dispatch:
 permissions:
   contents: read
@@ -15,6 +29,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   publish:
+    # Never deploy after a failed refresh. Successful no-op runs may repeat
+    # verification; latest-main guards and deployment concurrency stay active.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -89,6 +106,11 @@ jobs:
           name: home-published-guide-proof
           path: browser-proof/public/home-guide-links-*.png
           retention-days: 14
+      - name: Verify published CAMP audit and seller catalogs exactly match verified main
+        if: steps.release_head_final.outputs.publish == 'true'
+        env:
+          CAMP_BASE: https://stusaurus.github.io/sotojitaku/
+        run: node tests/camp-published-catalog.mjs
       - name: Verify published CAR STAY catalog exactly matches verified main
         if: steps.release_head_final.outputs.publish == 'true'
         env:

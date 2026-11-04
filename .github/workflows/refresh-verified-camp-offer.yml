@@ -11,8 +11,6 @@ on:
     - cron: '40 0 * * *'
 permissions:
   contents: write
-  pages: write
-  id-token: write
 concurrency:
   group: sotojitaku-products
   cancel-in-progress: false
@@ -20,9 +18,6 @@ jobs:
   renew-first-seller:
     runs-on: ubuntu-latest
     timeout-minutes: 12
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - name: Sync original main
@@ -96,17 +91,7 @@ jobs:
           done
           echo "Cannot safely push independently validated evidence."
           exit 1
-      - name: Prepare original Pages site with refreshed data
-        if: steps.commit.outputs.changed == 'true'
-        run: |
-          mkdir -p public
-          cp home.css index.html qa.html app.js engine.js products.js style.css robots.txt sitemap.xml googlef35e71acece62b67.html .nojekyll public/
-          cp -r assets data guides camp car-stay fishing public/
-      - uses: actions/upload-pages-artifact@v3
-        if: steps.commit.outputs.changed == 'true'
-        with:
-          path: public
-      - name: Deploy verified product data to Pages
-        id: deployment
-        if: steps.commit.outputs.changed == 'true'
-        uses: actions/deploy-pages@v4
+      # Full-site Pages deployment is intentionally NOT performed here.
+      # This workflow updates only independently verified CAMP catalog data.
+      # A successful workflow_run completion triggers publish-static.yml,
+      # where freshness guards, all-service QA, and exact catalog parity run.

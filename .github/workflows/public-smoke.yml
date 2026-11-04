@@ -16,6 +16,9 @@ on:
       - 'tests/home-guide-browser.cjs'
       - 'tests/public-http.mjs'
       - '.github/workflows/public-smoke.yml'
+      - '.github/workflows/publish-static.yml'
+      - '.github/workflows/refresh-verified-camp-offer.yml'
+      - 'tests/camp-published-catalog.mjs'
   workflow_dispatch:
   schedule:
     - cron: '7 0 * * 1'
