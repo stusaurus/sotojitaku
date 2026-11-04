@@ -65,3 +65,78 @@ export function schedule(state,data){const a=state.answers,r=readiness(state,dat
  const breakfast=recipes.find(x=>x.meal==='breakfast'&&usable(x));push('翌 08:00',breakfast?breakfast.name+'の朝ごはん':'簡単な朝ごはん',breakfast?'材料：'+breakfast.ingredients.join('・'):'パンなど、調理のいらない朝食も。',breakfast?[...breakfast.required_gear,...breakfast.optional_gear]:[],'coffee');
  push('翌 10:00','また来たい、を持ち帰る','撤収・分別・忘れ物を確認。チェックアウト時刻は施設に合わせて。',['garbage_bags']);return out.sort((a,b)=>a.time.localeCompare(b.time));}
 export function validateStored(raw,data){if(!raw||raw.version!==1||!raw.answers||!raw.gear)return null;const a=raw.answers;for(const q of data.questions.questions.filter(q=>q.type==='single'))if(!q.options.some(o=>o.id===a[q.id]))return null;if(!Number.isInteger(a.adults)||a.adults<1||a.adults>6||!Number.isInteger(a.children)||a.children<0||a.children>4||!Array.isArray(a.experiences)||!a.experiences.length)return null;const valid=data.questions.questions[5].options.map(o=>o.id);if(a.experiences.some(x=>!valid.includes(x)))return null;const ids=new Set([...data.equipment.categories,...data.equipment.supporting_items,...EXTRA].map(x=>x.id));raw.gear=Object.fromEntries(Object.entries(raw.gear).filter(([k,v])=>ids.has(k)&&STATUS.includes(v)));raw.recipes=(raw.recipes||[]).filter(x=>data.recipes.recipes.some(r=>r.id===x));if(raw.productPrefs!==undefined)raw.productPrefs=raw.productPrefs&&typeof raw.productPrefs==='object'?Object.fromEntries(Object.entries(raw.productPrefs).filter(([k,v])=>ids.has(k)&&['balanced','easy','comfort','compact','value'].includes(v))):{};if(raw.selectedProducts!==undefined)raw.selectedProducts=raw.selectedProducts&&typeof raw.selectedProducts==='object'?Object.fromEntries(Object.entries(raw.selectedProducts).filter(([k,v])=>ids.has(k)&&typeof v==='string'&&v.length<160)):{};return raw;}
+
+
+// Purchase decisions are descriptive; they NEVER change statuses or confirm
+// availability, rental bookings, product fit, safety, or actual transaction costs.
+const FIT_CHECKS = Object.freeze({
+  tent:'定員が参加人数以上か、設営部品が揃うかを確認。',
+  sleeping_bag:'全員分あるか、現地予報の最低気温に適した快適使用温度かを確認。',
+  mat:'全員分あるか、寝床のサイズ・断熱性を確認。',
+  headlight:'全員分の灯りと電池・充電、夜間の歩行に使える明るさを確認。',
+  led_lantern:'必要な点灯時間・明るさ・電源を確認。',
+  burner:'屋外専用か、器具と燃料の指定が一致するかを確認。テント内では使用しない。',
+  fuel:'器具の指定燃料か確認。代用品・異なる規格の接続はしない。',
+  cooler:'必要な食材を保冷できる容量・温度管理を確認。',
+  fire_pit:'施設の焚き火可否と地面保護・消火用品を確認。',
+  heat_gloves:'高温作業に対応する耐熱性能とサイズを確認。',
+  extinguish_water:'消火に使える水や施設の消火設備を実際に確保。',
+  fire_sheet:'施設の地面保護ルールに適合するものを確認。',
+  table:'参加人数に合う大きさと耐荷重を確認。',
+  chair:'人数分と各人の体格に合う耐荷重を確認。',
+  first_aid:'必要な救急用品の内容・期限を確認。',
+  hot_sandwich_maker:'熱源に対応する器具か確認。電気専用器具を直火で使わない。'
+});
+export function gearDecision(g){
+  const verify = FIT_CHECKS[g.id] || '人数・季節・用途・安全条件に合うか確認。';
+  if(g.status==='owned') return {
+    kind:'no_purchase',title:'手持ちを活用・購入不要（適合確認は必要）',
+    detail:verify,
+    needsAction:true
+  };
+  if(g.status==='rent'){
+    const cheaper = g.rentalEstimate>0 && g.estimate>g.rentalEstimate;
+    return {
+      kind:'rent',title:'購入せず借りる予定（未予約）',
+      detail:(cheaper?'計画用の金額目安では購入より低額。ただし実際の料金比較ではありません。':'購入とレンタルの実額は未確認。')+
+        '貸出可否・受渡し・返却条件を確認。'+verify,
+      needsAction:true
+    };
+  }
+  if(g.status==='skip'){
+    if(g.required||g.core)return {
+      kind:'blocked',title:'見送りで必要な体験・装備が不足',
+      detail:'やりたい体験や安全・宿泊の基本を実現する場合は用意が必要。計画を見直してください。'+verify,
+      needsAction:true
+    };
+    return {kind:'defer',title:'今回は購入を見送る',detail:'必須ではない道具として、今回は買い足さない選択です。',needsAction:false};
+  }
+  if(g.status==='undecided')return {
+    kind:'pending',title:'用意の方法が未決定',
+    detail:'手持ちの適合、貸出先、必要性を確認してから選択。'+verify,
+    needsAction:true
+  };
+  if(g.status==='buy'){
+    const rentalCandidate = g.rental_score>=55 && g.rentalEstimate>0 && g.rentalEstimate<g.estimate;
+    return {
+      kind:'buy',title:rentalCandidate?'購入予定・レンタルも検討可能':'購入予定・条件を確認',
+      detail:(rentalCandidate?'レンタルの方が低額という計画用目安ですが、実際の貸出価格・在庫は未確認。':'')+
+        verify,
+      needsAction:true
+    };
+  }
+  return {kind:'pending',title:'準備方法の確認が必要',detail:verify,needsAction:true};
+}
+
+export function purchaseDecisionSummary(state,data){
+  const rows=plan(state,data).map(g=>({...g,decision:gearDecision(g)}));
+  const counts={
+    owned:rows.filter(g=>g.status==='owned').length,
+    rent:rows.filter(g=>g.status==='rent').length,
+    optionalDeferred:rows.filter(g=>g.decision.kind==='defer').length,
+    buy:rows.filter(g=>g.status==='buy').length,
+    blocked:rows.filter(g=>g.decision.kind==='blocked').length,
+    pending:rows.filter(g=>g.status==='undecided').length
+  };
+  return {rows,counts,notBuying:counts.owned+counts.rent+counts.optionalDeferred};
+}
