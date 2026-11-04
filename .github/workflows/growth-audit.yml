@@ -41,6 +41,7 @@ jobs:
       - name: Verify mobile, operator isolation and funnel events
         run: |
           node tests/growth-browser.mjs
+          node tests/camp-buy-less-browser.mjs
           node tests/home-browser.cjs
           node tests/car-stay-browser.mjs
           node tests/fishing-browser.mjs
