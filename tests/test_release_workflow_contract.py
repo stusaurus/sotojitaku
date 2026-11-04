@@ -25,8 +25,40 @@ class ReleaseWorkflowContractTest(unittest.TestCase):
             workflow,
         )
         self.assertIn("node tests/car-stay-published-catalog.mjs", workflow)
+        self.assertIn("node tests/camp-published-catalog.mjs", workflow)
         self.assertIn("node tests/fishing-published-catalog.mjs", workflow)
         self.assertIn("node tests/home-guide-browser.cjs", workflow)
+
+    def test_automated_refreshes_trigger_certified_release_without_push_event(self):
+        publish = read(".github/workflows/publish-static.yml")
+        self.assertIn("  workflow_run:\n", publish)
+        self.assertIn("    types: [completed]", publish)
+        self.assertIn("    branches: [main]", publish)
+        for workflow in (
+            "Refresh CAR STAY products",
+            "Sync CAR STAY shared Rakuten catalog",
+            "Refresh FISHING products",
+            "Renew nine strictly verified CAMP seller offers",
+        ):
+            self.assertIn("      - " + workflow, publish)
+        self.assertIn(
+            "github.event.workflow_run.conclusion == 'success'", publish
+        )
+        # Scheduled reconciliation protects against missed completion events.
+        self.assertIn("  schedule:\n", publish)
+        self.assertIn("cron: '35 8 * * *'", publish)
+
+    def test_camp_renewal_cannot_bypass_all_service_deployment_gate(self):
+        refresh = read(".github/workflows/refresh-verified-camp-offer.yml")
+        self.assertIn("git push origin HEAD:main", refresh)
+        self.assertNotIn("actions/deploy-pages@", refresh)
+        self.assertNotIn("actions/upload-pages-artifact@", refresh)
+        self.assertNotIn("pages: write", refresh)
+        self.assertNotIn("id-token: write", refresh)
+        self.assertIn(
+            "node tests/camp-published-catalog.mjs",
+            read(".github/workflows/publish-static.yml")
+        )
 
     def test_fingerprint_job_cannot_write_automated_commits_to_main(self):
         workflow = read(".github/workflows/stamp-assets.yml")
