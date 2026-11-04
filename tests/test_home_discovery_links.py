@@ -43,6 +43,14 @@ class HomepageDiscoveryLinksTest(unittest.TestCase):
         self.assertIn('id="find-guide"', self.home)
         self.assertIn('aria-labelledby="pathways-title"', self.home)
 
+    def test_hero_offers_direct_guide_entry_and_three_purposeful_portals(self):
+        self.assertIn('class="hero-quick-actions"', self.home)
+        self.assertIn('href="#find-guide">準備ガイドから見る', self.home)
+        self.assertIn('href="#choose">外遊びを選ぶ', self.home)
+        self.assertIn('足りないものだけを、納得してそろえよう', self.home)
+        for href in ('camp/', 'car-stay/', 'fishing/'):
+            self.assertIn(f'href="{href}"', self.home)
+
     def test_all_descriptive_plain_html_links_exist(self):
         self.assertEqual(len(self.links), len(TARGETS))
         self.assertEqual({href for href, _ in self.links}, set(TARGETS))
