@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {DEFAULT,plan,readiness,costs,adjust,schedule,validateStored} from '../engine.js';
+import {DEFAULT,plan,readiness,costs,adjust,schedule,validateStored,gearDecision,purchaseDecisionSummary} from '../engine.js';
 import {reject,recommend,safeUrl,defaultPreference} from '../products.js';
 const data=Object.fromEntries(['questions','equipment','abilities','recipes','recommendation-rules'].map(k=>[k==='recommendation-rules'?'rules':k,JSON.parse(fs.readFileSync(new URL(`../data/${k}.json`,import.meta.url)))]));
 const state=a=>({version:1,answers:{...structuredClone(DEFAULT),...a},gear:{},recipes:[]});
@@ -93,4 +93,74 @@ test('all CAMP categories keep meaningful preference diversity',()=>{
     });
     assert.ok(new Set(tops).size>=2,category+': preference buttons must materially change the top recommendation');
   }
+});
+
+test('CAMP: owned essentials are not rebought but suitability is explicitly unconfirmed',()=>{
+  const s=B();s.gear.tent='owned';s.gear.sleeping_bag='owned';
+  const before=readiness(s,data);
+  const summary=purchaseDecisionSummary(s,data);
+  const tent=summary.rows.find(g=>g.id==='tent');
+  const bags=summary.rows.find(g=>g.id==='sleeping_bag');
+  assert.equal(tent.decision.kind,'no_purchase');
+  assert.match(tent.decision.detail,/定員/);
+  assert.match(bags.decision.detail,/最低気温/);
+  assert.equal(summary.counts.owned,2);
+  assert.equal(summary.notBuying,2);
+  assert.deepEqual(readiness(s,data),before); // advisory only, no readiness changes
+});
+
+test('CAMP: rental is never described as booked or confirmed savings',()=>{
+  const s=A();s.gear.tent='rent';
+  const selected=plan(s,data).find(g=>g.id==='tent');
+  const d=gearDecision(selected);
+  assert.equal(d.kind,'rent');
+  assert.match(d.title,/未予約/);
+  assert.match(d.detail,/計画用/);
+  assert.match(d.detail,/貸出可否/);
+  assert(!/実際に節約できる/.test(d.detail));
+  assert.equal(purchaseDecisionSummary(s,data).counts.rent,1);
+});
+
+test('CAMP: skipping a core requirement is not mislabeled as safe no-buy',()=>{
+  const s=A();s.gear.tent='skip';s.gear.first_aid='skip';
+  const summary=purchaseDecisionSummary(s,data);
+  assert.equal(summary.rows.find(g=>g.id==='tent').decision.kind,'blocked');
+  assert(!readiness(s,data).canComplete);
+  assert.equal(summary.rows.find(g=>g.id==='first_aid').decision.kind,'defer');
+  assert.equal(summary.counts.blocked,1);
+  assert.equal(summary.counts.optionalDeferred,1);
+  assert.equal(summary.notBuying,1);
+});
+
+test('CAMP: rent suggestion remains optional and does not auto-change gear status',()=>{
+  const s=A();
+  const item=plan(s,data).find(g=>g.id==='tent');
+  const before=structuredClone(s);
+  const d=gearDecision(item);
+  assert.equal(d.kind,'buy');
+  assert.match(d.title,/レンタルも検討可能/);
+  assert.match(d.detail,/実際の貸出価格・在庫は未確認/);
+  assert.deepEqual(s,before);
+});
+
+test('CAMP: unknown stock/gear cannot be declared interchangeable or safe',()=>{
+  const s=A();
+  s.gear.burner='owned';
+  s.gear.fuel='owned';
+  const summary=purchaseDecisionSummary(s,data);
+  const burner=summary.rows.find(g=>g.id==='burner');
+  const fuel=summary.rows.find(g=>g.id==='fuel');
+  assert.equal(burner.decision.kind,'no_purchase');
+  assert.match(burner.decision.detail,/指定/);
+  assert.match(fuel.decision.detail,/代用品・異なる規格の接続はしない/);
+  assert(!burner.decision.detail.includes('適合確認済み'));
+});
+
+test('CAMP page displays decision explanations and avoids unsupported savings totals',()=>{
+  const app=fs.readFileSync(new URL('../camp/app.js',import.meta.url),'utf8');
+  assert.match(app,/purchaseInsightStrip\(\)/);
+  assert.match(app,/gearDecision\(g\)\.title/);
+  assert.match(app,/gearDecision\(g\)\.detail/);
+  assert.match(app,/節約額や安全・適合を確認した結果ではありません/);
+  assert.match(app,/summary\.counts\.blocked/);
 });
