@@ -145,6 +145,7 @@ test('CAMP: rent suggestion remains optional and does not auto-change gear statu
 
 test('CAMP: unknown stock/gear cannot be declared interchangeable or safe',()=>{
   const s=A();
+  s.answers.experiences=['coffee'];
   s.gear.burner='owned';
   s.gear.fuel='owned';
   const summary=purchaseDecisionSummary(s,data);
