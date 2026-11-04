@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-03T12:48:18.849Z",
-  "catalogUpdatedAt": "2026-11-03T12:44:19.408861+00:00",
+  "generatedAt": "2026-11-04T01:43:22.971Z",
+  "catalogUpdatedAt": "2026-11-04T01:39:30.662809+00:00",
   "liveProductCount": 31,
   "summary": {
     "configurations": 18,
@@ -192,9 +192,8 @@
         "seatCount": 5
       },
       "privacy": {
-        "count": 3,
+        "count": 2,
         "productIds": [
-          "sienta10-hobbyman-cradp",
           "sienta10-hobbyman-shade",
           "sienta10-partsmax-hn03t135a"
         ]
@@ -225,9 +224,8 @@
         "seatCount": 7
       },
       "privacy": {
-        "count": 3,
+        "count": 2,
         "productIds": [
-          "sienta10-hobbyman-cradp",
           "sienta10-hobbyman-shade",
           "sienta10-partsmax-hn03t135a"
         ]
@@ -259,9 +257,8 @@
         "trim": "AIR"
       },
       "privacy": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
@@ -292,9 +289,8 @@
         "trim": "AIR EX"
       },
       "privacy": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
@@ -325,9 +321,8 @@
         "trim": "AIR EX"
       },
       "privacy": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
@@ -356,9 +351,8 @@
         "trim": "CROSSTAR"
       },
       "privacy": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
@@ -395,9 +389,8 @@
         "trim": "CROSSTAR"
       },
       "privacy": {
-        "count": 2,
+        "count": 1,
         "productIds": [
-          "freed-gt-hobbyman-lit6",
           "freed-gt-autorder-au1175"
         ]
       },
