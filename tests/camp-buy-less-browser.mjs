@@ -11,7 +11,7 @@ try{
   await context.route(/googletagmanager|google-analytics/,r=>r.fulfill({status:200,body:''}));
   const page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:4173/camp/?test=1',{waitUntil:'networkidle'});
+  await page.goto((process.env.CAMP_BASE || 'http://127.0.0.1:4173/')+'camp/?test=1',{waitUntil:'networkidle'});
   await page.locator('#main [data-start]').first().click();
   for(let step=0;step<7;step++)await page.locator('[data-next]').click();
   await page.locator('[data-go="owned"]').first().click();
