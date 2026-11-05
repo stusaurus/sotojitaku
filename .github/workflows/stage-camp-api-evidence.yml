@@ -6,6 +6,8 @@ on:
       - 'tests/test_stage_camp_api_evidence.py'
       - 'scripts/probe_camp_recovery_candidates.py'
       - 'tests/test_probe_camp_recovery_candidates.py'
+      - 'scripts/stage_camp_recovery_pair.py'
+      - 'tests/test_stage_camp_recovery_pair.py'
       - '.github/workflows/stage-camp-api-evidence.yml'
   push:
     branches: [main]
@@ -37,12 +39,21 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
       - name: Test bounded missing-category research and 429 safeguards
         run: python -m unittest discover -s tests -p 'test_probe_camp_recovery_candidates.py' -v
+      - name: Test strict temporary catalog evaluation and no-publication behavior
+        run: python -m unittest discover -s tests -p 'test_stage_camp_recovery_pair.py' -v
       - name: Install ordinary seller browser only for review proof
         if: github.event_name == 'pull_request'
         run: python -m pip install playwright==1.55.0
-      - name: Check exact API and independent seller pages for two candidates
+      - name: Reverify two audited sellers into temporary catalog only
         if: github.event_name == 'pull_request'
-        run: python scripts/probe_camp_recovery_candidates.py
+        run: python scripts/stage_camp_recovery_pair.py
+      - name: Test temporary candidate against all CAMP recommendation checks
+        if: github.event_name == 'pull_request'
+        run: |
+          cp /tmp/camp-recovery-candidate-products.json data/products.json
+          cp /tmp/camp-recovery-candidate-audits.json data/audited-products.json
+          npm run check
+          npm test
       - name: Stage at most two separate CAMP categories (read only)
         if: github.event_name != 'pull_request'
         run: python scripts/stage_camp_api_evidence.py --offset "${{ inputs.offset || 0 }}" --limit 2
@@ -54,5 +65,6 @@ jobs:
           path: |
             reports/camp-api-evidence-candidates.json
             reports/camp-missing-categories-research.json
+            reports/camp-recovery-pair-candidate.json
           if-no-files-found: warn
           retention-days: 14
