@@ -45,13 +45,16 @@ test('diagnostic reflects exact family comfort gate, not maximum among other pre
  assert.equal(summary.verifiedForPublication,false);
 });
 
-test('two shop URLs for the same product family never satisfy distinct family choice quality',()=>{
+test('two shop URLs for the same model collapse to one true recommendation family',()=>{
  const summary=inspect({products:[offer(1,'one'),offer(2,'one')]},
                        equipment,rules,observed);
  const table=summary.findings[0];
- assert.equal(table.familyFourComfort.eligibleChoices,2);
+ // The actual engine deduplicates by product family BEFORE presenting picks:
+ // multiple sellers cannot count as two different products.
+ assert.equal(table.catalogEntryCount,2);
+ assert.equal(table.familyFourComfort.eligibleChoices,1);
  assert.equal(table.familyFourComfort.distinctProductFamilies,1);
- assert.ok(table.blockers.includes('family-four:duplicate_product_family'));
+ assert.ok(table.blockers.includes('family-four:needs_two_eligible_choices'));
  assert.equal(table.familyFourComfort.hasTwoRealChoices,false);
 });
 
