@@ -33,6 +33,10 @@ ALLOWED_TARGETS = {
                  "https://item.rakuten.co.jp/captainstagstore/4560464283785/"),
     "fire": ("fire_pit", "2000031235",
              "https://item.rakuten.co.jp/naturum/2824592/"),
+    # Official Snow Peak shop: independently documented 3-4 person capacity;
+    # this is only a seller URL, NOT verified current stock or an audited SKU.
+    "snowpeak_fire": ("fire_pit", "ST-032RS",
+                      "https://item.rakuten.co.jp/snowpeak-official/st-032rs/"),
 }
 REPORT = ROOT / "reports/camp-seller-derived-item-id.json"
 
@@ -114,6 +118,21 @@ def page_identity(url, html, expected_url=SELLER_PAGE, model=MODEL):
             "itemUrl": canonical, "sellerPriceFieldPresent": price_present}, None
 
 
+def explicit_four_person_manufacturer_proof(audit):
+    """Require the already audited direct maker citation, never seller claims."""
+    evidence = audit.get("familyCapacityEvidence")
+    spec = audit.get("spec")
+    manufacturer = audit.get("evidence")
+    if not isinstance(evidence, dict) or not isinstance(spec, dict) or not isinstance(manufacturer, dict):
+        return False
+    return (audit.get("model") == "ST-032RS"
+            and evidence.get("basis") == "manufacturer_explicit_person_count"
+            and evidence.get("maxPeople") == spec.get("capacity") == 4
+            and evidence.get("source") == manufacturer.get("specification")
+            == "https://ec.snowpeak.co.jp/item/SNP0120A0737"
+            and "3-4人用" in evidence.get("manufacturerStatement", ""))
+
+
 def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
           seller_page=None, target="led"):
     if target not in ALLOWED_TARGETS:
@@ -148,7 +167,9 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
         "sellerPriceFieldPresent": None,
         "apiStatus": "not_requested",
         "independentEvidenceForManualReview": False,
-        "manufacturerGroupSizeVerified": False if category == "fire_pit" else None,
+        "manufacturerGroupSizeVerified": (
+            explicit_four_person_manufacturer_proof(original)
+            if category == "fire_pit" else None),
         "verifiedForPublication": False,
     }
     getter = browser_get or seller.read_seller_page_once
