@@ -152,6 +152,36 @@ class OfficialSnowPeakFirePit(unittest.TestCase):
         self.assertFalse(result["verifiedForPublication"])
         self.unchanged()
 
+    def test_xebio_variant_unknown_does_not_call_official_item_api(self):
+        self.page = proof.ALLOWED_TARGETS["xebio_fire"][2]
+        html = self.html().replace('"inventoryType": "single"',
+                                   '"inventoryType": "multiple"')
+        result = proof.probe(root=self.root, now=self.now, target="xebio_fire",
+                             browser_get=lambda url: (url, html),
+                             api_fetch=self.api)
+        self.assertTrue(result["manufacturerGroupSizeVerified"])
+        self.assertEqual(result["sellerStatus"], "variant_unknown")
+        self.assertFalse(result["sellerIdFromLivePage"])
+        self.assertEqual(result["rakutenApiRequests"], 0)
+        self.assertFalse(result["independentEvidenceForManualReview"])
+        self.assertFalse(self.calls)
+        self.unchanged()
+
+    def test_official_shop_unproven_shipping_never_validates_for_purchase(self):
+        def api_missing_shipping(req):
+            response = self.api(req)
+            response["postage_flag"] = None
+            return response
+        result = proof.probe(root=self.root, now=self.now,
+                             target="snowpeak_fire", browser_get=self.seller,
+                             api_fetch=api_missing_shipping)
+        self.assertEqual(result["rakutenApiRequests"], 1)
+        self.assertEqual(result["apiStatus"], "postage_inclusion_unverified")
+        self.assertTrue(result["manufacturerGroupSizeVerified"])
+        self.assertFalse(result["independentEvidenceForManualReview"])
+        self.assertFalse(result["verifiedForPublication"])
+        self.unchanged()
+
     def test_wrong_merchant_or_missing_html_makes_no_item_api_call(self):
         for url, content in ((self.page, "焚火台 L ST-032RS"),
                              ("https://item.rakuten.co.jp/other/st-032rs/",
