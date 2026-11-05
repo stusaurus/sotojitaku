@@ -181,7 +181,7 @@ class BoundedCoverageResearch(unittest.TestCase):
         self.assertEqual(calls, [3, 3])
         self.assertEqual(report["attempted"], 3)
         self.assertEqual(report["independentlyRenewed"], 3)
-        self.assertEqual(report["maxApiRequests"], 6)
+        self.assertEqual(report["maxApiRequests"], 3)
         self.assertEqual(len(catalog["products"]), 4)
         self.assertFalse(report["verifiedForPublication"])
         self.assertEqual(self.before, (self.root / "data/products.json").read_bytes())
