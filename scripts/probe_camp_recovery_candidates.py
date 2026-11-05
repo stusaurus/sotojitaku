@@ -12,6 +12,8 @@ from pathlib import Path
 
 from acquire import ROOT
 import stage_camp_api_evidence as stage
+import probe_camp_seller_browser as seller
+import refresh_worker as worker
 
 PRIORITIES = (
     ("led_lantern", "2000038854"),  # Alternate to the 2218364 listing not found.
@@ -21,7 +23,34 @@ MAX_REQUESTS = 2
 STOP_STATUSES = frozenset(("rate_limited", "worker_unavailable"))
 
 
-def collect(*, root=ROOT, fetch=None, observed_at=None):
+def verify_current_seller(audit, live, equipment, observed, browser_get=None):
+    """Independent ordinary browser evidence; never upgrades published state."""
+    getter = browser_get or seller.read_seller_page_once
+    try:
+        visited_url, html = getter(audit["itemUrl"])
+    except Exception:
+        return {"sellerStatus": "seller_browser_fetch_failed"}
+    proof = seller.seller_audit_result(
+        audit, equipment, live, visited_url, html, observed)
+    status = proof["status"]
+    if status != "independent_seller_and_api_evidence_review_required":
+        return {"sellerStatus": status,
+                "sellerEvidenceReason": proof.get("evidenceReason")}
+    # Bind a current single, selectable-free SKU to the original itemCode.
+    code = str(audit.get("itemCode", "")).split(":", 1)[-1]
+    if not code.isdigit():
+        return {"sellerStatus": "seller_item_id_unverifiable"}
+    try:
+        worker.parse_listing(html, audit["model"], live["price"], int(code))
+    except (ValueError, KeyError, TypeError, json.JSONDecodeError):
+        return {"sellerStatus": "seller_sku_or_item_id_unverified"}
+    if stage.affiliate_destination(live.get("affiliate_url")) != audit["itemUrl"]:
+        return {"sellerStatus": "affiliate_identity_mismatch"}
+    return {"sellerStatus": "independent_api_and_seller_proof_for_manual_review"}
+
+
+def collect(*, root=ROOT, fetch=None, observed_at=None, check_sellers=False,
+            browser_get=None):
     observed = observed_at or datetime.now(timezone.utc).isoformat()
     audits = json.loads((root / "data/audited-products.json").read_text(encoding="utf-8"))
     equipment = json.loads((root / "data/equipment.json").read_text(encoding="utf-8"))
@@ -57,7 +86,7 @@ def collect(*, root=ROOT, fetch=None, observed_at=None):
         count += 1
         verdict = stage.validate_candidate(audit, live, equipment, observed)
         status = verdict["status"]
-        results.append({
+        review = {
             "category": category, "model": model, "status": status,
             "verifiedForPublication": False,
             "nextAction": (
@@ -65,7 +94,16 @@ def collect(*, root=ROOT, fetch=None, observed_at=None):
                 if status == "api_confirmed_seller_variant_audit_required"
                 else "Do not publish; investigate the exact identified status"
             ),
-        })
+        }
+        if check_sellers and status == "api_confirmed_seller_variant_audit_required":
+            review.update(verify_current_seller(
+                audit, live, equipment, observed, browser_get=browser_get))
+            review["nextAction"] = (
+                "Manual source, compatibility, freshness and overall catalog review"
+                if review["sellerStatus"] == "independent_api_and_seller_proof_for_manual_review"
+                else "Do not publish; investigate seller-page proof status"
+            )
+        results.append(review)
         if status in STOP_STATUSES:
             break
     return {
@@ -80,7 +118,7 @@ def collect(*, root=ROOT, fetch=None, observed_at=None):
 
 
 if __name__ == "__main__":
-    report = collect()
+    report = collect(check_sellers=True)
     dest = ROOT / "reports/camp-missing-categories-research.json"
     dest.parent.mkdir(exist_ok=True)
     dest.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
@@ -88,7 +126,8 @@ if __name__ == "__main__":
     print("CAMP_MISSING_CATEGORY_RESEARCH", json.dumps({
         "apiRequests": report["apiRequests"],
         "statuses": [
-            (result["category"], result["status"]) for result in report["results"]
+            (result["category"], result["status"], result.get("sellerStatus"))
+            for result in report["results"]
         ],
         "verifiedForPublication": False,
     }, ensure_ascii=False))
