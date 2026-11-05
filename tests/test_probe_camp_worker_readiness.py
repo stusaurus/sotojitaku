@@ -58,7 +58,7 @@ class WorkerReadiness(unittest.TestCase):
         with patch.object(readiness, "request_exact", side_effect=item_fetch), (
             patch.object(readiness, "validate_candidate",
                          return_value={"status": "api_confirmed_seller_variant_audit_required"})):
-            result = readiness.probe(root=self.root, get=get, now=self.now)
+            result = readiness.probe(root=self.root, get=get, now=self.now, pause=lambda _: None)
         self.assertEqual(len(urls), 2)
         self.assertEqual(len(requests), 2)
         self.assertEqual(result["rakutenApiRequests"], 2)
@@ -73,6 +73,30 @@ class WorkerReadiness(unittest.TestCase):
         self.assertNotIn("itemUrl", json.dumps(result))
         self.check_read_only()
 
+    def test_exact_research_calls_are_paced_once_not_retried_on_429(self):
+        get, _ = self.gate()
+        waits = []
+        calls = []
+        def item_fetch(audit, fetch=None):
+            calls.append(audit["model"])
+            return ({"found": True} if len(calls) == 1 else
+                    {"error": "worker_unavailable", "worker_status": 502,
+                     "upstream_status": 429})
+        with patch.object(readiness, "request_exact", side_effect=item_fetch), (
+            patch.object(readiness, "validate_candidate", side_effect=[
+                {"status": "api_confirmed_seller_variant_audit_required"},
+                {"status": "rate_limited"},
+            ])):
+            result = readiness.probe(root=self.root, get=get, now=self.now,
+                                     pause=waits.append)
+        self.assertEqual(waits, [readiness.MIN_BETWEEN_ITEM_REQUESTS_SECONDS])
+        self.assertEqual(calls, ["2000038854", "2218364"])
+        self.assertEqual(result["unverifiedAlternateRakutenHttp"], 429)
+        self.assertEqual(result["unverifiedAlternateMerchantEvidence"], "rate_limited")
+        self.assertEqual(result["rakutenApiRequests"], 2)
+        self.assertFalse(result["verifiedForPublication"])
+        self.check_read_only()
+
     def test_failed_known_seller_short_circuits_alternate_query(self):
         get, urls = self.gate()
         calls = []
@@ -80,7 +104,7 @@ class WorkerReadiness(unittest.TestCase):
             calls.append(audit["model"])
             return {"error": "worker_unavailable", "worker_status": 502}
         with patch.object(readiness, "request_exact", side_effect=fetch):
-            result = readiness.probe(root=self.root, get=get, now=self.now)
+            result = readiness.probe(root=self.root, get=get, now=self.now, pause=lambda _: None)
         self.assertEqual(calls, ["2000038854"])
         self.assertEqual(result["rakutenApiRequests"], 1)
         self.assertEqual(result["officialExactItemEvidence"], "worker_unavailable")
@@ -101,7 +125,7 @@ class WorkerReadiness(unittest.TestCase):
             patch.object(readiness, "validate_candidate",
                          side_effect=[{"status": "api_confirmed_seller_variant_audit_required"},
                                       {"status": "worker_unavailable"}])):
-            result = readiness.probe(root=self.root, get=get, now=self.now)
+            result = readiness.probe(root=self.root, get=get, now=self.now, pause=lambda _: None)
         self.assertEqual(calls, ["2000038854", "2218364"])
         self.assertEqual(result["rakutenApiRequests"], 2)
         self.assertEqual(result["unverifiedAlternateMerchantEvidence"], "worker_unavailable")
@@ -117,7 +141,7 @@ class WorkerReadiness(unittest.TestCase):
         get, urls = self.gate(config=(503, {"error": "server_not_configured"}))
         with patch.object(readiness, "request_exact",
                           side_effect=AssertionError("must not call")):
-            result = readiness.probe(root=self.root, get=get, now=self.now)
+            result = readiness.probe(root=self.root, get=get, now=self.now, pause=lambda _: None)
         self.assertEqual(len(urls), 2)
         self.assertEqual(result["rakutenApiRequests"], 0)
         self.assertEqual(result["credentialGateResponse"], "server_not_configured")
@@ -132,7 +156,7 @@ class WorkerReadiness(unittest.TestCase):
             get, urls = self.gate(config=(code, payload))
             with patch.object(readiness, "request_exact",
                               side_effect=AssertionError("must not call")):
-                result = readiness.probe(root=self.root, get=get, now=self.now)
+                result = readiness.probe(root=self.root, get=get, now=self.now, pause=lambda _: None)
             self.assertFalse(result["credentialGateVerified"])
             self.assertEqual(result["rakutenApiRequests"], 0)
             self.assertEqual(result["officialExactItemEvidence"],
@@ -145,7 +169,7 @@ class WorkerReadiness(unittest.TestCase):
             get, urls = self.gate(health=health)
             with patch.object(readiness, "request_exact",
                               side_effect=AssertionError("must not call")):
-                result = readiness.probe(root=self.root, get=get, now=self.now)
+                result = readiness.probe(root=self.root, get=get, now=self.now, pause=lambda _: None)
             self.assertEqual(len(urls), 1)
             self.assertEqual(result["rakutenApiRequests"], 0)
         get, urls = self.gate()
@@ -161,7 +185,7 @@ class WorkerReadiness(unittest.TestCase):
                 json.dumps({"products": items}))
             get, urls = self.gate()
             with self.assertRaises(ValueError):
-                readiness.probe(root=self.root, get=get, now=self.now)
+                readiness.probe(root=self.root, get=get, now=self.now, pause=lambda _: None)
             self.assertFalse(urls)
             self.assertEqual(
                 (self.root / "data/products.json").read_bytes(),
