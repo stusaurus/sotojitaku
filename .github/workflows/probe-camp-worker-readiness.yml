@@ -23,9 +23,10 @@ jobs:
       - name: Verify fail-closed health and credentials gates without upstream requests
         run: python -m unittest discover -s tests -p 'test_probe_camp_worker_readiness.py' -v
       - name: Check actual Worker health, credentials gate, and up to two paced exact items
+        if: github.event_name == 'workflow_dispatch'
         run: python scripts/probe_camp_worker_readiness.py
       - name: Save only sanitized readiness report
-        if: always()
+        if: always() && github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: camp-worker-readiness-review
