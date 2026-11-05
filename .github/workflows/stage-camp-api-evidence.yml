@@ -29,7 +29,7 @@ concurrency:
 jobs:
   verify-and-stage:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -44,7 +44,7 @@ jobs:
       - name: Install ordinary seller browser only for review proof
         if: github.event_name == 'pull_request'
         run: python -m pip install playwright==1.55.0
-      - name: Reverify two audited sellers into temporary catalog only
+      - name: Reverify LED, tent, burners and family tables into temporary catalog only
         if: github.event_name == 'pull_request'
         run: python scripts/stage_camp_recovery_pair.py
       - name: Test temporary candidate against all CAMP recommendation checks
