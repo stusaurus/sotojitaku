@@ -8,8 +8,8 @@ for app_name,prefix in [('app.js','./'),('camp/app.js','../')]:
  for name in ['engine.js','products.js']:
   s=re.sub(r"("+re.escape(prefix+name)+r")(?:(?:\?v=)[a-z0-9]+)?",r'\1?v='+version(name),s)
  if app_name=='camp/app.js':
-  s=re.sub(r"(\\./supply-guidance\\.js)(?:\\?v=[a-z0-9]+)?",
-           r'\\1?v='+version('camp/supply-guidance.js'),s)
+  s=re.sub(r"(\./supply-guidance\.js)(?:\?v=[a-z0-9]+)?",
+           r'\1?v='+version('camp/supply-guidance.js'),s)
  p.write_text(s)
 p=ROOT/'camp/index.html';s=p.read_text()
 for name in ['app.js','style.css']:
