@@ -51,12 +51,17 @@ jobs:
           # Expiry, pricing, and affiliate identity are checked on the refreshed catalog.
           node --test tests/verified-camp-snapshot.test.mjs
           node --test --test-name-pattern='^live audited catalog has safe exact links and each listing fits a compatible baseline profile$' tests/engine.test.mjs
+      - name: Summarize category gaps and evidence ages (read only)
+        if: always()
+        run: python scripts/report_camp_refresh.py
       - name: Record safe renewal/expiry reasons even on failed checks
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: camp-single-seller-refresh
-          path: reports/camp-verified-offer-refresh.json
+          path: |
+            reports/camp-verified-offer-refresh.json
+            reports/camp-refresh-health.json
           if-no-files-found: ignore
           retention-days: 14
       - name: Atomically commit only tested changes on unchanged source
