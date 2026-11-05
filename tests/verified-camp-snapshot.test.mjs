@@ -6,17 +6,21 @@ const catalog=JSON.parse(fs.readFileSync(new URL('../data/products.json',import.
 const audits=JSON.parse(fs.readFileSync(new URL('../data/audited-products.json',import.meta.url))).products;
 const equipment=JSON.parse(fs.readFileSync(new URL('../data/equipment.json',import.meta.url)));
 
-test('partial CAMP publication contains no stale sellers and honestly records unavailable categories',()=>{
- assert.equal(catalog.status,'partial_error');
+test('CAMP publication and temporary candidates truthfully report coverage without stale sellers',()=>{
  const asOf=Date.parse(catalog.updatedAt);
  assert.ok(Number.isFinite(asOf),"the saved catalog needs a publication timestamp");
  const byCategory=new Set(catalog.products.map(p=>p.category));
  const all=new Set(equipment.categories.map(c=>c.id));
+ const missing=[...all].filter(x=>!byCategory.has(x));
+ // A partially verified public catalog MUST report partial_error. A temporary
+ // candidate with verified offers in every category must report ok instead.
+ // The status is derived from real coverage; never hard-coded to pass either.
+ assert.equal(catalog.status,missing.length?'partial_error':'ok');
  // An expired offer must disappear after a failed recheck, rather than
  // retaining a stale recommendation just to satisfy a coverage assertion.
  assert.ok(catalog.products.length<=audits.length,'no invented products');
- assert.ok(byCategory.size<all.size,'this is not complete category coverage');
- assert.deepEqual(new Set(catalog.failedCategories),new Set([...all].filter(x=>!byCategory.has(x))));
+ assert.ok([...byCategory].every(x=>all.has(x)),'unknown category is not approved');
+ assert.deepEqual(new Set(catalog.failedCategories),new Set(missing));
  // Different exact-seller failures (429, redirect, stock, unknown variant) must
  // be reported accurately instead of being relabeled as generic missing proof.
  for(const missing of catalog.failedCategories){
