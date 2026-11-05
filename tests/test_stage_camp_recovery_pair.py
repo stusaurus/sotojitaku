@@ -81,7 +81,8 @@ class StageOnly(unittest.TestCase):
         result = recovery.write_stage(root=self.root, renew=fake,
                                       now=self.now,
                                       staged_catalog=candidate,
-                                      staged_audits=audits)
+                                      staged_audits=audits,
+                                      supply_targets=())
         self.assertTrue(result)
         self.assertEqual(len(json.loads(candidate.read_text())["products"]), 3)
         self.assertEqual((self.root / "data/products.json").read_bytes(),
@@ -94,7 +95,8 @@ class StageOnly(unittest.TestCase):
         result = recovery.write_stage(root=self.root, renew=fake,
                                       now=self.now,
                                       staged_catalog=staged,
-                                      staged_audits=self.root / "audits.json")
+                                      staged_audits=self.root / "audits.json",
+                                      supply_targets=())
         self.assertFalse(result)
         self.assertEqual(len(calls), 1)
         self.assertFalse(staged.exists())
@@ -110,6 +112,56 @@ class StageOnly(unittest.TestCase):
         self.assertFalse(report["bothCandidatesEligibleForSnapshotReview"])
         self.assertEqual(report["candidateProductCount"], 2)
         self.assertFalse(report["verifiedForPublication"])
+
+    def test_audited_burners_and_family_tables_are_staged_only_after_proof(self):
+        fake, calls = self.fake()
+        original = (self.root / "data/products.json").read_bytes()
+        report, candidate, _ = recovery.stage_pair(
+            root=self.root, renew=fake, now=self.now,
+            supply_targets=recovery.SUPPLY_TARGETS)
+        self.assertEqual(calls, list(recovery.PRIORITIES) +
+                         list(recovery.SUPPLY_TARGETS))
+        self.assertEqual(report["maxApiRequests"], 6)
+        self.assertEqual(report["supplyTargets"], 4)
+        self.assertEqual(report["supplyIndependentlyRenewed"], 4)
+        self.assertEqual(report["independentlyRenewed"], 6)
+        self.assertTrue(report["bothCandidatesEligibleForSnapshotReview"])
+        self.assertTrue(report["allRequestedTargetsRenewed"])
+        self.assertFalse(report["verifiedForPublication"])
+        self.assertEqual(len(candidate["products"]), 7)
+        self.assertEqual((self.root / "data/products.json").read_bytes(), original)
+        self.assertNotIn("affiliateUrl", json.dumps(report))
+
+    def test_supply_rate_limit_stops_without_pretending_recovery(self):
+        fake, calls = self.fake(fail_at=3, reason="rate_limited")
+        report, candidate, _ = recovery.stage_pair(
+            root=self.root, renew=fake, now=self.now,
+            supply_targets=recovery.SUPPLY_TARGETS)
+        self.assertEqual(len(calls), 3)
+        self.assertTrue(report["stoppedByUpstream"])
+        self.assertEqual(report["supplyIndependentlyRenewed"], 0)
+        self.assertFalse(report["allRequestedTargetsRenewed"])
+        self.assertEqual(len(candidate["products"]), 3)
+        self.assertFalse(report["verifiedForPublication"])
+
+    def test_worker_outage_stops_before_exhausting_supplier_budget(self):
+        fake, calls = self.fake(fail_at=3, reason="worker_unavailable")
+        report, _, _ = recovery.stage_pair(
+            root=self.root, renew=fake, now=self.now,
+            supply_targets=recovery.SUPPLY_TARGETS)
+        self.assertEqual(len(calls), 3)
+        self.assertTrue(report["stoppedByUpstream"])
+        self.assertFalse(report["allRequestedTargetsRenewed"])
+
+    def test_duplicate_or_unbounded_targets_rejected_before_any_api_request(self):
+        fake, calls = self.fake()
+        for targets in (recovery.SUPPLY_TARGETS +
+                        (("table", "2205813"),),
+                        recovery.SUPPLY_TARGETS + (("table", "2205811"),)):
+            with self.assertRaises(ValueError):
+                recovery.stage_pair(root=self.root, renew=fake,
+                                    now=self.now, supply_targets=targets)
+        self.assertEqual(calls, [])
 
     def test_naive_clock_is_never_accepted(self):
         fake, _ = self.fake()
