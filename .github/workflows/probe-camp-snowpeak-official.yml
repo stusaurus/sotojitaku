@@ -30,7 +30,7 @@ jobs:
         id: live
         shell: bash
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Eq '\\[camp-(snowpeak|xebio)-live\\]'; then
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Fq '[camp-snowpeak-live]' || git log -1 --format=%B | grep -Fq '[camp-xebio-live]'; then
             echo 'approved=true' >> "$GITHUB_OUTPUT"
           else
             echo 'approved=false' >> "$GITHUB_OUTPUT"
