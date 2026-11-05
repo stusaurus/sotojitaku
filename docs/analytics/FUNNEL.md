@@ -79,10 +79,12 @@ CAMPは1ページ型アプリのため、質問の回答・フィルター変更
 | `product_supply_gap` | 同上のカテゴリ表示で候補が0件の場合 | `gap_type=no_eligible_offer`。**全市場の在庫切れを意味しない** |
 | `product_select` | 未選択または別の商品を明示的に選んだときのみ | 同じ選択ボタンの再タップで重複計測しない。購入完了ではない |
 | `shopping_list_view` | 買い物リスト画面へ入ったときのみ | 選択済・選択可能・未確認カテゴリの**件数**だけ記録。金額、住所、個人情報を送信しない |
-| `affiliate_click` | 楽天商品リンクの利用者クリック | 従来の送信契約を維持。クリック＝収益ではない |
+| `affiliate_click` | 楽天商品リンクの利用者クリック | `conversion_source=camp_product_detail`（商品詳細）または `camp_shopping_list`（買い物リスト）で実際のクリック位置を区別。クリック＝収益ではない |
 
 すべてのイベントに従来どおり `service_id=camp` と `operator_test` を付与し、追跡拒否が有効なら送信しません。CAMP の `gtag('config')` は `send_page_view:false` であり、画面の仮想表示はアプリが1回だけ送信します。カテゴリ変更は `product_view` の対象ですが、`page_view` を新規発行しません。商品画面を離れて戻る実際の再訪問は再計測します。
 
 **GA4ファネルの正しい読み方**：`product_supply_gap` が増えても「全商品が売り切れ」「自然検索が悪化した」とは言えません。`product_comparison_view` は商品購入を表さず、`shopping_list_view` も支払確定を表しません。もともとのセッション順序付きファネル規則と、GSCの自然検索クリック・検索表示の公式データを引き続き別に扱ってください。利用者流入の実測、運営者除外、カスタムディメンション登録、楽天売上の照合はこのPRだけでは完了しません。
 
 検証は `tests/camp-funnel-metrics.test.mjs` の遷移単位テストと、`tests/camp-compare-browser.mjs`／`tests/camp-supply-browser.mjs` の実ブラウザで行います。全て `?test=1` の運営者テストモードで、未確認の実利用者数や変化率を計算しません。
+
+**アトリビューション補足**：従来はCAMPの楽天クリックを画面に関係なく `camp_missing_gear` と送っていました。これは商品詳細や買い物リストの経路を誤分類します。今回の変更後は**クリック時点の画面**（商品詳細／買い物リスト／その他）を用い、以前の履歴を自動で修正したり、検索エンジンから来た経路を推定したりしません。過去と今の `conversion_source` を無条件に時系列結合しないでください。
