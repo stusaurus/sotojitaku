@@ -1,0 +1,30 @@
+name: Verify CAMP read-only evidence diagnostics
+on:
+  pull_request:
+    paths:
+      - 'scripts/report_camp_refresh.py'
+      - 'tests/test_report_camp_refresh.py'
+      - '.github/workflows/refresh-verified-camp-offer.yml'
+      - '.github/workflows/verify-camp-refresh-health.yml'
+permissions:
+  contents: read
+jobs:
+  health-report:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check redaction, age boundaries and empty/single-offer distinctions
+        run: python3 -m unittest discover -s tests -p 'test_report_camp_refresh.py' -v
+      - name: Generate diagnostic offline without altering product data
+        run: |
+          python3 scripts/report_camp_refresh.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('reports/camp-refresh-health.json').read_text(encoding='utf-8'))
+          assert data['schemaVersion'] == 2
+          assert isinstance(data['categoryEvidence'], dict)
+          assert set(data['categoriesWithNoRecentEvidence']) <= set(data['categoryEvidence'])
+          assert set(data['categoriesWithExactlyOneRecentOffer']) <= set(data['categoriesWithFewerThanTwoRecentOffers'])
+          PY
