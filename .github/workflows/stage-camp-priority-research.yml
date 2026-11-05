@@ -1,3 +1,5 @@
+# One explicitly bounded live run: three original audited seller IDs only.
+# Never publish the staged catalog; do not re-query on ordinary PR commits.
 name: CAMP targeted original-merchant recovery (3 SKU max)
 on:
   pull_request:
