@@ -70,6 +70,24 @@ class CampRefreshReportTests(unittest.TestCase):
         self.assertEqual(self.audits["products"][0]["listingAuditedAt"],
                          "2026-11-04T00:00:00Z")
 
+    def test_failure_classes_distinguish_transient_and_rejected_listings(self):
+        catalog = {"products": [], "itemFailures": {
+            "secret:1": "seller_browser_fetch_failed",
+            "secret:2": "upstream_rate_limited",
+            "secret:3": "unavailable",
+            "secret:4": "exact_item_not_found",
+            "secret:5": "PRIVATE_SKU unexpected seller URL",
+        }}
+        result = build_report(catalog, observed_at=self.now)
+        self.assertEqual(result["failureClassCounts"], {
+            "acquisition_or_evidence_failure": 2,
+            "listing_rejected_or_not_found": 2,
+            "unclassified_failure": 1,
+        })
+        self.assertEqual(result["failureReasonCounts"]["unclassified_failure"], 1)
+        self.assertNotIn("PRIVATE_SKU", json.dumps(result))
+        self.assertNotIn("secret:", json.dumps(result))
+
     def test_legacy_fields_without_coverage_inputs(self):
         result = build_report(self.catalog, observed_at=self.now)
         self.assertEqual(result["failedAuditCount"], 2)
