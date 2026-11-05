@@ -4,6 +4,7 @@ on:
     paths:
       - 'scripts/stage_camp_coverage_round.py'
       - 'tests/test_stage_camp_coverage_round.py'
+      - 'scripts/report_camp_recommendation_gaps.mjs'
       - 'scripts/stage_camp_combined_review.py'
       - 'tests/test_stage_camp_combined_review.py'
       - '.github/workflows/stage-camp-coverage-research.yml'
@@ -68,6 +69,8 @@ jobs:
           fi
           python scripts/report_camp_refresh.py
           python scripts/stamp_assets.py
+          node --check scripts/report_camp_recommendation_gaps.mjs
+          node scripts/report_camp_recommendation_gaps.mjs
           npm run check
           npm test
       - name: Preserve sanitized research results only
@@ -76,6 +79,7 @@ jobs:
         with:
           name: camp-coverage-readonly-review
           path: |
+            reports/camp-recommendation-gaps.json
             reports/camp-combined-review.json
             reports/camp-coverage-research.json
             reports/camp-refresh-health.json
