@@ -1,6 +1,7 @@
 import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validateStored,selectedRecipes} from '../engine.js?v=fae35fc04acb';
 import {recommend,defaultPreference,reject} from '../products.js?v=ace8d394b3ac';
 import {analyzeSupply} from './supply-guidance.js?v=89a34d5e1ea0';
+import {compareModels, yen as verifiedYen} from './compare-products.js';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const yen=n=>'¥'+Number(n).toLocaleString('ja-JP');
@@ -82,7 +83,35 @@ const depts=[['stay','泊まる','朝まで眠れる、自分の場所。','slee
 function store(){return shell('道具から、広がる休日。','THE CAMP STORE',`<div class="store-grid">${depts.map(([id,t,d,img])=>`<button class="store-item" data-dept="${id}">${image(img)}<h2>${t}${arrow}</h2><p>${d}</p></button>`).join('')}</div><p class="note">商品を先に眺めるのではなく、人数・季節・移動・予算から合うものだけを絞ります。キャンプをつくると、さらに正確な提案になります。</p>${primary('自分のキャンプから考える','data-start')}`,'価格を比べる前に、どんな時間を過ごしたい？','home');}
 function productPreference(id){return state.productPrefs?.[id]||defaultPreference(id,state.answers);}
 function preferenceSelector(c){const cfg=data.productPreferences.categories[c.id];if(!cfg)return '';const selected=productPreference(c.id);return `<section class="preference-box"><div><p class="eyebrow">ONE MORE CHOICE</p><h2>${esc(cfg.question)}</h2><p class="muted">最初の7問で条件は絞れています。ここだけ選ぶと、順位をあなた向けに調整します。</p></div><div class="preference-options">${cfg.options.map(o=>`<button data-product-pref="${o.id}" data-category="${c.id}" aria-pressed="${selected===o.id}"><strong>${esc(o.label)}</strong><span>${esc(o.hint)}</span></button>`).join('')}</div></section>`;}
-function productCard(p,c,index){const selected=state.selectedProducts?.[c.id]===p.itemCode,qty=productQuantity(c.id),hero=index===0;return `<article class="product-card ${hero?'hero-pick':''} ${selected?'is-selected':''}"><div class="product-card-head"><p class="badge">${p.badge}</p>${hero?`<span class="match-score">${p.matchScore}<small>/100</small><em>あなた適合</em></span>`:''}</div><img src="${esc(p.image)}" alt="${esc(p.name)}" width="500" height="350" loading="lazy"><div class="why-fit">${p.matchReasons.map(x=>`<span>✓ ${esc(x)}</span>`).join('')}</div><h2>${esc(p.name)}</h2><p class="muted">${qty>1?`1点 ${yen(p.price)} / ${qty}人分なら ${yen(p.totalPrice)}`:`1点 ${yen(p.price)}`} ${p.shipping==='included'?'・送料込み':''}</p><p class="price">${yen(p.totalPrice)}<small class="muted"> ${qty>1?'今回必要な数量の合計':'確認時点の参考価格'}</small></p>${Number.isFinite(p.reviewAverage)&&Number.isFinite(p.reviewCount)&&p.reviewCount>0?`<p class="product-trust"><strong>★ ${Number(p.reviewAverage).toFixed(2)}</strong><span>楽天レビュー ${Number(p.reviewCount).toLocaleString('ja-JP')}件</span></p>`:''}${p.budgetStatus==='over'?'<p class="budget-over">必要条件は満たしますが、この道具の予算配分は超えます。</p>':''}<p class="muted">販売確認 ${esc(p.verifiedAt.slice(0,10))}<br>${esc(p.specSummary||'仕様は販売ページで再確認してください。')}</p><p class="muted">確認時点の税込参考価格です。送料・在庫・最終金額は楽天でご確認ください。</p><div class="product-actions"><a class="primary" href="${esc(p.affiliateUrl)}" data-affiliate="${esc(p.itemCode)}" data-category="${c.id}" target="_blank" rel="sponsored nofollow noopener">${hero?'楽天で価格・在庫を確認':'楽天の商品ページへ'}${arrow}</a><button class="${selected?'picked-button':'secondary'}" data-select-product="${esc(p.itemCode)}" data-category="${c.id}">${selected?'✓ 買うものリストに選択済み':'これにする'}${arrow}</button></div></article>`;}
+function quickCompare(recs,c,ctx){
+ const comp=compareModels(recs,c.id,ctx);
+ if(!comp.count)return '';
+ const multiple=comp.count>1;
+ return `<section class="quick-compare" aria-labelledby="quick-compare-title">
+ <div class="quick-compare-heading"><p class="eyebrow">COMPARE VERIFIED OPTIONS</p>
+ <h2 id="quick-compare-title">${multiple?'候補の違いを、ひと目で。':'条件を満たす候補は、現在1件です。'}</h2>
+ <p class="muted">${multiple
+   ?'それぞれ別の製品です。数量と参考小計をそろえて比較し、詳しい説明から選べます。'
+   :'別の商品を無理に追加していません。購入前に必要数量とメーカーの仕様を確認しましょう。'}</p></div>
+ <div class="quick-compare-grid">${comp.rows.map((p,i)=>{
+   const specs=p.specs.filter(s=>!multiple||comp.fields.includes(s.key)).slice(0,3);
+   const selected=state.selectedProducts?.[c.id]===p.itemCode;
+   return `<article class="quick-compare-item ${selected?'is-selected':''}">
+    <p class="compare-rank">${i===0?'あなた向けの第一候補':`比較候補 ${i+1}`}${selected?' ・ 選択済み':''}</p>
+    <h3>${esc(p.name)}</h3>
+    <strong class="compare-price">${verifiedYen(p.totalPrice)}</strong>
+    <p class="compare-quantity">参考小計：${p.units}点 × ${verifiedYen(p.unitPrice)}（送料は販売先で最終確認）</p>
+    ${p.difference!==null?`<p class="compare-budget ${p.difference>0?'compare-budget-over':''}">この道具の予算配分目安より${p.difference>0?`${verifiedYen(p.difference)}超過`:`${verifiedYen(Math.abs(p.difference))}低い`}</p>`:''}
+    ${specs.length?`<dl class="compare-specs">${specs.map(spec=>`<div><dt>${esc(spec.label)}</dt><dd>${esc(spec.value)}</dd></div>`).join('')}</dl>`
+      :`<p class="compare-unknown">共通して照合できるメーカー仕様は表示していません。</p>`}
+    ${p.reason.length?`<p class="compare-reason">${esc(p.reason[0])}</p>`:''}
+    <div class="compare-actions"><button class="${selected?'picked-button':'secondary'}" data-select-product="${esc(p.itemCode)}" data-category="${esc(c.id)}">${selected?'✓ 選択済み':'これにする'}</button>
+    <button class="back" data-jump-product="${i}">詳細を見る →</button></div>
+   </article>`;
+ }).join('')}</div>
+ <p class="compare-footnote">表示額は確認時点の税込参考価格です。販売先の送料・在庫・合計金額は変わる場合があります。仕様は根拠のある項目のみ表示します。</p></section>`;
+}
+function productCard(p,c,index){const selected=state.selectedProducts?.[c.id]===p.itemCode,qty=productQuantity(c.id),hero=index===0;return `<article id="camp-offer-${index}" class="product-card ${hero?'hero-pick':''} ${selected?'is-selected':''}"><div class="product-card-head"><p class="badge">${esc(p.badge)}</p>${hero?'<span class="fit-confirmed">条件を確認した候補</span>':''}</div><img src="${esc(p.image)}" alt="${esc(p.name)}" width="500" height="350" loading="lazy"><div class="why-fit">${p.matchReasons.map(x=>`<span>✓ ${esc(x)}</span>`).join('')}</div><h2>${esc(p.name)}</h2><p class="muted">${qty>1?`1点 ${yen(p.price)} / ${qty}人分なら ${yen(p.totalPrice)}`:`1点 ${yen(p.price)}`} ${p.shipping==='included'?'・送料込み':''}</p><p class="price">${yen(p.totalPrice)}<small class="muted"> ${qty>1?'今回必要な数量の合計':'確認時点の参考価格'}</small></p>${Number.isFinite(p.reviewAverage)&&Number.isFinite(p.reviewCount)&&p.reviewCount>0?`<p class="product-trust"><strong>★ ${Number(p.reviewAverage).toFixed(2)}</strong><span>楽天レビュー ${Number(p.reviewCount).toLocaleString('ja-JP')}件</span></p>`:''}${p.budgetStatus==='over'?'<p class="budget-over">必要条件は満たしますが、この道具の予算配分は超えます。</p>':''}<p class="muted">販売確認 ${esc(p.verifiedAt.slice(0,10))}<br>${esc(p.specSummary||'仕様は販売ページで再確認してください。')}</p><p class="muted">確認時点の税込参考価格です。送料・在庫・最終金額は楽天でご確認ください。</p><div class="product-actions"><a class="primary" href="${esc(p.affiliateUrl)}" data-affiliate="${esc(p.itemCode)}" data-category="${c.id}" target="_blank" rel="sponsored nofollow noopener">${hero?'楽天で価格・在庫を確認':'楽天の商品ページへ'}${arrow}</a><button class="${selected?'picked-button':'secondary'}" data-select-product="${esc(p.itemCode)}" data-category="${c.id}">${selected?'✓ 買うものリストに選択済み':'これにする'}${arrow}</button></div></article>`;}
 function productsPage(){
  const c=data.equipment.categories.find(c=>c.id===currentCategory);
  if(!c)return store();
@@ -91,7 +120,7 @@ function productsPage(){
        recs=recommend(data.products.products,currentCategory,state.answers,data.equipment,data.rules,{...ctx,preference:pref});
  track('product_view',{category_id:c.id,result_count:recs.length,preference:pref});
  const cover=image(depts.find(d=>d[0]===c.department)?.[3]||'relax','この道具で、楽しめるキャンプの時間','recommendation-scene');
- const available=recs.length?`<section class="top-pick"><p class="eyebrow">BEST FOR YOUR CAMP</p><h2>あなたなら、まずこれ。</h2>${productCard(recs[0],c,0)}</section>${recs.length>1?`<section class="alternatives"><div class="section-head"><div><p class="eyebrow">ALTERNATIVES</p><h2>比べるなら、この2つまで。</h2></div><p class="muted">候補を増やしすぎず、違いがあるものだけ。</p></div>${recs.slice(1).map((p,i)=>productCard(p,c,i+1)).join('')}</section>`:''}`
+ const available=recs.length?`${quickCompare(recs,c,ctx)}<section class="top-pick"><p class="eyebrow">BEST FOR YOUR CAMP</p><h2>あなたなら、まずこれ。</h2>${productCard(recs[0],c,0)}</section>${recs.length>1?`<section class="alternatives"><div class="section-head"><div><p class="eyebrow">ALTERNATIVES</p><h2>比べるなら、この2つまで。</h2></div><p class="muted">候補を増やしすぎず、違いがあるものだけ。</p></div>${recs.slice(1).map((p,i)=>productCard(p,c,i+1)).join('')}</section>`:''}`
  :`<section class="empty-products" aria-labelledby="supply-empty-title">
     <p class="eyebrow">NOT VERIFIED FOR THIS PLAN</p>
     <h2 id="supply-empty-title">この条件で、案内できる商品はまだありません。</h2>
@@ -175,6 +204,13 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
    return;
  }
  if(t.dataset.productPref){state.productPrefs=state.productPrefs||{};state.productPrefs[t.dataset.category]=t.dataset.productPref;persist();track('product_preference',{category_id:t.dataset.category,preference:t.dataset.productPref});render();return;}
+ if(t.dataset.jumpProduct!==undefined){
+   const index=Number(t.dataset.jumpProduct);
+   if(Number.isInteger(index)&&index>=0&&index<3){
+     document.getElementById('camp-offer-'+index)?.scrollIntoView({behavior:'smooth',block:'start'});
+   }
+   return;
+ }
  if(t.dataset.selectProduct){state.selectedProducts=state.selectedProducts||{};state.selectedProducts[t.dataset.category]=t.dataset.selectProduct;persist();track('product_select',{category_id:t.dataset.category,product_id:t.dataset.selectProduct});render();toast('買うものリストに追加しました。');return;}
  if(t.dataset.product){currentCategory=t.dataset.product;go('products');return;}
  if(t.dataset.dept){currentCategory=data.equipment.categories.find(c=>c.department===t.dataset.dept)?.id||'tent';go('products');return;}
