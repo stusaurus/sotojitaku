@@ -71,6 +71,7 @@ jobs:
           ln -s "$GITHUB_WORKSPACE" /tmp/soto-guide-preview/sotojitaku
           python3 -m http.server 4173 --directory /tmp/soto-guide-preview > /tmp/soto-guide-preview.log 2>&1 &
           HOME_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/home-guide-browser.cjs
+          CAMP_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/camp-buy-less-browser.mjs
       - name: Inspect all four published experiences and catalog links
         env:
           SOTOJITAKU_BASE: https://stusaurus.github.io/sotojitaku/

@@ -1,4 +1,4 @@
-import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validateStored,selectedRecipes} from './engine.js?v=fae35fc04acb';
+import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validateStored,selectedRecipes} from './engine.js?v=7d08d37eb29c';
 import {recommend,defaultPreference,reject} from './products.js?v=ac251aea4046';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
