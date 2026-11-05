@@ -1,6 +1,6 @@
 # One-shot opt-in: verify the currently displayed official Snow Peak L sales listing only.
 # Product data stays unchanged, and the exact API may be called at most once.
-name: CAMP official Snow Peak L shop proof (one SKU)
+name: CAMP Snow Peak L merchant proof (one SKU)
 on:
   pull_request:
     paths:
@@ -30,7 +30,7 @@ jobs:
         id: live
         shell: bash
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Fq '[camp-snowpeak-live]'; then
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Eq '\\[camp-(snowpeak|xebio)-live\\]'; then
             echo 'approved=true' >> "$GITHUB_OUTPUT"
           else
             echo 'approved=false' >> "$GITHUB_OUTPUT"
@@ -39,14 +39,22 @@ jobs:
       - name: Install standard browser (no stealth or captcha bypass)
         if: steps.live.outputs.approved == 'true'
         run: python -m pip install playwright==1.55.0
-      - name: Inspect one Snow Peak official shop SKU; call official API at most once
+      - name: Inspect one separately identified Snow Peak seller SKU; max one official API call
         if: steps.live.outputs.approved == 'true'
-        run: python scripts/probe_camp_seller_derived_item_id.py --candidate snowpeak_fire
+        shell: bash
+        run: |
+          if git log -1 --format=%B | grep -Fq '[camp-xebio-live]'; then
+            python scripts/probe_camp_seller_derived_item_id.py --candidate xebio_fire
+          else
+            python scripts/probe_camp_seller_derived_item_id.py --candidate snowpeak_fire
+          fi
       - name: Upload sanitized evidence result, never public product data
         if: always() && steps.live.outputs.approved == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: camp-snowpeak-official-shop-research
-          path: reports/camp-seller-derived-item-id-snowpeak_fire.json
+          path: |
+            reports/camp-seller-derived-item-id-snowpeak_fire.json
+            reports/camp-seller-derived-item-id-xebio_fire.json
           retention-days: 14
           if-no-files-found: warn
