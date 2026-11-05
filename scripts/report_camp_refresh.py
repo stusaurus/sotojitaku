@@ -112,6 +112,14 @@ def build_report(catalog, audited_doc=None, equipment=None, *, observed_at=None)
         }
         for category in categories
     }
+    # A category with only one live offer cannot provide a real two-choice
+    # comparison; distinguish this from an empty or expired category.
+    result["categoriesWithFewerThanTwoRecentOffers"] = [
+        category for category in categories if recent_count[category] < 2
+    ]
+    result["categoriesWithExactlyOneRecentOffer"] = [
+        category for category in categories if recent_count[category] == 1
+    ]
     result["categoriesWithNoRecentEvidence"] = [
         category for category in categories if recent_count[category] == 0
     ]
