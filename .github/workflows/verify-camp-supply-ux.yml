@@ -1,0 +1,58 @@
+name: CAMP purchase-supply UX and mobile QA (read-only)
+on:
+  pull_request:
+    paths:
+      - 'camp/app.js'
+      - 'camp/supply-guidance.js'
+      - 'camp/index.html'
+      - 'style.css'
+      - 'scripts/stamp_assets.py'
+      - 'tests/camp-supply-guidance.test.mjs'
+      - 'tests/camp-supply-browser.mjs'
+      - '.github/workflows/verify-camp-supply-ux.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-supply-ux-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify-honest-supply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate JS and ensure all browser cache fingerprints are committed
+        run: |
+          set -euo pipefail
+          node --check camp/app.js
+          node --check camp/supply-guidance.js
+          python scripts/stamp_assets.py
+          git diff --exit-code -- camp/app.js camp/index.html style.css
+      - name: Test fail-closed recommendation status and released asset hashes
+        run: |
+          node --test tests/camp-supply-guidance.test.mjs tests/assets.test.mjs
+      - name: Install standard Playwright Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Serve pull request static site locally
+        run: python -m http.server 4173 > /tmp/camp-supply-server.log 2>&1 &
+      - name: Exercise zero verified items, real rental action and shopping at three widths
+        run: node tests/camp-supply-browser.mjs
+      - name: Save mobile/desktop proof images without product analytics clicks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-supply-ux-mobile-and-desktop
+          path: browser-proof/camp-supply
+          retention-days: 14
+          if-no-files-found: warn
