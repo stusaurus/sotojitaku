@@ -29,6 +29,7 @@ def _recent(value, observed):
 # Keep unrecognized upstream error text out of public diagnostic artifacts.
 TRANSIENT_REASONS = frozenset({
     "seller_browser_fetch_failed", "seller_evidence_missing",
+    "seller_host_evidence_circuit_open", "stale_sales_evidence_unavailable",
     "upstream_rate_limited", "upstream_api_unavailable",
     "worker_unavailable", "worker_fetch_failed", "api_request_failed",
 })
