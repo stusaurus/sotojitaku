@@ -13,7 +13,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from acquire import ROOT
-from probe_camp_recovery_candidates import PRIORITIES
+from probe_camp_recovery_candidates import PRIORITIES, STOP_STATUSES
+
+# Historically audited exact seller SKUs. Historical prices and stock are NOT
+# proof of current offers; every one must pass the fresh independent API and
+# ordinary seller-page checks in refresh_snapshot before entering a candidate.
+SUPPLY_TARGETS = (
+    ("burner", "ST-340"),
+    ("burner", "ST-350"),
+    ("table", "2205813"),  # Audited family-size 120 cm table (4 people)
+    ("table", "2238333"),  # Independently audited 120 cm / 4-person table
+)
 from refresh_verified_camp_offer import refresh_snapshot
 
 STAGED_CATALOG = Path("/tmp/camp-recovery-candidate-products.json")
@@ -21,7 +31,7 @@ STAGED_AUDITS = Path("/tmp/camp-recovery-candidate-audits.json")
 
 
 def stage_pair(*, root=ROOT, renew=refresh_snapshot, now=None,
-               api_fetch=None, browser_get=None):
+               api_fetch=None, browser_get=None, supply_targets=()):
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("observed_time_must_be_aware")
@@ -34,7 +44,13 @@ def stage_pair(*, root=ROOT, renew=refresh_snapshot, now=None,
         encoding="utf-8"))
     before = len(catalog.get("products") or [])
     results = []
-    for category, model in PRIORITIES:
+    targets = tuple(PRIORITIES) + tuple(supply_targets)
+    if len(targets) != len(set(targets)):
+        raise ValueError("duplicate_recovery_target")
+    # Prevent accidental exhaustive API scans (and avoid repeated 429 traffic).
+    if len(targets) > 6:
+        raise ValueError("recovery_api_budget_exceeded")
+    for category, model in targets:
         audits, catalog, evidence = renew(
             audits, catalog, equipment, now=observed,
             api_fetch=api_fetch, browser_get=browser_get,
@@ -48,20 +64,34 @@ def stage_pair(*, root=ROOT, renew=refresh_snapshot, now=None,
             "result": evidence["result"],
             "publishedFreshnessChanged": evidence["publishedFreshnessChanged"],
         })
-        if evidence["apiStatus"] == "rate_limited":
+        # A confirmed 429 or Worker outage stops subsequent requests. Neither
+        # can be reported as a sold-out seller or as freshly verified stock.
+        if evidence["apiStatus"] in STOP_STATUSES:
             break
     successful = sum(row["result"] == "renewed" for row in results)
+    core_success = all(any(
+        row["category"] == category and row["model"] == model
+        and row["result"] == "renewed"
+        for row in results) for category, model in PRIORITIES)
+    supply_success = sum(
+        row["result"] == "renewed" and
+        (row["category"], row["model"]) in supply_targets
+        for row in results)
     # Even two successful independent proofs are a *review candidate* only.
     report = {
         "schemaVersion": 1,
         "type": "research_only_not_for_publication",
         "observedAt": observed.isoformat(),
-        "maxApiRequests": len(PRIORITIES),
+        "maxApiRequests": len(targets),
         "attempted": len(results),
         "independentlyRenewed": successful,
+        "supplyTargets": len(supply_targets),
+        "supplyIndependentlyRenewed": supply_success,
+        "stoppedByUpstream": bool(results and results[-1]["apiStatus"] in STOP_STATUSES),
         "baselineProductCount": before,
         "candidateProductCount": len(catalog.get("products") or []),
-        "bothCandidatesEligibleForSnapshotReview": successful == len(PRIORITIES),
+        "bothCandidatesEligibleForSnapshotReview": core_success,
+        "allRequestedTargetsRenewed": successful == len(targets),
         "verifiedForPublication": False,
         "results": results,
     }
@@ -69,8 +99,10 @@ def stage_pair(*, root=ROOT, renew=refresh_snapshot, now=None,
 
 
 def write_stage(*, root=ROOT, renew=refresh_snapshot, now=None,
-                staged_catalog=STAGED_CATALOG, staged_audits=STAGED_AUDITS):
-    report, catalog, audits = stage_pair(root=root, renew=renew, now=now)
+                staged_catalog=STAGED_CATALOG, staged_audits=STAGED_AUDITS,
+                supply_targets=SUPPLY_TARGETS):
+    report, catalog, audits = stage_pair(
+        root=root, renew=renew, now=now, supply_targets=supply_targets)
     target = root / "reports/camp-recovery-pair-candidate.json"
     target.parent.mkdir(exist_ok=True)
     target.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
