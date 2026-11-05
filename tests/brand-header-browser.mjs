@@ -51,6 +51,9 @@ try{
    const download=page.waitForEvent('download');await page.locator('[data-export]').click();assert.match((await download).suggestedFilename(),/SOTOJITAKU/);
    await page.reload();await page.locator('[data-export]').waitFor();await img.evaluate(e=>e.decode());
    await page.goto(base+'camp/?test=1#store');await page.locator('[data-dept]').first().click();
+   // Current CAMP UX intentionally folds long detail cards and affiliate
+   // links. The shopper opens the verified product detail before navigating.
+   await page.locator('#camp-product-details > summary').click();
    const affiliate=page.locator('[data-affiliate]').first();await affiliate.waitFor();assert.match(await affiliate.getAttribute('href'),/^https:\/\/hb\.afl\.rakuten\.co\.jp\//);
    await page.screenshot({path:`browser-proof/brand/camp-products-${width}.png`,fullPage:true});
    await affiliate.evaluate(el=>{el.addEventListener('click',e=>e.preventDefault(),{once:true});el.click()});
