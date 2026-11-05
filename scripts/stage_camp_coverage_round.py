@@ -32,6 +32,17 @@ ROUNDS = {
         ("tent", "2000038429"),  # historical value-pref family tent
         ("cooler", "2238145"),  # 35L, family-capacity alternative
     ),
+    # Separate, bounded verification batch to fill the other real QA gaps.
+    # Two historic sleeping-bag variants are only candidates until BOTH live
+    # exact official API and original seller fixed-SKU proofs pass.
+    "recovery": (
+        ("led_lantern", "2000038854"),
+        ("burner", "ST-350"),
+        ("table", "2205813"),
+        ("table", "2238333"),
+        ("sleeping_bag", "2000034772"),
+        ("sleeping_bag", "2000038771"),
+    ),
     # Separate later review. Not automatically run after the first batch:
     # the Worker must not receive an unbounded series of requests.
     "sleep": (
