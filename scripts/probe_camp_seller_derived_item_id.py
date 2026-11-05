@@ -47,18 +47,36 @@ def page_identity(url, html, expected_url=SELLER_PAGE, model=MODEL):
     # An itemId can be checked against Rakuten's exact API without treating
     # any missing seller price as a valid purchase condition. No publication,
     # no inventory assertion, and no 'verified' label on this intermediate ID.
-    if html.count(marker) != 1:
-        return None, ("missing_sales_evidence" if marker not in html
-                      else "ambiguous_seller_item_id")
+    # Some Rakuten pages embed the same itemInfoSku JSON more than once.
+    # A duplicate is NOT evidence of multiple variants; independently parse
+    # every occurrence and require identical itemId and purchase invariants.
+    # Contradictory records are strictly rejected before calling the API.
+    count = html.count(marker)
+    if count == 0:
+        return None, "missing_sales_evidence"
+    if count > 8:
+        return None, "ambiguous_seller_item_id"
+    if model not in html:
+        return None, "model_missing"
+    infos = []
     try:
-        info, _ = json.JSONDecoder().raw_decode(html.split(marker, 1)[1])
-        if not isinstance(info, dict):
-            return None, "item_id_unverified"
-        item_id = info.get("itemId")
-        if type(item_id) is not int or item_id < 1 or len(str(item_id)) > 15:
-            return None, "item_id_unverified"
-        if model not in html:
-            return None, "model_missing"
+        decoder = json.JSONDecoder()
+        for fragment in html.split(marker)[1:]:
+            info, _ = decoder.raw_decode(fragment)
+            if not isinstance(info, dict):
+                return None, "item_id_unverified"
+            infos.append(info)
+    except (ValueError, TypeError, json.JSONDecodeError):
+        return None, "seller_conditions_unverified"
+    ids = [info.get("itemId") for info in infos]
+    if any(type(v) is not int or v < 1 or len(str(v)) > 15 for v in ids):
+        return None, "item_id_unverified"
+    if len(set(ids)) != 1:
+        return None, "conflicting_seller_item_ids"
+    item_id = ids[0]
+    quantities = []
+    prices = []
+    for info in infos:
         if info.get("sellType") != "NORMAL":
             return None, "wrong_listing"
         purchase = info.get("purchaseInfo", {})
@@ -77,12 +95,18 @@ def page_identity(url, html, expected_url=SELLER_PAGE, model=MODEL):
                 or type(inventories[0].get("quantity")) is not int
                 or inventories[0]["quantity"] <= 0):
             return None, "inventory_unknown"
+        quantities.append(inventories[0]["quantity"])
         normal = sale.get("normalPurchase", {})
         price_box = normal.get("price", {}) if isinstance(normal, dict) else {}
-        price = price_box.get("minPrice") if isinstance(price_box, dict) else None
-        price_present = type(price) is int and price > 0
-    except (ValueError, TypeError, KeyError, AttributeError, json.JSONDecodeError):
-        return None, "seller_conditions_unverified"
+        prices.append(price_box.get("minPrice") if isinstance(price_box, dict) else None)
+    if len(set(quantities)) != 1:
+        return None, "conflicting_seller_inventory"
+    observed_prices = [v for v in prices if type(v) is int and v > 0]
+    if len(set(observed_prices)) > 1:
+        return None, "conflicting_seller_price"
+    # Only an exact positive integer from every copy counts as seller price
+    # evidence, and even then official SKU/price/stock proof remains mandatory.
+    price_present = len(observed_prices) == len(infos)
     shop = urllib.parse.urlparse(canonical).path.split("/")[1]
     # This is ONLY a research identity. Seller price must still independently
     # equal the official API price in seller_audit_result and parse_listing.
