@@ -27,6 +27,13 @@ SAFE_REASONS = frozenset({
     "inventory_unknown", "variable_listing", "selectable_listing",
     "unknown_model", "variant_unknown", "model_missing",
 })
+ALLOWED_TARGETS = {
+    "led": (CATEGORY, MODEL, SELLER_PAGE),
+    "sandwich": ("hot_sandwich_maker", "UG-3086",
+                 "https://item.rakuten.co.jp/captainstagstore/4560464283785/"),
+    "fire": ("fire_pit", "2000031235",
+             "https://item.rakuten.co.jp/naturum/2824592/"),
+}
 REPORT = ROOT / "reports/camp-seller-derived-item-id.json"
 
 
@@ -58,7 +65,11 @@ def page_identity(url, html, expected_url=SELLER_PAGE, model=MODEL):
 
 
 def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
-          seller_page=SELLER_PAGE):
+          seller_page=None, target="led"):
+    if target not in ALLOWED_TARGETS:
+        raise ValueError("unapproved_target")
+    category, model, approved_url = ALLOWED_TARGETS[target]
+    seller_page = seller_page if seller_page is not None else approved_url
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("timezone_required")
@@ -67,18 +78,18 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
              for name in ("audited-products", "products", "equipment")}
     raw = {key: p.read_bytes() for key, p in paths.items()}
     audits = json.loads(raw["audited-products"]).get("products") or []
-    matches = [a for a in audits if a.get("category") == CATEGORY
-               and a.get("model") == MODEL]
+    matches = [a for a in audits if a.get("category") == category
+               and a.get("model") == model]
     if len(matches) != 1:
         raise ValueError("unique_historical_manufacturer_model_required")
     original = matches[0]
-    if stage.canonical_item_url(seller_page) != SELLER_PAGE:
+    if stage.canonical_item_url(seller_page) != approved_url:
         raise ValueError("unapproved_seller_url")
     equipment = json.loads(raw["equipment"])
     result = {
         "schemaVersion": 1, "type": "exact_seller_id_research_only",
         "observedAt": observed.isoformat(),
-        "model": MODEL, "category": CATEGORY,
+        "model": model, "category": category,
         "sellerBrowserRequests": 1, "maximumSellerBrowserRequests": 1,
         "rakutenApiRequests": 0, "maximumRakutenApiRequests": 1,
         "sellerStatus": "not_verified",
@@ -86,6 +97,7 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
         "urlSlugMatchesSellerId": None,
         "apiStatus": "not_requested",
         "independentEvidenceForManualReview": False,
+        "manufacturerGroupSizeVerified": False if category == "fire_pit" else None,
         "verifiedForPublication": False,
     }
     getter = browser_get or seller.read_seller_page_once
@@ -94,7 +106,7 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
     except Exception:
         result["sellerStatus"] = "seller_browser_unavailable"
     else:
-        identity, reason = page_identity(visited, html, seller_page)
+        identity, reason = page_identity(visited, html, seller_page, model)
         if identity is None:
             result["sellerStatus"] = reason
         else:
@@ -122,9 +134,10 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
     return result
 
 
-def main(root=ROOT):
-    result = probe(root=root)
-    path = root / "reports/camp-seller-derived-item-id.json"
+def main(root=ROOT, target="led"):
+    result = probe(root=root, target=target)
+    suffix = "" if target == "led" else "-" + target
+    path = root / ("reports/camp-seller-derived-item-id" + suffix + ".json")
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n",
                     encoding="utf-8")
@@ -132,4 +145,7 @@ def main(root=ROOT):
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--candidate", choices=tuple(ALLOWED_TARGETS), default="led")
+    main(target=parser.parse_args().candidate)
