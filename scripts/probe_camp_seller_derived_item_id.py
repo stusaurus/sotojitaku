@@ -134,7 +134,8 @@ def explicit_four_person_manufacturer_proof(audit):
             and evidence.get("maxPeople") == spec.get("capacity") == 4
             and evidence.get("source") == manufacturer.get("specification")
             == "https://ec.snowpeak.co.jp/item/SNP0120A0737"
-            and "3-4人用" in evidence.get("manufacturerStatement", ""))
+            and isinstance(evidence.get("manufacturerStatement"), str)
+            and "3-4人用" in evidence["manufacturerStatement"])
 
 
 def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
