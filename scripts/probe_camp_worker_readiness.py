@@ -40,7 +40,15 @@ def get_status(url, *, opener=None):
                 data = json.loads(response.read(4096).decode("utf-8"))
             return status, data if isinstance(data, dict) else {}
         except urllib.error.HTTPError as error:
-            return error.code, {}
+            # Treat only the Worker-defined machine error as trustworthy.
+            # An unrelated proxy 400/503 is NOT evidence of app readiness.
+            try:
+                payload = json.loads(error.read(4096).decode("utf-8"))
+                code = payload.get("error") if isinstance(payload, dict) else None
+            except (ValueError, UnicodeError):
+                code = None
+            return error.code, {"error": code if code in (
+                "invalid_exact_item_identity", "server_not_configured") else None}
     except (urllib.error.URLError, TimeoutError, ValueError, UnicodeError, OSError):
         return None, {}
 
@@ -68,13 +76,15 @@ def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
     health_ok = (health_http == 200 and health.get("ok") is True
                  and health.get("service") == "daily-cost-api")
     config_http = None
+    config_error = None
     api_status = "not_requested"
     attempted = 0
     # This is deliberately invalid input, not a request for any real product.
     # The Worker must return 400 only when credentials are present.
     if health_ok:
-        config_http, _ = get(WORKER + "/api/item-evidence?url=invalid&itemCode=invalid")
-    ready = health_ok and config_http == 400
+        config_http, config = get(WORKER + "/api/item-evidence?url=invalid&itemCode=invalid")
+        config_error = config.get("error")
+    ready = health_ok and config_http == 400 and config_error == "invalid_exact_item_identity"
     if ready:
         attempted = 1
         live = request_exact(targets[0], fetch=fetch)
@@ -84,7 +94,7 @@ def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
         api_status = "worker_health_unreachable"
     elif not health_ok:
         api_status = "worker_health_unverified"
-    elif config_http == 503:
+    elif config_http == 503 and config_error == "server_not_configured":
         api_status = "worker_rakuten_credentials_missing"
     else:
         api_status = "worker_evidence_route_unverified"
@@ -98,6 +108,7 @@ def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
         "healthHttpStatus": health_http,
         "healthOk": health_ok,
         "credentialGateHttpStatus": config_http,
+        "credentialGateResponse": config_error,
         "credentialGateVerified": ready,
         "maximumRakutenApiRequests": MAX_UPSTREAM_ITEM_REQUESTS,
         "rakutenApiRequests": attempted,
