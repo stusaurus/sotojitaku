@@ -9,7 +9,7 @@ const arrow='<span class="arrow" aria-hidden="true">→</span>';
 const primary=(label,action)=>`<button class="primary" ${action}>${label}${arrow}</button>`;
 const secondary=(label,action)=>`<button class="secondary" ${action}>${label}${arrow}</button>`;
 const image=(id,alt='',cls='',eager=false)=>`<img src="../assets/${id}.webp" alt="${esc(alt)}" class="${cls}" ${eager?'fetchpriority="high"':'loading="lazy"'} width="640" height="420">`;
-let data,state,hasSaved=false,qIndex=0,mealTab='dinner',gearTab='buy',currentCategory='tent',lastUnlocked=new Set(),saveFailed=false,route='home';
+let data,state,hasSaved=false,qIndex=0,mealTab='dinner',gearTab='buy',currentCategory='tent',preferenceExpanded=false,lastUnlocked=new Set(),saveFailed=false,route='home';
 let operator=false;try{operator=new URLSearchParams(location.search).get('test')==='1'||localStorage.getItem('sotojitaku_operator_test')==='1';if(new URLSearchParams(location.search).get('test')==='0')operator=false;localStorage.setItem('sotojitaku_operator_test',operator?'1':'0');}catch{}
 
 window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
@@ -82,7 +82,7 @@ function missing(){
 const depts=[['stay','泊まる','朝まで眠れる、自分の場所。','sleep_comfort'],['relax','くつろぐ','木陰のひと休みと、外の食卓。','relax'],['cooking','料理する','外で味わう、いつものひと皿。','cooking'],['bonfire','焚き火','火を囲む、静かな時間。','bonfire'],['night','夜を過ごす','灯りをともして、ゆっくりと。','stargazing']];
 function store(){return shell('道具から、広がる休日。','THE CAMP STORE',`<div class="store-grid">${depts.map(([id,t,d,img])=>`<button class="store-item" data-dept="${id}">${image(img)}<h2>${t}${arrow}</h2><p>${d}</p></button>`).join('')}</div><p class="note">商品を先に眺めるのではなく、人数・季節・移動・予算から合うものだけを絞ります。キャンプをつくると、さらに正確な提案になります。</p>${primary('自分のキャンプから考える','data-start')}`,'価格を比べる前に、どんな時間を過ごしたい？','home');}
 function productPreference(id){return state.productPrefs?.[id]||defaultPreference(id,state.answers);}
-function preferenceSelector(c){const cfg=data.productPreferences.categories[c.id];if(!cfg)return '';const selected=productPreference(c.id);return `<section class="preference-box"><div><p class="eyebrow">ONE MORE CHOICE</p><h2>${esc(cfg.question)}</h2><p class="muted">最初の7問で条件は絞れています。ここだけ選ぶと、順位をあなた向けに調整します。</p></div><div class="preference-options">${cfg.options.map(o=>`<button data-product-pref="${o.id}" data-category="${c.id}" aria-pressed="${selected===o.id}"><strong>${esc(o.label)}</strong><span>${esc(o.hint)}</span></button>`).join('')}</div></section>`;}
+function preferenceSelector(c){const cfg=data.productPreferences.categories[c.id];if(!cfg)return '';const selected=productPreference(c.id),label=cfg.options.find(o=>o.id===selected)?.label||'現在の条件';return `<details id="preference-adjustment" class="preference-disclosure" ${preferenceExpanded?'open':''}><summary>こだわりで並び替える <span>現在：${esc(label)}</span></summary><section class="preference-box"><div><p class="eyebrow">ONE MORE CHOICE</p><h2>${esc(cfg.question)}</h2><p class="muted">必要な条件はそのままに、優先したいポイントで候補の順番を調整します。</p></div><div class="preference-options">${cfg.options.map(o=>`<button data-product-pref="${o.id}" data-category="${c.id}" aria-pressed="${selected===o.id}"><strong>${esc(o.label)}</strong><span>${esc(o.hint)}</span></button>`).join('')}</div></section></details>`;}
 function quickCompare(recs,c,ctx){
  const comp=compareModels(recs,c.id,ctx);
  if(!comp.count)return '';
@@ -93,11 +93,13 @@ function quickCompare(recs,c,ctx){
  <p class="muted">${multiple
    ?'それぞれ別の製品です。数量と参考小計をそろえて比較し、詳しい説明から選べます。'
    :'別の商品を無理に追加していません。購入前に必要数量とメーカーの仕様を確認しましょう。'}</p></div>
- <div class="quick-compare-grid">${comp.rows.map((p,i)=>{
+ ${multiple?'<p class="compare-swipe-hint">左右にスワイプして候補を比べられます。</p>':''}
+ <div class="quick-compare-grid" aria-label="${esc(c.label)}の商品比較">${comp.rows.map((p,i)=>{
    const specs=p.specs.filter(s=>!multiple||comp.fields.includes(s.key)).slice(0,3);
    const selected=state.selectedProducts?.[c.id]===p.itemCode;
    return `<article class="quick-compare-item ${selected?'is-selected':''}">
-    <p class="compare-rank">${i===0?'あなた向けの第一候補':`比較候補 ${i+1}`}${selected?' ・ 選択済み':''}</p>
+    <p class="compare-rank">${i===0?'条件に合う第一候補':`比較候補 ${i+1}`}${selected?' ・ 選択済み':''}</p>
+    ${p.image?`<img class="compare-thumbnail" src="${esc(p.image)}" alt="" loading="lazy" width="220" height="130">`:''}
     <h3>${esc(p.name)}</h3>
     <strong class="compare-price">${verifiedYen(p.totalPrice)}</strong>
     <p class="compare-quantity">参考小計：${p.units}点 × ${verifiedYen(p.unitPrice)}（送料は販売先で最終確認）</p>
@@ -106,7 +108,8 @@ function quickCompare(recs,c,ctx){
       :`<p class="compare-unknown">共通して照合できるメーカー仕様は表示していません。</p>`}
     ${p.reason.length?`<p class="compare-reason">${esc(p.reason[0])}</p>`:''}
     <div class="compare-actions"><button class="${selected?'picked-button':'secondary'}" data-select-product="${esc(p.itemCode)}" data-category="${esc(c.id)}">${selected?'✓ 選択済み':'これにする'}</button>
-    <button class="back" data-jump-product="${i}">詳細を見る →</button></div>
+    ${selected&&plan(state,data).some(g=>g.id===c.id&&g.status==='buy')?'<button class="compare-to-list" data-go="shopping">買うものリストを見る →</button>':''}
+     <button class="back" data-jump-product="${i}">商品写真・詳細 →</button></div>
    </article>`;
  }).join('')}</div>
  <p class="compare-footnote">表示額は確認時点の税込参考価格です。販売先の送料・在庫・合計金額は変わる場合があります。仕様は根拠のある項目のみ表示します。</p></section>`;
