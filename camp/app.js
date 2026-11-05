@@ -119,7 +119,7 @@ function shopping(){
  const p=plan(state,data),picked=pickedSummary(),supply=supplyReport(p);
  const pending=supply.selectable,blocked=supply.unavailable;
  return shell('選んだ商品を、<br>まとめて確認。','YOUR CAMP SHOPPING LIST',
- `${meta()}<div class="shopping-total"><p>選択済み商品の参考小計</p><strong>${yen(picked.total)}</strong><span>${picked.rows.length}カテゴリ選択済み</span></div>
+ `${meta()}<div class="shopping-total"><p>選択済み商品の参考小計</p><strong>${picked.rows.length?yen(picked.total):'未集計'}</strong><span>${picked.rows.length}カテゴリ選択済み</span></div>
  <p class="supply-caution">確認時点の税込参考価格を集計しています。送料・在庫・必要数量・最終金額は楽天の販売ページで確認してください。未選択の道具は合計に含みません。</p>
  ${picked.rows.map(({gear,product,units},i)=>`<article class="shopping-item"><span class="shopping-index">${String(i+1).padStart(2,'0')}</span><img src="${esc(product.image)}" alt="" width="160" height="120" loading="lazy"><div><p class="eyebrow">${esc(gear.label)}${gear.quantity>1?' ×'+gear.quantity:''}</p><h2>${esc(product.name)}</h2><p>${yen(product.price*units)}（確認時点の参考価格）</p></div><a class="primary" href="${esc(product.affiliateUrl)}" data-affiliate="${esc(product.itemCode)}" data-category="${gear.id}" target="_blank" rel="sponsored nofollow noopener">楽天で価格・在庫を確認${arrow}</a><button class="back" data-product="${gear.id}">商品を選び直す →</button></article>`).join('')||'<p class="note">まだ商品を選んでいません。</p>'}
  ${pending.length?`<section class="unfinished"><h2>確認済み候補から選べる道具（${pending.length}種類）</h2>${pending.map(g=>`<button class="secondary" data-product="${g.id}">${esc(g.label)}の候補を見る${arrow}</button>`).join('')}</section>`:''}
