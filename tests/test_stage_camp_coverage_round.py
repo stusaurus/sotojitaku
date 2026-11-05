@@ -166,6 +166,52 @@ class BoundedCoverageResearch(unittest.TestCase):
                                  round_name="gap", now=self.clock)
         self.assertFalse(calls)
 
+    def test_priority_stage_only_three_previously_audited_original_merchant_ids(self):
+        calls = []
+        renew, reqs = self.mock_renew()
+        report, catalog, _ = coverage.stage_round(
+            root=self.root, renew=renew, round_name="priority",
+            now=self.clock, pause=calls.append)
+        self.assertEqual(
+            list(coverage.ROUNDS["priority"]),
+            [("hot_sandwich_maker", "UG-3086"),
+             ("led_lantern", "2218364"),
+             ("burner", "ST-340")])
+        self.assertEqual(reqs, list(coverage.ROUNDS["priority"]))
+        self.assertEqual(calls, [3, 3])
+        self.assertEqual(report["attempted"], 3)
+        self.assertEqual(report["independentlyRenewed"], 3)
+        self.assertEqual(report["maxApiRequests"], 6)
+        self.assertEqual(len(catalog["products"]), 4)
+        self.assertFalse(report["verifiedForPublication"])
+        self.assertEqual(self.before, (self.root / "data/products.json").read_bytes())
+
+    def test_priority_429_stops_before_next_request_or_pacing(self):
+        renew, requests = self.mock_renew(fail_at=2, reason="rate_limited")
+        pauses = []
+        report, catalog, _ = coverage.stage_round(
+            root=self.root, renew=renew, round_name="priority",
+            now=self.clock, pause=pauses.append)
+        self.assertEqual(len(requests), 2)
+        self.assertEqual(pauses, [3])
+        self.assertTrue(report["stoppedByUpstream"])
+        self.assertEqual(report["independentlyRenewed"], 1)
+        self.assertEqual(len(catalog["products"]), 2)
+        self.assertEqual(self.before, (self.root / "data/products.json").read_bytes())
+
+    def test_priority_missing_audited_seller_aborts_without_api_request(self):
+        self.audits["products"] = [
+            a for a in self.audits["products"]
+            if not (a["category"] == "led_lantern" and a["model"] == "2218364")]
+        (self.root / "data/audited-products.json").write_text(
+            json.dumps(self.audits))
+        renew, requests = self.mock_renew()
+        with self.assertRaises(ValueError):
+            coverage.stage_round(
+                root=self.root, renew=renew, round_name="priority",
+                now=self.clock, pause=lambda _: None)
+        self.assertFalse(requests)
+
     def test_naive_time_is_invalid(self):
         renew, calls = self.mock_renew()
         with self.assertRaises(ValueError):
