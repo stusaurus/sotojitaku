@@ -136,7 +136,7 @@ def stage_round(*, root=ROOT, renew=refresh_snapshot, round_name="family",
     report = {
         "schemaVersion": 1, "type": "research_only_not_for_publication",
         "researchRound": round_name, "observedAt": observed.isoformat(),
-        "maxApiRequests": MAX_REQUESTS, "attempted": len(rows),
+        "maxApiRequests": len(selected), "attempted": len(rows),
         "independentlyRenewed": successes,
         "baselineProductCount": baseline,
         "candidateProductCount": len(catalog.get("products") or []),
