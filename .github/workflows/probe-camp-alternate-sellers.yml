@@ -1,0 +1,36 @@
+name: CAMP alternate seller proof (research only)
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_camp_alternate_sellers.py'
+      - 'tests/test_probe_camp_alternate_sellers.py'
+      - '.github/workflows/probe-camp-alternate-sellers.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-alternate-seller-research-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  probe-exact-alternates:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce exact item URL, bounded calls, seller mismatch rejection and no mutation
+        run: python -m unittest discover -s tests -p 'test_probe_camp_alternate_sellers.py' -v
+      - name: Install ordinary browser only for seller proof
+        run: python -m pip install playwright==1.55.0
+      - name: Probe three alternate exact seller claims and one old mat failure
+        run: python scripts/probe_camp_alternate_sellers.py
+      - name: Preserve sanitized research results only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-alternate-seller-readonly-evidence
+          path: reports/camp-alternate-seller-research.json
+          if-no-files-found: warn
+          retention-days: 14
