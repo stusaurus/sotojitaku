@@ -44,6 +44,9 @@ class CampRefreshReportTests(unittest.TestCase):
         self.assertEqual(result["recentlyVerifiedProductCount"], 1)
         self.assertEqual(result["categoriesWithNoRecentEvidence"],
                          ["burner", "led_lantern"])
+        self.assertEqual(result["categoriesWithExactlyOneRecentOffer"], ["tent"])
+        self.assertEqual(result["categoriesWithFewerThanTwoRecentOffers"],
+                         ["burner", "led_lantern", "tent"])
         self.assertEqual(result["historicalAuditsOlderThanSevenDays"], 2)
         self.assertEqual(result["undatedOrFutureHistoricalAudits"], 2)
         self.assertEqual(result["categoryEvidence"]["tent"], {
