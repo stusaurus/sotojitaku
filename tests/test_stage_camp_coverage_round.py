@@ -141,6 +141,31 @@ class BoundedCoverageResearch(unittest.TestCase):
         self.assertEqual(len(json.loads(candidate.read_text())["products"]), 2)
         self.assertEqual(self.before, (self.root / "data/products.json").read_bytes())
 
+
+    def test_gap_round_uses_six_distinct_approved_historical_seller_codes(self):
+        renew, calls = self.mock_renew()
+        report, catalog, _ = coverage.stage_round(
+            root=self.root, renew=renew, round_name="gap", now=self.clock)
+        self.assertEqual(calls, list(coverage.ROUNDS["gap"]))
+        self.assertEqual(report["maxApiRequests"], 6)
+        self.assertEqual(report["independentlyRenewed"], 6)
+        self.assertEqual(len(catalog["products"]), 7)
+        self.assertFalse(report["verifiedForPublication"])
+        self.assertEqual(self.before, (self.root / "data/products.json").read_bytes())
+
+    def test_missing_gap_seller_code_aborts_before_any_live_request(self):
+        self.audits["products"] = [
+            a for a in self.audits["products"]
+            if not (a["category"] == "mat" and a["model"] == "1124667")
+        ]
+        (self.root / "data/audited-products.json").write_text(
+            json.dumps(self.audits))
+        renew, calls = self.mock_renew()
+        with self.assertRaises(ValueError):
+            coverage.stage_round(root=self.root, renew=renew,
+                                 round_name="gap", now=self.clock)
+        self.assertFalse(calls)
+
     def test_naive_time_is_invalid(self):
         renew, calls = self.mock_renew()
         with self.assertRaises(ValueError):
