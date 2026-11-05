@@ -38,3 +38,38 @@
  .supply-next .secondary,.supply-next .back{width:100%;justify-content:center}
  .supply-pending-list{grid-template-columns:1fr}
 }
+
+
+/* CAMP: short evidence-led comparison before long product detail cards. */
+.quick-compare{margin:32px 0 46px;padding:24px;background:#f8f6f1;border:1px solid var(--sand);border-radius:24px}
+.quick-compare-heading h2{font-family:var(--sans);font-weight:600;font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin:6px 0 12px}
+.quick-compare-heading .muted{line-height:1.8;font-size:13px}
+.quick-compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,225px),1fr));gap:14px;margin-top:22px}
+.quick-compare-item{border:1px solid #d8cbb8;background:var(--white);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.quick-compare-item.is-selected{box-shadow:inset 0 0 0 2px var(--forest)}
+.compare-rank{font-size:11px;letter-spacing:.04em;font-weight:600;color:var(--forest);margin:0}
+.quick-compare-item h3{font-family:var(--sans);font-weight:600;font-size:15px;line-height:1.65;overflow-wrap:anywhere}
+.compare-price{font-family:var(--serif);font-size:27px;color:var(--forest);line-height:1.3;font-variant-numeric:tabular-nums}
+.compare-quantity{font-size:12px;line-height:1.65;color:var(--moss)}
+.compare-budget{border-radius:9px;background:#f2f5ef;font-size:12px;padding:8px 10px;line-height:1.5;color:var(--forest)}
+.compare-budget-over{background:#fbf1eb;color:var(--ember)}
+.compare-specs{margin:4px 0;display:grid;gap:0;border-top:1px solid #d8cbb8a0}
+.compare-specs div{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:9px 0;border-bottom:1px solid #d8cbb8a0}
+.compare-specs dt{font-size:12px;color:var(--moss)}
+.compare-specs dd{font-size:13px;font-weight:600;text-align:right;color:var(--forest);overflow-wrap:anywhere}
+.compare-reason,.compare-unknown{font-size:12px;color:var(--moss);line-height:1.75}
+.compare-reason{padding-left:11px;border-left:3px solid #97a78b}
+.compare-actions{display:grid;grid-template-columns:1fr;gap:6px;margin-top:auto;padding-top:10px}
+.compare-actions .secondary,.compare-actions .picked-button{width:100%;min-height:44px;margin:0;text-align:center;justify-content:center}
+.compare-actions .back{width:100%;min-height:44px;text-align:center;margin:0}
+.compare-footnote{font-size:11px;color:var(--moss);line-height:1.8;margin-top:17px}
+.fit-confirmed{display:inline-flex;align-items:center;padding:7px 10px;border:1px solid #a6b29a;border-radius:8px;color:var(--forest);font-size:11px;line-height:1.4;white-space:normal;text-align:center}
+.product-card{scroll-margin-top:90px}
+@media(max-width:600px){
+ .quick-compare{padding:18px 12px;margin:25px 0 34px}
+ .quick-compare-item{padding:18px}
+ .quick-compare-grid{grid-template-columns:1fr;gap:12px}
+ .compare-price{font-size:25px}
+ .quick-compare-item h3{font-size:14px}
+ .fit-confirmed{font-size:10px}
+}
