@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -54,6 +55,14 @@ ROUNDS = {
         ("led_lantern", "2000037352"), # compact USB lantern
         ("chair", "2000038838"), # compact ground chair
     ),
+    # Three historically audited ORIGINAL merchant identities, not URL-slug
+    # guesses. Kept distinct from the 18-call combined review until current
+    # official API + original seller proof independently succeeds.
+    "priority": (
+        ("hot_sandwich_maker", "UG-3086"),  # compact, 330g
+        ("led_lantern", "2218364"),        # comfort, 800lm
+        ("burner", "ST-340"),              # ease/comfort, CB
+    ),
     # Separate later review. Not automatically run after the first batch:
     # the Worker must not receive an unbounded series of requests.
     "sleep": (
@@ -70,7 +79,8 @@ STAGED_AUDITS = Path("/tmp/camp-coverage-review-audits.json")
 
 
 def stage_round(*, root=ROOT, renew=refresh_snapshot, round_name="family",
-                targets=None, now=None, api_fetch=None, browser_get=None):
+                targets=None, now=None, api_fetch=None, browser_get=None,
+                pause=time.sleep):
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("observed_time_must_be_aware")
@@ -98,7 +108,11 @@ def stage_round(*, root=ROOT, renew=refresh_snapshot, round_name="family",
 
     baseline = len(catalog.get("products") or [])
     rows = []
-    for category, model in selected:
+    for index, (category, model) in enumerate(selected):
+        # Only the short new priority group uses active pacing. A numeric
+        # upstream 429/Worker failure is handled by the existing stop gate.
+        if round_name == "priority" and index > 0:
+            pause(3)
         audits, catalog, proof = renew(
             audits, catalog, equipment,
             target_category=category, target_model=model,
