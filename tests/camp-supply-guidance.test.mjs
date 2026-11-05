@@ -22,9 +22,9 @@ function offer({item='12345678',weight=1000,family='family-a'}={}){
   itemUrl,affiliateUrl:'https://hb.afl.rakuten.co.jp/hgc/a/?pc='+encodeURIComponent(itemUrl),
   image:'https://thumbnail.image.rakuten.co.jp/image.jpg',
   verifiedAt:new Date(now).toISOString(),
-  spec:{table_size:'120x60cm',table_capacity:4,weight},
+  spec:{table_size:'120x60cm',table_capacity:4,packed_size:'70x15cm',weight},
   evidence:{listing:itemUrl,specification:'https://example.org/maker',
-    fields:{table_size:'https://example.org/maker',weight:'https://example.org/maker'}},
+    fields:{table_size:'https://example.org/maker',packed_size:'https://example.org/maker',weight:'https://example.org/maker'}},
   scores:{fit:.9,beginner:.9,comfort:.9,portability:.9,value:.9,trust:.9},
   traits:['easy','comfort'],
  };
