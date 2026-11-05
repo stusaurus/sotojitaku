@@ -82,7 +82,7 @@ export function inspect(catalog, equipment, rules, observed = Date.now()) {
     }
     findings.push({
       category,
-      presentOffers: categoryProducts.length,
+      catalogEntryCount: categoryProducts.length,
       profileCoverage,
       blockers,
     });
