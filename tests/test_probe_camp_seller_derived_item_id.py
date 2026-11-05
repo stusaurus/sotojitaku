@@ -112,6 +112,77 @@ class SellerDerivedIdentity(unittest.TestCase):
             self.assertNotIn(secret,encoded)
         self.no_change()
 
+    def test_price_absent_allows_one_exact_identity_lookup_but_never_sale_proof(self):
+        # The seller may expose an itemId while omitting the purchase price.
+        # That is useful for official identity research, NOT an offer to buy.
+        page = self.html(purchaseInfo={
+            "purchaseBySellType": {
+                "purchaseCondition": "enabled",
+                "normalPurchase": {"price": {}},
+            },
+            "variantMappedInventories": [{"quantity": 2}],
+        })
+        identity, reason = research.page_identity(research.SELLER_PAGE, page)
+        self.assertIsNone(reason)
+        self.assertEqual(identity["itemCode"], "alpen:12345678")
+        self.assertFalse(identity["sellerPriceFieldPresent"])
+        report = research.probe(
+            root=self.root, browser_get=lambda url: (url, page),
+            api_fetch=self.official, now=self.clock)
+        self.assertEqual(report["rakutenApiRequests"], 1)
+        self.assertTrue(report["sellerIdFromLivePage"])
+        self.assertFalse(report["sellerPriceFieldPresent"])
+        self.assertEqual(report["apiStatus"],
+                         "api_confirmed_seller_variant_audit_required")
+        self.assertEqual(report["sellerStatus"],
+                         "seller_price_or_conditions_unverified")
+        self.assertFalse(report["independentEvidenceForManualReview"])
+        self.assertFalse(report["verifiedForPublication"])
+        self.assertEqual(self.api_calls, ["alpen:12345678"])
+        self.no_change()
+
+    def test_unavailable_or_missing_stock_rejects_before_official_api(self):
+        for payload in (
+            self.html(purchaseInfo={
+                "purchaseBySellType": {
+                    "purchaseCondition": "disabled",
+                    "normalPurchase": {"price": {"minPrice": 12000}},
+                },
+                "variantMappedInventories": [{"quantity": 2}],
+            }),
+            self.html(purchaseInfo={
+                "purchaseBySellType": {
+                    "purchaseCondition": "enabled",
+                    "normalPurchase": {"price": {"minPrice": 12000}},
+                },
+                "variantMappedInventories": [],
+            }),
+            self.html() + " " + self.html(),
+        ):
+            report = research.probe(
+                root=self.root, browser_get=lambda url, h=payload:(url,h),
+                api_fetch=self.official, now=self.clock)
+            self.assertEqual(report["rakutenApiRequests"], 0)
+            self.assertFalse(report["independentEvidenceForManualReview"])
+        self.assertFalse(self.api_calls)
+        self.no_change()
+
+    def test_seller_price_string_never_counts_as_independent_price_evidence(self):
+        content = self.html(purchaseInfo={
+            "purchaseBySellType": {
+                "purchaseCondition": "enabled",
+                "normalPurchase": {"price": {"minPrice": "12000"}},
+            },
+            "variantMappedInventories": [{"quantity": 2}],
+        })
+        report = research.probe(
+            root=self.root, browser_get=lambda url:(url,content),
+            api_fetch=self.official, now=self.clock)
+        self.assertFalse(report["sellerPriceFieldPresent"])
+        self.assertEqual(report["rakutenApiRequests"],1)
+        self.assertFalse(report["independentEvidenceForManualReview"])
+        self.no_change()
+
     def test_missing_seller_item_info_aborts_before_any_api(self):
         r=research.probe(root=self.root,
                          browser_get=lambda url:(url,"Coleman 2218364"),
