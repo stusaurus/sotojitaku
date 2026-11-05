@@ -21,7 +21,10 @@ class WorkerReadiness(unittest.TestCase):
         self.audits = {"products": [
             {"category": "led_lantern", "model": "2000038854",
              "itemCode": "teststore:10001234",
-             "itemUrl": "https://item.rakuten.co.jp/teststore/10001234/"}
+             "itemUrl": "https://item.rakuten.co.jp/teststore/10001234/"},
+            {"category": "led_lantern", "model": "2218364",
+             "itemCode": "original:10002345",
+             "itemUrl": "https://item.rakuten.co.jp/original/10002345/"}
         ]}
         for name, item in (
             ("products", self.products),
@@ -57,15 +60,57 @@ class WorkerReadiness(unittest.TestCase):
                          return_value={"status": "api_confirmed_seller_variant_audit_required"})):
             result = readiness.probe(root=self.root, get=get, now=self.now)
         self.assertEqual(len(urls), 2)
-        self.assertEqual(len(requests), 1)
-        self.assertEqual(result["rakutenApiRequests"], 1)
-        self.assertEqual(result["maximumRakutenApiRequests"], 1)
+        self.assertEqual(len(requests), 2)
+        self.assertEqual(result["rakutenApiRequests"], 2)
+        self.assertEqual(result["maximumRakutenApiRequests"], 2)
         self.assertTrue(result["credentialGateVerified"])
         self.assertEqual(result["officialExactItemEvidence"],
+                         "api_confirmed_seller_variant_audit_required")
+        self.assertEqual(result["unverifiedAlternateMerchantEvidence"],
                          "api_confirmed_seller_variant_audit_required")
         self.assertFalse(result["verifiedForPublication"])
         self.assertNotIn("itemCode", json.dumps(result))
         self.assertNotIn("itemUrl", json.dumps(result))
+        self.check_read_only()
+
+    def test_failed_known_seller_short_circuits_alternate_query(self):
+        get, urls = self.gate()
+        calls = []
+        def fetch(audit, fetch=None):
+            calls.append(audit["model"])
+            return {"error": "worker_unavailable", "worker_status": 502}
+        with patch.object(readiness, "request_exact", side_effect=fetch):
+            result = readiness.probe(root=self.root, get=get, now=self.now)
+        self.assertEqual(calls, ["2000038854"])
+        self.assertEqual(result["rakutenApiRequests"], 1)
+        self.assertEqual(result["officialExactItemEvidence"], "worker_unavailable")
+        self.assertEqual(result["unverifiedAlternateMerchantEvidence"], "not_requested")
+        self.assertFalse(result["verifiedForPublication"])
+        self.check_read_only()
+
+    def test_alternate_upstream_error_http_is_reported_without_merchant_identity(self):
+        get, urls = self.gate()
+        calls = []
+        def fetch(audit, fetch=None):
+            calls.append(audit["model"])
+            return ({"found": True} if len(calls) == 1 else {
+                "error": "worker_unavailable",
+                "worker_status": 502,
+                "upstream_status": 400})
+        with patch.object(readiness, "request_exact", side_effect=fetch), (
+            patch.object(readiness, "validate_candidate",
+                         side_effect=[{"status": "api_confirmed_seller_variant_audit_required"},
+                                      {"status": "worker_unavailable"}])):
+            result = readiness.probe(root=self.root, get=get, now=self.now)
+        self.assertEqual(calls, ["2000038854", "2218364"])
+        self.assertEqual(result["rakutenApiRequests"], 2)
+        self.assertEqual(result["unverifiedAlternateMerchantEvidence"], "worker_unavailable")
+        self.assertEqual(result["unverifiedAlternateWorkerHttp"], 502)
+        self.assertEqual(result["unverifiedAlternateRakutenHttp"], 400)
+        self.assertFalse(result["verifiedForPublication"])
+        text = json.dumps(result)
+        self.assertNotIn("alpen", text)
+        self.assertNotIn("itemCode", text)
         self.check_read_only()
 
     def test_missing_secrets_produces_diagnostic_without_rakuten_call(self):
