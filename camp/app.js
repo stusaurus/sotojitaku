@@ -87,19 +87,20 @@ function productsPage(){
  const c=data.equipment.categories.find(c=>c.id===currentCategory);
  if(!c)return store();
  const ctx=productBudgetContext(c.id),pref=productPreference(c.id),
+       plannedBuy=plan(state,data).some(g=>g.id===c.id&&g.status==='buy'),
        recs=recommend(data.products.products,currentCategory,state.answers,data.equipment,data.rules,{...ctx,preference:pref});
  track('product_view',{category_id:c.id,result_count:recs.length,preference:pref});
  const cover=image(depts.find(d=>d[0]===c.department)?.[3]||'relax','この道具で、楽しめるキャンプの時間','recommendation-scene');
  const available=recs.length?`<section class="top-pick"><p class="eyebrow">BEST FOR YOUR CAMP</p><h2>あなたなら、まずこれ。</h2>${productCard(recs[0],c,0)}</section>${recs.length>1?`<section class="alternatives"><div class="section-head"><div><p class="eyebrow">ALTERNATIVES</p><h2>比べるなら、この2つまで。</h2></div><p class="muted">候補を増やしすぎず、違いがあるものだけ。</p></div>${recs.slice(1).map((p,i)=>productCard(p,c,i+1)).join('')}</section>`:''}`
  :`<section class="empty-products" aria-labelledby="supply-empty-title">
-    ${image(depts.find(d=>d[0]===c.department)?.[3]||'relax','')}
     <p class="eyebrow">NOT VERIFIED FOR THIS PLAN</p>
     <h2 id="supply-empty-title">この条件で、案内できる商品はまだありません。</h2>
     <p>今の人数・移動・季節などに合い、販売条件まで確認できた候補がありません。市場全体の在庫切れという意味ではありません。</p>
     <div class="supply-check"><strong>選ぶときの確認ポイント</strong><p>${categoryGuide(c.id)}</p></div>
     <div class="supply-next"><h3>この道具をどう用意しますか？</h3>
-      <button class="secondary" data-supply-status="rent" data-category="${c.id}">借りる予定にする${arrow}</button>
-      <button class="secondary" data-supply-status="owned" data-category="${c.id}">持っているものとして登録${arrow}</button>
+      ${plannedBuy?`<button class="secondary" data-supply-status="rent" data-category="${c.id}">借りる予定にする${arrow}</button>
+      <button class="secondary" data-supply-status="owned" data-category="${c.id}">持っているものとして登録${arrow}</button>`
+      :`<button class="secondary" ${hasSaved?'data-go="gear"':'data-start'}>必要な道具を確認する${arrow}</button>`}
       <button class="back" data-go="question" data-question="4">移動手段を見直す →</button>
     </div>
     <p class="supply-caution">レンタルの貸出先・料金・在庫は未確認です。安全に必要な道具は、確保できるまで準備完了にしないでください。</p>
