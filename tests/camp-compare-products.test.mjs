@@ -77,6 +77,27 @@ test('comparison is capped at three real product families',()=>{
  assert.equal(m.count,3);
  assert.equal(new Set(m.rows.map(r=>r.itemCode)).size,3);
 });
+test('comparison thumbnail only accepts the exact trusted Rakuten image host',()=>{
+ const good='https://thumbnail.image.rakuten.co.jp/campaign/photo.jpg';
+ assert.equal(compareModels([offered('A','family-a',{image:good})],'mat').rows[0].image,good);
+ for(const bad of [
+  'https://thumbnail.image.rakuten.co.jp.evil.example/fake.jpg',
+  'http://thumbnail.image.rakuten.co.jp/insecure.jpg',
+  'javascript:alert(1)',null
+ ])assert.equal(compareModels([offered('A','family-a',{image:bad})],'mat').rows[0].image,null);
+});
+
+test('mobile page prioritizes quick comparison, collapses advanced details and adds one-tap shopping',()=>{
+ const source=fs.readFileSync(new URL('../camp/app.js',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../style.css',import.meta.url),'utf8');
+ assert.match(source,/id="camp-product-details"/);
+ assert.match(source,/id="preference-adjustment"/);
+ assert.match(source,/class="compare-to-list"/);
+ assert.match(source,/data-go="shopping"/);
+ assert.match(source,/preferenceExpanded=true/);
+ assert.match(css,/scroll-snap-type:x mandatory/);
+});
+
 test('rendered UI permits real choice and detail jumping, without pseudo-scientific fit percentages',()=>{
  const source=fs.readFileSync(new URL('../camp/app.js',import.meta.url),'utf8');
  assert.match(source,/function quickCompare\(recs,c,ctx\)/);
