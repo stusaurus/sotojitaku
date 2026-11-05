@@ -122,8 +122,12 @@ function productsPage(){
        plannedBuy=plan(state,data).some(g=>g.id===c.id&&g.status==='buy'),
        recs=recommend(data.products.products,currentCategory,state.answers,data.equipment,data.rules,{...ctx,preference:pref});
  track('product_view',{category_id:c.id,result_count:recs.length,preference:pref});
- const cover=image(depts.find(d=>d[0]===c.department)?.[3]||'relax','この道具で、楽しめるキャンプの時間','recommendation-scene');
- const available=recs.length?`${quickCompare(recs,c,ctx)}<section class="top-pick"><p class="eyebrow">BEST FOR YOUR CAMP</p><h2>あなたなら、まずこれ。</h2>${productCard(recs[0],c,0)}</section>${recs.length>1?`<section class="alternatives"><div class="section-head"><div><p class="eyebrow">ALTERNATIVES</p><h2>比べるなら、この2つまで。</h2></div><p class="muted">候補を増やしすぎず、違いがあるものだけ。</p></div>${recs.slice(1).map((p,i)=>productCard(p,c,i+1)).join('')}</section>`:''}`
+ const available=recs.length?`${quickCompare(recs,c,ctx)}${preferenceSelector(c)}
+ <details id="camp-product-details" class="product-detail-disclosure">
+   <summary>商品の詳しい情報と楽天リンクを見る <span>（${recs.length}件）</span></summary>
+   <section class="top-pick"><p class="eyebrow">PRODUCT DETAILS</p><h2>詳しい仕様と販売情報</h2>${productCard(recs[0],c,0)}</section>
+   ${recs.length>1?`<section class="alternatives"><div class="section-head"><div><p class="eyebrow">ALTERNATIVES</p><h2>ほかの候補</h2></div></div>${recs.slice(1).map((p,i)=>productCard(p,c,i+1)).join('')}</section>`:''}
+ </details>`
  :`<section class="empty-products" aria-labelledby="supply-empty-title">
     <p class="eyebrow">NOT VERIFIED FOR THIS PLAN</p>
     <h2 id="supply-empty-title">この条件で、案内できる商品はまだありません。</h2>
@@ -139,9 +143,8 @@ function productsPage(){
   </section>`;
  return shell(`${esc(c.label)}、<br>${recs.length?'あなたならこれ。':'今の確認状況。'}`,
  'CHOSEN FOR YOUR CAMP',
- `${cover}${meta()}<p class="muted">人数・季節・宿泊・移動・やりたいこと・予算を反映し、条件を満たした商品だけを表示します。</p>
- ${preferenceSelector(c)}
- <div class="category-options">${data.equipment.categories.map(g=>`<button aria-pressed="${g.id===c.id}" data-product="${g.id}">${esc(g.label)}</button>`).join('')}</div>
+ `${meta()}<p class="muted">人数・季節・移動手段などの条件をもとに、販売情報を確認できた商品のみを表示します。</p>
+  <div class="category-options" role="group" aria-label="比較する道具の種類">${data.equipment.categories.map(g=>`<button aria-pressed="${g.id===c.id}" data-product="${g.id}">${esc(g.label)}</button>`).join('')}</div>
  ${available}
  <p class="muted">本体・販売条件・仕様・適合・楽天の商品ページを確認できたものだけを掲載します。アフィリエイト広告を含む場合があります。</p>
  ${secondary('足りない道具へ戻る','data-go="missing"')}`,
@@ -206,17 +209,31 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
    }
    return;
  }
- if(t.dataset.productPref){state.productPrefs=state.productPrefs||{};state.productPrefs[t.dataset.category]=t.dataset.productPref;persist();track('product_preference',{category_id:t.dataset.category,preference:t.dataset.productPref});render();return;}
+ if(t.dataset.productPref){state.productPrefs=state.productPrefs||{};state.productPrefs[t.dataset.category]=t.dataset.productPref;preferenceExpanded=true;persist();track('product_preference',{category_id:t.dataset.category,preference:t.dataset.productPref});render();return;}
  if(t.dataset.jumpProduct!==undefined){
    const index=Number(t.dataset.jumpProduct);
    if(Number.isInteger(index)&&index>=0&&index<3){
-     document.getElementById('camp-offer-'+index)?.scrollIntoView({behavior:'smooth',block:'start'});
+     const disclosure=document.getElementById('camp-product-details');
+      if(disclosure)disclosure.open=true;
+      document.getElementById('camp-offer-'+index)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
    }
    return;
  }
- if(t.dataset.selectProduct){state.selectedProducts=state.selectedProducts||{};state.selectedProducts[t.dataset.category]=t.dataset.selectProduct;persist();track('product_select',{category_id:t.dataset.category,product_id:t.dataset.selectProduct});render();toast('買うものリストに追加しました。');return;}
- if(t.dataset.product){currentCategory=t.dataset.product;go('products');return;}
- if(t.dataset.dept){currentCategory=data.equipment.categories.find(c=>c.department===t.dataset.dept)?.id||'tent';go('products');return;}
+ if(t.dataset.selectProduct){
+   const id=t.dataset.category,code=t.dataset.selectProduct;
+   const eligible=data.products.products.find(p=>p.category===id&&p.itemCode===code&&!reject(p,id,state.answers,data.equipment));
+   if(!eligible){toast('この商品は現在の条件で確認できません。');return;}
+   state.selectedProducts=state.selectedProducts||{};
+   state.selectedProducts[id]=code;
+   persist();track('product_select',{category_id:id,product_id:code});
+   render();
+   toast(plan(state,data).some(g=>g.id===id&&g.status==='buy')
+     ?'商品を選びました。買うものリストへ進めます。'
+     :'候補を保存しました。買うものリストへの追加は装備計画で確認してください。');
+   return;
+ }
+ if(t.dataset.product){currentCategory=t.dataset.product;preferenceExpanded=false;go('products');return;}
+ if(t.dataset.dept){currentCategory=data.equipment.categories.find(c=>c.department===t.dataset.dept)?.id||'tent';preferenceExpanded=false;go('products');return;}
  if(t.hasAttribute('data-experience-start')){if(!state.answers.experiences.length){toast('やりたい時間をひとつ選んでください。');return;}qIndex=0;track('simulator_start',{source:'experience'});persist();go('question');return;}
  if(t.dataset.affiliate){track('affiliate_click',{affiliate:'rakuten',category_id:t.dataset.category,product_id:t.dataset.affiliate,conversion_source:'camp_missing_gear',link_url:t.href});return;}
  if(t.hasAttribute('data-print')){window.print();return;}
