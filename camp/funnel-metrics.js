@@ -20,13 +20,13 @@ export function createCAMPVisitGate() {
       &&/^[a-z_]{1,48}$/.test(category);
     const categoryView=validProduct&&(pageView||lastProductCategory!==category);
     lastProductCategory=validProduct?category:null;
-    const count=Number.isInteger(resultCount)&&resultCount>=0&&resultCount<=3
-      ?resultCount:0;
+    const validCount=Number.isInteger(resultCount)&&resultCount>=0&&resultCount<=3;
+    const count=validCount?resultCount:null;
     return {
       pageView,
       categoryView:Boolean(categoryView),
-      comparisonView:Boolean(categoryView&&count>0),
-      gapView:Boolean(categoryView&&count===0),
+      comparisonView:Boolean(categoryView&&count>=2),
+      gapView:Boolean(categoryView&&validCount&&count===0),
       shoppingView:pageView&&route==='shopping',
     };
   };
