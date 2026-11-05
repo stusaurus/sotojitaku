@@ -1,3 +1,5 @@
+# One-shot opt-in: verify the currently displayed official Snow Peak L sales listing only.
+# Product data stays unchanged, and the exact API may be called at most once.
 name: CAMP official Snow Peak L shop proof (one SKU)
 on:
   pull_request:
