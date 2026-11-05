@@ -10,6 +10,23 @@ export function defaultPreference(category,a){
  return 'balanced';
 }
 
+// Claims that a fire pit is suitable for a group must be supported by a
+// manufacturer-stated people count, not a guessed capacity from dimensions or
+// a historical reseller listing. Safe fail-closed when the proof is absent.
+function verifiedFirePitGroupSize(p, people) {
+ const proof=p.familyCapacityEvidence;
+ if(!proof||proof.basis!=='manufacturer_explicit_person_count'
+   ||!Number.isInteger(proof.maxPeople)||proof.maxPeople<people
+   ||proof.maxPeople!==p.spec?.capacity
+   ||proof.source!==p.evidence?.specification)return false;
+ try {
+  const source=new URL(proof.source);
+  return source.protocol==='https:'&&[
+   'ec.snowpeak.co.jp','ec.coleman.co.jp'
+  ].includes(source.hostname);
+ } catch { return false; }
+}
+
 export function reject(p,category,answers,equipment,now=Date.now()){
  const c=equipment.categories.find(x=>x.id===category);if(!c||p.category!==category)return 'unknown_category';
  if(!p.name||!p.itemCode||!p.family||p.audited!==true||p.bodyConfirmed!==true)return 'unverified_body';
@@ -27,7 +44,10 @@ export function reject(p,category,answers,equipment,now=Date.now()){
  if(category==='table'){const width=Number(String(s.table_size||'').match(/[0-9.]+/)?.[0]||0),capacity=Number(s.table_capacity)||(width>=110?4:width>=75?2:1);if(capacity<n)return 'table_capacity';}
  if(category==='sleeping_bag'&&(!Number.isFinite(s.comfort_temperature)||s.comfort_temperature>(answers.season==='summer'?15:5)))return 'temperature';
  if(category==='cooler'&&(!Number.isFinite(s.capacity_l)||s.capacity_l<(answers.stay==='daytrip'?n*3:n*6)))return 'cooler_capacity';
- if(category==='fire_pit'&&Number.isFinite(s.capacity)&&s.capacity<n)return 'fire_pit_capacity';
+ if(category==='fire_pit'){
+  if(!Number.isInteger(s.capacity)||s.capacity<n)return 'fire_pit_capacity';
+  if(n>=2&&!verifiedFirePitGroupSize(p,n))return 'unverified_fire_pit_group_size';
+ }
  if(category==='hot_sandwich_maker'&&s.heat_source!=='direct_flame')return 'heat_source';
  if(category==='burner'&&!['CB','OD','butane','propane'].includes(s.fuel_type))return 'fuel';
  if(category==='led_lantern'&&(!Number.isFinite(s.runtime_hours)||s.runtime_hours<6||s.brightness_lm<100))return 'light';
