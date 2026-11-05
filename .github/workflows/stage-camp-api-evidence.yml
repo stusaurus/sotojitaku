@@ -4,6 +4,8 @@ on:
     paths:
       - 'scripts/stage_camp_api_evidence.py'
       - 'tests/test_stage_camp_api_evidence.py'
+      - 'scripts/probe_camp_recovery_candidates.py'
+      - 'tests/test_probe_camp_recovery_candidates.py'
       - '.github/workflows/stage-camp-api-evidence.yml'
   push:
     branches: [main]
@@ -33,14 +35,21 @@ jobs:
           python-version: '3.12'
       - name: Verify exact identity, postage, ranges and throttling protections
         run: python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
+      - name: Test bounded missing-category research and 429 safeguards
+        run: python -m unittest discover -s tests -p 'test_probe_camp_recovery_candidates.py' -v
+      - name: Probe exactly two pre-audited missing categories (review only)
+        if: github.event_name == 'pull_request'
+        run: python scripts/probe_camp_recovery_candidates.py
       - name: Stage at most two separate CAMP categories (read only)
         if: github.event_name != 'pull_request'
         run: python scripts/stage_camp_api_evidence.py --offset "${{ inputs.offset || 0 }}" --limit 2
-      - name: Preserve research-only candidate report
-        if: github.event_name != 'pull_request'
+      - name: Preserve bounded nonpublishing research report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: camp-api-evidence-candidates
-          path: reports/camp-api-evidence-candidates.json
-          if-no-files-found: error
+          path: |
+            reports/camp-api-evidence-candidates.json
+            reports/camp-missing-categories-research.json
+          if-no-files-found: warn
           retention-days: 14
