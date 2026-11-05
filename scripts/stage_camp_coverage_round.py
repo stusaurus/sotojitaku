@@ -43,6 +43,17 @@ ROUNDS = {
         ("sleeping_bag", "2000034772"),
         ("sleeping_bag", "2000038771"),
     ),
+    # Third bounded round: exact historical seller SKU candidates only.
+    # Every item still needs *new* exact official API + ordinary merchant
+    # fixed SKU, stock and price evidence; old audited values are not live.
+    "gap": (
+        ("mat", "1124667"),       # 514g; solo without car candidate
+        ("mat", "2000032354"),    # different value/easy mat for preference
+        ("fire_pit", "ST-032RS"), # four-person capacity audit
+        ("table", "2000038844"), # solo-sized, lighter table
+        ("led_lantern", "2000037352"), # compact USB lantern
+        ("chair", "2000038838"), # compact ground chair
+    ),
     # Separate later review. Not automatically run after the first batch:
     # the Worker must not receive an unbounded series of requests.
     "sleep": (
