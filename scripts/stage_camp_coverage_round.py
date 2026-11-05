@@ -52,7 +52,7 @@ ROUNDS = {
         ("mat", "2000032354"),    # different value/easy mat for preference
         ("fire_pit", "ST-032RS"), # four-person capacity audit
         ("table", "2000038844"), # solo-sized, lighter table
-        ("led_lantern", "2000037352"), # compact USB lantern
+        ("hot_sandwich_maker", "UG-3086"), # independently re-proven original merchant
         ("chair", "2000038838"), # compact ground chair
     ),
     # Three historically audited ORIGINAL merchant identities, not URL-slug
