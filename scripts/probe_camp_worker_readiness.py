@@ -21,6 +21,7 @@ from pathlib import Path
 from acquire import ROOT
 from stage_camp_api_evidence import WORKER, HEADERS, request_exact, validate_candidate
 
+WORKER_ORIGIN = WORKER.removesuffix("/api/item-evidence")
 SAMPLE_CATEGORY = "led_lantern"
 SAMPLE_MODEL = "2000038854"
 PROBE_TIMEOUT = 12
@@ -72,7 +73,7 @@ def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
     if len(targets) != 1 or not targets[0].get("itemCode") or not targets[0].get("itemUrl"):
         raise ValueError("missing_previously_audited_sample")
 
-    health_http, health = get(WORKER + "/health")
+    health_http, health = get(WORKER_ORIGIN + "/health")
     health_ok = (health_http == 200 and health.get("ok") is True
                  and health.get("service") == "daily-cost-api")
     config_http = None
@@ -82,7 +83,7 @@ def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
     # This is deliberately invalid input, not a request for any real product.
     # The Worker must return 400 only when credentials are present.
     if health_ok:
-        config_http, config = get(WORKER + "/api/item-evidence?url=invalid&itemCode=invalid")
+        config_http, config = get(WORKER_ORIGIN + "/api/item-evidence?url=invalid&itemCode=invalid")
         config_error = config.get("error")
     ready = health_ok and config_http == 400 and config_error == "invalid_exact_item_identity"
     if ready:
