@@ -1,3 +1,4 @@
+# Explicit one-shot, two-model read-only research. Do not publish either listing.
 name: CAMP new maker models (two read-only seller proofs)
 on:
   pull_request:
