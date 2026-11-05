@@ -263,6 +263,9 @@ class SellerDerivedIdentity(unittest.TestCase):
         self.assertFalse(result["sellerPriceFieldPresent"])
         # Even if the first of two records is a valid seller price, a second
         # missing price cannot certify a consistent real purchase condition.
+        self.assertFalse(result["independentEvidenceForManualReview"])
+        self.assertEqual(result["sellerStatus"],
+                         "seller_price_or_conditions_unverified")
         self.assertFalse(result["verifiedForPublication"])
         self.no_change()
 
