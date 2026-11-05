@@ -43,9 +43,22 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_stage_camp_coverage_round.py' -v
           python -m unittest discover -s tests -p 'test_stage_camp_combined_review.py' -v
+      - name: Opt-in only for live seller API and inventory research
+        id: live
+        shell: bash
+        run: |
+          message="$(git log -1 --format=%B)"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || printf '%s' "$message" | grep -Fq '[camp-live-proof]'; then
+            echo 'approved=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'approved=false' >> "$GITHUB_OUTPUT"
+            echo 'Live product evidence NOT checked: unit tests only. No publication approval.' >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Install ordinary seller-page proof client
+        if: steps.live.outputs.approved == 'true'
         run: python -m pip install playwright==1.55.0
       - name: Reverify exact seller SKU in bounded isolated runner batches
+        if: steps.live.outputs.approved == 'true'
         run: |
           set -euo pipefail
           ROUND="${{ inputs.round || 'full' }}"
@@ -57,6 +70,7 @@ jobs:
             python scripts/stage_camp_coverage_round.py --round "$ROUND"
           fi
       - name: Run unchanged strict CAMP recommendation and data identity gates
+        if: steps.live.outputs.approved == 'true'
         run: |
           set -euo pipefail
           ROUND="${{ inputs.round || 'combined' }}"
@@ -78,7 +92,7 @@ jobs:
           npm run check
           npm test
       - name: Preserve sanitized research results only
-        if: always()
+        if: always() && steps.live.outputs.approved == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: camp-coverage-readonly-review
