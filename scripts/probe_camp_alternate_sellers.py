@@ -106,10 +106,19 @@ def collect(*, root=ROOT, fetch=None, browser_get=None, observed_at=None,
     for category, model, candidate, kind in targets:
         live = stage.request_exact(candidate, fetch=fetch)
         status = stage.validate_candidate(candidate, live, equipment, observed)["status"]
+        # Safe numeric HTTP diagnostics: distinguish a dead Worker endpoint,
+        # upstream throttling and an unknown network failure without leaking
+        # request URLs, seller identity tokens, raw response or inventory.
+        worker_http = live.get("worker_status") if isinstance(live, dict) else None
+        upstream_http = live.get("upstream_status") if isinstance(live, dict) else None
+        worker_http = worker_http if type(worker_http) is int and 100 <= worker_http <= 599 else None
+        upstream_http = upstream_http if type(upstream_http) is int and 100 <= upstream_http <= 599 else None
         row = {
             "category": category, "model": model, "sellerKind": kind,
             "apiStatus": status, "sellerStatus": "not_attempted",
             "sellerEvidenceReason": None,
+            "workerHttpStatus": worker_http if status in STOP_STATUSES else None,
+            "rakutenUpstreamHttpStatus": upstream_http if status in STOP_STATUSES else None,
             "independentSellerProof": False,
             "fitEvidenceComplete": False if model == "2000031235" else None,
             "verifiedForPublication": False,
