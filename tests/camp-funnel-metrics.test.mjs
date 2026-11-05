@@ -58,8 +58,10 @@ test('malformed category and route inputs never pretend a real item exposure',()
  }
  assert.equal(visit({route:'',category:'mat'}).pageView,false);
  assert.equal(visit({route:'X'.repeat(120),category:'mat'}).categoryView,false);
- assert.equal(visit({route:'products',category:'mat',resultCount:-1}).gapView,true,
- 'invalid counts fail closed as no confirmed eligible offer');
+ assert.equal(visit({route:'products',category:'mat',resultCount:-1}).gapView,false,
+ 'invalid counts must not become fabricated no-stock evidence');
+ assert.equal(visit({route:'products',category:'sleeping_bag',resultCount:1}).comparisonView,false,
+ 'one eligible product is an exposure but not a side-by-side comparison');
 });
 test('SPA measurement contract tracks category-level product_view and never invents purchases',async()=>{
  const {readFileSync}=await import('node:fs');
