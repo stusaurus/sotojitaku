@@ -11,15 +11,17 @@ on:
   workflow_dispatch:
     inputs:
       round:
-        description: 'One bounded six-call batch or the twelve-call combined nonpublishing review'
+        description: 'One six-call batch, 12-call combined, or 18-call full read-only research'
         type: choice
         required: true
-        default: combined
+        default: full
         options:
+          - full
           - combined
           - family
           - recovery
           - sleep
+          - gap
 permissions:
   contents: read
 concurrency:
@@ -28,7 +30,7 @@ concurrency:
 jobs:
   verify-coverage-candidates:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -46,8 +48,10 @@ jobs:
       - name: Reverify exact seller SKU in bounded isolated runner batches
         run: |
           set -euo pipefail
-          ROUND="${{ inputs.round || 'combined' }}"
-          if [ "$ROUND" = "combined" ]; then
+          ROUND="${{ inputs.round || 'full' }}"
+          if [ "$ROUND" = "full" ]; then
+            python scripts/stage_camp_combined_review.py --include-gap
+          elif [ "$ROUND" = "combined" ]; then
             python scripts/stage_camp_combined_review.py
           else
             python scripts/stage_camp_coverage_round.py --round "$ROUND"
@@ -56,7 +60,7 @@ jobs:
         run: |
           set -euo pipefail
           ROUND="${{ inputs.round || 'combined' }}"
-          if [ "$ROUND" = "combined" ]; then
+          if [ "$ROUND" = "full" ] || [ "$ROUND" = "combined" ]; then
             test -f /tmp/camp-combined-review-products.json
             test -f /tmp/camp-combined-review-audits.json
             cp /tmp/camp-combined-review-products.json data/products.json
