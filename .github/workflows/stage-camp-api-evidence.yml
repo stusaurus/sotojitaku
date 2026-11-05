@@ -8,6 +8,7 @@ on:
       - 'tests/test_probe_camp_recovery_candidates.py'
       - 'scripts/stage_camp_recovery_pair.py'
       - 'tests/test_stage_camp_recovery_pair.py'
+      - 'tests/verified-camp-snapshot.test.mjs'
       - '.github/workflows/stage-camp-api-evidence.yml'
   push:
     branches: [main]
