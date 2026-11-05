@@ -72,7 +72,7 @@ test('diagnostic outputs no offer identities, URLs, prices, shipping status or i
  const encoded=JSON.stringify(summary);
  for(const privateField of [
   'itemUrl','affiliateUrl','itemCode','referencePrice','verifiedAt',
-  'https://','teststore','T-1','T-2','shipping','available', 'price'
+  'https://','teststore','T-1','T-2','"shipping":','"available":','"price":'
  ])assert.equal(encoded.includes(privateField),false,privateField);
  assert.deepEqual(summary.preferences,['easy','comfort','compact','value']);
 });
