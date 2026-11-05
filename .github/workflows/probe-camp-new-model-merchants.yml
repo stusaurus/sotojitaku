@@ -29,7 +29,7 @@ jobs:
         id: live
         shell: bash
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Fq '[camp-new-model-live]'; then
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Fq '[camp-new-model-live]' || git log -1 --format=%B | grep -Fq '[camp-alt-dod-live]'; then
             echo 'approved=true' >> "$GITHUB_OUTPUT"
           else
             echo 'approved=false' >> "$GITHUB_OUTPUT"
@@ -38,9 +38,15 @@ jobs:
       - name: Install ordinary Chromium browser client
         if: steps.live.outputs.approved == 'true'
         run: python -m pip install playwright==1.55.0
-      - name: Probe at most two independently listed items and stop on Rakuten 429
+      - name: Probe bounded listings, no more than two exact Item API calls
         if: steps.live.outputs.approved == 'true'
-        run: python scripts/probe_camp_new_model_merchants.py
+        shell: bash
+        run: |
+          if git log -1 --format=%B | grep -Fq '[camp-alt-dod-live]'; then
+            python scripts/probe_camp_new_model_merchants.py --alternate-dod
+          else
+            python scripts/probe_camp_new_model_merchants.py
+          fi
       - name: Save sanitized research report only
         if: always() && steps.live.outputs.approved == 'true'
         uses: actions/upload-artifact@v4
