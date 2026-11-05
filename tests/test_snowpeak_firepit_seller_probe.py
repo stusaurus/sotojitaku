@@ -139,6 +139,19 @@ class OfficialSnowPeakFirePit(unittest.TestCase):
             self.assertFalse(result["verifiedForPublication"])
         self.unchanged()
 
+    def test_xebio_listing_is_separate_retailer_but_same_model_group_proof(self):
+        self.page = proof.ALLOWED_TARGETS["xebio_fire"][2]
+        result = proof.probe(root=self.root, now=self.now,
+                             target="xebio_fire", browser_get=self.seller,
+                             api_fetch=self.api)
+        self.assertEqual(self.calls[0], ("seller", self.page))
+        self.assertEqual(self.calls[1], ("api", "supersportsxebio:12345678"))
+        self.assertTrue(result["manufacturerGroupSizeVerified"])
+        self.assertTrue(result["sellerIdFromLivePage"])
+        self.assertEqual(result["rakutenApiRequests"], 1)
+        self.assertFalse(result["verifiedForPublication"])
+        self.unchanged()
+
     def test_wrong_merchant_or_missing_html_makes_no_item_api_call(self):
         for url, content in ((self.page, "焚火台 L ST-032RS"),
                              ("https://item.rakuten.co.jp/other/st-032rs/",
