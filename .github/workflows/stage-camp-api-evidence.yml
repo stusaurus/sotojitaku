@@ -52,6 +52,8 @@ jobs:
         run: |
           cp /tmp/camp-recovery-candidate-products.json data/products.json
           cp /tmp/camp-recovery-candidate-audits.json data/audited-products.json
+          python scripts/report_camp_refresh.py
+          python scripts/stamp_assets.py
           npm run check
           npm test
       - name: Stage at most two separate CAMP categories (read only)
@@ -66,5 +68,6 @@ jobs:
             reports/camp-api-evidence-candidates.json
             reports/camp-missing-categories-research.json
             reports/camp-recovery-pair-candidate.json
+            reports/camp-refresh-health.json
           if-no-files-found: warn
           retention-days: 14
