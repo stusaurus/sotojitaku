@@ -157,7 +157,7 @@ class SellerDerivedIdentity(unittest.TestCase):
                 },
                 "variantMappedInventories": [],
             }),
-            self.html() + " " + self.html(),
+            self.html() + " " + self.html(itemId=99999999),
         ):
             report = research.probe(
                 root=self.root, browser_get=lambda url, h=payload:(url,h),
@@ -181,6 +181,65 @@ class SellerDerivedIdentity(unittest.TestCase):
         self.assertFalse(report["sellerPriceFieldPresent"])
         self.assertEqual(report["rakutenApiRequests"],1)
         self.assertFalse(report["independentEvidenceForManualReview"])
+        self.no_change()
+
+    def test_identical_duplicate_item_info_is_not_mistaken_for_multiple_skus(self):
+        duplicate = self.html() + " " + self.html()
+        identity, reason = research.page_identity(research.SELLER_PAGE, duplicate)
+        self.assertIsNone(reason)
+        self.assertEqual(identity["itemCode"], "alpen:12345678")
+        self.assertTrue(identity["sellerPriceFieldPresent"])
+        report = research.probe(
+            root=self.root, browser_get=lambda url: (url, duplicate),
+            api_fetch=self.official, now=self.clock)
+        self.assertEqual(report["rakutenApiRequests"], 1)
+        self.assertTrue(report["sellerIdFromLivePage"])
+        self.assertFalse(report["verifiedForPublication"])
+        self.no_change()
+
+    def test_contradictory_embedded_records_abort_before_official_api(self):
+        for payload, reason in (
+            (self.html() + self.html(itemId=99999999),
+             "conflicting_seller_item_ids"),
+            (self.html() + self.html(purchaseInfo={
+                "purchaseBySellType": {
+                    "purchaseCondition": "enabled",
+                    "normalPurchase": {"price": {"minPrice": 14000}},
+                },
+                "variantMappedInventories": [{"quantity": 2}],
+            }), "conflicting_seller_price"),
+            (self.html() + self.html(purchaseInfo={
+                "purchaseBySellType": {
+                    "purchaseCondition": "enabled",
+                    "normalPurchase": {"price": {"minPrice": 12000}},
+                },
+                "variantMappedInventories": [{"quantity": 4}],
+            }), "conflicting_seller_inventory"),
+        ):
+            result = research.probe(
+                root=self.root, browser_get=lambda url, data=payload: (url, data),
+                api_fetch=self.official, now=self.clock)
+            self.assertEqual(result["sellerStatus"], reason)
+            self.assertEqual(result["rakutenApiRequests"], 0)
+            self.assertFalse(result["independentEvidenceForManualReview"])
+        self.assertFalse(self.api_calls)
+        self.no_change()
+
+    def test_duplicate_missing_prices_can_research_id_but_never_sell(self):
+        missing = self.html(purchaseInfo={
+            "purchaseBySellType": {
+                "purchaseCondition": "enabled",
+                "normalPurchase": {"price": {}},
+            },
+            "variantMappedInventories": [{"quantity": 2}],
+        })
+        report = research.probe(
+            root=self.root, browser_get=lambda url: (url, missing + missing),
+            api_fetch=self.official, now=self.clock)
+        self.assertEqual(report["rakutenApiRequests"], 1)
+        self.assertFalse(report["sellerPriceFieldPresent"])
+        self.assertFalse(report["independentEvidenceForManualReview"])
+        self.assertEqual(report["sellerStatus"], "seller_price_or_conditions_unverified")
         self.no_change()
 
     def test_missing_seller_item_info_aborts_before_any_api(self):
