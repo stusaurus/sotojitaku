@@ -182,6 +182,24 @@ class NewMakerModelResearch(unittest.TestCase):
                          "sku_or_price_range_unverified")
         self.unchanged()
 
+    def test_alternative_dod_seller_is_not_a_second_product_family(self):
+        report = research.probe(
+            root=self.root, targets=research.ALTERNATE_DOD_TARGETS,
+            seller_get=self.seller, api_fetch=self.api,
+            pause=lambda _: self.fail("one seller only"), now=self.now)
+        self.assertEqual(report["sellerBrowserRequests"], 1)
+        self.assertEqual(report["officialApiRequests"], 1)
+        self.assertEqual(self.api_calls[0][0], "happynight:12345678")
+        self.assertEqual(report["results"][0]["model"], "CM1-083-CA")
+        self.assertFalse(report["verifiedForPublication"])
+        self.unchanged()
+        calls_before = len(self.seller_calls)
+        with self.assertRaises(ValueError):
+            research.probe(
+                root=self.root, targets=("dod_mat", "dod_mat_happynight"),
+                seller_get=self.seller, api_fetch=self.api, now=self.now)
+        self.assertEqual(len(self.seller_calls), calls_before)
+
     def test_unknown_targets_and_naive_time_never_trigger_network(self):
         with self.assertRaises(ValueError):
             research.probe_one("unknown", root=self.root,
