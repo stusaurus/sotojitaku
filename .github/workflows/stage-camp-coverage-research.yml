@@ -4,16 +4,20 @@ on:
     paths:
       - 'scripts/stage_camp_coverage_round.py'
       - 'tests/test_stage_camp_coverage_round.py'
+      - 'scripts/stage_camp_combined_review.py'
+      - 'tests/test_stage_camp_combined_review.py'
       - '.github/workflows/stage-camp-coverage-research.yml'
   workflow_dispatch:
     inputs:
       round:
-        description: 'One bounded product evidence batch: family or sleep'
+        description: 'One bounded six-call batch or the twelve-call combined nonpublishing review'
         type: choice
         required: true
-        default: family
+        default: combined
         options:
+          - combined
           - family
+          - recovery
           - sleep
 permissions:
   contents: read
@@ -23,7 +27,7 @@ concurrency:
 jobs:
   verify-coverage-candidates:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,28 +36,47 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify six-request cap, identity checks, 429 stop and unchanged production data
-        run: python -m unittest discover -s tests -p 'test_stage_camp_coverage_round.py' -v
-      - name: Install only ordinary seller-page proof client
-        run: python -m pip install playwright==1.55.0
-      - name: Reverify original exact seller SKU into temporary runner files only
-        run: python scripts/stage_camp_coverage_round.py --round "${{ inputs.round || 'family' }}"
-      - name: Run unchanged strict CAMP gates on confirmed temporary evidence only
+      - name: Verify request budget, exact identities, 429 stops, and no published-data mutation
         run: |
-          test -f /tmp/camp-coverage-review-products.json
-          test -f /tmp/camp-coverage-review-audits.json
-          cp /tmp/camp-coverage-review-products.json data/products.json
-          cp /tmp/camp-coverage-review-audits.json data/audited-products.json
+          python -m unittest discover -s tests -p 'test_stage_camp_coverage_round.py' -v
+          python -m unittest discover -s tests -p 'test_stage_camp_combined_review.py' -v
+      - name: Install ordinary seller-page proof client
+        run: python -m pip install playwright==1.55.0
+      - name: Reverify exact seller SKU in bounded isolated runner batches
+        run: |
+          set -euo pipefail
+          ROUND="${{ inputs.round || 'combined' }}"
+          if [ "$ROUND" = "combined" ]; then
+            python scripts/stage_camp_combined_review.py
+          else
+            python scripts/stage_camp_coverage_round.py --round "$ROUND"
+          fi
+      - name: Run unchanged strict CAMP recommendation and data identity gates
+        run: |
+          set -euo pipefail
+          ROUND="${{ inputs.round || 'combined' }}"
+          if [ "$ROUND" = "combined" ]; then
+            test -f /tmp/camp-combined-review-products.json
+            test -f /tmp/camp-combined-review-audits.json
+            cp /tmp/camp-combined-review-products.json data/products.json
+            cp /tmp/camp-combined-review-audits.json data/audited-products.json
+          else
+            test -f /tmp/camp-coverage-review-products.json
+            test -f /tmp/camp-coverage-review-audits.json
+            cp /tmp/camp-coverage-review-products.json data/products.json
+            cp /tmp/camp-coverage-review-audits.json data/audited-products.json
+          fi
           python scripts/report_camp_refresh.py
           python scripts/stamp_assets.py
           npm run check
           npm test
-      - name: Preserve sanitized evidence and exact remaining failure counts
+      - name: Preserve sanitized research results only
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: camp-coverage-readonly-review
           path: |
+            reports/camp-combined-review.json
             reports/camp-coverage-research.json
             reports/camp-refresh-health.json
           if-no-files-found: warn
