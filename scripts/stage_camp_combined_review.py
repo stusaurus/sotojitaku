@@ -1,4 +1,4 @@
-"""Combine two *independently* audited, six-SKU batches in one isolated runner.
+"""Combine two or three *independently* audited, six-SKU batches in one isolated runner.
 
 This is a temporary CI experiment, NEVER a catalog publication. Each batch
 has its own six-call ceiling; upstream 429/Worker outages stop all remaining
@@ -22,15 +22,21 @@ import stage_camp_coverage_round as coverage
 
 FIRST = "family"
 SECOND = "recovery"
+THIRD = "gap"
 STAGED_CATALOG = Path("/tmp/camp-combined-review-products.json")
 STAGED_AUDITS = Path("/tmp/camp-combined-review-audits.json")
 
 
-def assemble(*, root=ROOT, stage=coverage.stage_round, now=None):
+def assemble(*, root=ROOT, stage=coverage.stage_round, now=None,
+             include_gap=False):
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("observed_time_must_be_aware")
     observed = observed.astimezone(timezone.utc)
+    rounds_to_check = (FIRST, SECOND, THIRD) if include_gap else (FIRST, SECOND)
+    targets = [target for name in rounds_to_check for target in coverage.ROUNDS[name]]
+    if len(targets) != len(set(targets)) or len(targets) > 18:
+        raise ValueError("duplicate_or_unbounded_combined_targets")
     paths = {name: root / "data" / (name + ".json")
              for name in ("products", "audited-products", "equipment")}
     original = {key: path.read_bytes() for key, path in paths.items()}
@@ -42,7 +48,7 @@ def assemble(*, root=ROOT, stage=coverage.stage_round, now=None):
         (isolated / "data").mkdir()
         for key, content in original.items():
             (isolated / "data" / (key + ".json")).write_bytes(content)
-        for round_name in (FIRST, SECOND):
+        for round_name in rounds_to_check:
             report, catalog, audits = stage(
                 root=isolated, round_name=round_name, now=observed)
             reports.append(report)
@@ -64,7 +70,7 @@ def assemble(*, root=ROOT, stage=coverage.stage_round, now=None):
 
     baseline = len(json.loads(original["products"])["products"])
     rows = [r for report in reports for r in report["results"]]
-    completed = len(reports) == 2 and not reports[-1]["stoppedByUpstream"]
+    completed = len(reports) == len(rounds_to_check) and not reports[-1]["stoppedByUpstream"]
     successful = sum(r["result"] == "renewed" for r in rows)
     # No supplier listing is automatically approved just because these
     # individual proofs are good: strict full-catalog recommendation QA runs
@@ -72,14 +78,16 @@ def assemble(*, root=ROOT, stage=coverage.stage_round, now=None):
     summary = {
         "schemaVersion": 1, "type": "combined_readonly_research_not_for_publication",
         "observedAt": observed.isoformat(),
-        "maximumTotalApiRequests": 12,
+        "maximumTotalApiRequests": 6 * len(rounds_to_check),
+        "requestedRounds": list(rounds_to_check),
         "maximumApiRequestsPerRound": 6,
         "attempted": len(rows),
         "independentlyRenewed": successful,
         "baselineProductCount": baseline,
         "candidateProductCount": len(final_catalog.get("products") or []),
         "stoppedByUpstream": any(r["stoppedByUpstream"] for r in reports),
-        "bothRoundsCompleted": completed,
+        "bothRoundsCompleted": completed if not include_gap else False,
+        "allRequestedRoundsCompleted": completed,
         "verifiedForPublication": False,
         "rounds": reports,
     }
@@ -87,14 +95,16 @@ def assemble(*, root=ROOT, stage=coverage.stage_round, now=None):
 
 
 def write_stage(*, root=ROOT, stage=coverage.stage_round, now=None,
-                candidate=STAGED_CATALOG, audits=STAGED_AUDITS):
-    report, products, audited = assemble(root=root, stage=stage, now=now)
+                candidate=STAGED_CATALOG, audits=STAGED_AUDITS,
+                include_gap=False):
+    report, products, audited = assemble(root=root, stage=stage, now=now,
+                                        include_gap=include_gap)
     out = root / "reports/camp-combined-review.json"
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
                    encoding="utf-8")
     print("CAMP_COMBINED_REVIEW", json.dumps(report, ensure_ascii=False))
-    if not report["bothRoundsCompleted"] or report["independentlyRenewed"] == 0:
+    if not report["allRequestedRoundsCompleted"] or report["independentlyRenewed"] == 0:
         return False
     # The two files contain live exact-seller purchase URLs: only write them
     # to runner-local /tmp for immediate QA. Never upload them as artifacts.
@@ -106,4 +116,9 @@ def write_stage(*, root=ROOT, stage=coverage.stage_round, now=None,
 
 
 if __name__ == "__main__":
-    raise SystemExit(0 if write_stage() else 2)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--include-gap", action="store_true",
+                        help="add the third bounded six-SKU gap research batch")
+    args = parser.parse_args()
+    raise SystemExit(0 if write_stage(include_gap=args.include_gap) else 2)
