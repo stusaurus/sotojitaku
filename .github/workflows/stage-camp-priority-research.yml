@@ -1,0 +1,71 @@
+name: CAMP targeted original-merchant recovery (3 SKU max)
+on:
+  pull_request:
+    paths:
+      - 'scripts/stage_camp_coverage_round.py'
+      - 'tests/test_stage_camp_coverage_round.py'
+      - '.github/workflows/stage-camp-priority-research.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-priority-research-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  original-seller-priority:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate original seller identity, three-call budget, and upstream halt
+        run: python -m unittest discover -s tests -p 'test_stage_camp_coverage_round.py' -v
+      - name: Require explicit single-use research marker for live seller/API checks
+        id: live
+        shell: bash
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Fq '[camp-priority-live]'; then
+            echo 'approved=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'approved=false' >> "$GITHUB_OUTPUT"
+            echo 'Only local safety tests ran; no current product sales verified.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Install ordinary seller browser for fixed-SKU proof
+        if: steps.live.outputs.approved == 'true'
+        run: python -m pip install playwright==1.55.0
+      - name: Recheck only three original audited SKU offers into temporary runner catalog
+        if: steps.live.outputs.approved == 'true'
+        run: |
+          set -euo pipefail
+          python scripts/stage_camp_coverage_round.py --round priority
+      - name: Run unchanged recommendation gates and sanitized full-category gap diagnostic
+        if: steps.live.outputs.approved == 'true'
+        run: |
+          set -euo pipefail
+          test -f /tmp/camp-coverage-review-products.json
+          test -f /tmp/camp-coverage-review-audits.json
+          cp /tmp/camp-coverage-review-products.json data/products.json
+          cp /tmp/camp-coverage-review-audits.json data/audited-products.json
+          python scripts/report_camp_refresh.py
+          python scripts/stamp_assets.py
+          node scripts/report_camp_recommendation_gaps.mjs
+          npm run check
+          npm test
+      - name: Preserve only sanitized counts and failure categories
+        if: always() && steps.live.outputs.approved == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-priority-original-merchant-readonly-review
+          path: |
+            reports/camp-coverage-research.json
+            reports/camp-recommendation-gaps.json
+            reports/camp-refresh-health.json
+          retention-days: 14
+          if-no-files-found: warn
