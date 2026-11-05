@@ -62,7 +62,7 @@ export function inspect(catalog, equipment, rules, observed = Date.now()) {
       profileCoverage[profile] = {
         availablePreferenceCount: availablePreferences,
         distinctTopCount: uniqueTop,
-        maximumDistinctFamilyChoices: Math.max(...recommended.map(r=>r.length)),
+        maximumEligibleChoices: Math.max(...recommended.map(r=>r.length)),
         hasMissingRecommendation: availablePreferences < preferences.length,
         lacksPreferenceDiversity: uniqueTop < 2,
       };
@@ -76,13 +76,30 @@ export function inspect(catalog, equipment, rules, observed = Date.now()) {
     if(profileCoverage[preferenceProfile].lacksPreferenceDiversity) {
       blockers.push(preferenceProfile+':insufficient_preference_diversity');
     }
-    if(familyNeedsTwo &&
-       profileCoverage['family-four'].maximumDistinctFamilyChoices<2) {
-      blockers.push('family-four:needs_two_distinct_seller_families');
+    // Mirror the STRICT family-choice test exactly: comfort, quantity and
+    // target budget. Separately flag duplicate product families because two
+    // separate seller listings for one model are not two consumer choices.
+    const familyComfortPicks=familyNeedsTwo ? recommend(
+      catalog.products||[],category,profiles['family-four'],equipment,rules,
+      {preference:'comfort',quantity:category==='tent'?1:4,targetBudget:50000},
+      observed
+    ) : [];
+    const familyComfortChoices=familyComfortPicks.length;
+    const distinctFamilyModels=new Set(familyComfortPicks.map(
+      p=>p.family).filter(Boolean)).size;
+    if(familyNeedsTwo && familyComfortChoices<2) {
+      blockers.push('family-four:needs_two_eligible_choices');
+    } else if(familyNeedsTwo && distinctFamilyModels<2) {
+      blockers.push('family-four:duplicate_product_family');
     }
     findings.push({
       category,
       catalogEntryCount: categoryProducts.length,
+      ...(familyNeedsTwo?{familyFourComfort:{
+        eligibleChoices:familyComfortChoices,
+        distinctProductFamilies:distinctFamilyModels,
+        hasTwoRealChoices:familyComfortChoices>=2&&distinctFamilyModels>=2,
+      }}:{}),
       profileCoverage,
       blockers,
     });
