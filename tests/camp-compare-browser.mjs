@@ -41,6 +41,14 @@ try{
   await page.goto(root+'camp/?test=1#products');
   await page.locator('.category-options [data-product="sleeping_bag"]').click();
   await page.locator('.quick-compare-grid').waitFor();
+  const initialEvents=await page.evaluate(()=>[...window.dataLayer]
+   .filter(x=>x[0]==='event')
+   .map(x=>({name:x[1],params:x[2]})));
+  assert.equal(initialEvents.filter(e=>e.name==='page_view').length,1,
+    'first SPA screen only, not one per product category');
+  assert.equal(initialEvents.filter(e=>e.name==='product_view'&&e.params.category_id==='sleeping_bag').length,1);
+  assert.equal(initialEvents.filter(e=>e.name==='product_comparison_view'&&e.params.category_id==='sleeping_bag').length,1);
+  assert(initialEvents.every(e=>e.params.operator_test==='1'));
   assert.equal(await page.locator('.quick-compare-item').count(),2,
     'two distinct test-only product families must be compared');
   assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),false);
@@ -76,14 +84,33 @@ try{
   assert.equal(saved.selectedProducts.sleeping_bag,b.itemCode);
   assert.equal(await page.locator('.quick-compare-item.is-selected').count(),1);
   assert.equal(await page.locator('#camp-offer-1').count(),1);
+  const afterSelection=await page.evaluate(()=>[...window.dataLayer].filter(x=>x[0]==='event')
+    .map(x=>({name:x[1],params:x[2]})));
+  assert.equal(afterSelection.filter(e=>e.name==='product_view'&&e.params.category_id==='sleeping_bag').length,1,
+    'selection rerender cannot inflate category impressions');
+  assert.equal(afterSelection.filter(e=>e.name==='page_view').length,1,
+    'selection rerender cannot inflate SPA page views');
+  assert.equal(afterSelection.filter(e=>e.name==='product_select').length,1);
+  await page.locator('.quick-compare-item.is-selected [data-select-product]').click();
+  assert.equal(await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event'&&x[1]==='product_select').length),1,
+    'tapping the already chosen offer must not count another selection');
   assert.equal(await page.locator('.quick-compare-item.is-selected [data-go="shopping"]').count(),1);
   await page.locator('.quick-compare-item.is-selected [data-go="shopping"]').click();
   await page.locator('.shopping-item').waitFor();
   assert.equal(page.url().split('#')[1],'shopping');
   assert.match(await page.locator('.shopping-total').innerText(),/¥13,980/);
   assert.equal(await page.locator('.shopping-item [data-affiliate]').count(),1);
+  const shoppingEvents=await page.evaluate(()=>[...window.dataLayer].filter(x=>x[0]==='event')
+    .map(x=>({name:x[1],params:x[2]})));
+  assert.equal(shoppingEvents.filter(e=>e.name==='shopping_list_view').length,1);
+  assert.equal(shoppingEvents.find(e=>e.name==='shopping_list_view').params.selected_category_count,1);
+  assert.equal(shoppingEvents.filter(e=>e.name==='page_view').length,2,
+    'new shopping screen, not product selection, adds one page view');
   await page.locator('.shopping-item [data-product="sleeping_bag"]').click();
   await page.locator('.quick-compare-grid').waitFor();
+  assert.equal(await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event'&&x[1]==='product_view'
+    &&x[2].category_id==='sleeping_bag').length),2,
+    'navigating back into the product screen is a genuine new category view');
   assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),false);
   await page.locator('.quick-compare-item [data-jump-product="1"]').click();
   assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),true);
@@ -117,6 +144,9 @@ try{
  await page.locator('[data-product-pref="value"][data-category="sleeping_bag"]').click();
  assert.equal(await page.locator('#preference-adjustment').evaluate(e=>e.open),true);
  assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('sotojitaku_camp_v1')))).productPrefs.sleeping_bag,'value');
+ assert.equal(await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event'&&x[1]==='product_view'
+   &&x[2].category_id==='sleeping_bag').length),1,
+   'preference toggles are not new category visits');
  await page.screenshot({path:`${folder}/one-choice-390.png`,fullPage:true});
  await context.close();
 }finally{
