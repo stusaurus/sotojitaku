@@ -43,6 +43,19 @@ try{
   await page.locator('.quick-compare-grid').waitFor();
   assert.equal(await page.locator('.quick-compare-item').count(),2,
     'two distinct test-only product families must be compared');
+  assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),false);
+  assert.equal(await page.locator('#preference-adjustment').evaluate(e=>e.open),false);
+  assert.equal(await page.locator('.quick-compare-item img.compare-thumbnail').count(),2);
+  const choices=await page.locator('.quick-compare').boundingBox();
+  const full=await page.locator('#camp-product-details').boundingBox();
+  assert(choices.y<full.y,'verified comparison must appear before full product cards');
+  if(width<600){
+   const swipe=await page.locator('.quick-compare-grid').evaluate(e=>({
+    scroll:e.scrollWidth,client:e.clientWidth,snap:getComputedStyle(e).scrollSnapType
+   }));
+   assert(swipe.scroll>swipe.client,'mobile offers are swipeable');
+   assert.match(swipe.snap,/mandatory/);
+  }
   const details=await page.locator('.quick-compare-grid').innerText();
   assert.match(details,/2点 ×/,'actual purchase units must be visible');
   assert.match(details,/¥10,980/,'quantity x source unit price only');
@@ -63,7 +76,17 @@ try{
   assert.equal(saved.selectedProducts.sleeping_bag,b.itemCode);
   assert.equal(await page.locator('.quick-compare-item.is-selected').count(),1);
   assert.equal(await page.locator('#camp-offer-1').count(),1);
+  assert.equal(await page.locator('.quick-compare-item.is-selected [data-go="shopping"]').count(),1);
+  await page.locator('.quick-compare-item.is-selected [data-go="shopping"]').click();
+  await page.locator('.shopping-item').waitFor();
+  assert.equal(page.url().split('#')[1],'shopping');
+  assert.match(await page.locator('.shopping-total').innerText(),/¥13,980/);
+  assert.equal(await page.locator('.shopping-item [data-affiliate]').count(),1);
+  await page.locator('.shopping-item [data-product="sleeping_bag"]').click();
+  await page.locator('.quick-compare-grid').waitFor();
+  assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),false);
   await page.locator('.quick-compare-item [data-jump-product="1"]').click();
+  assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),true);
   await page.waitForFunction(()=>{
    const r=document.getElementById('camp-offer-1')?.getBoundingClientRect();
    return r&&r.top<innerHeight&&r.bottom>0;
@@ -88,6 +111,12 @@ try{
  assert.match(await page.locator('#quick-compare-title').innerText(),/現在1件/);
  assert.equal(await page.locator('.alternatives .product-card').count(),0);
  assert.equal(await page.locator('.match-score').count(),0);
+ assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),false);
+ assert.equal(await page.locator('.quick-compare-item img.compare-thumbnail').count(),1);
+ await page.locator('#preference-adjustment > summary').click();
+ await page.locator('[data-product-pref="value"][data-category="sleeping_bag"]').click();
+ assert.equal(await page.locator('#preference-adjustment').evaluate(e=>e.open),true);
+ assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('sotojitaku_camp_v1')))).productPrefs.sleeping_bag,'value');
  await page.screenshot({path:`${folder}/one-choice-390.png`,fullPage:true});
  await context.close();
 }finally{
