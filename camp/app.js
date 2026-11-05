@@ -2,6 +2,7 @@ import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validat
 import {recommend,defaultPreference,reject} from '../products.js?v=ace8d394b3ac';
 import {analyzeSupply} from './supply-guidance.js?v=89a34d5e1ea0';
 import {compareModels, yen as verifiedYen} from './compare-products.js?v=ad4fabf2c819';
+import {createCAMPVisitGate} from './funnel-metrics.js';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const yen=n=>'¥'+Number(n).toLocaleString('ja-JP');
@@ -121,7 +122,7 @@ function productsPage(){
  const ctx=productBudgetContext(c.id),pref=productPreference(c.id),
        plannedBuy=plan(state,data).some(g=>g.id===c.id&&g.status==='buy'),
        recs=recommend(data.products.products,currentCategory,state.answers,data.equipment,data.rules,{...ctx,preference:pref});
- track('product_view',{category_id:c.id,result_count:recs.length,preference:pref});
+ presentedProductCount=recs.length;
  const available=recs.length?`${quickCompare(recs,c,ctx)}${preferenceSelector(c)}
  <details id="camp-product-details" class="product-detail-disclosure">
    <summary>商品の詳しい情報と楽天リンクを見る <span>（${recs.length}件）</span></summary>
@@ -169,8 +170,33 @@ function guide(){const rows=[['必要なものは、希望から決まる','泊�
 function about(){return shell('外へ行く準備を、<br>もっと楽しく。','ABOUT SOTOJITAKU',`<p>SOTOJITAKU CAMPは、はじめてのキャンプの道具・ごはん・過ごし方を、自分に合わせて組み立てる無料サービスです。</p><h2 class="small-heading">道具より、あなたの休日を。</h2><p>春・夏・秋の日帰り・1泊2日、ソロから4人程度を中心に、やりたいことから必要な道具を考えます。</p><h2 class="small-heading">計画の目安と確認</h2><p>予算は計画用の目安です。購入価格・レンタル先・キャンプ場の予約を確約するものではありません。季節別の商品条件は目安で、現地の最低気温や天候・地形への適合は出発前に確認してください。</p><h2 class="small-heading">商品提案と広告</h2><p>商品は本体・販売条件・仕様・適合を確認できたものだけを掲載します。確認できない場合は表示しません。商品リンクには楽天アフィリエイト広告を含む場合があり、購入により運営者に報酬が発生することがあります。ご利用者の購入価格に追加料金はありません。</p><h2 class="small-heading">画像について</h2><p>キャンプのビジュアルは生成画像によるイメージです。実在するキャンプ場・商品の写真や予約可能な施設を示すものではありません。</p>${secondary('プライバシーを見る','data-go="privacy"')}`,'','home');}
 function privacy(){return shell('プライバシーと保存','YOUR DATA',`<h2 class="small-heading">キャンプの保存</h2><p>回答・所有品・装備計画は、この端末のブラウザ内（LocalStorage）に保存されます。氏名や住所を入力する機能はありません。別の端末への同期はありません。</p><h2 class="small-heading">アクセス解析</h2><p>改善のためGoogle Analytics 4を利用し、画面表示・回答の選択・道具の計画・商品リンクのクリックなどの利用状況を計測します。個人を特定する氏名・住所は送信しません。GoogleのCookieや端末等の情報処理については<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Googleのプライバシーポリシー</a>をご確認ください。</p><h2 class="small-heading">外部の商品ページ</h2><p>楽天等の外部ページへ進んだ後の情報の取り扱い・価格・在庫・購入条件は、各サービスの規定に従います。</p><h2 class="small-heading">保存を削除する</h2><p>このブラウザに保存されたキャンプを削除できます。操作は取り消せません。</p><div class="button-row">${secondary('保存したキャンプを削除','data-delete')}</div><h2 class="small-heading">解析の利用設定</h2><button class="secondary" data-analytics-toggle>${analyticsDisabled()?'解析を許可する':'解析を停止する'}${arrow}</button>`,'','home');}
 function analyticsDisabled(){return window['ga-disable-G-6STQ5HXRDH']===true;}
-let lastStepKey='',lastResultKey='';
-function render(animate=false){closeMenu();$('#header').classList.toggle('dark',!['home','question','complete'].includes(route));$('#bottom-nav').hidden=route==='question';$('#bottom-nav').querySelectorAll('a').forEach(a=>{const current=route==='home'?'home':['store','products','experiences'].includes(route)?'store':'camp';if(a.dataset.nav===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});const pages={home,question,restart,provisional,owned,gear,cooking,budget,complete,schedule:schedulePage,missing,shopping,store,products:productsPage,experiences,guide,about,privacy};main.innerHTML=(pages[route]||home)();if(!animate)main.querySelectorAll('.fade-in').forEach(e=>e.classList.remove('fade-in'));if(route==='question'){if(lastStepKey!==String(qIndex)){lastStepKey=String(qIndex);track('journey_step_view',{step_number:qIndex+1,step_key:data.questions.questions[qIndex].id});}}else lastStepKey='';if(route==='complete'){const key=JSON.stringify([state.answers,state.gear,state.recipes]);if(key!==lastResultKey){lastResultKey=key;track('result_view',{purchase_required:plan(state,data).some(g=>g.status==='buy')?1:0});}}track('page_view',{page_title:main.querySelector('h1')?.textContent||'SOTOJITAKU CAMP',page_location:location.href});}
+const campVisit=createCAMPVisitGate();
+let lastStepKey='',lastResultKey='',presentedProductCount=0;
+function render(animate=false){closeMenu();$('#header').classList.toggle('dark',!['home','question','complete'].includes(route));$('#bottom-nav').hidden=route==='question';$('#bottom-nav').querySelectorAll('a').forEach(a=>{const current=route==='home'?'home':['store','products','experiences'].includes(route)?'store':'camp';if(a.dataset.nav===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});const pages={home,question,restart,provisional,owned,gear,cooking,budget,complete,schedule:schedulePage,missing,shopping,store,products:productsPage,experiences,guide,about,privacy};main.innerHTML=(pages[route]||home)();if(!animate)main.querySelectorAll('.fade-in').forEach(e=>e.classList.remove('fade-in'));if(route==='question'){if(lastStepKey!==String(qIndex)){lastStepKey=String(qIndex);track('journey_step_view',{step_number:qIndex+1,step_key:data.questions.questions[qIndex].id});}}else lastStepKey='';if(route==='complete'){const key=JSON.stringify([state.answers,state.gear,state.recipes]);if(key!==lastResultKey){lastResultKey=key;track('result_view',{purchase_required:plan(state,data).some(g=>g.status==='buy')?1:0});}}const observation=campVisit({
+   route,
+   category:route==='products'?currentCategory:null,
+   resultCount:route==='products'?presentedProductCount:0
+  });
+  if(observation.pageView){
+   track('page_view',{page_title:main.querySelector('h1')?.textContent||'SOTOJITAKU CAMP',
+     page_location:location.href,screen_id:route});
+  }
+  if(observation.categoryView){
+   const common={category_id:currentCategory,result_count:presentedProductCount,
+     preference:productPreference(currentCategory)};
+   track('product_view',common);
+   if(observation.comparisonView)
+     track('product_comparison_view',{...common,verified_candidate_count:presentedProductCount});
+   if(observation.gapView)
+     track('product_supply_gap',{category_id:currentCategory,gap_type:'no_eligible_offer'});
+  }
+  if(observation.shoppingView){
+   const summary=supplyReport(plan(state,data));
+   track('shopping_list_view',{selected_category_count:summary.pickedCount,
+     selectable_category_count:summary.selectableCount,
+     unavailable_category_count:summary.unavailableCount});
+  }
+ }
 function go(next){if(next==='camp'){if(!hasSaved){start();return;}next=state.finished?'complete':state.stage||'question';}if(['provisional','owned','gear','cooking','budget','complete','schedule','missing','shopping'].includes(next)){state.stage=next;persist();}route=next;const hash='#'+next;if(location.hash!==hash)history.pushState({route},'',hash);render(true);window.scrollTo({top:0,left:0,behavior:'instant'});main.focus({preventScroll:true});}
 function start(){if(hasSaved){go('restart');return;}state=fresh();qIndex=0;track('simulator_start');persist();go('question');}
 function restart(){return shell('キャンプを、新しくつくる？','A NEW WEEKEND',`<p>いま保存している計画を、新しいキャンプに置き換えます。</p><div class="button-row">${primary('新しくつくる','data-new-confirm')}${secondary('つづきから','data-resume')}</div>`,'','home');}
@@ -223,6 +249,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
    const id=t.dataset.category,code=t.dataset.selectProduct;
    const eligible=data.products.products.find(p=>p.category===id&&p.itemCode===code&&!reject(p,id,state.answers,data.equipment));
    if(!eligible){toast('この商品は現在の条件で確認できません。');return;}
+   if(state.selectedProducts?.[id]===code){toast('この商品はすでに選択しています。');return;}
    state.selectedProducts=state.selectedProducts||{};
    state.selectedProducts[id]=code;
    persist();track('product_select',{category_id:id,product_id:code});
