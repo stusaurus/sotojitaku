@@ -100,6 +100,12 @@ try{
   assert.equal(page.url().split('#')[1],'shopping');
   assert.match(await page.locator('.shopping-total').innerText(),/¥13,980/);
   assert.equal(await page.locator('.shopping-item [data-affiliate]').count(),1);
+  await page.locator('.shopping-item [data-affiliate]').evaluate(el=>{
+   el.addEventListener('click',e=>e.preventDefault(),{once:true});el.click();
+  });
+  assert.equal(await page.evaluate(()=>[...window.dataLayer].filter(x=>x[0]==='event'
+   &&x[1]==='affiliate_click'&&x[2].conversion_source==='camp_shopping_list').length),1,
+   'shopping-list click should have its actual UI source, never guessed attribution');
   const shoppingEvents=await page.evaluate(()=>[...window.dataLayer].filter(x=>x[0]==='event')
     .map(x=>({name:x[1],params:x[2]})));
   assert.equal(shoppingEvents.filter(e=>e.name==='shopping_list_view').length,1);
@@ -114,6 +120,14 @@ try{
   assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),false);
   await page.locator('.quick-compare-item [data-jump-product="1"]').click();
   assert.equal(await page.locator('#camp-product-details').evaluate(e=>e.open),true);
+  await page.locator('#camp-offer-1 [data-affiliate]').evaluate(el=>{
+   el.addEventListener('click',e=>e.preventDefault(),{once:true});el.click();
+  });
+  assert.equal(await page.evaluate(()=>[...window.dataLayer].filter(x=>x[0]==='event'
+   &&x[1]==='affiliate_click'&&x[2].conversion_source==='camp_product_detail').length),1,
+   'product-detail clicks cannot be mislabeled as missing-gear links');
+  assert.equal(await page.evaluate(()=>window.dataLayer.filter(x=>x[0]==='event'
+   &&x[1]==='affiliate_click').length),2,'exactly one click per explicit interaction');
   await page.waitForFunction(()=>{
    const r=document.getElementById('camp-offer-1')?.getBoundingClientRect();
    return r&&r.top<innerHeight&&r.bottom>0;
