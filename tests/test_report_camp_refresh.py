@@ -91,6 +91,20 @@ class CampRefreshReportTests(unittest.TestCase):
         self.assertNotIn("PRIVATE_SKU", json.dumps(result))
         self.assertNotIn("secret:", json.dumps(result))
 
+    def test_current_catalog_unverified_and_rate_limited_are_evidence_failures(self):
+        current = {"products": [], "itemFailures": {
+            "private:1": "not_reverified",
+            "private:2": "rate_limited",
+            "private:3": "exact_item_not_found",
+        }}
+        result = build_report(current, observed_at=self.now)
+        self.assertEqual(result["failureClassCounts"], {
+            "acquisition_or_evidence_failure": 2,
+            "listing_rejected_or_not_found": 1,
+        })
+        self.assertEqual(result["failureReasonCounts"]["not_reverified"], 1)
+        self.assertEqual(result["failureReasonCounts"]["rate_limited"], 1)
+
     def test_legacy_fields_without_coverage_inputs(self):
         result = build_report(self.catalog, observed_at=self.now)
         self.assertEqual(result["failedAuditCount"], 2)
