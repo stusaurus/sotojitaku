@@ -68,16 +68,17 @@ def stage_pair(*, root=ROOT, renew=refresh_snapshot, now=None,
     return report, catalog, audits
 
 
-def write_stage(*, root=ROOT):
-    report, catalog, audits = stage_pair(root=root)
+def write_stage(*, root=ROOT, renew=refresh_snapshot, now=None,
+                staged_catalog=STAGED_CATALOG, staged_audits=STAGED_AUDITS):
+    report, catalog, audits = stage_pair(root=root, renew=renew, now=now)
     target = root / "reports/camp-recovery-pair-candidate.json"
     target.parent.mkdir(exist_ok=True)
     target.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
                       encoding="utf-8")
     if report["bothCandidatesEligibleForSnapshotReview"]:
-        STAGED_CATALOG.write_text(json.dumps(catalog, ensure_ascii=False,
+        staged_catalog.write_text(json.dumps(catalog, ensure_ascii=False,
                                              indent=2) + "\n", encoding="utf-8")
-        STAGED_AUDITS.write_text(json.dumps(audits, ensure_ascii=False,
+        staged_audits.write_text(json.dumps(audits, ensure_ascii=False,
                                             indent=2) + "\n", encoding="utf-8")
     print("CAMP_RECOVERY_PAIR", json.dumps(report, ensure_ascii=False))
     return report["bothCandidatesEligibleForSnapshotReview"]
