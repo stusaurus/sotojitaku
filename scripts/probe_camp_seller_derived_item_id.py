@@ -37,6 +37,10 @@ ALLOWED_TARGETS = {
     # this is only a seller URL, NOT verified current stock or an audited SKU.
     "snowpeak_fire": ("fire_pit", "ST-032RS",
                       "https://item.rakuten.co.jp/snowpeak-official/st-032rs/"),
+    # Separately listed ST-032RS at SuperSportsXEBIO; independent sale proof
+    # and total shipping must STILL pass before any recommendation.
+    "xebio_fire": ("fire_pit", "ST-032RS",
+                   "https://item.rakuten.co.jp/supersportsxebio/107595608011/"),
 }
 REPORT = ROOT / "reports/camp-seller-derived-item-id.json"
 
