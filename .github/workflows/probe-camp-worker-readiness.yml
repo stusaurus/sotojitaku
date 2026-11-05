@@ -1,4 +1,4 @@
-name: CAMP Worker readiness (one exact upstream call max)
+name: CAMP Worker readiness (two paced exact calls max)
 on:
   pull_request:
     paths:
@@ -22,7 +22,7 @@ jobs:
           python-version: '3.12'
       - name: Verify fail-closed health and credentials gates without upstream requests
         run: python -m unittest discover -s tests -p 'test_probe_camp_worker_readiness.py' -v
-      - name: Check actual Worker health, credentials gate, and at most one exact product
+      - name: Check actual Worker health, credentials gate, and up to two paced exact items
         run: python scripts/probe_camp_worker_readiness.py
       - name: Save only sanitized readiness report
         if: always()
