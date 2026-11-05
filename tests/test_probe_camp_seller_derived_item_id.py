@@ -150,6 +150,18 @@ class SellerDerivedIdentity(unittest.TestCase):
         self.assertFalse(self.api_calls)
         self.no_change()
 
+    def test_candidate_list_never_admits_unreviewed_seller_urls(self):
+        with self.assertRaises(ValueError):
+            research.probe(root=self.root,browser_get=self.seller,
+                           api_fetch=self.official,now=self.clock,target="unknown")
+        with self.assertRaises(ValueError):
+            research.probe(root=self.root,browser_get=self.seller,
+                           api_fetch=self.official,now=self.clock,target="led",
+                           seller_page=research.ALLOWED_TARGETS["sandwich"][2])
+        self.assertFalse(self.visited)
+        self.assertFalse(self.api_calls)
+        self.no_change()
+
     def test_naive_datetime_and_bad_target_never_start_requests(self):
         with self.assertRaises(ValueError):
             research.probe(root=self.root,browser_get=self.seller,
