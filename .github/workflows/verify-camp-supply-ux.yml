@@ -4,10 +4,14 @@ on:
     paths:
       - 'camp/app.js'
       - 'camp/supply-guidance.js'
+      - 'camp/compare-products.js'
       - 'camp/index.html'
       - 'style.css'
       - 'scripts/stamp_assets.py'
       - 'tests/camp-supply-guidance.test.mjs'
+      - 'tests/camp-compare-products.test.mjs'
+      - 'tests/camp-compare-browser.mjs'
+      - 'tests/assets.test.mjs'
       - 'tests/camp-supply-browser.mjs'
       - '.github/workflows/verify-camp-supply-ux.yml'
   workflow_dispatch:
@@ -35,11 +39,12 @@ jobs:
           set -euo pipefail
           node --check camp/app.js
           node --check camp/supply-guidance.js
+          node --check camp/compare-products.js
           python scripts/stamp_assets.py
           git diff --exit-code -- camp/app.js camp/index.html style.css
       - name: Test fail-closed recommendation status and released asset hashes
         run: |
-          node --test tests/camp-supply-guidance.test.mjs tests/assets.test.mjs
+          node --test tests/camp-supply-guidance.test.mjs tests/camp-compare-products.test.mjs tests/assets.test.mjs
       - name: Install standard Playwright Chromium
         run: |
           npm install --no-save --package-lock=false playwright@1.58.2
@@ -48,11 +53,15 @@ jobs:
         run: python -m http.server 4173 > /tmp/camp-supply-server.log 2>&1 &
       - name: Exercise zero verified items, real rental action and shopping at three widths
         run: node tests/camp-supply-browser.mjs
+      - name: Validate real product comparisons and saved selection in three viewports
+        run: node tests/camp-compare-browser.mjs
       - name: Save mobile/desktop proof images without product analytics clicks
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: camp-supply-ux-mobile-and-desktop
-          path: browser-proof/camp-supply
+          path: |
+            browser-proof/camp-supply
+            browser-proof/camp-compare
           retention-days: 14
           if-no-files-found: warn
