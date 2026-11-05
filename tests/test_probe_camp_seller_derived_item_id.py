@@ -242,6 +242,30 @@ class SellerDerivedIdentity(unittest.TestCase):
         self.assertEqual(report["sellerStatus"], "seller_price_or_conditions_unverified")
         self.no_change()
 
+    def test_mixed_present_and_missing_duplicate_price_is_not_sales_proof(self):
+        lacking = self.html(purchaseInfo={
+            "purchaseBySellType": {
+                "purchaseCondition": "enabled",
+                "normalPurchase": {"price": {}},
+            },
+            "variantMappedInventories": [{"quantity": 2}],
+        })
+        full = self.html()
+        identity, reason = research.page_identity(
+            research.SELLER_PAGE, full + lacking)
+        self.assertIsNone(reason)
+        self.assertEqual(identity["itemCode"], "alpen:12345678")
+        self.assertFalse(identity["sellerPriceFieldPresent"])
+        result = research.probe(
+            root=self.root, browser_get=lambda url: (url, full + lacking),
+            api_fetch=self.official, now=self.clock)
+        self.assertEqual(result["rakutenApiRequests"], 1)
+        self.assertFalse(result["sellerPriceFieldPresent"])
+        # Even if the first of two records is a valid seller price, a second
+        # missing price cannot certify a consistent real purchase condition.
+        self.assertFalse(result["verifiedForPublication"])
+        self.no_change()
+
     def test_missing_seller_item_info_aborts_before_any_api(self):
         r=research.probe(root=self.root,
                          browser_get=lambda url:(url,"Coleman 2218364"),
