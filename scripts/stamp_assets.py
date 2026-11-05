@@ -8,7 +8,7 @@ for app_name,prefix in [('app.js','./'),('camp/app.js','../')]:
  for name in ['engine.js','products.js']:
   s=re.sub(r"("+re.escape(prefix+name)+r")(?:(?:\?v=)[a-z0-9]+)?",r'\1?v='+version(name),s)
  if app_name=='camp/app.js':
-  for module in ['supply-guidance.js','compare-products.js']:
+  for module in ['supply-guidance.js','compare-products.js','funnel-metrics.js']:
    s=re.sub(r"(\./"+re.escape(module)+r")(?:(?:\?v=)[a-z0-9]+)?",
             r'\1?v='+version('camp/'+module),s)
  p.write_text(s)
