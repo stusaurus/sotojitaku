@@ -1,0 +1,50 @@
+name: CAMP official Snow Peak L shop proof (one SKU)
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_camp_seller_derived_item_id.py'
+      - 'tests/test_snowpeak_firepit_seller_probe.py'
+      - '.github/workflows/probe-camp-snowpeak-official.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-snowpeak-official-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  official-shop:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test official SKU derivation, maker evidence, and no-publication safety
+        run: python -m unittest discover -s tests -p 'test_snowpeak_firepit_seller_probe.py' -v
+      - name: Gate one live original seller check
+        id: live
+        shell: bash
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || git log -1 --format=%B | grep -Fq '[camp-snowpeak-live]'; then
+            echo 'approved=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'approved=false' >> "$GITHUB_OUTPUT"
+            echo 'Only no-network tests ran. Current inventory is unverified.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Install standard browser (no stealth or captcha bypass)
+        if: steps.live.outputs.approved == 'true'
+        run: python -m pip install playwright==1.55.0
+      - name: Inspect one Snow Peak official shop SKU; call official API at most once
+        if: steps.live.outputs.approved == 'true'
+        run: python scripts/probe_camp_seller_derived_item_id.py --candidate snowpeak_fire
+      - name: Upload sanitized evidence result, never public product data
+        if: always() && steps.live.outputs.approved == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-snowpeak-official-shop-research
+          path: reports/camp-seller-derived-item-id-snowpeak_fire.json
+          retention-days: 14
+          if-no-files-found: warn
