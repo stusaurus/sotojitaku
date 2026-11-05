@@ -2,7 +2,7 @@ import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validat
 import {recommend,defaultPreference,reject} from '../products.js?v=ace8d394b3ac';
 import {analyzeSupply} from './supply-guidance.js?v=89a34d5e1ea0';
 import {compareModels, yen as verifiedYen} from './compare-products.js?v=ad4fabf2c819';
-import {createCAMPVisitGate} from './funnel-metrics.js?v=d2788887406c';
+import {createCAMPVisitGate} from './funnel-metrics.js?v=c0cc5d3fc81a';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const yen=n=>'¥'+Number(n).toLocaleString('ja-JP');
