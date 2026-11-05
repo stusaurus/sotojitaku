@@ -147,6 +147,8 @@ class BoundedCoverageResearch(unittest.TestCase):
         report, catalog, _ = coverage.stage_round(
             root=self.root, renew=renew, round_name="gap", now=self.clock)
         self.assertEqual(calls, list(coverage.ROUNDS["gap"]))
+        self.assertIn(("hot_sandwich_maker", "UG-3086"), calls)
+        self.assertNotIn(("led_lantern", "2000037352"), calls)
         self.assertEqual(report["maxApiRequests"], 6)
         self.assertEqual(report["independentlyRenewed"], 6)
         self.assertEqual(len(catalog["products"]), 7)
