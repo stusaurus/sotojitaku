@@ -177,8 +177,15 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
             if result["apiStatus"] == "api_confirmed_seller_variant_audit_required":
                 proof = seller.seller_audit_result(
                     candidate, equipment, live, visited, html, observed.isoformat())
-                proof_ok = (proof.get("status") ==
-                            "independent_seller_and_api_evidence_review_required")
+                # Every embedded copy must independently agree on a
+                # positive integer purchase price. A valid first copy and
+                # unpriced second copy is identity evidence ONLY; never
+                # allow legacy first-copy parser to elevate that to sale.
+                proof_ok = (
+                    identity["sellerPriceFieldPresent"] is True
+                    and proof.get("status") ==
+                    "independent_seller_and_api_evidence_review_required"
+                )
                 if proof_ok:
                     # Enforce exact embedded itemId as well as page URL:
                     # the legacy seller_audit_result verifies price but does
