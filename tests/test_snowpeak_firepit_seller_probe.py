@@ -101,6 +101,9 @@ class OfficialSnowPeakFirePit(unittest.TestCase):
             {"familyCapacityEvidence": {
                 **self.audit["familyCapacityEvidence"],
                 "manufacturerStatement": "焚火台 L"}},
+            {"familyCapacityEvidence": {
+                **self.audit["familyCapacityEvidence"],
+                "manufacturerStatement": None}},
         ):
             audit = {**self.audit, **mutated}
             self.assertFalse(proof.explicit_four_person_manufacturer_proof(audit))
