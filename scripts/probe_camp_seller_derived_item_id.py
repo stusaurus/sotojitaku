@@ -44,24 +44,50 @@ def page_identity(url, html, expected_url=SELLER_PAGE, model=MODEL):
     if not isinstance(html, str) or not html or len(html) > MAX_HTML_SIZE:
         return None, "seller_html_unavailable"
     marker = '"itemInfoSku":'
-    if marker not in html:
-        return None, "missing_sales_evidence"
+    # An itemId can be checked against Rakuten's exact API without treating
+    # any missing seller price as a valid purchase condition. No publication,
+    # no inventory assertion, and no 'verified' label on this intermediate ID.
+    if html.count(marker) != 1:
+        return None, ("missing_sales_evidence" if marker not in html
+                      else "ambiguous_seller_item_id")
     try:
         info, _ = json.JSONDecoder().raw_decode(html.split(marker, 1)[1])
+        if not isinstance(info, dict):
+            return None, "item_id_unverified"
         item_id = info.get("itemId")
-        price = info.get("purchaseInfo", {}).get("purchaseBySellType", {}).get(
-            "normalPurchase", {}).get("price", {}).get("minPrice")
         if type(item_id) is not int or item_id < 1 or len(str(item_id)) > 15:
             return None, "item_id_unverified"
-        if type(price) is not int or price <= 0:
-            return None, "price_unverified"
-        worker.parse_listing(html, model, price, item_id)
-    except (ValueError, TypeError, KeyError, AttributeError, json.JSONDecodeError) as error:
-        reason = str(error)
-        return None, reason if reason in SAFE_REASONS else "seller_conditions_unverified"
+        if model not in html:
+            return None, "model_missing"
+        if info.get("sellType") != "NORMAL":
+            return None, "wrong_listing"
+        purchase = info.get("purchaseInfo", {})
+        if not isinstance(purchase, dict):
+            return None, "seller_conditions_unverified"
+        sale = purchase.get("purchaseBySellType", {})
+        if not isinstance(sale, dict):
+            return None, "seller_conditions_unverified"
+        if sale.get("purchaseCondition") != "enabled":
+            return None, "unavailable"
+        if info.get("inventoryType") != "single" or info.get("sku"):
+            return None, "variant_unknown"
+        inventories = purchase.get("variantMappedInventories", [])
+        if (not isinstance(inventories, list) or len(inventories) != 1
+                or not isinstance(inventories[0], dict)
+                or type(inventories[0].get("quantity")) is not int
+                or inventories[0]["quantity"] <= 0):
+            return None, "inventory_unknown"
+        normal = sale.get("normalPurchase", {})
+        price_box = normal.get("price", {}) if isinstance(normal, dict) else {}
+        price = price_box.get("minPrice") if isinstance(price_box, dict) else None
+        price_present = type(price) is int and price > 0
+    except (ValueError, TypeError, KeyError, AttributeError, json.JSONDecodeError):
+        return None, "seller_conditions_unverified"
     shop = urllib.parse.urlparse(canonical).path.split("/")[1]
-    # Item Code comes from the merchant's itemInfoSku.itemId, NOT the URL slug.
-    return {"itemCode": shop + ":" + str(item_id), "itemUrl": canonical}, None
+    # This is ONLY a research identity. Seller price must still independently
+    # equal the official API price in seller_audit_result and parse_listing.
+    return {"itemCode": shop + ":" + str(item_id),
+            "itemUrl": canonical, "sellerPriceFieldPresent": price_present}, None
 
 
 def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
@@ -95,6 +121,7 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
         "sellerStatus": "not_verified",
         "sellerIdFromLivePage": False,
         "urlSlugMatchesSellerId": None,
+        "sellerPriceFieldPresent": None,
         "apiStatus": "not_requested",
         "independentEvidenceForManualReview": False,
         "manufacturerGroupSizeVerified": False if category == "fire_pit" else None,
@@ -110,8 +137,9 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
         if identity is None:
             result["sellerStatus"] = reason
         else:
-            result["sellerStatus"] = "exact_fixed_sku_verified_from_original_seller"
+            result["sellerStatus"] = "seller_item_id_observed_not_purchase_verified"
             result["sellerIdFromLivePage"] = True
+            result["sellerPriceFieldPresent"] = identity["sellerPriceFieldPresent"]
             result["urlSlugMatchesSellerId"] = (
                 urllib.parse.urlparse(identity["itemUrl"]).path.rstrip("/").split("/")[-1]
                 == identity["itemCode"].split(":", 1)[1]
@@ -125,9 +153,22 @@ def probe(*, root=ROOT, browser_get=None, api_fetch=None, now=None,
             if result["apiStatus"] == "api_confirmed_seller_variant_audit_required":
                 proof = seller.seller_audit_result(
                     candidate, equipment, live, visited, html, observed.isoformat())
-                result["independentEvidenceForManualReview"] = (
-                    proof.get("status") ==
-                    "independent_seller_and_api_evidence_review_required"
+                proof_ok = (proof.get("status") ==
+                            "independent_seller_and_api_evidence_review_required")
+                if proof_ok:
+                    # Enforce exact embedded itemId as well as page URL:
+                    # the legacy seller_audit_result verifies price but does
+                    # not itself bind itemId to the official API identity.
+                    try:
+                        worker.parse_listing(
+                            html, model, live["price"],
+                            int(identity["itemCode"].split(":", 1)[1]))
+                    except (ValueError, TypeError, KeyError, json.JSONDecodeError):
+                        proof_ok = False
+                result["independentEvidenceForManualReview"] = proof_ok
+                result["sellerStatus"] = (
+                    "independent_original_seller_proof_for_manual_review" if proof_ok
+                    else "seller_price_or_conditions_unverified"
                 )
     if any(path.read_bytes() != raw[key] for key, path in paths.items()):
         raise AssertionError("production_catalog_mutated")
