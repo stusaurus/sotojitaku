@@ -66,6 +66,9 @@ export function compareModels(recommended,category,{targetBudget}={}){
   rows.push({
    rank:rows.length+1,itemCode:p.itemCode,
    name:p.name,units:p.units,unitPrice:p.price,totalPrice:total,
+   image:typeof p.image==='string'
+     &&p.image.startsWith('https://thumbnail.image.rakuten.co.jp/')
+     ?p.image:null,
    difference,
    specs:verifiedSpecs(p,category),
    reason:Array.isArray(p.matchReasons)?p.matchReasons.filter(x=>typeof x==='string').slice(0,2):[],
