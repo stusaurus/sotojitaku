@@ -113,6 +113,50 @@ class CombinedEvidence(unittest.TestCase):
         self.assertNotIn("price", summary)
         self.assert_unchanged()
 
+
+    def test_three_batches_reuse_same_isolated_catalog_with_eighteen_call_limit(self):
+        stub, calls = self.fake()
+        report, catalog, _ = combined.assemble(
+            root=self.root, stage=stub, now=self.clock, include_gap=True)
+        self.assertEqual(calls, [("family", 1), ("recovery", 7), ("gap", 13)])
+        self.assertEqual(report["maximumTotalApiRequests"], 18)
+        self.assertEqual(report["maximumApiRequestsPerRound"], 6)
+        self.assertEqual(report["attempted"], 18)
+        self.assertEqual(report["independentlyRenewed"], 18)
+        self.assertEqual(report["requestedRounds"], ["family", "recovery", "gap"])
+        self.assertTrue(report["allRequestedRoundsCompleted"])
+        self.assertFalse(report["verifiedForPublication"])
+        self.assertEqual(len(catalog["products"]), 19)
+        self.assert_unchanged()
+
+    def test_429_third_batch_fails_closed_without_next_proof_or_publication(self):
+        stub, calls = self.fake(stop_at="gap")
+        candidate = self.root / "candidate.json"
+        result = combined.write_stage(
+            root=self.root, stage=stub, now=self.clock, include_gap=True,
+            candidate=candidate, audits=self.root / "audits.json")
+        self.assertFalse(result)
+        self.assertFalse(candidate.exists())
+        self.assertEqual(calls, [("family", 1), ("recovery", 7), ("gap", 13)])
+        summary = json.loads((self.root / "reports/camp-combined-review.json").read_text())
+        self.assertEqual(summary["attempted"], 13)
+        self.assertTrue(summary["stoppedByUpstream"])
+        self.assertFalse(summary["allRequestedRoundsCompleted"])
+        self.assertFalse(summary["verifiedForPublication"])
+        self.assert_unchanged()
+
+    def test_full_eighteen_stages_only_in_injected_temp_files(self):
+        stub, _ = self.fake()
+        candidate = self.root / "candidate.json"
+        audits = self.root / "audits.json"
+        result = combined.write_stage(
+            root=self.root, stage=stub, now=self.clock, include_gap=True,
+            candidate=candidate, audits=audits)
+        self.assertTrue(result)
+        self.assertEqual(len(json.loads(candidate.read_text())["products"]), 19)
+        self.assertTrue(audits.exists())
+        self.assert_unchanged()
+
     def test_naive_time_refused_prior_to_any_probe(self):
         stub, calls = self.fake()
         with self.assertRaises(ValueError):
