@@ -4,7 +4,7 @@ test('Pages release fingerprints match actual JS and CSS bytes',()=>{const html=
 
 test('CAMP supply and comparison helper imports use matching fingerprints',()=>{
  const app=read('camp/app.js');
- for(const module of ['supply-guidance.js','compare-products.js'])
+ for(const module of ['supply-guidance.js','compare-products.js','funnel-metrics.js'])
   assert.ok(app.includes(module+'?v='+hash('camp/'+module)),
     'missing content-based cache version for '+module);
 });
