@@ -7,6 +7,10 @@ for app_name,prefix in [('app.js','./'),('camp/app.js','../')]:
  p=ROOT/app_name;s=p.read_text()
  for name in ['engine.js','products.js']:
   s=re.sub(r"("+re.escape(prefix+name)+r")(?:(?:\?v=)[a-z0-9]+)?",r'\1?v='+version(name),s)
+ if app_name=='camp/app.js':
+  for module in ['supply-guidance.js','compare-products.js','funnel-metrics.js']:
+   s=re.sub(r"(\./"+re.escape(module)+r")(?:(?:\?v=)[a-z0-9]+)?",
+            r'\1?v='+version('camp/'+module),s)
  p.write_text(s)
 p=ROOT/'camp/index.html';s=p.read_text()
 for name in ['app.js','style.css']:

@@ -1,0 +1,35 @@
+name: CAMP Worker readiness (two paced exact calls max)
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_camp_worker_readiness.py'
+      - 'tests/test_probe_camp_worker_readiness.py'
+      - '.github/workflows/probe-camp-worker-readiness.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camp-worker-readiness-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  readiness:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify fail-closed health and credentials gates without upstream requests
+        run: python -m unittest discover -s tests -p 'test_probe_camp_worker_readiness.py' -v
+      - name: Check actual Worker health, credentials gate, and up to two paced exact items
+        if: github.event_name == 'workflow_dispatch'
+        run: python scripts/probe_camp_worker_readiness.py
+      - name: Save only sanitized readiness report
+        if: always() && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-worker-readiness-review
+          path: reports/camp-worker-readiness.json
+          retention-days: 14
+          if-no-files-found: warn
