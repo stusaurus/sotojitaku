@@ -116,6 +116,48 @@ class AlternateMerchantResearch(unittest.TestCase):
             self.assertNotIn(forbidden, text)
         self.check_unchanged()
 
+    def test_worker_http_error_is_reported_without_confusing_stock_or_exposing_url(self):
+        def unavailable(req):
+            self.calls.append(req.full_url)
+            return {
+                "error": "worker_unavailable", "worker_status": 503,
+                "upstream_status": 502,
+                "body": {"itemCode": "do_not_expose", "price": 19999},
+            }
+        result = research.collect(
+            root=self.root, fetch=unavailable, browser_get=self.seller,
+            observed_at="2026-11-05T01:00:00Z")
+        self.assertEqual(result["attempted"], 1)
+        self.assertTrue(result["stoppedByUpstream"])
+        first = result["results"][0]
+        self.assertEqual(first["apiStatus"], "worker_unavailable")
+        self.assertEqual(first["workerHttpStatus"], 503)
+        self.assertEqual(first["rakutenUpstreamHttpStatus"], 502)
+        self.assertFalse(first["independentSellerProof"])
+        self.assertFalse(self.seller_calls)
+        serialized = json.dumps(result)
+        for secret in ("do_not_expose", "19999", "itemCode", "itemUrl", "https://item.rakuten.co.jp/"):
+            self.assertNotIn(secret, serialized)
+        self.check_unchanged()
+
+    def test_malformed_or_fabricated_http_status_is_not_reported(self):
+        def invalid(req):
+            return {
+                "error": "worker_unavailable",
+                "worker_status": True,
+                "upstream_status": "500",
+            }
+        result = research.collect(
+            root=self.root, fetch=invalid, browser_get=self.seller,
+            observed_at="2026-11-05T01:00:00Z")
+        first = result["results"][0]
+        self.assertIsNone(first["workerHttpStatus"])
+        self.assertIsNone(first["rakutenUpstreamHttpStatus"])
+        self.assertEqual(first["apiStatus"], "worker_unavailable")
+        self.assertEqual(result["attempted"], 1)
+        self.assertFalse(self.seller_calls)
+        self.check_unchanged()
+
     def test_api_429_stops_without_seller_or_stock_assumption(self):
         def limited(req):
             self.calls.append(req.full_url)
