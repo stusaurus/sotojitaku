@@ -93,6 +93,79 @@ class ResearchOnly(unittest.TestCase):
         self.assertNotIn("listingAuditedAt", serialized)
         self.assertNotIn("currentApiPrice", serialized)
 
+    def test_independent_single_variant_page_stays_manual_review_only(self):
+        calls = []
+        def browser_get(url):
+            calls.append(url)
+            model = ("2000038854" if "10001" in url else "2206748")
+            ident = 10001 if "10001" in url else 10002
+            info = {
+                "itemId": ident, "sellType": "NORMAL",
+                "inventoryType": "single", "sku": [],
+                "purchaseInfo": {
+                    "purchaseBySellType": {
+                        "purchaseCondition": "enabled",
+                        "normalPurchase": {"price": {"minPrice": 6000}}
+                    },
+                    "variantMappedInventories": [{"quantity": 2}],
+                },
+            }
+            return url, '"itemInfoSku":' + json.dumps(info) + " " + model
+
+        result = probe.collect(root=self.root, fetch=self.mock_api,
+                               browser_get=browser_get, check_sellers=True,
+                               observed_at="2026-11-05T00:00:00Z")
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(result["apiRequests"], 2)
+        for row in result["results"]:
+            self.assertEqual(row["sellerStatus"],
+                             "independent_api_and_seller_proof_for_manual_review")
+            self.assertFalse(row["verifiedForPublication"])
+            self.assertNotIn("verifiedAt", row)
+            self.assertNotIn("listingAuditedAt", row)
+
+    def test_seller_item_id_mismatch_rejected_even_when_model_and_price_match(self):
+        def wrong_item(url):
+            model = "2000038854" if "10001" in url else "2206748"
+            info = {
+                "itemId": 99999, "sellType": "NORMAL",
+                "inventoryType": "single", "sku": [],
+                "purchaseInfo": {
+                    "purchaseBySellType": {
+                        "purchaseCondition": "enabled",
+                        "normalPurchase": {"price": {"minPrice": 6000}}
+                    },
+                    "variantMappedInventories": [{"quantity": 2}],
+                },
+            }
+            return url, '"itemInfoSku":' + json.dumps(info) + " " + model
+
+        result = probe.collect(root=self.root, fetch=self.mock_api,
+                               browser_get=wrong_item, check_sellers=True,
+                               observed_at="2026-11-05T00:00:00Z")
+        self.assertEqual([p["sellerStatus"] for p in result["results"]],
+                         ["seller_sku_or_item_id_unverified"] * 2)
+        self.assertTrue(all(p["verifiedForPublication"] is False
+                            for p in result["results"]))
+
+    def test_missing_seller_evidence_fails_closed(self):
+        result = probe.collect(root=self.root, fetch=self.mock_api,
+                               browser_get=lambda url: (url, "Blocked"),
+                               check_sellers=True,
+                               observed_at="2026-11-05T00:00:00Z")
+        self.assertEqual([p["sellerStatus"] for p in result["results"]],
+                         ["seller_page_conditions_unverified"] * 2)
+
+    def test_api_failure_never_opens_seller_page(self):
+        calls = []
+        result = probe.collect(root=self.root,
+                               fetch=lambda _: {"found": False},
+                               browser_get=lambda url: calls.append(url),
+                               check_sellers=True,
+                               observed_at="2026-11-05T00:00:00Z")
+        self.assertEqual(calls, [])
+        self.assertTrue(all("sellerStatus" not in row for row in result["results"]))
+
     def test_429_stops_after_one_call_without_hammering_worker(self):
         calls = []
         def fetch(req):
