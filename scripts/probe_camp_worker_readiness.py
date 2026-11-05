@@ -13,6 +13,7 @@ URLs, API credentials, response bodies or raw network exceptions.
 from __future__ import annotations
 
 import json
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -28,6 +29,7 @@ SAMPLE_CATEGORY = "led_lantern"
 SAMPLE_MODEL = "2000038854"
 PROBE_TIMEOUT = 12
 MAX_UPSTREAM_ITEM_REQUESTS = 2
+MIN_BETWEEN_ITEM_REQUESTS_SECONDS = 2
 REPORT = "reports/camp-worker-readiness.json"
 
 
@@ -56,7 +58,7 @@ def get_status(url, *, opener=None):
         return None, {}
 
 
-def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
+def probe(*, root=ROOT, get=get_status, fetch=None, now=None, pause=time.sleep):
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("timezone_required")
@@ -105,6 +107,9 @@ def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
         if api_status == "api_confirmed_seller_variant_audit_required":
             # A known-good baseline separates general Worker outages from
             # invalid/retired/blocked unverified merchant listing IDs.
+            # This does not guarantee quota recovery; the official API does
+            # not promise a fixed safe per-second rate. A 429 is always final.
+            pause(MIN_BETWEEN_ITEM_REQUESTS_SECONDS)
             attempted += 1
             other = request_exact(alternate, fetch=fetch)
             alternative_status = validate_candidate(
@@ -136,6 +141,7 @@ def probe(*, root=ROOT, get=get_status, fetch=None, now=None):
         "credentialGateResponse": config_error,
         "credentialGateVerified": ready,
         "maximumRakutenApiRequests": MAX_UPSTREAM_ITEM_REQUESTS,
+        "minimumBetweenItemCallsSeconds": MIN_BETWEEN_ITEM_REQUESTS_SECONDS,
         "rakutenApiRequests": attempted,
         "officialExactItemEvidence": api_status,
         "unverifiedAlternateMerchantEvidence": alternative_status,
