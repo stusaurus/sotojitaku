@@ -42,14 +42,25 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_probe_camp_recovery_candidates.py' -v
       - name: Test strict temporary catalog evaluation and no-publication behavior
         run: python -m unittest discover -s tests -p 'test_stage_camp_recovery_pair.py' -v
+      - name: Opt-in only for live seller API and inventory research
+        id: live
+        shell: bash
+        run: |
+          message="$(git log -1 --format=%B)"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || printf '%s' "$message" | grep -Fq '[camp-live-proof]'; then
+            echo 'approved=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'approved=false' >> "$GITHUB_OUTPUT"
+            echo 'Live product evidence NOT checked: unit tests only. No publication approval.' >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Install ordinary seller browser only for review proof
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.live.outputs.approved == 'true'
         run: python -m pip install playwright==1.55.0
       - name: Reverify LED, tent, burners and family tables into temporary catalog only
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.live.outputs.approved == 'true'
         run: python scripts/stage_camp_recovery_pair.py
       - name: Test temporary candidate against all CAMP recommendation checks
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.live.outputs.approved == 'true'
         run: |
           cp /tmp/camp-recovery-candidate-products.json data/products.json
           cp /tmp/camp-recovery-candidate-audits.json data/audited-products.json
@@ -61,7 +72,7 @@ jobs:
         if: github.event_name != 'pull_request'
         run: python scripts/stage_camp_api_evidence.py --offset "${{ inputs.offset || 0 }}" --limit 2
       - name: Preserve bounded nonpublishing research report
-        if: always()
+        if: always() && (github.event_name != 'pull_request' || steps.live.outputs.approved == 'true')
         uses: actions/upload-artifact@v4
         with:
           name: camp-api-evidence-candidates
