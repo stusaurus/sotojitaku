@@ -49,6 +49,15 @@ SOURCES = {
     },
 }
 
+# One alternative seller for the same DOD model. This is not a new
+# product family; multiple shops must never create false "choice diversity".
+SOURCES["dod_mat_happynight"] = {
+    **SOURCES["dod_mat"],
+    "sellerUrl": "https://item.rakuten.co.jp/happynight/gr-e9gou7fcfh/",
+}
+DEFAULT_TARGETS = ("dod_mat", "hilander_fire")
+ALTERNATE_DOD_TARGETS = ("dod_mat_happynight",)
+
 MAX_API_REQUESTS = 2
 MAX_BROWSER_REQUESTS = 2
 STOP = frozenset({"rate_limited", "worker_unavailable"})
@@ -196,7 +205,14 @@ def probe_one(key, *, seller_get=read_seller_page_once,
 
 
 def probe(*, root=ROOT, seller_get=read_seller_page_once,
-          api_fetch=None, pause=time.sleep, now=None):
+          api_fetch=None, pause=time.sleep, now=None, targets=DEFAULT_TARGETS):
+    # Validate all targets before touching network. A new shop of the SAME
+    # family is one alternative sale listing, not a separate product choice.
+    if (not isinstance(targets, tuple) or not 1 <= len(targets) <= 2
+            or len(targets) != len(set(targets))
+            or any(key not in SOURCES for key in targets)
+            or len({SOURCES[key]["family"] for key in targets}) != len(targets)):
+        raise ValueError("unapproved_or_duplicate_product_family_targets")
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("timezone_required")
@@ -208,7 +224,7 @@ def probe(*, root=ROOT, seller_get=read_seller_page_once,
     attempted_browser = 0
     results = []
     stopped = False
-    for index, key in enumerate(SOURCES):
+    for index, key in enumerate(targets):
         if index and attempted_api:
             pause(3)
         row = probe_one(key, root=root, seller_get=seller_get,
@@ -234,8 +250,9 @@ def probe(*, root=ROOT, seller_get=read_seller_page_once,
     }
 
 
-def main(root=ROOT):
-    report = probe(root=root)
+def main(root=ROOT, alternate_dod=False):
+    report = probe(root=root, targets=(
+        ALTERNATE_DOD_TARGETS if alternate_dod else DEFAULT_TARGETS))
     path = root / REPORT
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
@@ -244,4 +261,7 @@ def main(root=ROOT):
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--alternate-dod", action="store_true")
+    main(alternate_dod=parser.parse_args().alternate_dod)
