@@ -43,6 +43,14 @@ try{
   const mat=page.locator('#main [data-product="mat"]').first();
   await mat.click();
   await page.locator('#supply-empty-title').waitFor();
+  const gapEvents=await page.evaluate(()=>[...window.dataLayer]
+   .filter(x=>x[0]==='event')
+   .map(x=>({name:x[1],params:x[2]})));
+  assert.equal(gapEvents.filter(e=>e.name==='product_view'&&e.params.category_id==='mat').length,1);
+  assert.equal(gapEvents.filter(e=>e.name==='product_supply_gap'&&e.params.category_id==='mat'
+   &&e.params.gap_type==='no_eligible_offer').length,1);
+  assert.equal(gapEvents.filter(e=>e.name==='product_comparison_view'&&e.params.category_id==='mat').length,0,
+   'missing stock evidence is never a successful comparison');
   assert.match(await page.locator('#supply-empty-title').innerText(),/案内できる商品はまだありません/);
   assert.equal(await page.locator('#main [data-affiliate]').count(),0);
   assert.equal(await page.locator('[data-supply-status="rent"][data-category="mat"]').count(),1);
