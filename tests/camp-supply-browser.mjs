@@ -59,6 +59,8 @@ try{
   await page.goto(base+'camp/?test=1#shopping');
   await page.locator('.shopping-total').waitFor();
   assert.match(await page.locator('.shopping-total').innerText(),/参考小計/);
+  assert.match(await page.locator('.shopping-total').innerText(),/未集計/);
+  assert.doesNotMatch(await page.locator('.shopping-total').innerText(),/¥0/);
   assert.match(await page.locator('.supply-attention').first().innerText(),/まだ商品を案内できない道具/);
   assert.equal(await page.locator('#main [data-affiliate]').count(),0);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'shopping overflow '+width);
