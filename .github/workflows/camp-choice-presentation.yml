@@ -1,0 +1,25 @@
+name: CAMP evidence-limited choice QA
+on:
+  pull_request:
+    paths:
+      - 'camp/app.js'
+      - 'camp/choice-presentation.js'
+      - 'tests/camp-choice-presentation.test.mjs'
+      - '.github/workflows/camp-choice-presentation.yml'
+permissions:
+  contents: read
+jobs:
+  honest-choice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate browser module syntax
+        run: |
+          node --check camp/app.js
+          node --check camp/choice-presentation.js
+      - name: Prove zero, one and multiple eligible offers never invent a comparison
+        run: node --test tests/camp-choice-presentation.test.mjs
