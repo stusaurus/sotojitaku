@@ -2,6 +2,7 @@ import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validat
 import {recommend,defaultPreference,reject} from '../products.js?v=ac251aea4046';
 import {createCAMPVisitGate} from './funnel-metrics.js?v=20261106';
 import {eligibleChoiceCopy} from './choice-presentation.js?v=20261106';
+import {purchaseSelectionContext,affiliateClickSource} from './purchase-intent.js?v=20261106';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const yen=n=>'¥'+Number(n).toLocaleString('ja-JP');
@@ -101,11 +102,11 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
  if(t.hasAttribute('data-complete')){const r=readiness(state,data);if(!r.canComplete)return;state.finished=true;state.stage='complete';persist();track('simulator_complete',{experience_count:r.unlocked.length,estimate:costs(state,data).total});track('schedule_generated',{moment_count:schedule(state,data).length});go('complete');return;}
  if(t.dataset.gearTab){gearTab=t.dataset.gearTab;render();return;}
  if(t.dataset.productPref){state.productPrefs=state.productPrefs||{};state.productPrefs[t.dataset.category]=t.dataset.productPref;persist();track('product_preference',{category_id:t.dataset.category,preference:t.dataset.productPref});render();return;}
- if(t.dataset.selectProduct){state.selectedProducts=state.selectedProducts||{};state.selectedProducts[t.dataset.category]=t.dataset.selectProduct;persist();track('product_select',{category_id:t.dataset.category,product_id:t.dataset.selectProduct});render();toast('買うものリストに追加しました。');return;}
+ if(t.dataset.selectProduct){state.selectedProducts=state.selectedProducts||{};state.selectedProducts[t.dataset.category]=t.dataset.selectProduct;persist();const selection=purchaseSelectionContext(t.dataset.category,plan(state,data));track('product_select',{category_id:t.dataset.category,product_id:t.dataset.selectProduct,planned_buy:selection.plannedBuy?1:0});render();toast(selection.message);return;}
  if(t.dataset.product){currentCategory=t.dataset.product;go('products');return;}
  if(t.dataset.dept){currentCategory=data.equipment.categories.find(c=>c.department===t.dataset.dept)?.id||'tent';go('products');return;}
  if(t.hasAttribute('data-experience-start')){if(!state.answers.experiences.length){toast('やりたい時間をひとつ選んでください。');return;}qIndex=0;track('simulator_start',{source:'experience'});persist();go('question');return;}
- if(t.dataset.affiliate){track('affiliate_click',{affiliate:'rakuten',category_id:t.dataset.category,product_id:t.dataset.affiliate,conversion_source:'camp_missing_gear',link_url:t.href});return;}
+ if(t.dataset.affiliate){track('affiliate_click',{affiliate:'rakuten',category_id:t.dataset.category,product_id:t.dataset.affiliate,conversion_source:affiliateClickSource(route),link_url:t.href});return;}
  if(t.hasAttribute('data-print')){window.print();return;}
  if(t.hasAttribute('data-export')){track('plan_save',{save_method:'download'});const p=plan(state,data),s=schedule(state,data);const text=['SOTOJITAKU CAMP','はじめてのキャンプを、あなた仕立てに。',`大人${state.answers.adults}人 / 子ども${state.answers.children}人 / ${state.answers.stay==='one_night'?'1泊2日':'日帰り'}`,`道具予算目安 ${yen(costs(state,data).total)}（実売・予約価格ではありません）`,'','装備計画',...p.map(g=>`${statusLabels[g.status]}：${g.label} ×${g.quantity}`),'','過ごし方',...s.map(m=>`${m.time} ${m.title}\n${m.body}`),'','出発前に天候・施設ルール・予約・在庫を確認。荒天・強風なら延期や中止。','https://stusaurus.github.io/sotojitaku/'].join('\n');const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='SOTOJITAKU-my-camp.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('キャンプの計画を保存しました。');return;}
  if(t.hasAttribute('data-delete')){if(confirm('保存したキャンプを削除しますか？')){try{localStorage.removeItem(KEY);}catch{}state=fresh();hasSaved=false;qIndex=0;go('home');toast('保存したキャンプを削除しました。');}return;}
