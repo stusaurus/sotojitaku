@@ -1,0 +1,25 @@
+name: CAMP SPA analytics deduplication QA
+on:
+  pull_request:
+    paths:
+      - 'camp/app.js'
+      - 'camp/funnel-metrics.js'
+      - 'tests/camp-analytics-dedup.test.mjs'
+      - '.github/workflows/camp-analytics-dedup.yml'
+permissions:
+  contents: read
+jobs:
+  verify-events:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check CAMP SPA browser module syntax
+        run: |
+          node --check camp/app.js
+          node --check camp/funnel-metrics.js
+      - name: Prove route and category view events are emitted once per visit
+        run: node --test tests/camp-analytics-dedup.test.mjs
