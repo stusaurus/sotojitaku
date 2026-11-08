@@ -20,7 +20,9 @@ PRIORITIES = (
     ("tent", "2206748"),             # Family-oriented two-room tent; seller proof needed.
 )
 MAX_REQUESTS = 2
-STOP_STATUSES = frozenset(("rate_limited", "worker_unavailable"))
+# Malformed shared responses are a transport/evidence failure, not proof that
+# one seller is unavailable. The coverage rounds reuse this stop policy.
+STOP_STATUSES = frozenset(("rate_limited", "worker_unavailable", "invalid_response"))
 
 
 def verify_current_seller(audit, live, equipment, observed, browser_get=None):

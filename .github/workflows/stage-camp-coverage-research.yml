@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'scripts/stage_camp_coverage_round.py'
+      - 'scripts/probe_camp_recovery_candidates.py'
       - 'tests/test_stage_camp_coverage_round.py'
       - 'scripts/report_camp_recommendation_gaps.mjs'
       - 'tests/camp-recommendation-gaps.test.mjs'
@@ -11,6 +12,11 @@ on:
       - '.github/workflows/stage-camp-coverage-research.yml'
   workflow_dispatch:
     inputs:
+      live_proof:
+        description: 'Recheck live API and seller evidence (false runs unit tests only)'
+        type: boolean
+        required: true
+        default: false
       round:
         description: 'One six-call batch, 12-call combined, or 18-call full read-only research'
         type: choice
@@ -48,12 +54,18 @@ jobs:
       - name: Opt-in only for live seller API and inventory research
         id: live
         shell: bash
+        env:
+          LIVE_PROOF_REQUESTED: ${{ inputs.live_proof || false }}
         run: |
           message="$(git log -1 --format=%B)"
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || printf '%s' "$message" | grep -Fq '[camp-live-proof]'; then
-            echo 'approved=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'approved=false' >> "$GITHUB_OUTPUT"
+          approved=false
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            approved="$LIVE_PROOF_REQUESTED"
+          elif printf '%s' "$message" | grep -Fq '[camp-live-proof]'; then
+            approved=true
+          fi
+          echo "approved=$approved" >> "$GITHUB_OUTPUT"
+          if [ "$approved" != "true" ]; then
             echo 'Live product evidence NOT checked: unit tests only. No publication approval.' >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Install ordinary seller-page proof client

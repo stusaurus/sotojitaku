@@ -201,6 +201,22 @@ class BoundedCoverageResearch(unittest.TestCase):
         self.assertEqual(len(catalog["products"]), 2)
         self.assertEqual(self.before, (self.root / "data/products.json").read_bytes())
 
+    def test_invalid_shared_response_stops_before_next_candidate(self):
+        for fail_at in (1, 2):
+            with self.subTest(fail_at=fail_at):
+                renew, requests = self.mock_renew(
+                    fail_at=fail_at, reason="invalid_response")
+                report, catalog, _ = coverage.stage_round(
+                    root=self.root, renew=renew, round_name="family",
+                    now=self.clock)
+                self.assertEqual(len(requests), fail_at)
+                self.assertTrue(report["stoppedByUpstream"])
+                self.assertEqual(report["independentlyRenewed"], fail_at-1)
+                self.assertEqual(report["results"][-1]["sellerStatus"], "not_attempted")
+                self.assertFalse(report["verifiedForPublication"])
+                self.assertEqual(len(catalog["products"]), fail_at)
+                self.assertEqual(self.before, (self.root / "data/products.json").read_bytes())
+
     def test_priority_missing_audited_seller_aborts_without_api_request(self):
         self.audits["products"] = [
             a for a in self.audits["products"]
