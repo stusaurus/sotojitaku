@@ -124,3 +124,37 @@ test('eligible listing count is not truncated to the three displayed recommendat
  assert.equal(x.maximumEligibleChoices,3);
  assert.deepEqual(x.eligibility.rejectionReasons,{});
 });
+
+const tentEquipment={global_exclude_terms:[],categories:[{
+ id:'tent',include_any:['テント'],exclude_any:[],
+ required_fields:['capacity','weight','packed_size'],
+}]};
+function tents(){
+ return ['2000036439','2000039087','2185614','2000038429'].map((model,i)=>{
+  const p=offer(i+1,'tent-'+i);
+  p.category='tent';p.name='テント '+model;p.model=model;
+  p.spec={capacity:5,weight:4000,packed_size:'40x20cm'};
+  p.evidence.fields={capacity:specUrl,weight:specUrl,packed_size:specUrl};
+  p.scores={fit:.95,trust:.95,beginner:0,comfort:0,portability:0,value:0};
+  p.scores[['beginner','comfort','portability','value'][i]]=1;
+  p.traits=[['easy','comfort','compact','value'][i]];
+  return p;
+ });
+}
+test('four distinct family tent tops still fail when an expected model does not match',()=>{
+ const products=tents();products[0].model='wrong-historical-model';
+ const f=inspect({products},tentEquipment,rules,observed).findings[0];
+ assert.equal(f.familyTentPreferences.distinctTopCount,4);
+ assert.equal(f.familyTentPreferences.matchedPreferenceCount,3);
+ assert.equal(f.familyTentPreferences.meetsStrictGate,false);
+ assert.ok(f.blockers.includes('family-four:strict_tent_preferences_unmet'));
+ assert.equal(JSON.stringify(f).includes('wrong-historical-model'),false);
+});
+test('the unchanged four expected family tent tops satisfy the diagnostic strict gate',()=>{
+ const r=inspect({products:tents()},tentEquipment,rules,observed);
+ const f=r.findings[0];
+ assert.equal(f.familyTentPreferences.matchedPreferenceCount,4);
+ assert.equal(f.familyTentPreferences.meetsStrictGate,true);
+ assert.ok(!f.blockers.includes('family-four:strict_tent_preferences_unmet'));
+ assert.equal(r.verifiedForPublication,false);
+});

@@ -87,6 +87,26 @@ export function inspect(catalog, equipment, rules, observed = Date.now()) {
     const preferenceProfile = category==='tent'?'family-four':'couple';
     const familyNeedsTwo = ['tent','table','cooler','fire_pit'].includes(category);
     const blockers = [];
+    // The family-tent gate is stricter than general two-choice diversity.
+    // Keep the exact expectations in tests/engine.test.mjs:55 unchanged and
+    // expose aggregate match counts only, never the model identities.
+    const expectedTentTops = {
+      easy:'2000036439',comfort:'2000039087',compact:'2185614',value:'2000038429',
+    };
+    const tentTops = category==='tent' ? preferences.map(preference=>recommend(
+      catalog.products||[],category,profiles['family-four'],equipment,rules,
+      {preference,quantity:1,targetBudget:25000},observed)[0]?.model) : [];
+    const matchedTentTops = preferences.filter((preference,i)=>
+      tentTops[i]===expectedTentTops[preference]).length;
+    const strictTentPreferences = category==='tent' ? {
+      requiredPreferenceCount:4,
+      matchedPreferenceCount:matchedTentTops,
+      distinctTopCount:new Set(tentTops.filter(Boolean)).size,
+      meetsStrictGate:matchedTentTops===4&&new Set(tentTops.filter(Boolean)).size===4,
+    } : null;
+    if(strictTentPreferences&&!strictTentPreferences.meetsStrictGate) {
+      blockers.push('family-four:strict_tent_preferences_unmet');
+    }
     for(const [profile,coverage] of Object.entries(profileCoverage)) {
       if(coverage.hasMissingRecommendation) blockers.push(profile+':no_eligible_choice');
     }
@@ -112,6 +132,7 @@ export function inspect(catalog, equipment, rules, observed = Date.now()) {
     findings.push({
       category,
       catalogEntryCount: categoryProducts.length,
+      ...(strictTentPreferences?{familyTentPreferences:strictTentPreferences}:{}),
       ...(familyNeedsTwo?{familyFourComfort:{
         eligibleChoices:familyComfortChoices,
         distinctProductFamilies:distinctFamilyModels,
