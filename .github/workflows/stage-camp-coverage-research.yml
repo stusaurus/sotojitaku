@@ -5,6 +5,7 @@ on:
       - 'scripts/stage_camp_coverage_round.py'
       - 'tests/test_stage_camp_coverage_round.py'
       - 'scripts/report_camp_recommendation_gaps.mjs'
+      - 'tests/camp-recommendation-gaps.test.mjs'
       - 'scripts/stage_camp_combined_review.py'
       - 'tests/test_stage_camp_combined_review.py'
       - '.github/workflows/stage-camp-coverage-research.yml'
@@ -43,6 +44,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_stage_camp_coverage_round.py' -v
           python -m unittest discover -s tests -p 'test_stage_camp_combined_review.py' -v
+          node --test tests/camp-recommendation-gaps.test.mjs
       - name: Opt-in only for live seller API and inventory research
         id: live
         shell: bash

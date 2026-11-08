@@ -12,7 +12,7 @@
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { DEFAULT } from '../engine.js';
-import { recommend } from '../products.js';
+import { recommend, reject } from '../products.js';
 
 const URLS = {
   products: new URL('../data/products.json', import.meta.url),
@@ -50,6 +50,16 @@ export function inspect(catalog, equipment, rules, observed = Date.now()) {
     const categoryProducts = (catalog.products || []).filter(p=>p.category===category);
     const profileCoverage = {};
     for (const [profile,answers] of Object.entries(profiles)) {
+      // Use the same eligibility gate as recommendations. Counts refer to
+      // listings, before recommendation deduplication and the three-card cap.
+      // Never expose merchant identities or live offer details in this report.
+      const rejectionReasons = {};
+      let eligibleListings = 0;
+      for (const product of categoryProducts) {
+        const reason = reject(product, category, answers, equipment, observed);
+        if (reason === null) eligibleListings++;
+        else rejectionReasons[reason] = (rejectionReasons[reason] || 0) + 1;
+      }
       const quantity = profile==='family-four' ? (category==='tent'?1:4)
                      : profile==='couple' ? 2 : 1;
       const budget = profile==='family-four'? (category==='tent'?25000:50000)
@@ -60,6 +70,13 @@ export function inspect(catalog, equipment, rules, observed = Date.now()) {
       const uniqueTop = new Set(recommended.map(r=>r[0]?.model).filter(Boolean)).size;
       const availablePreferences = recommended.filter(r=>r.length>0).length;
       profileCoverage[profile] = {
+        eligibility: {
+          rejectionBasis: 'first_failed_gate_per_listing',
+          evaluatedListings: categoryProducts.length,
+          eligibleListings,
+          rejectedListings: categoryProducts.length - eligibleListings,
+          rejectionReasons,
+        },
         availablePreferenceCount: availablePreferences,
         distinctTopCount: uniqueTop,
         maximumEligibleChoices: Math.max(...recommended.map(r=>r.length)),

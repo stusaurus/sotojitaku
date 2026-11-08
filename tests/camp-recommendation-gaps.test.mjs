@@ -79,3 +79,48 @@ test('diagnostic outputs no offer identities, URLs, prices, shipping status or i
  ])assert.equal(encoded.includes(privateField),false,privateField);
  assert.deepEqual(summary.preferences,['easy','comfort','compact','value']);
 });
+
+test('rejection counts distinguish family capacity, portability and expired evidence',()=>{
+ const small=offer(3,'small');small.spec.table_capacity=2;
+ const stale=offer(4,'stale');
+ stale.verifiedAt=new Date(observed-8*86400000).toISOString();
+ const light=offer(5,'light');light.spec.weight=1000;
+ const catalog={products:[offer(1,'one'),offer(2,'one'),small,stale,light]};
+ const before=structuredClone(catalog);
+ const coverage=inspect(catalog,equipment,rules,observed).findings[0].profileCoverage;
+ assert.deepEqual(coverage['family-four'].eligibility,{
+   rejectionBasis:'first_failed_gate_per_listing',evaluatedListings:5,
+   eligibleListings:3,rejectedListings:2,
+   rejectionReasons:{table_capacity:1,stale:1},
+ });
+ assert.deepEqual(coverage['solo-no-car'].eligibility.rejectionReasons,
+                  {portability:3,stale:1});
+ assert.equal(coverage['solo-no-car'].eligibility.eligibleListings,1);
+ // Two eligible listings of the same product family remain one true choice.
+ assert.equal(coverage['family-four'].maximumEligibleChoices,2);
+ assert.deepEqual(catalog,before);
+ for(const profile of Object.values(coverage)){
+   const x=profile.eligibility;
+   assert.equal(x.evaluatedListings,x.eligibleListings+x.rejectedListings);
+   assert.equal(Object.values(x.rejectionReasons).reduce((a,b)=>a+b,0),x.rejectedListings);
+ }
+});
+
+test('empty catalog is missing supply, not an invented rejection or seller outage',()=>{
+ const result=inspect({products:[]},equipment,rules,observed);
+ const x=result.findings[0].profileCoverage['family-four'];
+ assert.deepEqual(x.eligibility.rejectionReasons,{});
+ assert.equal(x.eligibility.evaluatedListings,0);
+ assert.equal(x.eligibility.rejectedListings,0);
+ assert.equal(x.hasMissingRecommendation,true);
+ assert.equal(result.verifiedForPublication,false);
+});
+
+test('eligible listing count is not truncated to the three displayed recommendations',()=>{
+ const products=Array.from({length:5},(_,i)=>offer(i+1,'family-'+i));
+ const x=inspect({products},equipment,rules,observed)
+   .findings[0].profileCoverage['family-four'];
+ assert.equal(x.eligibility.eligibleListings,5);
+ assert.equal(x.maximumEligibleChoices,3);
+ assert.deepEqual(x.eligibility.rejectionReasons,{});
+});
