@@ -24,6 +24,9 @@ HEADERS = {
     "User-Agent": "sotojitaku-camp-evidence-stage/1.0",
 }
 MAX_QUERIES = 2
+# A shared transport outage affects later SKUs too. Do not spend the remaining
+# request budget or infer that any unvisited seller is unavailable.
+SHARED_FAILURE_STATUSES = frozenset({'rate_limited', 'worker_unavailable', 'invalid_response'})
 
 def candidate_audits(audits, *, offset=0, limit=MAX_QUERIES):
     if not isinstance(limit, int) or not 1 <= limit <= MAX_QUERIES:
@@ -79,7 +82,7 @@ def request_exact(audit, fetch=None):
             body=json.loads(err.read(4096).decode('utf-8'))
         except (UnicodeError,ValueError):
             body={}
-        return {'error':'worker_unavailable','upstream_status':body.get('upstream_status'),'worker_status':err.code}
+        return {'error':'worker_unavailable','upstream_status':body.get('upstream_status') if isinstance(body,dict) else None,'worker_status':err.code}
     except (urllib.error.URLError,TimeoutError,UnicodeError,ValueError):
         return {'error':'worker_unavailable','upstream_status':None,'worker_status':None}
 
@@ -90,11 +93,13 @@ def validate_candidate(audit, live, equipment, observed_at):
     if not isinstance(live,dict):
         return outcome('invalid_response')
     if live.get('error'):
-        if live.get('upstream_status') == 429:
+        if live.get('upstream_status') == 429 or live.get('worker_status') == 429:
             return outcome('rate_limited')
         return outcome('worker_unavailable')
-    if live.get('found') is not True:
+    if live.get('found') is False:
         return outcome('exact_item_not_found')
+    if live.get('found') is not True:
+        return outcome('invalid_response')
     if live.get('lookup_method') != 'exact_item_code_only':
         return outcome('untrusted_lookup_method')
     expected=canonical_item_url(audit.get('itemUrl'))
@@ -146,7 +151,7 @@ def stage(*, max_queries=MAX_QUERIES,offset=0, fetch=None, now=None, root=ROOT):
         live=request_exact(audit,fetch=fetch)
         result=validate_candidate(audit,live,equipment,now)
         results.append(result)
-        if result['status']=='rate_limited':
+        if result['status'] in SHARED_FAILURE_STATUSES:
             break
     return {
         'schemaVersion':1,
@@ -155,6 +160,8 @@ def stage(*, max_queries=MAX_QUERIES,offset=0, fetch=None, now=None, root=ROOT):
         'maxApiRequests':MAX_QUERIES,
         'attempted':len(results),
         'blockedByRateLimit':bool(results and results[-1]['status']=='rate_limited'),
+        'stoppedBySharedFailure':bool(results and results[-1]['status'] in SHARED_FAILURE_STATUSES),
+        'stopReason':results[-1]['status'] if results and results[-1]['status'] in SHARED_FAILURE_STATUSES else None,
         'results':results,
     }
 

@@ -74,4 +74,40 @@ class EvidenceSafety(unittest.TestCase):
    self.assertEqual(public.read_text(),'{"products":["leave untampered"]}')
    self.assertEqual(result['results'][0]['status'],'rate_limited')
 
+
+class TransportFailureSafety(unittest.TestCase):
+ def test_missing_or_non_boolean_found_is_not_a_confirmed_listing_miss(self):
+  for response in ({}, {'found':None}, {'found':0}, {'found':'false'}):
+   with self.subTest(response=response):
+    self.assertEqual(stage.validate_candidate(AUDIT,response,EQUIPMENT,NOW)['status'],'invalid_response')
+  self.assertEqual(stage.validate_candidate(AUDIT,{'found':False},EQUIPMENT,NOW)['status'],'exact_item_not_found')
+
+ def test_worker_429_is_rate_limit_even_without_upstream_json(self):
+  from unittest.mock import patch
+  from urllib.error import HTTPError
+  from io import BytesIO
+  for body in (b'not json',b'[]',b'null',b'{"upstream_status":null}'):
+   with self.subTest(body=body),patch.object(stage.urllib.request,'urlopen',
+       side_effect=HTTPError(stage.WORKER,429,'limited',{},BytesIO(body))):
+    raw=stage.request_exact(AUDIT)
+    self.assertEqual(stage.validate_candidate(AUDIT,raw,EQUIPMENT,NOW)['status'],'rate_limited')
+
+ def test_staging_shared_outage_stops_and_never_touches_public_data(self):
+  for response,reason in (({'error':'worker_unavailable','worker_status':503},'worker_unavailable'),([], 'invalid_response')):
+   with self.subTest(reason=reason),TemporaryDirectory() as d:
+    root=Path(d);(root/'data').mkdir()
+    (root/'data/audited-products.json').write_text(json.dumps({'products':[AUDIT,{**AUDIT,'category':'tent'}]}))
+    (root/'data/equipment.json').write_text(json.dumps(EQUIPMENT))
+    public=root/'data/products.json';public.write_text('{"products":[]}')
+    calls=[]
+    def fetch(req):
+     calls.append(req.full_url)
+     return response
+    result=stage.stage(fetch=fetch,root=root,now=NOW)
+    self.assertEqual(len(calls),1)
+    self.assertTrue(result['stoppedBySharedFailure'])
+    self.assertFalse(result['blockedByRateLimit'])
+    self.assertEqual(result['stopReason'],reason)
+    self.assertEqual(public.read_text(),'{"products":[]}')
+
 if __name__=="__main__":unittest.main()
