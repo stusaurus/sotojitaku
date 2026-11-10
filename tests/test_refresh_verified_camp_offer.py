@@ -150,4 +150,25 @@ class LiveRenewal(unittest.TestCase):
             self.assertEqual((root/"data/products.json").read_bytes(),original)
             self.assertEqual((root/"data/audited-products.json").read_bytes(),original_audit)
 
+
+    def test_browser_exception_reports_bounded_reason_but_never_extends_evidence(self):
+        def fail(url):
+            self.assertEqual(url,URL)
+            raise runner.seller.SellerBrowserFetchError(
+                "seller_navigation_or_read",
+                TimeoutError("seller timeout https://example.com/?token=PRIVATE"))
+        before=payload()
+        audits,new,report=runner.refresh_snapshot(
+            {"products":[copy.deepcopy(AUDIT)]},copy.deepcopy(before),EQUIPMENT,
+            api_fetch=lambda req:LIVE,browser_get=fail,now=NOW,run_id="12345")
+        self.assertEqual(report["sellerStatus"],"seller_browser_fetch_failed")
+        self.assertEqual(report["sellerFetchFailureKind"],"timeout")
+        self.assertEqual(report["sellerFetchFailurePhase"],"seller_navigation_or_read")
+        self.assertEqual(report["result"],"previous_still_fresh")
+        self.assertFalse(report["publishedFreshnessChanged"])
+        self.assertEqual(new["products"][0]["verifiedAt"],before["products"][0]["verifiedAt"])
+        self.assertEqual(new["products"][0]["price"],before["products"][0]["price"])
+        self.assertEqual(audits,{"products":[AUDIT]})
+        self.assertNotIn("PRIVATE",str(report))
+
 if __name__=="__main__":unittest.main()
