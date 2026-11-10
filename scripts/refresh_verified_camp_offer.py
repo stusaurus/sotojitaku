@@ -197,7 +197,7 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
 def refresh_verified_offers(audits_doc, existing, equipment, *,
                             api_fetch=None, browser_get=None, now=None, run_id="local",
                             targets=TARGETS):
-    """Bounded certified-SKU renewal; a confirmed 429 stops further API requests.
+    """Bounded certified-SKU renewal; shared API failures stop later requests.
 
     The first check also removes expired OTHER SKUs from the snapshot,
     even when the subsequent requests are skipped for quota protection.
@@ -214,13 +214,15 @@ def refresh_verified_offers(audits_doc, existing, equipment, *,
             run_id=run_id, target_category=category, target_model=model,
         )
         results.append(result)
-        if result["apiStatus"] == "rate_limited":
+        if result["apiStatus"] in stage.SHARED_FAILURE_STATUSES:
             break
     return audits_doc, existing, {
         "schemaVersion": 1,
         "type": "automatic_original_seller_proof_batch",
         "attempted": len(results), "maximumApiCalls": limit,
         "stoppedByRateLimit": bool(results and results[-1]["apiStatus"] == "rate_limited"),
+        "stoppedBySharedFailure": bool(results and results[-1]["apiStatus"] in stage.SHARED_FAILURE_STATUSES),
+        "stopReason": results[-1]["apiStatus"] if results and results[-1]["apiStatus"] in stage.SHARED_FAILURE_STATUSES else None,
         "verifiedCount": len(existing.get("products") or []),
         "results": results,
     }

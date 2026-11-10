@@ -95,4 +95,34 @@ class NineIndependentSellers(unittest.TestCase):
   a,p,e=fixture()
   with self.assertRaisesRegex(ValueError,"unaudited_or_duplicate_target"):
    renewal.refresh_verified_offers(a,p,e,targets=renewal.TARGETS+(("burner","ST-310"),),now=NOW)
+
+class SharedWorkerFailureStop(unittest.TestCase):
+ def test_outage_stops_batch_without_renewing_fresh_or_preserving_expired_offers(self):
+  for response,reason in (({'error':'worker_unavailable','worker_status':503},'worker_unavailable'),
+                          ({'error':'worker_unavailable','worker_status':429},'rate_limited'),
+                          ([], 'invalid_response')):
+   with self.subTest(reason=reason):
+    audits,existing,gear=fixture()
+    # The first pass must still expire an unvisited product at the TTL boundary.
+    existing['products'][-1]['verifiedAt']=(NOW-timedelta(days=7)).isoformat()
+    original=copy.deepcopy(existing)
+    calls=[]
+    def api(req):
+     calls.append(req.full_url)
+     return response
+    def browser(url):
+     self.fail('shared API failure must not contact any seller')
+    new_audits,new,report=renewal.refresh_verified_offers(
+     audits,existing,gear,api_fetch=api,browser_get=browser,now=NOW)
+    self.assertEqual(len(calls),1)
+    self.assertEqual(report['attempted'],1)
+    self.assertTrue(report['stoppedBySharedFailure'])
+    self.assertEqual(report['stopReason'],reason)
+    self.assertEqual(report['stoppedByRateLimit'],reason=='rate_limited')
+    self.assertEqual(new_audits,audits)
+    self.assertEqual(existing,original)
+    fresh={p['model']:p for p in original['products'] if renewal.valid_existing(p,NOW)}
+    self.assertEqual({p['model']:p for p in new['products']},fresh)
+    self.assertFalse(report['results'][0]['publishedFreshnessChanged'])
+
 if __name__=="__main__":unittest.main()
