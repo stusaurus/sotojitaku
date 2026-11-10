@@ -79,4 +79,43 @@ class SellerProof(unittest.TestCase):
    r=proof.collect(root=root,api_fetch=api,browser_get=browser,now=NOW)
    self.assertEqual(calls,["api","seller"])
    self.assertEqual(r["status"],"independent_seller_and_api_evidence_review_required")
+
+class BrowserFailureDiagnostics(unittest.TestCase):
+ def test_failure_codes_only_never_leak_raw_browser_errors(self):
+  secret="https://item.rakuten.co.jp/shop/item/?token=PRIVATE"
+  cases=[
+   (TimeoutError("Timeout while visiting "+secret),"timeout"),
+   (RuntimeError("net::ERR_NAME_NOT_RESOLVED "+secret),"dns_failure"),
+   (RuntimeError("net::ERR_CONNECTION_RESET "+secret),"connection_failure"),
+   (RuntimeError("net::ERR_CERT_AUTHORITY_INVALID "+secret),"tls_failure"),
+   (RuntimeError("Executable doesn't exist "+secret),"browser_runtime_failure"),
+   (RuntimeError("unrecognized "+secret),"other_failure"),
+  ]
+  for source,kind in cases:
+   with self.subTest(kind=kind):
+    err=proof.SellerBrowserFetchError("seller_navigation_or_read",source)
+    self.assertEqual(proof.seller_fetch_failure_kind(err),kind)
+    self.assertEqual(proof.seller_fetch_failure_phase(err),"seller_navigation_or_read")
+    self.assertNotIn(secret,str(err))
+    self.assertNotIn(secret,str(err.__dict__))
+ def test_one_failed_browser_getter_never_updates_public_catalog(self):
+  with TemporaryDirectory() as d:
+   root=Path(d);(root/"data").mkdir()
+   (root/"data/audited-products.json").write_text(json.dumps({"products":[AUDIT]}))
+   (root/"data/equipment.json").write_text(json.dumps(EQUIPMENT))
+   public=root/"data/products.json";public.write_text('{"products":["untouched"]}')
+   calls=[]
+   def fail(url):
+    calls.append(url)
+    raise proof.SellerBrowserFetchError("seller_navigation_or_read",
+                                        TimeoutError("secret=PRIVATE"))
+   result=proof.collect(root=root,api_fetch=lambda req:LIVE,browser_get=fail,now=NOW)
+   self.assertEqual(calls,[URL])
+   self.assertEqual(result["status"],"seller_browser_fetch_failed")
+   self.assertEqual(result["sellerFetchFailureKind"],"timeout")
+   self.assertEqual(result["sellerFetchFailurePhase"],"seller_navigation_or_read")
+   self.assertNotIn("PRIVATE",str(result))
+   self.assertFalse(result["verifiedForPublication"])
+   self.assertEqual(public.read_text(),'{"products":["untouched"]}')
+
 if __name__=="__main__":unittest.main()
