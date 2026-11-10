@@ -20,6 +20,35 @@ ALLOWED_REASONS = {
     "variant_unknown", "model_missing",
 }
 
+# Only bounded reason codes are recorded. Never persist exception messages,
+# visited URLs, browser console output, or page content in public artifacts.
+def seller_fetch_failure_kind(error):
+    if isinstance(error, SellerBrowserFetchError):
+        return error.kind
+    name = type(error).__name__.lower()
+    description = str(error).lower()
+    if "timeout" in name or "timeout" in description:
+        return "timeout"
+    if "err_name_not_resolved" in description or "err_dns" in description:
+        return "dns_failure"
+    if "err_connection" in description or "err_network" in description:
+        return "connection_failure"
+    if "err_cert" in description or "err_ssl" in description:
+        return "tls_failure"
+    if "executable doesn't exist" in description or "failed to launch" in description:
+        return "browser_runtime_failure"
+    return "other_failure"
+
+def seller_fetch_failure_phase(error):
+    return error.phase if isinstance(error, SellerBrowserFetchError) else "external_browser_getter"
+
+class SellerBrowserFetchError(Exception):
+    """A coarse phase/reason code. Original exception text is discarded."""
+    def __init__(self, phase, error):
+        self.phase = phase
+        self.kind = seller_fetch_failure_kind(error)
+        super().__init__("seller_browser_fetch_failed")
+
 def seller_audit_result(audit, equipment, live, visited_url, page_html, observed_at):
     candidate = stage.validate_candidate(audit, live, equipment, observed_at)
     base = {
@@ -79,29 +108,45 @@ def collect(*, root=ROOT, api_fetch=None, browser_get=None, now=None):
         browser_get = read_seller_page_once
     try:
         current_url, html = browser_get(audit["itemUrl"])
-    except Exception:
+    except Exception as error:
         # Do not leak network exception messages or retry blocked seller pages.
         return {
             "schemaVersion": 1, "type": "research_only_not_for_publication",
             "category": audit["category"], "model": audit["model"], "observedAt": observed,
             "verifiedForPublication": False, "officialApiStatus": candidate["status"],
             "status": "seller_browser_fetch_failed",
+            "sellerFetchFailureKind": seller_fetch_failure_kind(error),
+            "sellerFetchFailurePhase": seller_fetch_failure_phase(error),
         }
     return seller_audit_result(audit, equipment, live, current_url, html, observed)
 
 def read_seller_page_once(url):
     from playwright.sync_api import sync_playwright
-    with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True, channel="chrome")
-        try:
-            page = browser.new_page(viewport={"width": 1200, "height": 800}, locale="ja-JP")
-            # Standard browser only; no stealth, proxies, captcha solving or
-            # repeated blocked-page requests.
-            page.goto(url, wait_until="domcontentloaded", timeout=25000)
-            page.wait_for_timeout(900)
-            return page.url, page.content()
-        finally:
-            browser.close()
+    try:
+        with sync_playwright() as pw:
+            try:
+                browser = pw.chromium.launch(headless=True, channel="chrome")
+            except Exception as error:
+                raise SellerBrowserFetchError("browser_launch", error) from None
+            try:
+                try:
+                    page = browser.new_page(viewport={"width": 1200, "height": 800}, locale="ja-JP")
+                except Exception as error:
+                    raise SellerBrowserFetchError("page_open", error) from None
+                try:
+                    # One ordinary visit only. Incomplete, blocked or timed-out
+                    # pages cannot pass the existing exact SKU/stock/price gates.
+                    page.goto(url, wait_until="domcontentloaded", timeout=25000)
+                    page.wait_for_timeout(900)
+                    return page.url, page.content()
+                except Exception as error:
+                    raise SellerBrowserFetchError("seller_navigation_or_read", error) from None
+            finally:
+                browser.close()
+    except SellerBrowserFetchError:
+        raise
+    except Exception as error:
+        raise SellerBrowserFetchError("playwright_start_or_close", error) from None
 
 if __name__ == "__main__":
     result = collect()
