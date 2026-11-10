@@ -94,14 +94,18 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
     api_status = stage.validate_candidate(target, api, equipment, observed.isoformat())["status"]
     reason = api_status
     seller_status = "not_attempted"
+    seller_failure_kind = None
+    seller_failure_phase = None
     replacement = None
 
     if api_status == "api_confirmed_seller_variant_audit_required":
         browser = browser_get or seller.read_seller_page_once
         try:
             visited_url, html = browser(target["itemUrl"])
-        except Exception:
+        except Exception as error:
             seller_status = "seller_browser_fetch_failed"
+            seller_failure_kind = seller.seller_fetch_failure_kind(error)
+            seller_failure_phase = seller.seller_fetch_failure_phase(error)
         else:
             proof = seller.seller_audit_result(
                 target, equipment, api, visited_url, html, observed.isoformat()
@@ -188,6 +192,8 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
         "schemaVersion": 1, "model": target_model,
         "type": "automatic_original_seller_proof",
         "attempted": 1, "apiStatus": api_status, "sellerStatus": seller_status,
+        "sellerFetchFailureKind": seller_failure_kind,
+        "sellerFetchFailurePhase": seller_failure_phase,
         "result": "renewed" if replacement else "retired" if adverse or not previous_target else "previous_still_fresh",
         "verifiedCount": len(items), "sellerPageRequested": seller_status != "not_attempted",
         "observedAt": observed.isoformat(), "publishedFreshnessChanged": replacement is not None,
