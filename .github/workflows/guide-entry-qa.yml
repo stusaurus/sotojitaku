@@ -1,0 +1,29 @@
+name: Verify changed guide search entry
+on:
+  pull_request:
+    paths:
+      - 'guides/index.html'
+      - 'tests/guides.test.mjs'
+      - 'tests/guide-entry-browser.cjs'
+      - '.github/workflows/guide-entry-qa.yml'
+permissions:
+  contents: read
+jobs:
+  guide-entry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/guides.test.mjs
+      - run: npm install --no-save --package-lock=false playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/guide-entry-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: guide-search-entry-proof
+          path: browser-proof/guide-entry/
+          retention-days: 14
