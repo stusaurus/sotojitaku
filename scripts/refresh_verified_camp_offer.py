@@ -18,6 +18,11 @@ import refresh_worker as worker
 import stage_camp_api_evidence as stage
 import probe_camp_seller_browser as seller
 
+# A current proof remains valid for 7 days. Avoid requerying the same
+# already-proven merchant for 36 hours to preserve shared Rakuten API budget
+# for missing categories. This is NOT an extension of verifiedAt or expiry.
+RECENT_PROOF_RECHECK_INTERVAL = timedelta(hours=36)
+
 TARGET_CATEGORY = "sleeping_bag"
 TARGET_MODEL = "2000034774"
 # Independently proven in GitHub Actions #39042240199 and #39048471797.
@@ -200,20 +205,76 @@ def refresh_snapshot(audits_doc, existing, equipment, *, api_fetch=None, browser
     }
     return audits_doc, refreshed, report
 
+def recent_original_proof(product, audit, observed):
+    """A known exact seller's unexpired independent proof, never a refresh."""
+    if not eligible_existing(product, audit) or not valid_existing(product, observed):
+        return False
+    stamp = parse_time(product.get("verifiedAt"))
+    return bool(
+        stamp and observed - stamp < RECENT_PROOF_RECHECK_INTERVAL
+        and product.get("verificationMode") == "sales_page_and_official_item_api"
+        and product.get("shipping") == "included"
+        and product.get("listingAuditedAt") == audit.get("listingAuditedAt")
+        and product.get("listingAuditedAt") == product.get("verifiedAt")
+        and product.get("fixedVariant") is True
+        and product.get("available") is True
+        and product.get("quantityPerListing") == 1
+        and type(product.get("price")) is int and product["price"] > 0
+    )
+
+
+def expire_prior_evidence(existing, equipment, observed):
+    """Remove expired unrelated offers even if zero API calls are attempted."""
+    prior = existing.get("products") or []
+    alive = [p for p in prior if valid_existing(p, observed)]
+    if len(prior) == len(alive):
+        return existing
+    categories = {c["id"] for c in equipment.get("categories", [])}
+    missed = sorted(categories - {p["category"] for p in alive})
+    previous_reasons = existing.get("failureReasons") or {}
+    return {
+        **existing, "products": alive,
+        "status": "partial_error" if missed else "ok",
+        "failedCategories": missed,
+        "failureReasons": {c: previous_reasons.get(c, "fresh_seller_evidence_missing") for c in missed},
+        "updatedAt": observed.isoformat(),
+    }
+
+
 def refresh_verified_offers(audits_doc, existing, equipment, *,
                             api_fetch=None, browser_get=None, now=None, run_id="local",
-                            targets=TARGETS):
-    """Bounded certified-SKU renewal; shared API failures stop later requests.
+                            targets=TARGETS, skip_recent=False):
+    """Bounded renewal; optional proof-aware 36h cooldown conserves API quota.
 
-    The first check also removes expired OTHER SKUs from the snapshot,
-    even when the subsequent requests are skipped for quota protection.
+    A skip never changes price, stock, verifiedAt or listingAuditedAt.
+    Shared API failures stop later requests and block the extra seller batch.
     """
     observed = now or datetime.now(timezone.utc)
+    if observed.tzinfo is None:
+        raise ValueError("observed_time_must_be_aware")
+    observed = observed.astimezone(timezone.utc)
     results = []
     limit = len(targets)
     if limit > len(TARGETS) or len(set(targets)) != limit or any(item not in TARGETS for item in targets):
         raise ValueError("unaudited_or_duplicate_target")
+    existing = expire_prior_evidence(existing, equipment, observed)
     for category, model in targets:
+        audit = next((a for a in audits_doc.get("products", [])
+                      if a.get("category") == category and a.get("model") == model), None)
+        current = next((p for p in existing.get("products", [])
+                        if p.get("category") == category and p.get("model") == model), None)
+        if skip_recent and audit and current and recent_original_proof(current, audit, observed):
+            results.append({
+                "schemaVersion": 1, "model": model,
+                "type": "automatic_original_seller_proof",
+                "attempted": 0, "apiStatus": "not_attempted_recent_proof",
+                "sellerStatus": "not_attempted", "result": "previous_still_fresh",
+                "verifiedCount": len(existing.get("products") or []),
+                "sellerPageRequested": False,
+                "observedAt": observed.isoformat(),
+                "publishedFreshnessChanged": False,
+            })
+            continue
         audits_doc, existing, result = refresh_snapshot(
             audits_doc, existing, equipment,
             api_fetch=api_fetch, browser_get=browser_get, now=observed,
@@ -225,7 +286,9 @@ def refresh_verified_offers(audits_doc, existing, equipment, *,
     return audits_doc, existing, {
         "schemaVersion": 1,
         "type": "automatic_original_seller_proof_batch",
-        "attempted": len(results), "maximumApiCalls": limit,
+        "attempted": sum(x.get("attempted") == 1 for x in results),
+        "skippedRecent": sum(x.get("apiStatus") == "not_attempted_recent_proof" for x in results),
+        "maximumApiCalls": limit,
         "stoppedByRateLimit": bool(results and results[-1]["apiStatus"] == "rate_limited"),
         "stoppedBySharedFailure": bool(results and results[-1]["apiStatus"] in stage.SHARED_FAILURE_STATUSES),
         "stopReason": results[-1]["apiStatus"] if results and results[-1]["apiStatus"] in stage.SHARED_FAILURE_STATUSES else None,
@@ -238,7 +301,8 @@ def main(root=ROOT):
     catalog = json.loads((root / "data/products.json").read_text(encoding="utf-8"))
     equipment = json.loads((root / "data/equipment.json").read_text(encoding="utf-8"))
     audits_new, catalog_new, report = refresh_verified_offers(
-        audits, catalog, equipment, run_id=os.environ.get("GITHUB_RUN_ID", "local")
+        audits, catalog, equipment, run_id=os.environ.get("GITHUB_RUN_ID", "local"),
+        skip_recent=True
     )
     report_path = root / "reports/camp-verified-offer-refresh.json"
     report_path.parent.mkdir(exist_ok=True)
