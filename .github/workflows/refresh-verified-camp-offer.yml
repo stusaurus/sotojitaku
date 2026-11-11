@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/refresh_verified_camp_offer.py'
+      - 'scripts/refresh_verified_camp_alternates.py'
       - '.github/workflows/refresh-verified-camp-offer.yml'
   workflow_dispatch:
   schedule:
@@ -30,7 +31,7 @@ jobs:
           node-version: '22'
       - name: Snapshot exact validation inputs for safe commit
         run: |
-          cat scripts/refresh_verified_camp_offer.py scripts/stage_camp_api_evidence.py scripts/probe_camp_seller_browser.py scripts/refresh_worker.py data/audited-products.json data/products.json data/equipment.json | sha256sum | cut -d ' ' -f1 > /tmp/verified-camp-input.sha
+          cat scripts/refresh_verified_camp_offer.py scripts/refresh_verified_camp_alternates.py scripts/stage_camp_api_evidence.py scripts/probe_camp_seller_browser.py scripts/refresh_worker.py data/audited-products.json data/products.json data/equipment.json | sha256sum | cut -d ' ' -f1 > /tmp/verified-camp-input.sha
       - name: Verify local renewal rules without network
         run: |
           python -m unittest discover -s tests -p 'test_refresh_verified_camp_offer.py' -v
@@ -39,12 +40,15 @@ jobs:
           python -m unittest discover -s tests -p 'test_refresh_verified_seven_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_eight_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_nine_camp_offers.py' -v
+          python -m unittest discover -s tests -p 'test_refresh_verified_camp_alternates.py' -v
           python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
           python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
       - name: Install ordinary browser for exact original seller only
         run: python -m pip install playwright==1.55.0
       - name: Recheck each of nine original sellers using two independent sources
         run: python scripts/refresh_verified_camp_offer.py
+      - name: Requalify three additional original sellers (never from stale evidence)
+        run: python scripts/refresh_verified_camp_alternates.py
       - name: Verify safe renewed CAMP catalog and original-seller identity
         run: |
           npm run check
@@ -61,6 +65,7 @@ jobs:
           name: camp-single-seller-refresh
           path: |
             reports/camp-verified-offer-refresh.json
+            reports/camp-additional-seller-refresh.json
             reports/camp-refresh-health.json
           if-no-files-found: ignore
           retention-days: 14
@@ -74,7 +79,7 @@ jobs:
           for attempt in 1 2 3; do
             git fetch origin main
             git reset --hard origin/main
-            current="$(cat scripts/refresh_verified_camp_offer.py scripts/stage_camp_api_evidence.py scripts/probe_camp_seller_browser.py scripts/refresh_worker.py data/audited-products.json data/products.json data/equipment.json | sha256sum | cut -d ' ' -f1)"
+            current="$(cat scripts/refresh_verified_camp_offer.py scripts/refresh_verified_camp_alternates.py scripts/stage_camp_api_evidence.py scripts/probe_camp_seller_browser.py scripts/refresh_worker.py data/audited-products.json data/products.json data/equipment.json | sha256sum | cut -d ' ' -f1)"
             if [ "$current" != "$(cat /tmp/verified-camp-input.sha)" ]; then
               echo "The catalog source changed: refuse to publish a stale validation result."
               exit 1

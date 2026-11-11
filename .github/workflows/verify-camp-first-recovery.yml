@@ -22,6 +22,8 @@ jobs:
           python-version: '3.12'
       - name: Verify repository code
         run: npm run check
+      - name: Stamp asset fingerprints before strict tests
+        run: python scripts/stamp_assets.py
       - name: Strict no-stale partial-publication tests and all isolated unit cases
         run: npm run test:non-camp-live
       - name: Verify historical evidence and expiration-safe browser selection
