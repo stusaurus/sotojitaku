@@ -14,15 +14,26 @@ from pathlib import Path
 
 from acquire import ROOT
 import stage_camp_api_evidence as stage
-from refresh_verified_camp_offer import TARGETS as PRIMARY_TARGETS, refresh_snapshot
+from refresh_verified_camp_offer import TARGETS as PRIMARY_TARGETS, refresh_snapshot, recent_original_proof
 
-# Maximum three extra shared-Worker calls per day. Previously audited original
-# merchants only; this allowlist is not authorization to publish stale offers.
+# Maximum three extra shared-Worker calls per run across all six candidates.
+# Originally audited merchants only; this allowlist is not authorization
+# to publish stale offers.
 CANDIDATES = (
     ("led_lantern", "2000038854"),
     ("burner", "ST-350"),
     ("tent", "2000039087"),
 )
+# These three extra historical merchant codes address real audited gaps:
+# 4kg solo/no-car tent, four-seat family table, and four-person fire pit.
+# They are NOT marked purchasable unless their *current* exact API and
+# original-seller cart evidence both pass the existing strict gates.
+PRIORITY_GAPS = (
+    ("tent", "2000038141"),
+    ("table", "2205813"),
+    ("fire_pit", "ST-032RS"),
+)
+ALLOWED_TARGETS = CANDIDATES + PRIORITY_GAPS
 MAX_EXTRA_API_CALLS = 3
 REQUIRED_ORIGINAL_AUDIT = (
     "audited", "bodyConfirmed", "fixedVariant", "available", "priceAudit",
@@ -31,13 +42,13 @@ REQUIRED_ORIGINAL_AUDIT = (
 
 def refresh_extra(audits_doc, existing, equipment, *, primary_report,
                   api_fetch=None, browser_get=None, now=None, run_id="local",
-                  targets=CANDIDATES):
+                  targets=CANDIDATES, skip_recent=False):
     observed = now or datetime.now(timezone.utc)
     if observed.tzinfo is None:
         raise ValueError("observed_time_must_be_aware")
     observed = observed.astimezone(timezone.utc)
-    if (len(targets) > MAX_EXTRA_API_CALLS or len(set(targets)) != len(targets)
-            or any(x not in CANDIDATES or x in PRIMARY_TARGETS for x in targets)):
+    if (len(targets) > len(ALLOWED_TARGETS) or len(set(targets)) != len(targets)
+            or any(x not in ALLOWED_TARGETS or x in PRIMARY_TARGETS for x in targets)):
         raise ValueError("unknown_or_duplicate_extra_seller")
     if (not isinstance(primary_report, dict)
             or primary_report.get("type") != "automatic_original_seller_proof_batch"
@@ -45,6 +56,7 @@ def refresh_extra(audits_doc, existing, equipment, *, primary_report,
         raise ValueError("missing_trusted_primary_refresh_report")
 
     results = []
+    api_attempts = 0
     if not primary_report["stoppedBySharedFailure"]:
         for category, model in targets:
             audit = next((a for a in audits_doc.get("products", [])
@@ -58,10 +70,28 @@ def refresh_extra(audits_doc, existing, equipment, *, primary_report,
                                 "result": "original_audit_incomplete",
                                 "publishedFreshnessChanged": False})
                 continue
+            current = next((p for p in existing.get("products", [])
+                            if p.get("category") == category and p.get("model") == model), None)
+            if skip_recent and current and recent_original_proof(current, audit, observed):
+                # Read-only. Does not modify verifiedAt, price, stock or SKU.
+                results.append({"category": category, "model": model,
+                                "attempted": 0, "apiStatus": "not_attempted_recent_proof",
+                                "sellerStatus": "not_attempted",
+                                "result": "previous_still_fresh",
+                                "publishedFreshnessChanged": False})
+                continue
+            if api_attempts >= MAX_EXTRA_API_CALLS:
+                results.append({"category": category, "model": model,
+                                "attempted": 0, "apiStatus": "not_attempted_api_budget",
+                                "sellerStatus": "not_attempted",
+                                "result": "deferred_to_next_bounded_run",
+                                "publishedFreshnessChanged": False})
+                continue
             audits_doc, existing, report = refresh_snapshot(
                 audits_doc, existing, equipment, api_fetch=api_fetch,
                 browser_get=browser_get, now=observed, run_id=run_id,
                 target_category=category, target_model=model)
+            api_attempts += 1
             results.append(report)
             if report["apiStatus"] in stage.SHARED_FAILURE_STATUSES:
                 break
@@ -73,7 +103,9 @@ def refresh_extra(audits_doc, existing, equipment, *, primary_report,
         "schemaVersion": 1,
         "type": "automatic_additional_original_seller_proof_batch",
         "maximumApiCalls": MAX_EXTRA_API_CALLS,
-        "attempted": sum(r["apiStatus"] != "not_attempted" for r in results),
+        "attempted": api_attempts,
+        "skippedRecent": sum(r.get("apiStatus") == "not_attempted_recent_proof" for r in results),
+        "deferredForBudget": sum(r.get("apiStatus") == "not_attempted_api_budget" for r in results),
         "skippedBecausePrimaryWorkerFailure": blocked,
         "stoppedBySharedFailure": bool(blocked or stop),
         "stopReason": primary_report.get("stopReason") if blocked else stop,
@@ -94,7 +126,8 @@ def main(root=ROOT):
     equipment = json.loads((root / "data/equipment.json").read_text(encoding="utf-8"))
     new_audits, new_catalog, report = refresh_extra(
         audits, catalog, equipment, primary_report=primary,
-        run_id=os.environ.get("GITHUB_RUN_ID", "local"))
+        run_id=os.environ.get("GITHUB_RUN_ID", "local"),
+        targets=ALLOWED_TARGETS, skip_recent=True)
     # The report never includes newly observed prices, HTML, seller cookies or tokens.
     dest = root / "reports/camp-additional-seller-refresh.json"
     dest.parent.mkdir(exist_ok=True)

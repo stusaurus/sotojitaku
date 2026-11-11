@@ -22,7 +22,7 @@ def baseline():
     # three sellers are successfully published. Never delete live offers or
     # mistake a previously certified SKU for an invented new listing.
     catalog["products"] = [p for p in catalog["products"]
-                           if (p.get("category"), p.get("model")) not in recovery.CANDIDATES]
+                           if (p.get("category"), p.get("model")) not in recovery.ALLOWED_TARGETS]
     # Keep fixture fresh in memory only; the repository files are never changed.
     for p in catalog["products"]:
         p["verifiedAt"] = (NOW - timedelta(days=1)).isoformat()
