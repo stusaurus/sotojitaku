@@ -42,13 +42,14 @@ jobs:
           python -m unittest discover -s tests -p 'test_refresh_verified_nine_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_recent_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_camp_alternates.py' -v
+          python -m unittest discover -s tests -p 'test_camp_gap_seller_budget.py' -v
           python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
           python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
       - name: Install ordinary browser for exact original seller only
         run: python -m pip install playwright==1.55.0
       - name: Recheck each of nine original sellers using two independent sources
         run: python scripts/refresh_verified_camp_offer.py
-      - name: Requalify three additional original sellers (never from stale evidence)
+      - name: Requalify at most three original sellers for missing comparison scenarios
         run: python scripts/refresh_verified_camp_alternates.py
       - name: Verify safe renewed CAMP catalog and original-seller identity
         run: |
