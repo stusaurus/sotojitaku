@@ -465,17 +465,191 @@
       "verifiedAt": "2026-11-11T07:06:05.834662+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "led_lantern",
+      "itemCode": "sorabostore:10004141",
+      "model": "2000038854",
+      "query": "2000038854",
+      "family": "lantern-2000038854",
+      "name": "Coleman バッテリーガードLEDランタン/600 2000038854",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 5556,
+      "spec": {
+        "brightness_lm": 600,
+        "runtime_hours": 30,
+        "power_type": "アルカリ単1形乾電池×3",
+        "weight": 490
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sorabostore/b09hgm4sj8/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/",
+        "fields": {
+          "brightness_lm": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/",
+          "runtime_hours": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/",
+          "power_type": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%90%E3%83%83%E3%83%86%E3%83%AA%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%89led-%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3-600%E3%83%AC%E3%83%83%E3%83%89/"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.96,
+        "comfort": 0.88,
+        "portability": 0.9,
+        "value": 0.94,
+        "trust": 0.95
+      },
+      "traits": [
+        "value",
+        "compact",
+        "easy"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-11T09:31:16.532322+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42995831524",
+      "itemUrl": "https://item.rakuten.co.jp/sorabostore/b09hgm4sj8/",
+      "specSummary": "High 600lm / High約30時間 / 単1形乾電池3本 / 約490g。",
+      "identityTerms": [
+        "バッテリーガードLED",
+        "600",
+        "2000038854"
+      ],
+      "price": 5278,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00und4o.7cx6m6e6.g00und4o.7cx6nb57/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsorabostore%2Fb09hgm4sj8%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsorabostore%2Fi%2F10004141%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sorabostore/cabinet/onesell067/b09hgm4sj8.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-11T09:31:16.532322+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "burner",
+      "itemCode": "cheeky:10427303",
+      "model": "ST-350",
+      "query": "ST-350",
+      "family": "burner-st-350",
+      "name": "SOTO レギュレーターストーブ TriTrail ST-350",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 8100,
+      "spec": {
+        "fuel_type": "CB",
+        "ignition_type": "圧電点火方式",
+        "weight": 135
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/cheeky/u523500/",
+        "specification": "https://shop.shinfuji.co.jp/products/st-350",
+        "fields": {
+          "fuel_type": "https://shop.shinfuji.co.jp/products/st-350",
+          "ignition_type": "https://shop.shinfuji.co.jp/products/st-350",
+          "weight": "https://shop.shinfuji.co.jp/products/st-350"
+        }
+      },
+      "scores": {
+        "fit": 0.94,
+        "beginner": 0.9,
+        "comfort": 0.78,
+        "portability": 1,
+        "value": 0.84,
+        "trust": 0.97
+      },
+      "traits": [
+        "compact",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-11T09:31:16.532322+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42995831524",
+      "itemUrl": "https://item.rakuten.co.jp/cheeky/u523500/",
+      "specSummary": "約135g / CB缶 / 圧電点火方式 / 屋外専用。",
+      "identityTerms": [
+        "レギュレーターストーブ",
+        "TriTrail",
+        "ST-350"
+      ],
+      "lookupName": true,
+      "brand": "SOTO",
+      "price": 8100,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00s4gao.7cx6m1c7.g00s4gao.7cx6n30e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcheeky%2Fu523500%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fcheeky%2Fi%2F10427303%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/cheeky/cabinet/23251-23500/u523500.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-11T09:31:16.532322+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "tent",
+      "itemCode": "naturum:18699395",
+      "model": "2000039087",
+      "query": "2000039087",
+      "family": "tent-2000039087",
+      "name": "Coleman タフドームエアー/3025+ 2000039087",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 50827,
+      "spec": {
+        "capacity": 5,
+        "weight": 9800,
+        "packed_size": "約φ24×70cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/9946265/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/",
+        "fields": {
+          "capacity": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/",
+          "weight": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/",
+          "packed_size": "https://www.coleman.co.jp/customersupport/howtomovie/2000039087/"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.91,
+        "comfort": 0.99,
+        "portability": 0.34,
+        "value": 0.76,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-11T09:31:16.532322+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42995831524",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/9946265/",
+      "specSummary": "定員4〜5人 / 約9.8kg / 収納約φ24×70cm。ダークルームとワイドエアメッシュで睡眠・暑さ対策を重視。",
+      "identityTerms": [
+        "タフドームエアー",
+        "3025+",
+        "2000039087"
+      ],
+      "price": 50827,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00pn5fo.7cx6m0ea.g00pn5fo.7cx6n596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum%2F9946265%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum%2Fi%2F18699395%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum/cabinet/goods/099462/65_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-11T09:31:16.532322+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
     }
   ],
-  "status": "partial_error",
-  "failedCategories": [
-    "burner",
-    "led_lantern"
-  ],
-  "failureReasons": {
-    "burner": "fresh_seller_evidence_missing",
-    "led_lantern": "exact_item_not_found"
-  },
+  "status": "ok",
+  "failedCategories": [],
+  "failureReasons": {},
   "itemFailures": {
     "mat:2000032354": "not_reverified",
     "cooler:2000037321": "not_reverified",
@@ -494,10 +668,8 @@
     "mat:2000038137": "not_reverified",
     "cooler:2238147": "not_reverified",
     "burner:ST-340": "not_reverified",
-    "burner:ST-350": "not_reverified",
     "mat:1124667": "not_reverified",
     "tent:2000038429": "not_reverified",
-    "tent:2000039087": "not_reverified",
     "tent:2206748": "not_reverified",
     "tent:2185613": "not_reverified",
     "tent:2185614": "not_reverified",
@@ -511,7 +683,6 @@
     "sleeping_bag:2000034775": "not_reverified",
     "chair:2199216": "not_reverified",
     "chair:2000033139": "not_reverified",
-    "led_lantern:2000038854": "not_reverified",
     "led_lantern:2000037352": "not_reverified",
     "hot_sandwich_maker:UG-3086": "not_reverified",
     "table:2238333": "not_reverified",
@@ -522,5 +693,5 @@
     "led_lantern:2218364": "exact_item_not_found",
     "fire_pit:2000037404": "rate_limited"
   },
-  "updatedAt": "2026-11-11T07:47:57.677400+00:00"
+  "updatedAt": "2026-11-11T09:31:16.532322+00:00"
 }

@@ -1169,8 +1169,8 @@
       ],
       "reviewCount": 0,
       "reviewAverage": 0,
-      "listingAuditedAt": "2026-10-04T12:13:41+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの本体販売結果を照合。固定販売URL・本体名称・価格・画像を日次再確認し、条件不一致時は非表示。",
+      "listingAuditedAt": "2026-11-11T09:31:16.532322+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42995831524",
       "itemUrl": "https://item.rakuten.co.jp/cheeky/u523500/",
       "specSummary": "約135g / CB缶 / 圧電点火方式 / 屋外専用。",
       "identityTerms": [
@@ -1432,8 +1432,8 @@
       ],
       "reviewCount": 4,
       "reviewAverage": 5,
-      "listingAuditedAt": "2026-10-04T14:20:00+00:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "listingAuditedAt": "2026-11-11T09:31:16.532322+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42995831524",
       "itemUrl": "https://item.rakuten.co.jp/naturum/9946265/",
       "specSummary": "定員4〜5人 / 約9.8kg / 収納約φ24×70cm。ダークルームとワイドエアメッシュで睡眠・暑さ対策を重視。",
       "identityTerms": [
@@ -2269,8 +2269,8 @@
       ],
       "reviewCount": 5,
       "reviewAverage": 4.8,
-      "listingAuditedAt": "2026-10-05T05:25:00+09:00",
-      "listingAudit": "メーカー公式仕様と楽天Workerの型番一致販売結果を照合。本体・新品・固定販売URLを確認。",
+      "listingAuditedAt": "2026-11-11T09:31:16.532322+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42995831524",
       "itemUrl": "https://item.rakuten.co.jp/sorabostore/b09hgm4sj8/",
       "specSummary": "High 600lm / High約30時間 / 単1形乾電池3本 / 約490g。",
       "identityTerms": [
