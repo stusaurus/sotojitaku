@@ -40,6 +40,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_refresh_verified_seven_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_eight_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_nine_camp_offers.py' -v
+          python -m unittest discover -s tests -p 'test_refresh_verified_recent_camp_offers.py' -v
           python -m unittest discover -s tests -p 'test_refresh_verified_camp_alternates.py' -v
           python -m unittest discover -s tests -p 'test_probe_camp_seller_browser.py' -v
           python -m unittest discover -s tests -p 'test_stage_camp_api_evidence.py' -v
