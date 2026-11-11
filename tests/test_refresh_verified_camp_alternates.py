@@ -18,6 +18,11 @@ def baseline():
     audits = json.loads((ROOT / "data/audited-products.json").read_text(encoding="utf-8"))
     catalog = json.loads((ROOT / "data/products.json").read_text(encoding="utf-8"))
     equipment = json.loads((ROOT / "data/equipment.json").read_text(encoding="utf-8"))
+    # Reconstruct the pre-recovery *in-memory* baseline even after the real
+    # three sellers are successfully published. Never delete live offers or
+    # mistake a previously certified SKU for an invented new listing.
+    catalog["products"] = [p for p in catalog["products"]
+                           if (p.get("category"), p.get("model")) not in recovery.CANDIDATES]
     # Keep fixture fresh in memory only; the repository files are never changed.
     for p in catalog["products"]:
         p["verifiedAt"] = (NOW - timedelta(days=1)).isoformat()
@@ -88,6 +93,45 @@ class OriginalSellerRecovery(unittest.TestCase):
         self.assertTrue(all(p["price"] == q["price"] and p["verifiedAt"] == q["verifiedAt"]
                             for p,q in zip(old["products"], new["products"][:len(old["products"])])))
         self.assertFalse(report["stoppedBySharedFailure"])
+
+    def test_fresh_live_extra_offer_is_not_falsely_retired_during_browser_outage(self):
+        audits, existing, gear = baseline()
+        current_audit = next(a for a in audits["products"]
+                             if (a["category"], a["model"]) == recovery.CANDIDATES[0])
+        old_stamp = (NOW - timedelta(hours=2)).isoformat()
+        # A real previously certified extra offer may exist at the time a
+        # temporary browser outage happens; unlike an expired listing, that
+        # 7-day-valid offer must keep its original price and proof timestamp.
+        fresh = {**copy.deepcopy(current_audit),
+                 "verifiedAt": old_stamp, "listingAuditedAt": old_stamp,
+                 "price": 5278, "shipping": "included",
+                 "verificationMode": "sales_page_and_official_item_api"}
+        existing["products"].append(fresh)
+        audits = copy.deepcopy(audits)
+        for record in audits["products"]:
+            if (record["category"],record["model"]) == recovery.CANDIDATES[0]:
+                record["listingAuditedAt"] = old_stamp
+        def api(req):
+            from urllib.parse import parse_qs, urlparse, quote
+            code = parse_qs(urlparse(req.full_url).query)["itemCode"][0]
+            return {"found":True, "lookup_method":"exact_item_code_only",
+                    "item_code":code, "item_url":fresh["itemUrl"],
+                    "affiliate_url":"https://hb.afl.rakuten.co.jp/hgc/x/?pc="+quote(fresh["itemUrl"],safe=""),
+                    "name":current_audit["name"], "price":5278,
+                    "availability":1,"tax_flag":0,"postage_flag":0,
+                    "purchasable_min_price":5278,"purchasable_max_price":5278,
+                    "image":"https://thumbnail.image.rakuten.co.jp/a.jpg"}
+        def fail(url):
+            raise TimeoutError("seller browser was temporarily unavailable")
+        _, new, report = recovery.refresh_extra(
+            audits,existing,gear,primary_report=PRIMARY,
+            api_fetch=api,browser_get=fail,now=NOW,
+            targets=(recovery.CANDIDATES[0],))
+        kept = next(p for p in new["products"] if p["model"] == fresh["model"])
+        self.assertEqual(report["renewed"],0)
+        self.assertEqual(report["results"][0]["result"],"previous_still_fresh")
+        self.assertEqual(kept["verifiedAt"],old_stamp)
+        self.assertEqual(kept["price"],5278)
 
     def test_old_stale_proof_does_not_get_extended_after_browser_failure(self):
         a, old, na, new, report, calls = simulated(seller_failure="2000038854")
