@@ -60,64 +60,6 @@
       "verificationMode": "sales_page_and_official_item_api"
     },
     {
-      "category": "sleeping_bag",
-      "itemCode": "naturum-outdoor:10241000",
-      "model": "2000034774",
-      "query": "2000034774",
-      "family": "coleman-2000034774",
-      "name": "コールマン Coleman シュラフ パフォーマーIII/C5 オレンジ 2000034774",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 6380,
-      "spec": {
-        "comfort_temperature": 5,
-        "weight": 1400,
-        "packed_size": "φ24×41cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
-        "specification": "https://ec.coleman.co.jp/category/240/2000034774.html",
-        "fields": {
-          "comfort_temperature": "https://ec.coleman.co.jp/category/240/2000034774.html",
-          "weight": "https://ec.coleman.co.jp/category/240/2000034774.html",
-          "packed_size": "https://ec.coleman.co.jp/category/240/2000034774.html"
-        }
-      },
-      "scores": {
-        "fit": 0.9,
-        "beginner": 0.85,
-        "comfort": 0.85,
-        "portability": 0.55,
-        "value": 0.8,
-        "trust": 0.9
-      },
-      "listingAuditedAt": "2026-11-11T07:47:57.677400+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42982097963",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
-      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
-      "identityTerms": [
-        "パフォーマーIII/C5",
-        "2000034774"
-      ],
-      "traits": [
-        "value",
-        "easy"
-      ],
-      "price": 5490,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=128x128",
-      "reviewCount": null,
-      "reviewAverage": null,
-      "verifiedAt": "2026-11-11T07:47:57.677400+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
       "category": "tent",
       "itemCode": "naturum-outdoor:10712574",
       "model": "2206745",
@@ -820,6 +762,64 @@
       "verifiedAt": "2026-11-11T10:45:59.997123+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "sleeping_bag",
+      "itemCode": "naturum-outdoor:10241000",
+      "model": "2000034774",
+      "query": "2000034774",
+      "family": "coleman-2000034774",
+      "name": "コールマン Coleman シュラフ パフォーマーIII/C5 オレンジ 2000034774",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 6380,
+      "spec": {
+        "comfort_temperature": 5,
+        "weight": 1400,
+        "packed_size": "φ24×41cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
+        "specification": "https://ec.coleman.co.jp/category/240/2000034774.html",
+        "fields": {
+          "comfort_temperature": "https://ec.coleman.co.jp/category/240/2000034774.html",
+          "weight": "https://ec.coleman.co.jp/category/240/2000034774.html",
+          "packed_size": "https://ec.coleman.co.jp/category/240/2000034774.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.85,
+        "comfort": 0.85,
+        "portability": 0.55,
+        "value": 0.8,
+        "trust": 0.9
+      },
+      "listingAuditedAt": "2026-11-11T07:47:57.677400+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 42982097963",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
+      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
+      "identityTerms": [
+        "パフォーマーIII/C5",
+        "2000034774"
+      ],
+      "traits": [
+        "value",
+        "easy"
+      ],
+      "price": 5490,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=128x128",
+      "reviewCount": null,
+      "reviewAverage": null,
+      "verifiedAt": "2026-11-11T07:47:57.677400+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
     }
   ],
   "status": "ok",
@@ -863,7 +863,8 @@
     "cooler:2244060": "not_reverified",
     "cooler:2238145": "not_reverified",
     "led_lantern:2218364": "exact_item_not_found",
-    "fire_pit:2000037404": "rate_limited"
+    "fire_pit:2000037404": "rate_limited",
+    "sleeping_bag:2000034774": "rate_limited"
   },
-  "updatedAt": "2026-11-11T10:45:59.997123+00:00"
+  "updatedAt": "2026-11-13T07:16:04.071557+00:00"
 }
