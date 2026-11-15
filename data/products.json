@@ -2,125 +2,6 @@
   "version": 1,
   "products": [
     {
-      "category": "tent",
-      "itemCode": "sports-bazaar:10314223",
-      "model": "2000038141",
-      "query": "2000038141",
-      "family": "tent-2000038141",
-      "name": "Coleman ツーリングドーム/ST 2000038141",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 15720,
-      "spec": {
-        "capacity": 2,
-        "weight": 4000,
-        "packed_size": "約φ19×49cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
-        "specification": "https://ec.coleman.co.jp/item/2000038141.html",
-        "fields": {
-          "capacity": "https://ec.coleman.co.jp/item/2000038141.html",
-          "weight": "https://ec.coleman.co.jp/item/2000038141.html",
-          "packed_size": "https://ec.coleman.co.jp/item/2000038141.html"
-        }
-      },
-      "scores": {
-        "fit": 0.93,
-        "beginner": 0.96,
-        "comfort": 0.72,
-        "portability": 0.55,
-        "value": 0.9,
-        "trust": 0.96
-      },
-      "traits": [
-        "easy",
-        "value"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-11T10:45:59.997123+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 43006321226",
-      "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
-      "specSummary": "定員2人 / 約4.0kg / 収納約φ19×49cm。",
-      "identityTerms": [
-        "ツーリングドーム",
-        "ST",
-        "2000038141"
-      ],
-      "price": 15720,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40coleman-2000038141%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10314223%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sports-bazaar/cabinet/shiratori-82/8c3376fae6c3746fc4_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-11T10:45:59.997123+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "table",
-      "itemCode": "naturum:18689872",
-      "model": "2205813",
-      "query": "2205813",
-      "family": "table-2205813",
-      "name": "Coleman ナチュラルパズルテーブル/120 2205813",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 10295,
-      "spec": {
-        "table_size": "約120×70×41/60/70cm",
-        "weight": 5000,
-        "packed_size": "約70×7×60.5cm",
-        "table_capacity": 4
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum/3454308/",
-        "specification": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
-        "fields": {
-          "table_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
-          "weight": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
-          "packed_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html"
-        }
-      },
-      "scores": {
-        "fit": 0.96,
-        "beginner": 0.95,
-        "comfort": 0.94,
-        "portability": 0.3,
-        "value": 0.85,
-        "trust": 0.95
-      },
-      "traits": [
-        "easy",
-        "comfort"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-11T10:45:59.997123+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 43006321226",
-      "itemUrl": "https://item.rakuten.co.jp/naturum/3454308/",
-      "specSummary": "使用約120×70×41/60/70cm / 約5.0kg / 収納約70×7×60.5cm。",
-      "identityTerms": [
-        "ナチュラルパズルテーブル",
-        "120",
-        "2205813"
-      ],
-      "price": 9776,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00pn5fo.7cx6m0ea.g00pn5fo.7cx6n596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum%2F3454308%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum%2Fi%2F18689872%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum/cabinet/goods/034543/08_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-11T10:45:59.997123+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
       "category": "fire_pit",
       "itemCode": "naturum-outdoor:10524068",
       "model": "ST-032RS",
@@ -759,6 +640,125 @@
       "verifiedAt": "2026-11-14T07:02:40.261363+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "tent",
+      "itemCode": "sports-bazaar:10314223",
+      "model": "2000038141",
+      "query": "2000038141",
+      "family": "tent-2000038141",
+      "name": "Coleman ツーリングドーム/ST 2000038141",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15720,
+      "spec": {
+        "capacity": 2,
+        "weight": 4000,
+        "packed_size": "約φ19×49cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
+        "specification": "https://ec.coleman.co.jp/item/2000038141.html",
+        "fields": {
+          "capacity": "https://ec.coleman.co.jp/item/2000038141.html",
+          "weight": "https://ec.coleman.co.jp/item/2000038141.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000038141.html"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 0.96,
+        "comfort": 0.72,
+        "portability": 0.55,
+        "value": 0.9,
+        "trust": 0.96
+      },
+      "traits": [
+        "easy",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-15T07:09:49.979921+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 43688679824",
+      "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
+      "specSummary": "定員2人 / 約4.0kg / 収納約φ19×49cm。",
+      "identityTerms": [
+        "ツーリングドーム",
+        "ST",
+        "2000038141"
+      ],
+      "price": 15720,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40coleman-2000038141%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10314223%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sports-bazaar/cabinet/shiratori-82/8c3376fae6c3746fc4_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-15T07:09:49.979921+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "table",
+      "itemCode": "naturum:18689872",
+      "model": "2205813",
+      "query": "2205813",
+      "family": "table-2205813",
+      "name": "Coleman ナチュラルパズルテーブル/120 2205813",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 10295,
+      "spec": {
+        "table_size": "約120×70×41/60/70cm",
+        "weight": 5000,
+        "packed_size": "約70×7×60.5cm",
+        "table_capacity": 4
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/3454308/",
+        "specification": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
+          "weight": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
+          "packed_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.95,
+        "comfort": 0.94,
+        "portability": 0.3,
+        "value": 0.85,
+        "trust": 0.95
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-15T07:09:49.979921+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 43688679824",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/3454308/",
+      "specSummary": "使用約120×70×41/60/70cm / 約5.0kg / 収納約70×7×60.5cm。",
+      "identityTerms": [
+        "ナチュラルパズルテーブル",
+        "120",
+        "2205813"
+      ],
+      "price": 9776,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00pn5fo.7cx6m0ea.g00pn5fo.7cx6n596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum%2F3454308%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum%2Fi%2F18689872%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum/cabinet/goods/034543/08_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-15T07:09:49.979921+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
     }
   ],
   "status": "partial_error",
@@ -808,5 +808,5 @@
     "led_lantern:2218364": "exact_item_not_found",
     "burner:ST-350": "exact_item_not_found"
   },
-  "updatedAt": "2026-11-14T07:02:40.261363+00:00"
+  "updatedAt": "2026-11-15T07:09:49.979921+00:00"
 }
