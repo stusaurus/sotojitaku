@@ -4,6 +4,8 @@ on:
     paths:
       - 'scripts/report_camp_refresh.py'
       - 'tests/test_report_camp_refresh.py'
+      - 'scripts/report_camp_recommendation_gaps.mjs'
+      - 'tests/camp-recommendation-gaps.test.mjs'
       - '.github/workflows/refresh-verified-camp-offer.yml'
       - '.github/workflows/verify-camp-refresh-health.yml'
 permissions:
@@ -14,6 +16,11 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check profile eligibility, redaction and genuine product choices
+        run: node --test tests/camp-recommendation-gaps.test.mjs
       - name: Check redaction, age boundaries and empty/single-offer distinctions
         run: python3 -m unittest discover -s tests -p 'test_report_camp_refresh.py' -v
       - name: Generate diagnostic offline without altering product data
@@ -28,3 +35,14 @@ jobs:
           assert set(data['categoriesWithNoRecentEvidence']) <= set(data['categoryEvidence'])
           assert set(data['categoriesWithExactlyOneRecentOffer']) <= set(data['categoriesWithFewerThanTwoRecentOffers'])
           PY
+          node scripts/report_camp_recommendation_gaps.mjs
+          git diff --exit-code -- data/products.json data/audited-products.json
+      - name: Save read-only supply diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: camp-profile-eligibility-diagnostics
+          path: |
+            reports/camp-refresh-health.json
+            reports/camp-recommendation-gaps.json
+          retention-days: 14
