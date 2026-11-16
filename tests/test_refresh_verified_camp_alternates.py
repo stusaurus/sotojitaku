@@ -185,5 +185,59 @@ class OriginalSellerRecovery(unittest.TestCase):
             with self.subTest(report=bad), self.assertRaisesRegex(ValueError,"missing_trusted"):
                 recovery.refresh_extra(a, old, gear, primary_report=bad, now=NOW)
 
+
+class GapRecoveryPriority(unittest.TestCase):
+    def test_recovery_pool_is_previously_audited_fixed_seller_only(self):
+        audits = json.loads((ROOT / "data/audited-products.json").read_text(encoding="utf-8"))
+        by_key = {(p["category"], p["model"]): p for p in audits["products"]}
+        self.assertEqual(len(set(recovery.ALLOWED_TARGETS)), len(recovery.ALLOWED_TARGETS))
+        self.assertEqual(len(recovery.RECOVERY_GAPS), 6)
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+        for target in recovery.RECOVERY_GAPS:
+            with self.subTest(target=target):
+                p = by_key[target]
+                self.assertTrue(all(p.get(k) is True for k in recovery.REQUIRED_ORIGINAL_AUDIT))
+                self.assertEqual(p.get("condition"), "new")
+                self.assertEqual(p.get("quantityPerListing"), 1)
+                self.assertTrue(p.get("itemCode"))
+                self.assertTrue(p.get("itemUrl"))
+                self.assertTrue(p.get("evidence", {}).get("listing"))
+
+    def test_aging_verified_offer_is_renewed_before_new_gap_probe(self):
+        aging = recovery.PRIORITY_GAPS[0]
+        catalog = {"products": [{"category": aging[0], "model": aging[1],
+                                 "verifiedAt": (NOW-timedelta(days=6)).isoformat()}]}
+        before = copy.deepcopy(catalog)
+        targets = recovery.prioritize_recovery_targets(catalog, NOW)
+        self.assertEqual(targets[0], aging)
+        self.assertEqual(set(targets), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(len(targets), len(set(targets)))
+        self.assertEqual(catalog, before)
+
+    def test_missing_gap_probes_rotate_without_expanding_api_budget(self):
+        catalog = {"products": []}
+        before = copy.deepcopy(catalog)
+        first = recovery.prioritize_recovery_targets(catalog, NOW)
+        next_day = recovery.prioritize_recovery_targets(catalog, NOW+timedelta(days=1))
+        n = len(recovery.RECOVERY_GAPS)
+        self.assertEqual(set(first[:n]), set(recovery.RECOVERY_GAPS))
+        self.assertEqual(set(next_day[:n]), set(recovery.RECOVERY_GAPS))
+        self.assertNotEqual(first[0], next_day[0])
+        self.assertEqual(set(first), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(catalog, before)
+
+    def test_no_unapproved_or_stale_offer_becomes_published_during_planning(self):
+        order = recovery.prioritize_recovery_targets({"products": []}, NOW)
+        self.assertNotIn(("burner", "ST-310"), order)
+        self.assertNotIn(("led_lantern", "2218365"), order)
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+        a, old, gear = baseline()
+        # Planning alone cannot bypass the original official API and seller
+        # proof, nor mutate any existing catalog.
+        snapshot = copy.deepcopy(old)
+        recovery.prioritize_recovery_targets(old, NOW)
+        self.assertEqual(old, snapshot)
+
+
 if __name__ == "__main__":
     unittest.main()
