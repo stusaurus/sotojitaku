@@ -9,12 +9,12 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from acquire import ROOT
 import stage_camp_api_evidence as stage
-from refresh_verified_camp_offer import TARGETS as PRIMARY_TARGETS, refresh_snapshot, recent_original_proof
+from refresh_verified_camp_offer import TARGETS as PRIMARY_TARGETS, refresh_snapshot, recent_original_proof, parse_time
 
 # Maximum three extra shared-Worker calls per run across all six candidates.
 # Originally audited merchants only; this allowlist is not authorization
@@ -33,11 +33,52 @@ PRIORITY_GAPS = (
     ("table", "2205813"),
     ("fire_pit", "ST-032RS"),
 )
-ALLOWED_TARGETS = CANDIDATES + PRIORITY_GAPS
+# Historical, fixed-merchant audits only. These do NOT establish current
+# inventory or make a product eligible for publication. All of them must pass
+# the existing same-run official exact Item API + original seller/cart gates.
+RECOVERY_GAPS = (
+    ("burner", "ST-340"),
+    ("table", "2238333"),
+    ("sleeping_bag", "2000034772"),
+    ("tent", "2000038429"),
+    ("tent", "2185614"),
+    ("tent", "2000036439"),
+)
+ALLOWED_TARGETS = CANDIDATES + PRIORITY_GAPS + RECOVERY_GAPS
 MAX_EXTRA_API_CALLS = 3
 REQUIRED_ORIGINAL_AUDIT = (
     "audited", "bodyConfirmed", "fixedVariant", "available", "priceAudit",
 )
+
+def prioritize_recovery_targets(catalog, observed):
+    """Protect aging live proof, then rotate historical gap probes fairly.
+
+    Only existing allowlisted fixed-seller audit targets are returned. A
+    missing listing is a *probe*, never a recommendation or a publication
+    approval. The shared per-run three-call cap remains in refresh_extra.
+    """
+    if observed.tzinfo is None:
+        raise ValueError("observed_time_must_be_aware")
+    observed = observed.astimezone(timezone.utc)
+    current = {(p.get("category"), p.get("model")): p
+               for p in (catalog.get("products") or []) if isinstance(p, dict)}
+    renew = []
+    for target in ALLOWED_TARGETS:
+        existing = current.get(target)
+        if existing is None:
+            continue
+        stamp = parse_time(existing.get("verifiedAt"))
+        if stamp is None or stamp > observed or observed - stamp >= timedelta(days=5):
+            renew.append(target)
+
+    missing_gaps = [target for target in RECOVERY_GAPS if target not in current]
+    if missing_gaps:
+        # Vary the first missing candidate each day so a repeatedly missing
+        # original SKU cannot monopolize all calls on every scheduled run.
+        offset = observed.date().toordinal() % len(missing_gaps)
+        missing_gaps = missing_gaps[offset:] + missing_gaps[:offset]
+    targets = renew + missing_gaps + list(CANDIDATES) + list(PRIORITY_GAPS) + list(RECOVERY_GAPS)
+    return tuple(dict.fromkeys(targets))
 
 
 def refresh_extra(audits_doc, existing, equipment, *, primary_report,
@@ -127,7 +168,8 @@ def main(root=ROOT):
     new_audits, new_catalog, report = refresh_extra(
         audits, catalog, equipment, primary_report=primary,
         run_id=os.environ.get("GITHUB_RUN_ID", "local"),
-        targets=ALLOWED_TARGETS, skip_recent=True)
+        targets=prioritize_recovery_targets(
+            catalog, datetime.now(timezone.utc)), skip_recent=True)
     # The report never includes newly observed prices, HTML, seller cookies or tokens.
     dest = root / "reports/camp-additional-seller-refresh.json"
     dest.parent.mkdir(exist_ok=True)
