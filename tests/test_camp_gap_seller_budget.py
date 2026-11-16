@@ -130,7 +130,7 @@ class GapBudgetProof(unittest.TestCase):
         audits,original,newaudits,new,report,calls=simulate(age_hours=40)
         self.assertEqual(report["attempted"],3)
         self.assertEqual(report["skippedRecent"],0)
-        self.assertEqual(report["deferredForBudget"],3)
+        self.assertEqual(report["deferredForBudget"], len(renewal.ALLOWED_TARGETS) - renewal.MAX_EXTRA_API_CALLS)
         self.assertEqual([x for x in calls if x[0]=="api"],
                          [("api",model) for _,model in ORIGINAL])
         self.assertEqual(len(new["products"]),3)
@@ -194,7 +194,7 @@ class GapBudgetProof(unittest.TestCase):
                 a,b,na,new,report,calls=simulate(age_hours=hours)
                 self.assertEqual(report["attempted"],3)
                 self.assertEqual(report["skippedRecent"],0)
-                self.assertEqual(report["deferredForBudget"],3)
+                self.assertEqual(report["deferredForBudget"], len(renewal.ALLOWED_TARGETS) - renewal.MAX_EXTRA_API_CALLS)
 
 if __name__=="__main__":
     unittest.main()
