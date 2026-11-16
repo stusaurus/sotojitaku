@@ -1,11 +1,8 @@
 name: Renew nine strictly verified CAMP seller offers
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/refresh_verified_camp_offer.py'
-      - 'scripts/refresh_verified_camp_alternates.py'
-      - '.github/workflows/refresh-verified-camp-offer.yml'
+  # Code changes are covered by PR CI. Avoid an extra seller/API refresh
+  # immediately after merging code, which can exhaust the shared API quota
+  # before the next regular catalog renewal.
   workflow_dispatch:
   schedule:
     # 09:40 JST; avoid the shared Worker nightly cross-site catalog burst.
