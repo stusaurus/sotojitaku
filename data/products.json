@@ -2,62 +2,6 @@
   "version": 1,
   "products": [
     {
-      "category": "fire_pit",
-      "itemCode": "naturum-outdoor:10524068",
-      "model": "ST-032RS",
-      "query": "ST-032RS",
-      "family": "snowpeak-firepit-st032rs",
-      "name": "Snow Peak 焚火台 L ST-032RS",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 21120,
-      "spec": {
-        "weight": 5500,
-        "packed_size": "560×640×32mm",
-        "capacity": 4
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/9935626/",
-        "specification": "https://ec.snowpeak.co.jp/item/SNP0120A0737",
-        "fields": {
-          "weight": "https://ec.snowpeak.co.jp/item/SNP0120A0737",
-          "packed_size": "https://ec.snowpeak.co.jp/item/SNP0120A0737"
-        }
-      },
-      "scores": {
-        "fit": 0.99,
-        "beginner": 0.99,
-        "comfort": 1,
-        "portability": 0.18,
-        "value": 0.5,
-        "trust": 0.99
-      },
-      "traits": [
-        "comfort"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-11T10:45:59.997123+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 43006321226",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/9935626/",
-      "specSummary": "3〜4人向け / 約5.5kg / 収納560×640×32mm。家族で焚き火をしっかり楽しむ大型モデル。",
-      "identityTerms": [
-        "焚火台",
-        "ST-032RS"
-      ],
-      "price": 19225,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F9935626%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10524068%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/099356/26_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-11T10:45:59.997123+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
       "category": "tent",
       "itemCode": "sports-bazaar:10314223",
       "model": "2000038141",
@@ -759,6 +703,62 @@
       "verifiedAt": "2026-11-16T07:17:52.656421+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "fire_pit",
+      "itemCode": "naturum-outdoor:10524068",
+      "model": "ST-032RS",
+      "query": "ST-032RS",
+      "family": "snowpeak-firepit-st032rs",
+      "name": "Snow Peak 焚火台 L ST-032RS",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 21120,
+      "spec": {
+        "weight": 5500,
+        "packed_size": "560×640×32mm",
+        "capacity": 4
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/9935626/",
+        "specification": "https://ec.snowpeak.co.jp/item/SNP0120A0737",
+        "fields": {
+          "weight": "https://ec.snowpeak.co.jp/item/SNP0120A0737",
+          "packed_size": "https://ec.snowpeak.co.jp/item/SNP0120A0737"
+        }
+      },
+      "scores": {
+        "fit": 0.99,
+        "beginner": 0.99,
+        "comfort": 1,
+        "portability": 0.18,
+        "value": 0.5,
+        "trust": 0.99
+      },
+      "traits": [
+        "comfort"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-11T10:45:59.997123+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 43006321226",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/9935626/",
+      "specSummary": "3〜4人向け / 約5.5kg / 収納560×640×32mm。家族で焚き火をしっかり楽しむ大型モデル。",
+      "identityTerms": [
+        "焚火台",
+        "ST-032RS"
+      ],
+      "price": 19225,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F9935626%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10524068%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/099356/26_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-11T10:45:59.997123+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
     }
   ],
   "status": "partial_error",
@@ -806,7 +806,8 @@
     "cooler:2244060": "not_reverified",
     "cooler:2238145": "not_reverified",
     "led_lantern:2218364": "exact_item_not_found",
-    "burner:ST-350": "exact_item_not_found"
+    "burner:ST-350": "exact_item_not_found",
+    "fire_pit:ST-032RS": "rate_limited"
   },
-  "updatedAt": "2026-11-16T07:17:52.656421+00:00"
+  "updatedAt": "2026-11-17T08:28:19.098392+00:00"
 }
