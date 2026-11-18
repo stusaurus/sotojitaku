@@ -7,3 +7,14 @@ body[data-screen='question'] .family-nav,body[data-screen='result'] .family-nav{
 @media(max-width:899px){.hero h1{letter-spacing:0;font-size:clamp(33px,9.6vw,40px)}}
 
 .result-eyebrow{font-size:15px;color:var(--moss);letter-spacing:.06em;margin:20px 0 8px}.result-hero .result-eyebrow+h2{margin-top:0;overflow-wrap:anywhere}
+
+.pack-sheet {padding:clamp(12px,3vw,24px);border:1px solid var(--sand);border-radius:12px;background:var(--white)}
+.pack-heading {display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px}
+.pack-heading h4 {margin:0;color:var(--sea);font:500 1.22rem/1.5 var(--serif)}
+.pack-heading output {color:var(--sea);font-size:.82rem;font-weight:700;font-variant-numeric:tabular-nums}
+.pack-sheet p {margin:4px 0;color:#4b5852;font-size:.86rem}
+.pack-sheet progress {display:block;width:100%;height:7px;margin:10px 0 14px;accent-color:var(--moss)}
+.pack-item {display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:9px;padding:10px 2px;min-height:48px;border-top:1px solid #dadfd7;cursor:pointer;line-height:1.45}
+.pack-item input {width:20px;height:20px;margin:0;accent-color:var(--sea)}
+.pack-item small {color:#47584e;font-size:.75rem}
+.pack-item:has(:checked) {background:#ebf1eb}

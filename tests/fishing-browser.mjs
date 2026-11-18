@@ -131,11 +131,18 @@ try{
     assert.ok(!events.includes('affiliate_click')&&!events.includes('product_select'),
       'no valid seller means no purchasable link and no fake conversion event');
    }
+   const towel=page.locator('[data-pack="towel"]');
+   await towel.check();
+   assert.match(await page.locator('#packCount').innerText(),/1 \/ /);
+   await page.locator('.pack-sheet').screenshot({path:`browser-proof/packing-${width}-${scenario.name}.png`});
    await page.locator('#shareBtn').click();
    const shared=await page.evaluate(()=>navigator.clipboard.readText());assert.match(shared,/#plan=/);
    await page.goto('about:blank');await page.goto(shared,{waitUntil:'domcontentloaded',timeout:45000});await page.locator('.result-hero').waitFor();await noOverflow();
+   assert.equal(await towel.isChecked(),false);
+   await towel.check();
    await page.locator('#saveBtn').click();assert.match(await page.locator('#saveBtn').innerText(),/保存しました/);
    await page.goto(base+'?test=1',{waitUntil:'domcontentloaded',timeout:45000});await page.locator('#savedBtn').click();await page.locator('.result-hero').waitFor();
+   assert.equal(await towel.isChecked(),true);
    await page.locator('#againBtn').click();assert.match(await page.locator('#panel h2').innerText(),/だれと/);
    assert.equal(await page.locator('.result-hero').count(),0);await noOverflow();
    assert.deepEqual(errors,[]);count++;console.log(`PASS ${width}px ${scenario.name}`);await context.close();
