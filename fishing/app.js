@@ -11,6 +11,7 @@ const DRAFT_KEY="sotojitakuFishingDraft";
 let questionsData,plansData,gearData,howtoData,catalog;
 let index=0;
 let answers={owned:[]};
+let packed=new Set();
 let localRulesConfirmed=false;
 let currentResultKey="";
 const viewedProducts=new Set();
@@ -153,7 +154,7 @@ function readDraft(){
 }
 function persistDraft(stage="question"){
   try{
-    localStorage.setItem(DRAFT_KEY,JSON.stringify({version:1,stage,index,answers,at:new Date().toISOString()}));
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({version:1,stage,index,answers,packed:[...packed],at:new Date().toISOString()}));
   }catch{}
   refreshSavedButton();
 }
@@ -164,6 +165,7 @@ function start(){
   lastStepIndex=-1;
   clearSharedPlanHash();
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
+  packed.clear();
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";viewedProducts.clear();
   persistDraft("question");
   track("fishing_diagnosis_start");
@@ -173,6 +175,7 @@ function start(){
 function resumeDraft(){
   const draft=readDraft();
   if(!draft)return openSavedPlan();
+  packed=new Set(Array.isArray(draft.packed)?draft.packed:[]);
   answers={...draft.answers,owned:[...(draft.answers.owned||[])]};
   index=Math.max(0,Math.min(draft.index,questionsData.questions.length-1));
   hero.hidden=true;planner.hidden=false;resetBtn.hidden=false;
@@ -186,6 +189,7 @@ function reset(){
   document.body.dataset.screen="home";
   clearSharedPlanHash();clearDraft();
   hero.hidden=false;planner.hidden=true;resetBtn.hidden=true;
+  packed.clear();
   index=0;answers={owned:[]};localRulesConfirmed=false;currentResultKey="";
   refreshSavedButton();
   scrollTo({top:0,behavior:"smooth"});
@@ -287,7 +291,6 @@ function renderResult({trackDiagnosis=true}={}){
   document.body.dataset.screen="result";
   if(progressText)progressText.textContent="YOUR FIRST PLAN";
   if(progressLine)progressLine.innerHTML="";
-  persistDraft("result");
   const resultKey=JSON.stringify(answers);
   const isNewResult=resultKey!==currentResultKey;
   if(trackDiagnosis&&isNewResult){
@@ -299,6 +302,9 @@ function renderResult({trackDiagnosis=true}={}){
   const readiness=evaluateReadiness({input:answers,plan,gearData,context:{localRulesConfirmed}});
   const productResult=buildProductRecommendations(catalog.products||[],{input:answers,plan,checklist:rawChecklist,now:Date.now()});
   const checklist=applyProductCoverage(rawChecklist,productResult.selected);
+  const required=checklist.filter(item=>item.priority==="required");
+  packed=new Set(required.filter(item=>packed.has(item.id)).map(item=>item.id));
+  persistDraft("result");
   const basket=basketSummary(rawChecklist,productResult.selected);
   const methodLabel=plan.variant?.name||plan.methodName;
   stepText.textContent="YOUR FIRST PLAN";
@@ -325,11 +331,14 @@ function renderResult({trackDiagnosis=true}={}){
         <h3 class="section-title">いまの支度</h3>
         <p class="readiness-copy">${escapeHtml(resultHeadline(readiness))}</p>
         <div class="owned-summary"><h4>持っているものを活かして</h4><p>${(answers.owned||[]).length?answers.owned.map(id=>escapeHtml(optionLabel("owned",id))).join("・"):"手持ちの道具はまだなくても大丈夫。必要なものから、ひとつずつ。"}</p></div>
-        <h4>あと準備するもの</h4>
-        <div class="checklist">
-          ${checklist.filter(x=>x.priority==="required"&&x.state!=="owned").map(x=>`
-            <div class="check"><b>${escapeHtml(x.label)}</b><span class="${x.state}">${stateLabel(x.state)}</span></div>
-          `).join("")}
+        <div class="pack-sheet">
+          <div class="pack-heading"><h4>出発前の荷造り</h4><output id="packCount">荷造り済み ${packed.size} / ${required.length}</output></div>
+          <p>持っていく分をそろえたら、道具にチェック。</p>
+          <progress id="packProgress" aria-label="荷造りの進み具合" max="${required.length}" value="${packed.size}"></progress>
+          ${required.map(item=>`<label class="pack-item">
+            <input type="checkbox" data-pack="${escapeAttr(item.id)}" ${packed.has(item.id)?"checked":""}>
+            <span>${escapeHtml(item.label)}</span><small>${stateLabel(item.state)}</small>
+          </label>`).join("")}
         </div>
       </div>
 
@@ -385,6 +394,15 @@ function renderResult({trackDiagnosis=true}={}){
     });
     currentResultKey=resultKey;
   }
+  $(".pack-sheet").addEventListener("change",event=>{
+    const input=event.target.closest("[data-pack]");
+    if(!input)return;
+    if(input.checked)packed.add(input.dataset.pack);
+    else packed.delete(input.dataset.pack);
+    $("#packCount").textContent=`荷造り済み ${packed.size} / ${required.length}`;
+    $("#packProgress").value=packed.size;
+    persistDraft("result");
+  });
   $("#rulesCheck").addEventListener("change",e=>{localRulesConfirmed=e.target.checked;renderResult({trackDiagnosis:false})});
   panel.querySelectorAll("[data-child-fit]").forEach(btn=>btn.addEventListener("click",e=>{
     const fit=e.currentTarget.dataset.childFit;
@@ -412,7 +430,7 @@ function renderResult({trackDiagnosis=true}={}){
   });
   $("#saveBtn").addEventListener("click",()=>{
     try{
-      localStorage.setItem("sotojitakuFishingPlan",JSON.stringify({version:1,answers,at:new Date().toISOString()}));
+      localStorage.setItem("sotojitakuFishingPlan",JSON.stringify({version:1,answers,packed:[...packed],at:new Date().toISOString()}));
       clearDraft();
       $("#saveBtn").textContent="保存しました";
       savedBtn.hidden=false;
@@ -792,6 +810,7 @@ function refreshSavedButton(){
 function openSavedPlan(){
   const saved=readSavedPlan();
   if(!saved)return refreshSavedButton();
+  packed=new Set(Array.isArray(saved.packed)?saved.packed:[]);
   answers={...saved.answers,owned:[...saved.answers.owned]};
   hero.hidden=true;
   planner.hidden=false;
