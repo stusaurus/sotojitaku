@@ -41,6 +41,10 @@ try{
    await page.route('https://www.googletagmanager.com/**',r=>r.fulfill({status:200,body:''}));
    const mockCatalog=width===390 && ["solo","family"].includes(scenario.name);
    const partialCatalog=width===320 && scenario.name==="pair";
+   const emptyCatalog=width===320 && scenario.name==="owned";
+   if(emptyCatalog){
+    await page.route('**/fishing/data/audited-products.json',route=>route.fulfill({json:{products:[]}}));
+   }
    if(mockCatalog||partialCatalog){
     const products=partialCatalog?testOnlyProducts().filter(p=>p.categoryId!=="rod_reel"):testOnlyProducts();
     await page.route('**/fishing/data/audited-products.json',route=>route.fulfill({
@@ -71,6 +75,10 @@ try{
    await page.locator('#nextBtn').click();await page.locator('#nextBtn').click();
    await page.locator('.result-hero').waitFor();await noOverflow();
    const initialOfferCount=await page.locator('.buy').count();
+   if(emptyCatalog){
+    assert.equal(initialOfferCount,0);
+    assert.ok(await page.locator('[data-pack="rod_reel"]').isVisible(),'pack owned gear even with no sellers');
+   }
    if(!initialOfferCount){
     assert.equal(await page.locator('.product-card').count(),0,'expired products must not produce purchase cards');
     assert.match((await page.locator('.empty-products').allInnerTexts()).join(' '),/確認済みの候補がありません|確認済み商品がありません/);
