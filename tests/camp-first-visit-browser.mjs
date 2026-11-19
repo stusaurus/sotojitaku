@@ -83,12 +83,21 @@ try{
    assert.match(reality,/出発準備の完了ではありません/,"never certify real-world readiness");
    assert.match(reality,/現地の天気|安全/);
    assert.match(reality,/購入予定|持ち物の数量/);
+   const overBudget=page.locator(".completion-budget-warning");
+   if(persona.party==="family"){
+     assert(await overBudget.isVisible(),"family plan above 50,000 yen must show prominent over-budget warning");
+     assert.match(await overBudget.innerText(),/道具予算を¥[0-9,]+超える見込み/);
+     assert.equal(await overBudget.locator('[data-go="gear"]').count(),1,"warning needs a usable gear-review action");
+   }else{
+     assert.equal(await overBudget.count(),0,"within-budget day trip needs no warning");
+   }
    assert(await page.locator(".finished-world .studio-scene").isVisible());
    await snap("complete");
    await page.reload();
    assert.match(await page.locator(".finished-copy h1").innerText(),/キャンプ計画/,"completed plan restores");
    await select('[data-go="schedule"]');
    assert.match(await page.locator("#main").innerText(),/荒天や強風なら延期・中止/);
+   assert.match(await page.locator("#main").innerText(),/購入・レンタル予約・安全確認が完了したことを示しません/);
    await snap("schedule");
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,"horizontal overflow");
    assert.deepEqual(exceptions,[],"runtime exceptions");
