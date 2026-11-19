@@ -69,9 +69,18 @@ try{
   await page.goto(base+"camp/?test=1#provisional");
   await select('[data-inspect="tent"]');assert.match(await page.locator('dialog[open]').innerText(),/レンタル予定/);
   await page.keyboard.press("Escape");
+  await select('[data-go="owned"]');await select('[data-go="gear"]');
+  await select('[data-go="cooking"]');await select('[data-go="budget"]');
+  assert(await page.locator("[data-complete]").isDisabled());
+  await page.locator('[data-status="mat"]').selectOption("buy");
+  await select("[data-complete]");await page.locator(".finished-world .studio-scene").waitFor();
+  await select('[data-go="schedule"]');
   await context.route("**/world/**",r=>r.abort());
   await page.goto(base+"camp/?test=1#question");
   await next();assert(await page.locator('[data-go="owned"]').first().isVisible());
+  await page.goto(base+"camp/?test=1#privacy");
+  page.once("dialog",dialog=>dialog.accept());
+  await select("[data-delete]");assert.equal(await saved(),null);
   assert.deepEqual(errors,[]);
   results.push({engine,width,...metrics});
   await context.close();

@@ -43,3 +43,18 @@
 .world-caption{gap:8px}.studio-chip-row{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.studio-scene *{transition:none!important;animation:none!important}}
+.world-pack{left:66%;top:70%}
+[data-studio-time="night"] :is([data-inspect="fire_pit"],[data-inspect="led_lantern"]) img{filter:brightness(.9)}
+[data-studio-time="night"] :is([data-inspect="fire_pit"],[data-inspect="led_lantern"]):before{left:-45%;width:190%;height:50%;opacity:.7;background:radial-gradient(ellipse,#f5ac5866,transparent 72%);filter:blur(3px)}
+.world-object[data-deferred="true"]{opacity:.55}
+.world-dialog small{display:block;color:#435346;font-size:12px;line-height:1.6}
+.world-note meter{display:block;max-width:220px;width:100%}
+.world-stars{position:absolute;inset:0 0 83%;opacity:0;pointer-events:none;background:radial-gradient(circle at 9% 21%,#fff9 1px,transparent 1.4px),radial-gradient(circle at 21% 65%,#fff7 .7px,transparent 1px),radial-gradient(circle at 44% 12%,#fff9 1px,transparent 1.3px),radial-gradient(circle at 66% 34%,#fff8 .8px,transparent 1px);background-size:27% 59%,37% 100%,44% 71%,63% 75%;transition:opacity .55s}
+[data-studio-time="night"] .world-stars{opacity:.9}
+.finished-world{background:#182d28;padding:76px max(0px,calc((100% - 920px)/2)) 0}
+.finished-copy{padding:26px 5%;color:#fbf7eb}
+.finished-copy h1{font-family:var(--serif)}
+@media(prefers-reduced-motion:no-preference){
+  .world-object{animation:gear-arrival .38s ease-out both}
+  @keyframes gear-arrival{from{opacity:0;translate:0 -3px}to{translate:0 0}}
+}
