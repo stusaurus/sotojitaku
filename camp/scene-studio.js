@@ -88,7 +88,7 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
   const controls=SCENE_TIMES.map(({id,label})=>
     `<button type="button" class="studio-time-option" data-scene-preview="${id}" aria-pressed="${id===view.time}"${id==="night"&&view.nightDisabled?" disabled":""}>${label}</button>`).join("");
   const objects=items.map(({id,name,x,y,width,deferred,chairPose})=>
-    `<button class="world-object" data-deferred="${deferred}"${id==="chair"?` data-chair-pose="${chairPose}"`:""} type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%"><img alt="" src="${asset(id)}"></button>`).join("");
+    `<button class="world-object" data-deferred="${deferred}"${id==="chair"?` data-chair-pose="${chairPose}"`:""} type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%;--visual-width:${width}cqw"><img alt="" src="${asset(id)}"></button>`).join("");
   const season=step>=2 && Object.hasOwn(SEASONS,answers.season)?answers.season:"spring";
   const packing=step>=4 ? (answers.transport==="no_car"?"pack":"trunk") : null;
   const budget=step===6&&cost ? `道具の概算 ¥${cost.total.toLocaleString("ja-JP")} ／ ${cost.limit===null?"上限設定なし":"予算 ¥"+cost.limit.toLocaleString("ja-JP")}` : "";
