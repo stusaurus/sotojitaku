@@ -86,6 +86,7 @@ try{
   assert.equal(await page.locator('.world-dialog .world-detail-content').first().evaluate(el=>getComputedStyle(el).display),"flex");
   if(width===390)await page.screenshot({path:dir+"/"+engine+"-"+width+"-gear-detail.jpg",quality:83});
   await page.keyboard.press("Escape");
+  await page.waitForFunction(()=>!document.querySelector('.sim-visual [data-inspect-focus]'));
   assert.equal(await page.locator('.sim-visual [data-inspect-focus]').count(),0,"object highlight must clear");
   await select('[data-inspect="all"]');
   assert.match(await page.locator('dialog[open]').innerText(),/焚き火台/);
