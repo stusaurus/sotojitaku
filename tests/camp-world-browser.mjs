@@ -57,6 +57,23 @@ try{
     assert.match(await mini.locator('.studio-mobile-feedback-count').innerText(),/選択中/);
     await snap("mobile-live-feedback");
   }
+  // The old ::after looked 44px wide, but the button itself was only 5% of
+  // the scene. Test the ACTUAL hit rectangle and unchanged camera-scale sprite.
+  for(const id of ["led_lantern","kettle"]){
+    const prop=page.locator('.sim-visual .world-object[data-inspect="'+id+'"]').first();
+    await prop.waitFor();
+    const box=await prop.evaluate(el=>{
+      const btn=el.getBoundingClientRect();
+      const img=el.querySelector("img").getBoundingClientRect();
+      const frame=el.closest(".world-frame").getBoundingClientRect();
+      return {hitWidth:btn.width,hitHeight:btn.height,spriteWidth:img.width,frameWidth:frame.width};
+    });
+    assert(box.hitWidth>=43.5&&box.hitHeight>=43.5,id+": actual tap rectangle must be at least 44px");
+    assert(Math.abs(box.spriteWidth-box.frameWidth*.05)<2,id+": sprite scale must not grow with tap area");
+    await prop.click();
+    assert.match(await page.locator('.world-dialog[open]').innerText(),new RegExp(id==="kettle"?"ケトル":"ランタン"));
+    await page.keyboard.press("Escape");
+  }
   await page.reload();await page.locator('[data-inspect="tent"]').first().waitFor();
   const snapshot=await saved();
   await select('[data-inspect="tent"]');
