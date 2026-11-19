@@ -27,9 +27,9 @@ try{
     const errors=[];
     page.on("pageerror",error=>errors.push(error.message));
     await page.addInitScript(()=>{
-      window.__campLab={lcp:null,cls:0,longTasks:0,paintSamples:[]};
+      window.__campLab={navigationLcp:null,cls:0,longTasks:0,twoFrameFeedbackSamples:[],sceneImageReadyMs:null};
       for(const [type,callback] of [
-        ["largest-contentful-paint",entry=>window.__campLab.lcp=entry.startTime],
+        ["largest-contentful-paint",entry=>window.__campLab.navigationLcp=entry.startTime],
         ["layout-shift",entry=>{if(!entry.hadRecentInput)window.__campLab.cls+=entry.value;}],
         ["longtask",entry=>window.__campLab.longTasks+=entry.duration]
       ]){
@@ -38,10 +38,21 @@ try{
       }
       document.addEventListener("click",event=>{
         const el=event.target.closest?.("button");
+        if(el?.hasAttribute("data-start")){
+          const started=performance.now();
+          queueMicrotask(()=>{
+            const image=document.querySelector(".studio-image");
+            if(image&&image.decode){
+              image.decode().then(()=>{
+                window.__campLab.sceneImageReadyMs=Math.round(performance.now()-started);
+              }).catch(()=>{window.__campLab.sceneImageReadyMs=null;});
+            }
+          });
+        }
         if(!el||!el.matches("[data-answer],[data-experience],[data-scene-preview]"))return;
         const started=performance.now(),target=el.matches("[data-experience]")?"experience":el.matches("[data-scene-preview]")?"time":"answer";
         requestAnimationFrame(()=>requestAnimationFrame(()=>{
-          window.__campLab.paintSamples.push({target,ms:Math.round(performance.now()-started)});
+          window.__campLab.twoFrameFeedbackSamples.push({target,ms:Math.round(performance.now()-started)});
         }));
       },true);
     });
@@ -69,6 +80,7 @@ try{
       await page.keyboard.press("Escape");
       assert(!(await page.locator(".world-dialog[open]").count()),"Escape must close prop detail");
       await page.locator('[data-scene-preview="night"]').click();
+      await page.waitForFunction(()=>window.__campLab.sceneImageReadyMs!==null,null,{timeout:10000});
       await page.waitForFunction(()=>document.querySelector(".studio-image")?.complete);
       await page.waitForTimeout(220);
       const stats=await page.evaluate(()=>{
@@ -76,13 +88,14 @@ try{
         const world=resources.filter(x=>x.name.includes("/camp/world/"));
         const nav=performance.getEntriesByType("navigation")[0];
         return {
-          lcpMs:window.__campLab.lcp===null?null:Math.round(window.__campLab.lcp),
+          initialNavigationLcpMs:window.__campLab.navigationLcp===null?null:Math.round(window.__campLab.navigationLcp),
+          sceneImageReadyAfterStartMs:window.__campLab.sceneImageReadyMs,
           clsSupported:PerformanceObserver.supportedEntryTypes?.includes("layout-shift")||false,
           cls:Math.round(window.__campLab.cls*10000)/10000,
           longTaskSupported:PerformanceObserver.supportedEntryTypes?.includes("longtask")||false,
           longTaskMs:Math.round(window.__campLab.longTasks),
           navigationDOMContentLoadedMs:Math.round(nav?.domContentLoadedEventEnd||0),
-          paintSamples:window.__campLab.paintSamples,
+          twoFrameFeedbackSamples:window.__campLab.twoFrameFeedbackSamples,
           worldEncodedBytes:world.reduce((sum,e)=>sum+e.encodedBodySize,0),
           worldUniqueUrls:new Set(world.map(e=>e.name)).size,
           layoutOverflow:document.documentElement.scrollWidth>innerWidth+1
@@ -91,8 +104,11 @@ try{
       assert.equal(stats.layoutOverflow,false,"horizontal overflow");
       assert(stats.worldEncodedBytes<1100000,"regression in world asset budget");
       assert(stats.worldUniqueUrls<=9,"unintended extra world asset requests");
-      assert(stats.paintSamples.length>=3,"render latency not recorded");
-      assert(stats.paintSamples.every(e=>e.ms<1200),"very slow scene feedback");
+      assert(stats.twoFrameFeedbackSamples.length>=3,"two-frame response not recorded");
+      assert(stats.twoFrameFeedbackSamples.every(e=>e.ms<1200),"very slow scene feedback");
+      assert(Number.isFinite(stats.sceneImageReadyAfterStartMs),"scene decode wasn't timed");
+      if(slowLake)assert(stats.sceneImageReadyAfterStartMs>=1000,
+        "delayed image test did not actually exercise the delay");
       assert.deepEqual(errors,[],"browser exceptions");
       results.push({width,slowLake,result:"PASS",...stats});
     }finally{await context.close();}
