@@ -139,11 +139,16 @@ export function updateQuestionScene(container,html){
   current.querySelector("dialog").replaceWith(next.querySelector("dialog"));
   const focused=document.activeElement;
   const attr=["data-answer","data-experience","data-step"].find(name=>focused?.hasAttribute(name));
+  const advanced=focused?.hasAttribute("data-next")||focused?.hasAttribute("data-back-question");
   const sheet=template.content.querySelector(".question-sheet");
   container.querySelector(".question-sheet").replaceWith(sheet);
   if(attr){
     const match=[...sheet.querySelectorAll("["+attr+"]")].find(b=>b.getAttribute(attr)===focused.getAttribute(attr)&&b.dataset.delta===focused.dataset.delta);
     match?.focus({preventScroll:true});
+  }else if(advanced){
+    // A removed "next/back" button must not strand keyboard/screen-reader focus on <body>.
+    const heading=sheet.querySelector(".question-title");
+    if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
   }
 }
 
