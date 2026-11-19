@@ -255,6 +255,31 @@ class GapRecoveryPriority(unittest.TestCase):
         self.assertNotEqual(order[2], next_day[2],
                             "Rotate two audited fixed-seller burner codes")
 
+    def test_nonempty_catalog_with_no_burner_probes_one_before_other_missing_tents(self):
+        # This is the real failure mode: all three extra calls were previously
+        # spent on table/sleeping bag/tent, leaving ST-340 and ST-350 untried.
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        catalog = {"products": [
+            {"category": c, "model": m, "verifiedAt": now.isoformat()}
+            for c,m in [
+                recovery.PRIORITY_GAPS[0],  # existing tent
+                recovery.PRIORITY_GAPS[1],  # existing table
+                recovery.PRIORITY_GAPS[2],  # existing fire pit
+            ]
+        ]}
+        before = copy.deepcopy(catalog)
+        first = recovery.prioritize_recovery_targets(catalog, now)
+        second = recovery.prioritize_recovery_targets(
+            catalog, now+timedelta(days=1))
+        self.assertEqual(first[0][0], "burner")
+        self.assertEqual(second[0][0], "burner")
+        self.assertIn(first[0], (("burner", "ST-350"), ("burner", "ST-340")))
+        self.assertNotEqual(first[0], second[0])
+        self.assertEqual(len(first), len(set(first)))
+        self.assertEqual(set(first), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(before, catalog)
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+
     def test_existing_burner_category_does_not_take_probe_slot_from_renewals(self):
         now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
         aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
