@@ -273,6 +273,30 @@ class GapRecoveryPriority(unittest.TestCase):
         self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
         self.assertEqual(len(order), len(set(order)))
 
+    def test_expired_burner_does_not_mask_zero_live_seller_supply(self):
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        aging = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
+                 recovery.PRIORITY_GAPS[1], recovery.PRIORITY_GAPS[2]]
+        products = [
+            {"category": c, "model": m,
+             "verifiedAt": (now-timedelta(days=6)).isoformat()}
+            for c,m in aging
+        ]
+        products.extend([
+            {"category": "sleeping_bag", "model": "already-live",
+             "verifiedAt": now.isoformat()},
+            # An old row may remain in a source snapshot, but it is NOT a
+            # live offer after the seven-day publication deadline.
+            {"category": "burner", "model": "ST-350",
+             "verifiedAt": (now-timedelta(days=8)).isoformat()},
+        ])
+        result = recovery.prioritize_recovery_targets(
+            {"products": products}, now)
+        self.assertEqual(result[:2], tuple(aging[:2]))
+        self.assertEqual(result[2], ("burner", "ST-340"),
+                         "Need a DIFFERENT seller when existing burner proof expired")
+        self.assertEqual(len(result), len(set(result)))
+
     def test_no_unapproved_or_stale_offer_becomes_published_during_planning(self):
         order = recovery.prioritize_recovery_targets({"products": []}, NOW)
         self.assertNotIn(("burner", "ST-310"), order)
