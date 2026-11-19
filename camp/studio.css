@@ -253,3 +253,100 @@
     font-size:10px;
   }
 }
+
+
+/* Sprint 06 | the same objects users touch appear in the inspection sheet.
+   Acquisition state is always expressed as text, never color alone. */
+.world-dialog{
+  overflow-y:auto;
+  box-shadow:0 30px 90px #0b1a18a8;
+  border:1px solid #dadfd3;
+}
+.world-dialog-title{font-size:clamp(22px,3vw,26px);line-height:1.5}
+.world-dialog .world-dialog-intro{
+  margin:2px 0 12px;
+  color:#5d6c5e;
+  font-size:12px;
+}
+.world-dialog ul{margin:10px 0 18px}
+.world-dialog li{
+  display:grid;
+  grid-template-columns:66px minmax(0,1fr);
+  gap:13px;
+  align-items:start;
+  padding:13px 0;
+}
+.world-dialog li[hidden]{display:none}
+.world-detail-thumb{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  height:76px;
+  padding:7px;
+  border-radius:10px;
+  background:linear-gradient(145deg,#eceee3,#d9e0d1);
+  overflow:hidden;
+}
+.world-detail-thumb img{
+  display:block;
+  width:100%;height:100%;
+  object-fit:contain;
+  filter:drop-shadow(1px 3px 2px #192d2740);
+}
+.world-detail-content{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  align-items:flex-start;
+  min-width:0;
+}
+.world-detail-content .world-detail-name{
+  font-family:var(--serif);
+  font-size:17px;line-height:1.5;
+  color:#203c2f;
+}
+.world-dialog .world-detail-role{
+  color:#526456;font-size:12px;line-height:1.5;
+}
+.world-dialog .world-detail-remark{
+  color:#526456;font-size:12px;line-height:1.55;
+}
+.world-status-pill{
+  display:inline-flex;
+  max-width:100%;
+  border-radius:999px;
+  padding:3px 9px;
+  font-size:11px;
+  line-height:1.55;
+  font-weight:600;
+  background:#e6e6de;color:#49534d;
+}
+.world-status-pill[data-status="owned"]{background:#dce9db;color:#355f43}
+.world-status-pill[data-status="buy"]{background:#eee0cd;color:#755332}
+.world-status-pill[data-status="rent"]{background:#dae5ec;color:#395b70}
+.world-status-pill[data-status="skip"]{background:#e7e7e3;color:#5e635d}
+.world-status-pill[data-status="undecided"]{background:#eee5dc;color:#735f4e}
+.world-dialog .world-dialog-safety{
+  padding-top:6px;
+  color:#526355;
+  border-top:1px solid #ced6c8;
+}
+.world-object[data-inspect-focus="true"]{
+  z-index:5;
+}
+.world-object[data-inspect-focus="true"]::after{
+  inset:-5px;
+  width:calc(100% + 10px);
+  height:calc(100% + 10px);
+  border:2px solid #f4d7a2;
+  border-radius:10px;
+  background:#f9c87612;
+  box-shadow:0 0 0 5px #edbc8540,0 0 20px #f6b36e66;
+}
+@media(max-width:360px){
+  .world-dialog{padding:16px}
+  .world-dialog li{grid-template-columns:56px minmax(0,1fr);gap:10px}
+  .world-detail-thumb{height:64px}
+  .world-detail-content .world-detail-name{font-size:15px}
+}
