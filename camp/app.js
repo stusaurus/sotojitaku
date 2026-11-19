@@ -88,8 +88,18 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
  if(t.hasAttribute('data-new-confirm')){scenePreviewTime=null;state=fresh();hasSaved=false;qIndex=0;persist();track('simulator_start');go('question');return;}
  if(t.hasAttribute('data-resume')){qIndex=state.q||0;go(state.finished?'complete':state.stage||'question');return;}
  if(t.dataset.inspect){
-   const dialog=t.closest('.studio-scene').querySelector('dialog');
-   for(const row of dialog.querySelectorAll('[data-world-row]'))row.hidden=t.dataset.inspect!=='all'&&row.dataset.worldRow!==t.dataset.inspect;
+   const scene=t.closest('.studio-scene'),dialog=scene.querySelector('dialog');
+   const rows=[...dialog.querySelectorAll('[data-world-row]')];
+   const isAll=t.dataset.inspect==='all';
+   for(const row of rows)row.hidden=!isAll&&row.dataset.worldRow!==t.dataset.inspect;
+   const chosen=isAll?null:rows.find(row=>row.dataset.worldRow===t.dataset.inspect);
+   const label=chosen?.querySelector('.world-detail-name')?.textContent?.replace(/\\s*×\\d+$/,'');
+   dialog.querySelector('.world-dialog-title').textContent=isAll?'サイトの道具':(label||'道具')+'の準備';
+   const marked=scene.querySelectorAll('.world-object[data-inspect-focus]');
+   for(const element of marked)element.removeAttribute('data-inspect-focus');
+   const prop=isAll?null:(t.classList.contains('world-object')?t:scene.querySelector('.world-object[data-inspect="'+t.dataset.inspect+'"]'));
+   if(prop)prop.dataset.inspectFocus='true';
+   dialog.addEventListener('close',()=>{if(prop)prop.removeAttribute('data-inspect-focus');},{once:true});
    dialog.showModal();return;
  }
  if(t.dataset.scenePreview){
