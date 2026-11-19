@@ -232,3 +232,24 @@
   min-height:0;
   transform:none;
 }
+
+
+/* 320px visual QA: never split the short lake title just because the plan
+   summary needs space. Keep both lines legible and avoid spilling off-screen. */
+@media(max-width:360px){
+  .world-caption{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+    padding:3% 4%;
+  }
+  .world-caption span{white-space:nowrap;font-size:17px}
+  .world-caption .studio-chip-row{
+    display:block;
+    max-width:100%;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:10px;
+  }
+}
