@@ -21,6 +21,7 @@ on:
       - 'tests/camp-published-catalog.mjs'
       - 'tests/camp-device-browser.mjs'
       - 'tests/camp-performance-browser.mjs'
+      - 'tests/camp-first-visit-browser.mjs'
   workflow_dispatch:
   schedule:
     - cron: '7 0 * * 1'
@@ -58,6 +59,7 @@ jobs:
           STUDIO_ENGINE=${{ matrix.engine }} BASELINE=http://127.0.0.1:4174/ node tests/camp-world-browser.mjs
           if [ "${{ matrix.engine }}" = "chromium" ]; then
             PROOF_DIR=browser-proof/performance node tests/camp-performance-browser.mjs
+            PROOF_DIR=browser-proof/first-visit node tests/camp-first-visit-browser.mjs
           fi
           if [ "${{ matrix.engine }}" = "webkit" ]; then
             PROOF_DIR=browser-proof/devices node tests/camp-device-browser.mjs
@@ -70,6 +72,7 @@ jobs:
             browser-proof/world/
             browser-proof/devices/
             browser-proof/performance/
+            browser-proof/first-visit/
           retention-days: 14
 
   public-http:
