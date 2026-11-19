@@ -67,7 +67,7 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null}={}){
     +'</picture><div class="studio-wash" aria-hidden="true"></div><div class="studio-glow" aria-hidden="true"></div>'
     +'<div class="studio-topline"><span class="studio-overline">SOTOJITAKU / SCENE STUDIO</span><span class="studio-step">0'+(view.index+1)+' / 07</span></div>'
     +'<div class="studio-body"><span class="studio-kicker">YOUR WEEKEND, TAKING SHAPE</span>'
-    +'<h2>'+view.title+'</h2><p class="studio-description">'+view.caption+'</p>'
+    +'<p class="studio-title">'+view.title+'</p><p class="studio-description">'+view.caption+'</p>'
     +'<div class="studio-chip-row" aria-label="選択中の計画">'+view.chips.map(c=>'<span class="studio-chip">'+c+'</span>').join("")+'</div>'
     +'<div class="studio-preview-bar"><span class="studio-preview-label">風景を眺める</span><div class="studio-time-controls" role="group" aria-label="風景の時間帯を切り替える">'+controls+'</div></div>'
     +'<p class="studio-disclaimer">風景はイメージです。時間帯の切替は診断・安全判定を変更しません。</p>'
