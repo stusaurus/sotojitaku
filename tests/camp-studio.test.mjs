@@ -46,3 +46,24 @@ test("unknown or malformed selections cannot inject markup into scene",()=>{
  assert.match(html,/data-studio-time="evening"/);
  assert.match(html,/BBQ/);
 });
+
+test("four illustrated chairs have intentionally varied mirrored camera-stable poses",()=>{
+ const a={...base,party_type:"family",adults:2,children:2};
+ const gear=[{id:"chair",quantity:4,status:"owned"}];
+ const chairs=projectWorld(a,5,gear,true).filter(item=>item.id==="chair");
+ assert.equal(chairs.length,4);
+ assert.equal(new Set(chairs.map(c=>c.chairPose)).size,4);
+ const html=renderCampStudioScene({answers:a,step:5,gear,partyChosen:true});
+ assert.match(html,/data-chair-pose="mirrored"/);
+ assert.match(html,/data-chair-pose="mirrored-near"/);
+});
+test("night floor illumination is conditional on non-deferred planned fire and lantern",()=>{
+ const a={...base,experiences:["bonfire"]};
+ const fire={id:"fire_pit",quantity:1,status:"rent"};
+ const lantern={id:"led_lantern",quantity:1,status:"buy"};
+ const render=(gear)=>renderCampStudioScene({answers:a,step:5,previewTime:"night",gear});
+ assert.match(render([fire,lantern]),/data-fire-glow="true" data-lantern-glow="true"/);
+ assert.match(render([{...fire,status:"skip"},{...lantern,status:"undecided"}]),/data-fire-glow="false" data-lantern-glow="false"/);
+ assert.match(render([fire]),/world-fire-spill/);
+ assert.match(render([fire]),/world-lantern-spill/);
+});
