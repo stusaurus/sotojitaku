@@ -104,7 +104,7 @@
 /* A compact live mirror appears only on the long experience chooser, not on
    every step; it stays in sight while users scroll to the lower choices. */
 .studio-mobile-feedback{display:none}
-@media(max-width:760px){
+@media(max-width:900px) and (orientation:portrait){
   .studio-mobile-feedback{
     position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:12;
     display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:8px;
@@ -179,4 +179,21 @@
   .studio-mobile-feedback-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;color:#687d6d}
   .studio-mobile-feedback-copy strong{font-size:12px}
   .studio-mobile-feedback-count{font-size:11px;color:#506857}
+}
+
+
+/* Tablet portrait: a 55/45 split produced a small mid-panel photograph with
+   large empty green areas on iPad Mini. Give the fixed-camera world its full
+   photographic width above the questionnaire, like a premium editorial scene. */
+@media (min-width:761px) and (max-width:900px) and (orientation:portrait){
+  .simulator:has(.studio-scene){display:block}
+  .sim-visual:has(.studio-scene){
+    height:auto;min-height:0;overflow:visible;
+    padding:76px 0 0;position:relative
+  }
+  .studio-scene{width:100%}
+  .studio-scene .world-frame{aspect-ratio:1.9}
+  .simulator:has(.studio-scene) .question-sheet{
+    margin:0;padding:32px clamp(40px,8vw,88px) 80px;border-radius:0
+  }
 }
