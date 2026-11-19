@@ -1,0 +1,32 @@
+[
+  {
+    "engine": "webkit",
+    "width": 320,
+    "sceneBytes": 487622,
+    "heapBytes": null
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "sceneBytes": 487622,
+    "heapBytes": null
+  },
+  {
+    "engine": "webkit",
+    "width": 768,
+    "sceneBytes": 487622,
+    "heapBytes": null
+  },
+  {
+    "engine": "webkit",
+    "width": 1024,
+    "sceneBytes": 487622,
+    "heapBytes": null
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "sceneBytes": 487622,
+    "heapBytes": null
+  }
+]
