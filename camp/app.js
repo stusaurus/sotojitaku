@@ -93,7 +93,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
    const isAll=t.dataset.inspect==='all';
    for(const row of rows)row.hidden=!isAll&&row.dataset.worldRow!==t.dataset.inspect;
    const chosen=isAll?null:rows.find(row=>row.dataset.worldRow===t.dataset.inspect);
-   const label=chosen?.querySelector('.world-detail-name')?.textContent?.replace(/\\s*×\\d+$/,'');
+   const label=chosen?.querySelector('.world-detail-name')?.textContent?.replace(/\s*×\d+$/,'');
    dialog.querySelector('.world-dialog-title').textContent=isAll?'サイトの道具':(label||'道具')+'の準備';
    const marked=scene.querySelectorAll('.world-object[data-inspect-focus]');
    for(const element of marked)element.removeAttribute('data-inspect-focus');
