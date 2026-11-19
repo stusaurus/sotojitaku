@@ -47,6 +47,12 @@ jobs:
       - name: Audit live layout without sending analytics
         if: github.event_name != 'pull_request'
         run: node tests/public-smoke.cjs
+      - name: Preserve read-only CAMP eligibility gaps even when strict catalog tests fail
+        if: always()
+        run: |
+          node scripts/report_camp_recommendation_gaps.mjs
+          mkdir -p browser-proof/growth
+          cp reports/camp-recommendation-gaps.json browser-proof/growth/camp-recommendation-gaps.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
