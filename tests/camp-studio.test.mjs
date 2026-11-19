@@ -78,3 +78,29 @@ test("small gear retains world-relative size while exposing an independent hit t
    assert.match(button,/--w:5%;--visual-width:5cqw/);
  }
 });
+
+
+test("inspection rows tie scene thumbnails to honest planned acquisition statuses",()=>{
+ const a={...base,experiences:["bonfire","coffee"]};
+ const gear=[
+  {id:"tent",quantity:1,status:"rent",detail:"現地の受け取りを確認"},
+  {id:"fire_pit",quantity:1,status:"buy",detail:"燃料は別途確認"},
+  {id:"kettle",quantity:1,status:"skip",detail:"次回に回す"}
+ ];
+ const html=renderCampStudioScene({answers:a,step:5,gear});
+ assert.match(html,/data-world-row="tent" data-world-status="rent"/);
+ assert.match(html,/data-status="rent">レンタル予定・予約要確認/);
+ assert.match(html,/data-world-row="fire_pit" data-world-status="buy"/);
+ assert.match(html,/data-status="buy">購入予定・未購入/);
+ assert.match(html,/data-world-row="kettle" data-world-status="skip"/);
+ assert.match(html,/data-status="skip">今回は見送り/);
+ assert.match(html,/<img src="\.\/world\/kettle\.webp" alt="" loading="lazy">/);
+ assert.match(html,/未購入・レンタル未予約の道具は確保済みではありません/);
+});
+test("inspection notes are escaped even if unusual details enter the visual adapter",()=>{
+ const html=renderCampStudioScene({answers:base,step:5,gear:[
+  {id:"tent",quantity:1,status:"owned",detail:'<img src=x onerror="alert(1)">'}
+ ]});
+ assert.doesNotMatch(html,/onerror="alert\(1\)"/);
+ assert.match(html,/&lt;img src=x/);
+});
