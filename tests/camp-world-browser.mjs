@@ -22,7 +22,7 @@ try{
   const next=()=>select("[data-next]");
   const saved=()=>page.evaluate(()=>localStorage.getItem("sotojitaku_camp_v1"));
   const snap=async name=>{
-   await page.locator('.studio-scene img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
+   await page.locator('.studio-scene .world-frame img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
    await page.screenshot({path:dir+"/"+engine+"-"+width+"-"+name+".jpg",quality:83});
   };
   if(process.env.BASELINE){
@@ -78,8 +78,19 @@ try{
   const snapshot=await saved();
   await select('[data-inspect="tent"]');
   assert.match(await page.locator('dialog[open]').innerText(),/テント ×1/);
+  assert.equal(await page.locator('.world-dialog-title').innerText(),"テントの準備");
+  assert.equal(await page.locator('.sim-visual [data-inspect="tent"]').getAttribute("data-inspect-focus"),"true");
+  assert.equal(await page.locator('.world-dialog li:not([hidden])').count(),1,"single gear view");
+  const thumb=page.locator('.world-dialog li:not([hidden]) .world-detail-thumb img');
+  assert.match(await thumb.getAttribute("src"),/world\/tent\.webp/);
+  assert.equal(await page.locator('.world-dialog .world-detail-content').first().evaluate(el=>getComputedStyle(el).display),"flex");
+  if(width===390)await page.screenshot({path:dir+"/"+engine+"-"+width+"-gear-detail.jpg",quality:83});
   await page.keyboard.press("Escape");
-  await select('[data-inspect="all"]');assert.match(await page.locator('dialog[open]').innerText(),/焚き火台/);
+  assert.equal(await page.locator('.sim-visual [data-inspect-focus]').count(),0,"object highlight must clear");
+  await select('[data-inspect="all"]');
+  assert.match(await page.locator('dialog[open]').innerText(),/焚き火台/);
+  assert.equal(await page.locator('.world-dialog-title').innerText(),"サイトの道具");
+  assert(await page.locator('.world-dialog li:not([hidden])').count()>=4,"all gear rows visible");
   await page.keyboard.press("Escape");
   for(const time of ["morning","evening","night"]){
    await select('[data-scene-preview="'+time+'"]');await snap(time);
@@ -111,6 +122,7 @@ try{
   await page.locator('[data-status="mat"]').selectOption("skip");
   await page.goto(base+"camp/?test=1#provisional");
   await select('[data-inspect="tent"]');assert.match(await page.locator('dialog[open]').innerText(),/レンタル予定/);
+  assert.match(await page.locator('.world-dialog li:not([hidden]) .world-status-pill').innerText(),/レンタル予定・予約要確認/);
   await page.keyboard.press("Escape");
   await select('[data-go="owned"]');await select('[data-go="gear"]');
   await select('[data-go="cooking"]');await select('[data-go="budget"]');
