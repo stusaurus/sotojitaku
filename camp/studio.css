@@ -58,3 +58,84 @@
   .world-object{animation:gear-arrival .38s ease-out both}
   @keyframes gear-arrival{from{opacity:0;translate:0 -3px}to{translate:0 0}}
 }
+
+
+/* Sprint 02 | coherent night illumination. The spill lives on the ground behind props,
+   and only a planned, non-deferred object can illuminate its surroundings. */
+.world-light-spill{
+  position:absolute;z-index:1;pointer-events:none;opacity:0;
+  mix-blend-mode:screen;filter:blur(7px);
+  transition:opacity .6s ease;
+}
+.world-fire-spill{
+  left:73%;top:88%;width:59%;height:42%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at 50% 54%,#ffb65a9c 0%,#ff8d315c 28%,#f3772223 54%,transparent 74%);
+}
+.world-lantern-spill{
+  left:40%;top:88%;width:37%;height:35%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse,#ffe2a88f 0%,#eebd6761 33%,transparent 72%);
+}
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] .world-fire-spill{opacity:.85}
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] .world-lantern-spill{opacity:.62}
+[data-studio-time="evening"] .world-frame[data-fire-glow="true"] .world-fire-spill{opacity:.25}
+[data-studio-time="evening"] .world-frame[data-lantern-glow="true"] .world-lantern-spill{opacity:.12}
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] :is([data-inspect="fire_pit"],[data-mini-role="fire_pit"]) img,
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] :is([data-inspect="led_lantern"],[data-mini-role="led_lantern"]) img{
+  filter:brightness(1.03) saturate(1.06) drop-shadow(0 0 11px #ffb65a9c);
+}
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] [data-chair-pose="mirrored"] img,
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] [data-chair-pose="mirrored-near"] img{
+  filter:brightness(.67) sepia(.12) drop-shadow(0 0 8px #ffb65a66);
+}
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] [data-inspect="tent"] img,
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] [data-mini-role="tent"] img{
+  filter:brightness(.61) saturate(.75) drop-shadow(0 0 6px #ffcf8861);
+}
+[data-studio-time="night"] .world-object[data-deferred="true"] img{
+  filter:brightness(.32) saturate(.45);
+}
+/* Camera-stable mirror and subtle tilt; no arbitrary 3D rotation of a flat asset. */
+.world-object[data-chair-pose="mirrored"] img{transform:scaleX(-1) rotate(-2deg);transform-origin:50% 92%}
+.world-object[data-chair-pose="angled"] img{transform:rotate(-4deg);transform-origin:50% 92%}
+.world-object[data-chair-pose="mirrored-near"] img{transform:scaleX(-1) rotate(2deg);transform-origin:50% 92%}
+
+/* A compact live mirror appears only on the long experience chooser, not on
+   every step; it stays in sight while users scroll to the lower choices. */
+.studio-mobile-feedback{display:none}
+@media(max-width:760px){
+  .studio-mobile-feedback{
+    position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:12;
+    display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:8px;
+    border:1px solid #d4d7ca;border-radius:17px;
+    color:#21382d;background:rgba(249,247,239,.97);
+    box-shadow:0 9px 24px rgba(20,39,31,.12);
+    backdrop-filter:blur(9px);
+  }
+  .studio-mobile-feedback-preview{
+    width:42%;min-width:118px;max-width:160px;flex:0 0 42%;overflow:hidden;
+    border-radius:11px;background:#182d28;pointer-events:none;isolation:isolate;
+  }
+  .studio-mobile-feedback-preview .world-frame{width:100%;aspect-ratio:1.56}
+  .studio-mobile-feedback-preview .world-caption{display:none}
+  .studio-mobile-feedback-preview .world-object{
+    cursor:default;pointer-events:none;
+  }
+  .studio-mobile-feedback-copy{
+    min-width:0;flex:1;display:flex;flex-direction:column;gap:4px;
+    font-family:var(--sans);line-height:1.45;
+  }
+  .studio-mobile-feedback-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;color:#687d6d}
+  .studio-mobile-feedback-copy strong{font-size:12px;line-height:1.5}
+  .studio-mobile-feedback-count{font-size:11px;color:#506857}
+}
+@media(max-width:360px){
+  .studio-mobile-feedback{gap:8px;padding:7px}
+  .studio-mobile-feedback-preview{min-width:111px}
+  .studio-mobile-feedback-copy strong{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .world-light-spill{transition:none}
+  .world-object[data-chair-pose] img{transition:none}
+}
