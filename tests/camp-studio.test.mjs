@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {resolveCampStudio,renderCampStudioScene} from "../camp/scene-studio.js";
+import {projectWorld,resolveCampStudio,renderCampStudioScene} from "../camp/scene-studio.js";
 
 const base={party_type:"couple",adults:2,children:0,season:"spring",stay:"one_night",transport:"car",experiences:["relax"]};
 test("scene follows the existing seven questionnaire steps, without altering answers",()=>{
@@ -10,12 +10,18 @@ test("scene follows the existing seven questionnaire steps, without altering ans
  assert.equal(resolveCampStudio(answers,6).chips.includes("1泊2日"),true);
  assert.equal(JSON.stringify(answers),before);
 });
-test("chosen bonfire selects verified illustration asset, not product state",()=>{
+test("bonfire keeps the same camera and exposes the planned fire pit",()=>{
  const a={...base,experiences:["bonfire","stargazing"]};
  const result=resolveCampStudio(a,5);
  assert.equal(result.variant,"bonfire");
- assert.equal(result.photo.desktop,"scene-bonfire-hd.webp");
- assert.equal(result.photo.mobile,"evening-bonfire-portrait.webp");
+ const gear=[{id:"fire_pit",quantity:1,status:"rent"}];
+ const initial=renderCampStudioScene({answers:a,step:0,gear});
+ const night=renderCampStudioScene({answers:a,step:5,gear});
+ for(const html of [initial,night])assert.match(html,/world\/lake.webp/);
+ assert.doesNotMatch(initial,/data-inspect="fire_pit"/);
+ assert.match(night,/data-inspect="fire_pit"/);
+ assert.equal(projectWorld(a,5,gear)[0].status,"レンタル予定・予約要確認");
+
 });
 test("a daytrip never enables the night preview or overnight fire scene",()=>{
  const a={...base,stay:"daytrip",experiences:["bonfire","stargazing"]};
