@@ -104,17 +104,24 @@ def prioritize_recovery_targets(catalog, observed):
     base = (renew + missing_gaps + list(CANDIDATES)
             + list(PRIORITY_GAPS) + list(RECOVERY_GAPS))
     if missing_burner:
-        protected = renew[:MAX_EXTRA_API_CALLS - 1]
-        if not any(category == "burner" for category, _ in protected):
+        # Protect at most two OTHER aging categories. An expired burner SKU is
+        # not proof of supply; repeatedly renewing only that same seller would
+        # starve its other independently audited fixed merchant forever.
+        protected = [target for target in renew if target[0] != "burner"][
+            :MAX_EXTRA_API_CALLS - 1]
+        choices = [target for target in ALLOWED_TARGETS
+                   if target[0] == "burner" and target not in current]
+        if not choices:
+            # Both historical burner sellers may exist but be expired. Rotate
+            # the exact, previously audited sellers; no speculative SKU search.
             choices = [target for target in ALLOWED_TARGETS
-                       if target[0] == "burner" and target not in current]
-            if not choices:
-                # Existing expired sellers are already in renew; promote one.
-                choices = [target for target in renew if target[0] == "burner"]
-            if choices:
-                gap = choices[observed.date().toordinal() % len(choices)]
-                base = protected + [gap] + renew[len(protected):] + missing_gaps
-                base += list(CANDIDATES) + list(PRIORITY_GAPS) + list(RECOVERY_GAPS)
+                       if target[0] == "burner"]
+        if choices:
+            gap = choices[observed.date().toordinal() % len(choices)]
+            remaining_renew = [target for target in renew
+                               if target not in protected and target != gap]
+            base = protected + [gap] + remaining_renew + missing_gaps
+            base += list(CANDIDATES) + list(PRIORITY_GAPS) + list(RECOVERY_GAPS)
     elif len(renew) >= MAX_EXTRA_API_CALLS and empty_category_probes:
         gap = empty_category_probes[
             observed.date().toordinal() % len(empty_category_probes)]
