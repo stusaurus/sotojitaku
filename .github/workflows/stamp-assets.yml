@@ -4,6 +4,8 @@ on:
     paths:
       - 'app.js'
       - 'camp/app.js'
+      - 'camp/scene-studio.js'
+      - 'camp/studio.css'
       - 'camp/index.html'
       - 'index.html'
       - 'home.css'
@@ -18,6 +20,8 @@ on:
     paths:
       - 'app.js'
       - 'camp/app.js'
+      - 'camp/scene-studio.js'
+      - 'camp/studio.css'
       - 'camp/index.html'
       - 'index.html'
       - 'home.css'
