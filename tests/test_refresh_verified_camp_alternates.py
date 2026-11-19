@@ -292,7 +292,8 @@ class GapRecoveryPriority(unittest.TestCase):
         ])
         result = recovery.prioritize_recovery_targets(
             {"products": products}, now)
-        self.assertEqual(result[:2], tuple(aging[:2]))
+        # The expired ST-350 remains due for renewal in slot 2.
+        self.assertEqual(result[:2], (aging[0], ("burner", "ST-350")))
         self.assertEqual(result[2], ("burner", "ST-340"),
                          "Need a DIFFERENT seller when existing burner proof expired")
         self.assertEqual(len(result), len(set(result)))
