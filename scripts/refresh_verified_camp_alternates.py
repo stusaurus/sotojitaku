@@ -86,7 +86,12 @@ def prioritize_recovery_targets(catalog, observed):
     # API + original seller/cart gates still control publication; this only
     # changes probe order, not quota or eligibility. Rotate sellers so an
     # unavailable single SKU does not monopolize that reserved slot.
-    live_categories = {p.get("category") for p in current.values()}
+    live_categories = set()
+    for offer in current.values():
+        verified = parse_time(offer.get("verifiedAt"))
+        if (verified is not None and verified <= observed
+                and observed - verified <= timedelta(days=7)):
+            live_categories.add(offer.get("category"))
     empty_category_probes = [target for target in ALLOWED_TARGETS
                             if target not in current
                             and target[0] not in live_categories]
