@@ -99,7 +99,14 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
    for(const element of marked)element.removeAttribute('data-inspect-focus');
    const prop=isAll?null:(t.classList.contains('world-object')?t:scene.querySelector('.world-object[data-inspect="'+t.dataset.inspect+'"]'));
    if(prop)prop.dataset.inspectFocus='true';
-   dialog.addEventListener('close',()=>{if(prop)prop.removeAttribute('data-inspect-focus');},{once:true});
+   const clearInspection=()=>{
+     prop?.removeAttribute('data-inspect-focus');
+     dialog.removeEventListener('cancel',clearInspection);
+     dialog.removeEventListener('close',clearInspection);
+   };
+   // Esc dispatches "cancel" before asynchronous "close". Clear immediately.
+   dialog.addEventListener('cancel',clearInspection);
+   dialog.addEventListener('close',clearInspection);
    dialog.showModal();return;
  }
  if(t.dataset.scenePreview){
