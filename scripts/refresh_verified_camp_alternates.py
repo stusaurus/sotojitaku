@@ -95,16 +95,34 @@ def prioritize_recovery_targets(catalog, observed):
     empty_category_probes = [target for target in ALLOWED_TARGETS
                             if target not in current
                             and target[0] not in live_categories]
-    if len(renew) >= MAX_EXTRA_API_CALLS and empty_category_probes:
+    # A genuine live snapshot with NO burner must try a burner seller even
+    # when fewer than three renewals are due. Otherwise the rotating tent
+    # recovery pool can consume all three slots first, as happened in the
+    # preceding merchant renewal report. Never infer stock from this order.
+    # An entirely empty test/snapshot retains the fair cross-category order.
+    missing_burner = bool(current) and "burner" not in live_categories
+    base = (renew + missing_gaps + list(CANDIDATES)
+            + list(PRIORITY_GAPS) + list(RECOVERY_GAPS))
+    if missing_burner:
+        protected = renew[:MAX_EXTRA_API_CALLS - 1]
+        if not any(category == "burner" for category, _ in protected):
+            choices = [target for target in ALLOWED_TARGETS
+                       if target[0] == "burner" and target not in current]
+            if not choices:
+                # Existing expired sellers are already in renew; promote one.
+                choices = [target for target in renew if target[0] == "burner"]
+            if choices:
+                gap = choices[observed.date().toordinal() % len(choices)]
+                base = protected + [gap] + renew[len(protected):] + missing_gaps
+                base += list(CANDIDATES) + list(PRIORITY_GAPS) + list(RECOVERY_GAPS)
+    elif len(renew) >= MAX_EXTRA_API_CALLS and empty_category_probes:
         gap = empty_category_probes[
             observed.date().toordinal() % len(empty_category_probes)]
-        order = (renew[:MAX_EXTRA_API_CALLS - 1] + [gap]
-                 + renew[MAX_EXTRA_API_CALLS - 1:] + missing_gaps
-                 + list(CANDIDATES) + list(PRIORITY_GAPS)
-                 + list(RECOVERY_GAPS))
-    else:
-        order = (renew + missing_gaps + list(CANDIDATES)
-                 + list(PRIORITY_GAPS) + list(RECOVERY_GAPS))
+        base = (renew[:MAX_EXTRA_API_CALLS - 1] + [gap]
+                + renew[MAX_EXTRA_API_CALLS - 1:] + missing_gaps
+                + list(CANDIDATES) + list(PRIORITY_GAPS)
+                + list(RECOVERY_GAPS))
+    return tuple(dict.fromkeys(base))
     return tuple(dict.fromkeys(order))
 
 
