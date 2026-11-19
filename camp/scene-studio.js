@@ -163,6 +163,7 @@ export function syncMobileWorldFeedback(root){
       if(!["data-inspect","aria-label","type","tabindex"].includes(attr.name))
         visual.setAttribute(attr.name,attr.value);
     }
+    if(button.dataset.inspect)visual.dataset.miniRole=button.dataset.inspect;
     while(button.firstChild)visual.append(button.firstChild);
     button.replaceWith(visual);
   }
