@@ -60,6 +60,7 @@ const props = {
 const seats = [[20,84,13,"original"],[85,78,12,"mirrored"],[10,76,10,"angled"],[91,90,15,"mirrored-near"]];
 const statuses = {owned:"手持ち",rent:"レンタル予定・予約要確認",buy:"購入予定・未購入",skip:"今回は見送り",undecided:"用意の仕方は未定"};
 const asset = name => './world/'+name+'.webp';
+const escapeSceneText = value => String(value??"").replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 
 export function projectWorld(answers,step,gear,partyChosen=false){
   const items=[];
@@ -67,7 +68,7 @@ export function projectWorld(answers,step,gear,partyChosen=false){
     const row=gear.find(item=>item.id===id);
     if(!row)return;
     const [name,role,px,py,size]=props[id];
-    items.push({id,name,role,x:x??px,y:y??py,width:width??size,chairPose,quantity:row.quantity,detail:row.detail||"",deferred:row.status==="skip"||row.status==="undecided",status:statuses[row.status]||statuses.undecided});
+    items.push({id,name,role,x:x??px,y:y??py,width:width??size,chairPose,quantity:row.quantity,detail:row.detail||"",deferred:row.status==="skip"||row.status==="undecided",statusKey:Object.hasOwn(statuses,row.status)?row.status:"undecided",status:statuses[row.status]||statuses.undecided});
   }
   if(step>=3 && answers.stay==="one_night"){add("tent");add("led_lantern");}
   if(step>0||partyChosen){
@@ -87,8 +88,8 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
   const lanternGlow=items.some(item=>item.id==="led_lantern"&&!item.deferred);
   const controls=SCENE_TIMES.map(({id,label})=>
     `<button type="button" class="studio-time-option" data-scene-preview="${id}" aria-pressed="${id===view.time}"${id==="night"&&view.nightDisabled?" disabled":""}>${label}</button>`).join("");
-  const objects=items.map(({id,name,x,y,width,deferred,chairPose})=>
-    `<button class="world-object" data-deferred="${deferred}"${id==="chair"?` data-chair-pose="${chairPose}"`:""} type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%;--visual-width:${width}cqw"><img alt="" src="${asset(id)}"></button>`).join("");
+  const objects=items.map(({id,name,x,y,width,deferred,chairPose,statusKey})=>
+    `<button class="world-object" data-deferred="${deferred}" data-plan-status="${statusKey}"${id==="chair"?` data-chair-pose="${chairPose}"`:""} type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%;--visual-width:${width}cqw"><img alt="" src="${asset(id)}"></button>`).join("");
   const season=step>=2 && Object.hasOwn(SEASONS,answers.season)?answers.season:"spring";
   const packing=step>=4 ? (answers.transport==="no_car"?"pack":"trunk") : null;
   const budget=step===6&&cost ? `道具の概算 ¥${cost.total.toLocaleString("ja-JP")} ／ ${cost.limit===null?"上限設定なし":"予算 ¥"+cost.limit.toLocaleString("ja-JP")}` : "";
@@ -104,8 +105,9 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
     ${unique.length?'<button type="button" class="world-list" data-inspect="all">道具一覧</button>':''}</div>
     <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>時間帯の切替は診断・安全判定を変更しません。</span></div>
     <dialog class="world-dialog" aria-label="サイトの道具"><form method="dialog"><button aria-label="閉じる" autofocus>閉じる ×</button></form>
-      <h2>サイトの道具</h2><ul>${unique.map(item=>`<li data-world-row="${item.id}"><strong>${item.name} ×${item.quantity}</strong><span>${item.role} ／ ${item.status}</span><small>${item.detail}</small></li>`).join("")}</ul>
-      <p>配置は計画のイメージです。確保状況や現地の安全は別途確認してください。</p>${review?'<button class="secondary" data-go="gear">装備計画を見直す →</button>':''}</dialog>
+      <h2 class="world-dialog-title">サイトの道具</h2><p class="world-dialog-intro">必要な数と、現在の準備方法</p>
+      <ul>${unique.map(item=>`<li data-world-row="${item.id}" data-world-status="${item.statusKey}"><span class="world-detail-thumb"><img src="${asset(item.id)}" alt="" loading="lazy"></span><span class="world-detail-content"><strong class="world-detail-name">${item.name} ×${item.quantity}</strong><small class="world-detail-role">${item.role}</small><span class="world-status-pill" data-status="${item.statusKey}">${item.status}</span><small class="world-detail-remark">${escapeSceneText(item.detail)}</small></span></li>`).join("")}</ul>
+      <p class="world-dialog-safety">配置は計画のイメージです。未購入・レンタル未予約の道具は確保済みではありません。現地の安全は別途確認してください。</p>${review?'<button class="secondary" data-go="gear">装備計画を見直す →</button>':''}</dialog>
   </section>`;
 }
 
