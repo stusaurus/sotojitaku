@@ -40,7 +40,9 @@ try{
         const el=event.target.closest?.("button");
         if(el?.hasAttribute("data-start")){
           const started=performance.now();
-          queueMicrotask(()=>{
+          // A frame callback runs after the app's document-level click listener
+          // replaces HOME with the new scene; a capture-phase microtask can run too soon.
+          requestAnimationFrame(()=>{
             const image=document.querySelector(".studio-image");
             if(image&&image.decode){
               image.decode().then(()=>{
