@@ -38,7 +38,10 @@ try {
       await experience.tap();
       await tap('[data-experience="coffee"]');
       const mini=page.locator(".studio-mobile-feedback");
-      const expectedMini=devices[deviceName].viewport.width<=760 ||
+      const tabletPortrait=devices[deviceName].viewport.width>760 &&
+        devices[deviceName].viewport.width<=900 &&
+        devices[deviceName].viewport.height>devices[deviceName].viewport.width;
+      const expectedMini=devices[deviceName].viewport.width<=760 || tabletPortrait ||
         (devices[deviceName].viewport.width<=960 && devices[deviceName].viewport.height<=540);
       if(expectedMini){
         await page.locator('[data-experience="easy"]').scrollIntoViewIfNeeded();
@@ -49,6 +52,11 @@ try {
         assert.equal(await mini.locator('[data-mini-role="fire_pit"]').count(),1,deviceName+": fire should appear in preview");
       }else{
         assert(!(await mini.isVisible()),deviceName+": tablet split view should not duplicate scene");
+      }
+      if(tabletPortrait){
+        const sceneWidth=await page.locator(".sim-visual .studio-scene").evaluate(el=>el.getBoundingClientRect().width);
+        const viewWidth=await page.evaluate(()=>innerWidth);
+        assert(sceneWidth>=viewWidth*.95,deviceName+": portrait scene must use available tablet width");
       }
       const prior=await page.evaluate(()=>localStorage.getItem("sotojitaku_camp_v1"));
       await tap('[data-scene-preview="night"]');
