@@ -197,3 +197,38 @@
     margin:0;padding:32px clamp(40px,8vw,88px) 80px;border-radius:0
   }
 }
+
+
+/* Accessible prop interaction: retain the original percentages and photographic
+   composition, but give real button elements (not ::after shadows) a >=44px
+   pointer/keyboard target. Sprite widths remain in camera-relative cqw units.
+   This needs the world-frame inline size to define stable container units. */
+.world-frame{container-type:inline-size}
+.world-object{
+  width:max(44px,var(--w));
+  min-height:44px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  touch-action:manipulation;
+}
+.world-object img{
+  width:min(100%,var(--visual-width));
+  max-width:100%;
+  height:auto;
+  flex:0 0 auto;
+  pointer-events:none;
+}
+.world-object::before{
+  left:50%;
+  width:min(89%,var(--visual-width));
+  transform:translateX(-50%) skewX(-25deg);
+}
+.world-object::after{
+  inset:0;
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  transform:none;
+}
