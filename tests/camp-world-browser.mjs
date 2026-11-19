@@ -91,6 +91,14 @@ try{
    }
    assert.equal(await saved(),snapshot);
   }
+  if(width===320){
+    const title=await page.locator(".sim-visual .world-caption span").first().evaluate(el=>{
+      const style=getComputedStyle(el);
+      return {height:el.getBoundingClientRect().height,fontSize:parseFloat(style.fontSize),whiteSpace:style.whiteSpace};
+    });
+    assert.equal(title.whiteSpace,"nowrap","320px lake caption must not split into two lines");
+    assert(title.height<=title.fontSize*1.8,"320px lake caption must fit one visual line");
+  }
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   const metrics=await page.evaluate(()=>({
    sceneBytes:performance.getEntriesByType("resource").filter(r=>r.name.includes("/world/")).reduce((s,r)=>s+r.encodedBodySize,0),
