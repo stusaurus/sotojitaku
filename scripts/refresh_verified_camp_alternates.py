@@ -77,8 +77,30 @@ def prioritize_recovery_targets(catalog, observed):
         # original SKU cannot monopolize all calls on every scheduled run.
         offset = observed.date().toordinal() % len(missing_gaps)
         missing_gaps = missing_gaps[offset:] + missing_gaps[:offset]
-    targets = renew + missing_gaps + list(CANDIDATES) + list(PRIORITY_GAPS) + list(RECOVERY_GAPS)
-    return tuple(dict.fromkeys(targets))
+    # At most three extra Item API calls are available each day. With many
+    # existing offers near their 7-day expiry, the previous renew-first order
+    # could repeatedly consume all three calls and never probe a category
+    # with ZERO live listings (notably a missing burner). Protect the first
+    # two aging offers, then reserve the third attempt for an independently
+    # audited fixed merchant in a currently empty category. The usual exact
+    # API + original seller/cart gates still control publication; this only
+    # changes probe order, not quota or eligibility. Rotate sellers so an
+    # unavailable single SKU does not monopolize that reserved slot.
+    live_categories = {p.get("category") for p in current.values()}
+    empty_category_probes = [target for target in ALLOWED_TARGETS
+                            if target not in current
+                            and target[0] not in live_categories]
+    if len(renew) >= MAX_EXTRA_API_CALLS and empty_category_probes:
+        gap = empty_category_probes[
+            observed.date().toordinal() % len(empty_category_probes)]
+        order = (renew[:MAX_EXTRA_API_CALLS - 1] + [gap]
+                 + renew[MAX_EXTRA_API_CALLS - 1:] + missing_gaps
+                 + list(CANDIDATES) + list(PRIORITY_GAPS)
+                 + list(RECOVERY_GAPS))
+    else:
+        order = (renew + missing_gaps + list(CANDIDATES)
+                 + list(PRIORITY_GAPS) + list(RECOVERY_GAPS))
+    return tuple(dict.fromkeys(order))
 
 
 def refresh_extra(audits_doc, existing, equipment, *, primary_report,
