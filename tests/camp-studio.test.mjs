@@ -67,3 +67,14 @@ test("night floor illumination is conditional on non-deferred planned fire and l
  assert.match(render([fire]),/world-fire-spill/);
  assert.match(render([fire]),/world-lantern-spill/);
 });
+
+test("small gear retains world-relative size while exposing an independent hit target",()=>{
+ const a={...base,experiences:["coffee"]};
+ const gear=[{id:"kettle",quantity:1,status:"buy"},{id:"led_lantern",quantity:1,status:"owned"}];
+ const html=renderCampStudioScene({answers:a,step:5,gear});
+ for(const id of ["kettle","led_lantern"]){
+   const button=html.match(new RegExp('<button class="world-object"[^>]*data-inspect="'+id+'"[^>]*>'))?.[0];
+   assert(button,"expected "+id+" world object");
+   assert.match(button,/--w:5%;--visual-width:5cqw/);
+ }
+});
