@@ -226,6 +226,53 @@ class GapRecoveryPriority(unittest.TestCase):
         self.assertEqual(set(first), set(recovery.ALLOWED_TARGETS))
         self.assertEqual(catalog, before)
 
+    def test_no_live_burner_gets_one_reserved_attempt_when_aging_offers_crowd_quota(self):
+        # Four independently audited sellers need renewal, but only three
+        # additional API calls exist. At least one call must reach the
+        # *missing category* while the two oldest remain first.
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
+                recovery.PRIORITY_GAPS[1], recovery.PRIORITY_GAPS[2]]
+        catalog = {"products": [
+            *[{"category": c, "model": m,
+               "verifiedAt": (now-timedelta(days=6)).isoformat()}
+              for c,m in aged],
+            {"category": "sleeping_bag", "model": "already-live",
+             "verifiedAt": now.isoformat()},
+        ]}
+        before = copy.deepcopy(catalog)
+        order = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(order[:2], tuple(aged[:2]))
+        self.assertEqual(order[2][0], "burner")
+        self.assertIn(order[2], (("burner", "ST-350"), ("burner", "ST-340")))
+        self.assertEqual(order[3], aged[2])
+        self.assertEqual(len(set(order)), len(recovery.ALLOWED_TARGETS))
+        self.assertEqual(set(order), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(catalog, before)
+        next_day = recovery.prioritize_recovery_targets(
+            catalog, now+timedelta(days=1))
+        self.assertEqual(next_day[2][0], "burner")
+        self.assertNotEqual(order[2], next_day[2],
+                            "Rotate two audited fixed-seller burner codes")
+
+    def test_existing_burner_category_does_not_take_probe_slot_from_renewals(self):
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
+                recovery.PRIORITY_GAPS[1], recovery.PRIORITY_GAPS[2]]
+        catalog = {"products": [
+            *[{"category": c, "model": m,
+               "verifiedAt": (now-timedelta(days=6)).isoformat()}
+              for c,m in aged],
+            {"category": "sleeping_bag", "model": "live",
+             "verifiedAt": now.isoformat()},
+            {"category": "burner", "model": "ST-350",
+             "verifiedAt": now.isoformat()},
+        ]}
+        order = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(order[:3], tuple(aged[:3]))
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+        self.assertEqual(len(order), len(set(order)))
+
     def test_no_unapproved_or_stale_offer_becomes_published_during_planning(self):
         order = recovery.prioritize_recovery_targets({"products": []}, NOW)
         self.assertNotIn(("burner", "ST-310"), order)
