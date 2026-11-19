@@ -37,6 +37,7 @@ try{
   await snap("initial");
   await select('[data-answer="family"]');
   assert.equal(await page.locator('.world-object[data-inspect="chair"]').count(),4);
+  assert.equal(await page.locator('.world-object[data-inspect="chair"][data-chair-pose="mirrored"]').count(),1);
   await next();await next();await select('[data-answer="autumn"]');await next();
   await select('[data-answer="daytrip"]');
   assert.equal(await page.locator('.world-object[data-inspect="tent"]').count(),0);
@@ -45,6 +46,17 @@ try{
   await snap("tent");
   await next();await select('[data-answer="no_car"]');await next();
   await select('[data-experience="bonfire"]');await select('[data-experience="coffee"]');
+  if(width<=390){
+    await page.locator('[data-experience="easy"]').scrollIntoViewIfNeeded();
+    const mini=page.locator('.studio-mobile-feedback');
+    assert(await mini.isVisible(),"long experience chooser needs a live mini scene");
+    const rect=await mini.boundingBox();
+    assert(rect&&rect.y>=0&&rect.y<160,"mini preview must stay near viewport top while scrolling");
+    assert.equal(await mini.locator('[data-mini-role="fire_pit"]').count(),1);
+    assert.equal(await mini.locator('[data-inspect]').count(),0,"mini view must have no duplicate actions");
+    assert.match(await mini.locator('.studio-mobile-feedback-count').innerText(),/選択中/);
+    await snap("mobile-live-feedback");
+  }
   await page.reload();await page.locator('[data-inspect="tent"]').first().waitFor();
   const snapshot=await saved();
   await select('[data-inspect="tent"]');
@@ -54,6 +66,12 @@ try{
   await page.keyboard.press("Escape");
   for(const time of ["morning","evening","night"]){
    await select('[data-scene-preview="'+time+'"]');await snap(time);
+   if(time==="night"){
+     const frame=page.locator('.sim-visual .world-frame');
+     assert.equal(await frame.getAttribute("data-fire-glow"),"true");
+     const opacity=await frame.locator(".world-fire-spill").evaluate(el=>Number(getComputedStyle(el).opacity));
+     assert(opacity>.5,"night floor should receive campfire spill");
+   }
    assert.equal(await saved(),snapshot);
   }
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
