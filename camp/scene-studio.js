@@ -56,17 +56,18 @@ const props = {
   kettle: ["ケトル", "お湯を沸かす道具", 55, 68, 5],
   chair: ["チェア", "くつろぐ場所", 19, 85, 14]
 };
-const seats = [[20,84,13],[85,78,12],[10,76,10],[91,90,15]];
+// Alternate mirror/tilt poses keep the reused chair artwork varied without changing the camera.
+const seats = [[20,84,13,"original"],[85,78,12,"mirrored"],[10,76,10,"angled"],[91,90,15,"mirrored-near"]];
 const statuses = {owned:"手持ち",rent:"レンタル予定・予約要確認",buy:"購入予定・未購入",skip:"今回は見送り",undecided:"用意の仕方は未定"};
 const asset = name => './world/'+name+'.webp';
 
 export function projectWorld(answers,step,gear,partyChosen=false){
   const items=[];
-  function add(id,x,y,width){
+  function add(id,x,y,width,chairPose="original"){
     const row=gear.find(item=>item.id===id);
     if(!row)return;
     const [name,role,px,py,size]=props[id];
-    items.push({id,name,role,x:x??px,y:y??py,width:width??size,quantity:row.quantity,detail:row.detail||"",deferred:row.status==="skip"||row.status==="undecided",status:statuses[row.status]||statuses.undecided});
+    items.push({id,name,role,x:x??px,y:y??py,width:width??size,chairPose,quantity:row.quantity,detail:row.detail||"",deferred:row.status==="skip"||row.status==="undecided",status:statuses[row.status]||statuses.undecided});
   }
   if(step>=3 && answers.stay==="one_night"){add("tent");add("led_lantern");}
   if(step>0||partyChosen){
@@ -81,17 +82,20 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
   const view=resolveCampStudio(answers,step,previewTime);
   const items=projectWorld(answers,step,gear,partyChosen);
   const unique=[...new Map(items.map(item=>[item.id,item])).values()];
+  // A proposed object does not certify safety or acquisition; deferred objects cannot cast light.
+  const fireGlow=items.some(item=>item.id==="fire_pit"&&!item.deferred);
+  const lanternGlow=items.some(item=>item.id==="led_lantern"&&!item.deferred);
   const controls=SCENE_TIMES.map(({id,label})=>
     `<button type="button" class="studio-time-option" data-scene-preview="${id}" aria-pressed="${id===view.time}"${id==="night"&&view.nightDisabled?" disabled":""}>${label}</button>`).join("");
-  const objects=items.map(({id,name,x,y,width,deferred})=>
-    `<button class="world-object" data-deferred="${deferred}" type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%"><img alt="" src="${asset(id)}"></button>`).join("");
+  const objects=items.map(({id,name,x,y,width,deferred,chairPose})=>
+    `<button class="world-object" data-deferred="${deferred}"${id==="chair"?` data-chair-pose="${chairPose}"`:""} type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%"><img alt="" src="${asset(id)}"></button>`).join("");
   const season=step>=2 && Object.hasOwn(SEASONS,answers.season)?answers.season:"spring";
   const packing=step>=4 ? (answers.transport==="no_car"?"pack":"trunk") : null;
   const budget=step===6&&cost ? `道具の概算 ¥${cost.total.toLocaleString("ja-JP")} ／ ${cost.limit===null?"上限設定なし":"予算 ¥"+cost.limit.toLocaleString("ja-JP")}` : "";
   return `<section class="studio-scene" data-studio-time="${view.time}" data-studio-variant="${view.variant}" aria-label="キャンプ風景のプレビュー">
-    <div class="world-frame" data-season="${season}">
+    <div class="world-frame" data-season="${season}" data-fire-glow="${fireGlow}" data-lantern-glow="${lanternGlow}">
       <img class="studio-image" src="${asset("lake")}" alt="森と山に囲まれた湖畔のキャンプサイト" decoding="async">
-      <div class="world-tint"></div>${step>=5&&answers.stay==="one_night"&&answers.experiences?.includes("stargazing")?'<div class="world-stars" aria-hidden="true"></div>':''}
+      <div class="world-tint"></div><div class="world-light-spill world-fire-spill" aria-hidden="true"></div><div class="world-light-spill world-lantern-spill" aria-hidden="true"></div>${step>=5&&answers.stay==="one_night"&&answers.experiences?.includes("stargazing")?'<div class="world-stars" aria-hidden="true"></div>':''}
       ${packing?`<img class="world-pack" src="${asset(packing)}" alt="${packing==="pack"?"背負って運ぶ荷物":"車に積む収納箱"}">`:""}
       ${objects}
       <div class="world-caption"><span>湖畔のサイト</span><small class="studio-chip-row">${view.chips.join("　·　")}</small></div>
@@ -116,6 +120,8 @@ export function updateQuestionScene(container,html){
   current.dataset.studioTime=next.dataset.studioTime;
   current.dataset.studioVariant=next.dataset.studioVariant;
   frame.dataset.season=replacement.dataset.season;
+  frame.dataset.fireGlow=replacement.dataset.fireGlow;
+  frame.dataset.lanternGlow=replacement.dataset.lanternGlow;
   const key=node=>node.dataset.inspect ? node.dataset.inspect+node.style.getPropertyValue("--x") : node.className;
   const previous=new Map([...frame.children].map(node=>[key(node),node]));
   let cursor=frame.firstElementChild;
@@ -139,4 +145,30 @@ export function updateQuestionScene(container,html){
     const match=[...sheet.querySelectorAll("["+attr+"]")].find(b=>b.getAttribute(attr)===focused.getAttribute(attr)&&b.dataset.delta===focused.dataset.delta);
     match?.focus({preventScroll:true});
   }
+}
+
+/**
+ * An inert, cached-image copy of the live scene. It is only presented beside the
+ * long multi-select question on narrow screens; the actual world remains the sole
+ * interactive scene. No duplicate object buttons, storage writes or events.
+ */
+export function syncMobileWorldFeedback(root){
+  const preview=root.querySelector(".studio-mobile-feedback-preview");
+  const scene=root.querySelector(".sim-visual .studio-scene");
+  if(!preview||!scene)return;
+  const clone=scene.querySelector(".world-frame").cloneNode(true);
+  for(const button of clone.querySelectorAll("button")){
+    const visual=document.createElement("span");
+    for(const attr of button.attributes){
+      if(!["data-inspect","aria-label","type","tabindex"].includes(attr.name))
+        visual.setAttribute(attr.name,attr.value);
+    }
+    while(button.firstChild)visual.append(button.firstChild);
+    button.replaceWith(visual);
+  }
+  for(const img of clone.querySelectorAll("img"))img.alt="";
+  clone.setAttribute("aria-hidden","true");
+  preview.dataset.studioTime=scene.dataset.studioTime;
+  preview.dataset.studioVariant=scene.dataset.studioVariant;
+  preview.replaceChildren(clone);
 }
