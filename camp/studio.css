@@ -350,3 +350,7 @@
   .world-detail-thumb{height:64px}
   .world-detail-content .world-detail-name{font-size:15px}
 }
+
+/* Override legacy .world-dialog li span display:block for new flex layouts. */
+.world-dialog .world-detail-thumb,.world-dialog .world-detail-content{display:flex}
+.world-dialog .world-status-pill{display:inline-flex}
