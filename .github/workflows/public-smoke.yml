@@ -19,6 +19,7 @@ on:
       - '.github/workflows/publish-static.yml'
       - '.github/workflows/refresh-verified-camp-offer.yml'
       - 'tests/camp-published-catalog.mjs'
+      - 'tests/camp-device-browser.mjs'
   workflow_dispatch:
   schedule:
     - cron: '7 0 * * 1'
@@ -54,11 +55,16 @@ jobs:
           python -m http.server 4173 > /tmp/world-http 2>&1 &
           python -m http.server 4174 --directory previous-studio > /tmp/before-http 2>&1 &
           STUDIO_ENGINE=${{ matrix.engine }} BASELINE=http://127.0.0.1:4174/ node tests/camp-world-browser.mjs
+          if [ "${{ matrix.engine }}" = "webkit" ]; then
+            PROOF_DIR=browser-proof/devices node tests/camp-device-browser.mjs
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: camp-world-${{ matrix.engine }}
-          path: browser-proof/world/
+          path: |
+            browser-proof/world/
+            browser-proof/devices/
           retention-days: 14
 
   public-http:
