@@ -106,7 +106,11 @@ jobs:
         timeout-minutes: 7
         run: |
           npm install --no-save --package-lock=false playwright
-          npx playwright install --with-deps chromium
+          # Ubuntu Actions already provides the core browser shared libraries.
+          # --with-deps unnecessarily downloads large apt font packages and
+          # timed out before any browser QA ran on PR #337 HEAD 969ac57.
+          # Keep a real Chromium launch in the following tests as the gate.
+          npx playwright install chromium
       - name: Verify candidate HOME guide and calculator entry at Pages subpath
         if: github.event_name == 'pull_request'
         run: |
