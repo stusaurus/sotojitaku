@@ -320,6 +320,79 @@ class GapRecoveryPriority(unittest.TestCase):
         self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
         self.assertEqual(catalog, before, "Planning may not mutate catalog")
 
+    def test_missing_burner_gets_actual_exact_api_call_under_three_call_cap(self):
+        # This checks the execution path, not just the ranking output.
+        # No external API or shop is called; an explicit 'not found' response
+        # must NOT create an unverified catalog entry.
+        observed = datetime(2026, 11, 21, 0, 40, tzinfo=timezone.utc)
+        audits = json.loads((ROOT / "data/audited-products.json").read_text(encoding="utf-8"))
+        equipment = json.loads((ROOT / "data/equipment.json").read_text(encoding="utf-8"))
+        catalog = {"products": [{
+            "category": "tent", "model": "already-verified-example",
+            "verifiedAt": observed.isoformat()
+        }]}
+        prior = copy.deepcopy(catalog["products"])
+        before_audits = copy.deepcopy(audits)
+        proof_codes = {
+            a["itemCode"]: (a["category"], a["model"])
+            for a in audits["products"] if a.get("itemCode")
+        }
+        api_calls = []
+        seller_calls = []
+
+        def api(req):
+            code = parse_qs(urlparse(req.full_url).query)["itemCode"][0]
+            api_calls.append(proof_codes[code])
+            return {"found": False}
+
+        def shop(url):
+            seller_calls.append(url)
+            raise AssertionError("No seller page is needed after exact-item rejection")
+
+        targets = recovery.prioritize_recovery_targets(catalog, observed)
+        new_audits, result, report = recovery.refresh_extra(
+            audits, catalog, equipment, primary_report=PRIMARY,
+            api_fetch=api, browser_get=shop, now=observed, run_id="offline",
+            targets=targets, skip_recent=True)
+        self.assertEqual(report["attempted"], len(api_calls))
+        self.assertGreaterEqual(len(api_calls), 1)
+        self.assertLessEqual(len(api_calls), recovery.MAX_EXTRA_API_CALLS)
+        self.assertIn(api_calls[0], (("burner", "ST-340"), ("burner", "ST-350")))
+        self.assertEqual(seller_calls, [])
+        self.assertEqual(report["results"][0]["apiStatus"], "exact_item_not_found")
+        self.assertEqual(result["products"], prior)
+        self.assertFalse(any(p["category"] == "burner" for p in result["products"]))
+        self.assertEqual(new_audits, before_audits)
+
+    def test_rate_limit_on_prioritized_burner_stops_following_api_calls(self):
+        # Burners receive a slot but NEVER bypass the shared Worker 429 stop.
+        observed = datetime(2026, 11, 21, 0, 40, tzinfo=timezone.utc)
+        audits = json.loads((ROOT / "data/audited-products.json").read_text(encoding="utf-8"))
+        equipment = json.loads((ROOT / "data/equipment.json").read_text(encoding="utf-8"))
+        catalog = {"products": [{
+            "category": "tent", "model": "already-verified-example",
+            "verifiedAt": observed.isoformat()
+        }]}
+        calls = []
+
+        def api(req):
+            calls.append(parse_qs(urlparse(req.full_url).query)["itemCode"][0])
+            return {"error": "worker_unavailable", "worker_status": 429}
+
+        before = copy.deepcopy(catalog)
+        new_audits, new, report = recovery.refresh_extra(
+            audits, catalog, equipment, primary_report=PRIMARY, api_fetch=api,
+            browser_get=lambda url: (_ for _ in ()).throw(
+                AssertionError("Seller access forbidden after worker 429")),
+            now=observed, targets=recovery.prioritize_recovery_targets(catalog, observed),
+            skip_recent=True)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(report["attempted"], 1)
+        self.assertTrue(report["stoppedBySharedFailure"])
+        self.assertEqual(report["stopReason"], "rate_limited")
+        self.assertEqual(new["products"], before["products"])
+        self.assertEqual(new_audits, audits)
+
     def test_existing_burner_category_does_not_take_probe_slot_from_renewals(self):
         now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
         aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
