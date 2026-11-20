@@ -418,3 +418,98 @@
   .completion-budget-warning strong{font-size:12px}
   .completion-budget-warning span{font-size:11px}
 }
+
+
+/* Sprint 11 | one camera, three honest atmospheres. The ground and the
+   still lake remain the same WebP; tint-reflected mist is composited behind
+   the tappable props. These layers create zero network requests. */
+.world-atmosphere{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:.82;
+  transition:opacity .6s ease;
+}
+.world-atmosphere::before{
+  content:"";
+  position:absolute;
+  inset:29% 0 38%;
+  background:linear-gradient(180deg,transparent 2%,#f7f4e81c 36%,#e5eff442 54%,transparent 94%);
+  filter:blur(9px);
+}
+.world-atmosphere::after{
+  content:"";
+  position:absolute;
+  inset:42% 9% 42%;
+  border-radius:55%;
+  background:
+    linear-gradient(180deg,transparent 18%,#f6e8c01c 44%,transparent 74%),
+    repeating-linear-gradient(177deg,transparent 0 9px,#f5efdd16 10px 11px,transparent 12px 21px);
+  filter:blur(3px);
+  transform:skewX(-9deg);
+}
+.world-frame[data-season="spring"] .world-atmosphere{opacity:.92}
+.world-frame[data-season="summer"] .world-atmosphere{opacity:.47}
+.world-frame[data-season="autumn"] .world-atmosphere{opacity:.72}
+[data-studio-time="evening"] .world-atmosphere::before{
+  background:linear-gradient(180deg,transparent 4%,#dfae7d1c 28%,#ffd5a54c 53%,transparent 95%);
+}
+[data-studio-time="evening"] .world-atmosphere::after{
+  background:
+    linear-gradient(180deg,transparent 18%,#eaa46c4d 44%,transparent 76%),
+    repeating-linear-gradient(177deg,transparent 0 9px,#ffdaa024 10px 11px,transparent 12px 21px);
+}
+[data-studio-time="night"] .world-atmosphere::before{
+  background:linear-gradient(180deg,transparent 4%,#779eb013 39%,#94b9c52d 59%,transparent 95%);
+}
+[data-studio-time="night"] .world-atmosphere::after{
+  background:
+    linear-gradient(180deg,transparent 18%,#a0bfda23 44%,transparent 76%),
+    repeating-linear-gradient(177deg,transparent 0 9px,#8aafbf16 10px 11px,transparent 12px 21px);
+}
+/* Chosen morning coffee has a subtle trail above the already illustrated
+   kettle. Its visibility follows the temporary time preview without adding
+   a second scene, new controls, sound, persistence or heat certification. */
+.world-coffee-steam{
+  position:absolute;
+  left:54.5%;
+  top:52%;
+  width:5%;
+  height:15%;
+  z-index:2;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .45s ease;
+}
+[data-studio-time="morning"] .world-coffee-steam{opacity:.72}
+.world-coffee-steam::before,.world-coffee-steam::after{
+  position:absolute;
+  content:"";
+  bottom:0;
+  height:86%;
+  width:29%;
+  border-radius:100% 35% 80% 24%;
+  background:linear-gradient(0deg,transparent 3%,#fbfcf6c0 46%,#fff9 72%,transparent 100%);
+  filter:blur(1.8px);
+  transform-origin:bottom center;
+}
+.world-coffee-steam::before{left:26%;transform:rotate(-11deg)}
+.world-coffee-steam::after{left:61%;height:67%;transform:rotate(13deg);opacity:.68}
+@media(prefers-reduced-motion:no-preference){
+  .world-coffee-steam::before{animation:camp-steam-left 3.7s ease-in-out infinite alternate}
+  .world-coffee-steam::after{animation:camp-steam-right 4.2s ease-in-out infinite alternate}
+  @keyframes camp-steam-left{
+    from{transform:translateY(2px) rotate(-11deg);opacity:.36}
+    to{transform:translateY(-4px) rotate(8deg);opacity:.82}
+  }
+  @keyframes camp-steam-right{
+    from{transform:translateY(0) rotate(13deg);opacity:.7}
+    to{transform:translateY(-5px) rotate(-9deg);opacity:.32}
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .world-atmosphere,.world-coffee-steam{transition:none}
+  .world-coffee-steam::before,.world-coffee-steam::after{animation:none}
+}
