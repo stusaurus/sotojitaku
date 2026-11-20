@@ -50,6 +50,15 @@ try {
         assert(rect&&rect.y>=-1&&rect.y<100,deviceName+": live scene should stay at viewport top");
         assert.equal(await mini.locator('[data-inspect]').count(),0,deviceName+": preview must be inert");
         assert.equal(await mini.locator('[data-mini-role="fire_pit"]').count(),1,deviceName+": fire should appear in preview");
+        assert.match(await mini.locator('.studio-mobile-feedback-count').innerText(),/朝コーヒーを追加/,
+          deviceName+": last choice should be explicitly announced");
+        if(devices[deviceName].viewport.width<=760){
+          const box=await page.locator('.question-sheet .question-actions .primary').boundingBox();
+          const height=devices[deviceName].viewport.height;
+          assert(box&&box.height>=51,deviceName+": one-hand next action meets touch target");
+          assert(box.y>=-2&&box.y+box.height<=height+2,
+            deviceName+": sticky next action must be reachable while options scroll");
+        }
       }else{
         assert(!(await mini.isVisible()),deviceName+": tablet split view should not duplicate scene");
       }
