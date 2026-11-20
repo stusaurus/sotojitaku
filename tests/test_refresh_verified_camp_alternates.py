@@ -280,6 +280,46 @@ class GapRecoveryPriority(unittest.TestCase):
         self.assertEqual(before, catalog)
         self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
 
+    def test_nov20_main_verified_16_sku_snapshot_prioritizes_burner_next_morning(self):
+        # Frozen read-only sample from main after Actions 44697091040:
+        # 2026-11-20 catalog reached 16 items, still 0 burners. The source
+        # branch contains an older catalog; this fixture prevents regressions
+        # from being concealed by the PR's older snapshot.
+        sample = [
+            ("2026-11-16T07:17:52+00:00", [
+                ("led_lantern", "2000038854"), ("tent", "2000039087")]),
+            ("2026-11-19T07:54:48+00:00", [
+                ("fire_pit", "2000037404"), ("hot_sandwich_maker", "1709435")]),
+            ("2026-11-19T07:55:36+00:00", [
+                ("table", "2238333"), ("sleeping_bag", "2000034772"),
+                ("tent", "2000038429")]),
+            ("2026-11-20T07:43:54+00:00", [
+                ("sleeping_bag", "2000034774"), ("tent", "2206745"),
+                ("chair", "2190857"), ("mat", "2000036153"),
+                ("table", "2205816"), ("cooler", "2238149")]),
+            ("2026-11-20T07:45:59+00:00", [
+                ("tent", "2000038141"), ("table", "2205813"),
+                ("tent", "2000036439")]),
+        ]
+        products = [
+            {"category": category, "model": model, "verifiedAt": stamp}
+            for stamp, entries in sample for category, model in entries
+        ]
+        self.assertEqual(len(products), 16)
+        self.assertEqual(sum(p["category"] == "burner" for p in products), 0)
+        catalog = {"products": products}
+        before = copy.deepcopy(catalog)
+        next_scheduled_run = datetime(2026, 11, 21, 0, 40, tzinfo=timezone.utc)
+        order = recovery.prioritize_recovery_targets(catalog, next_scheduled_run)
+        self.assertEqual(order[0][0], "burner",
+                         "A 16-SKU main catalog still needs burner verification first")
+        self.assertIn(order[0], (("burner", "ST-340"), ("burner", "ST-350")))
+        self.assertIn("burner", {category for category, _ in order[:3]})
+        self.assertEqual(len(order), len(set(order)))
+        self.assertEqual(set(order), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+        self.assertEqual(catalog, before, "Planning may not mutate catalog")
+
     def test_existing_burner_category_does_not_take_probe_slot_from_renewals(self):
         now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
         aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
