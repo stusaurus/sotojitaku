@@ -147,6 +147,12 @@ export function updateQuestionScene(container,html){
   const attr=["data-answer","data-experience","data-step"].find(name=>focused?.hasAttribute(name));
   const advanced=focused?.hasAttribute("data-next")||focused?.hasAttribute("data-back-question");
   const sheet=template.content.querySelector(".question-sheet");
+  // Reparent the SAME polite live region during in-place multi-select updates.
+  // Recreating an aria-live node on every tap can prevent screen readers from
+  // announcing the newly chosen experience, even when visual focus survives.
+  const oldStatus=container.querySelector(".studio-mobile-feedback-count");
+  const nextStatus=sheet.querySelector(".studio-mobile-feedback-count");
+  if(oldStatus&&nextStatus)nextStatus.replaceWith(oldStatus);
   container.querySelector(".question-sheet").replaceWith(sheet);
   if(attr){
     const match=[...sheet.querySelectorAll("["+attr+"]")].find(b=>b.getAttribute(attr)===focused.getAttribute(attr)&&b.dataset.delta===focused.dataset.delta);
@@ -164,7 +170,7 @@ export function updateQuestionScene(container,html){
  * long multi-select question on narrow screens; the actual world remains the sole
  * interactive scene. No duplicate object buttons, storage writes or events.
  */
-export function syncMobileWorldFeedback(root){
+export function syncMobileWorldFeedback(root,change=null){
   const preview=root.querySelector(".studio-mobile-feedback-preview");
   const scene=root.querySelector(".sim-visual .studio-scene");
   if(!preview||!scene)return;
@@ -184,4 +190,14 @@ export function syncMobileWorldFeedback(root){
   preview.dataset.studioTime=scene.dataset.studioTime;
   preview.dataset.studioVariant=scene.dataset.studioVariant;
   preview.replaceChildren(clone);
+  if(change){
+    const status=root.querySelector(".studio-mobile-feedback-count");
+    if(status){
+      // textContent avoids interpreting localized option labels as markup.
+      status.textContent="選択中 "+change.count+"件 · "+change.label+
+        (change.selected?"を追加":"を解除");
+      status.closest(".studio-mobile-feedback")?.setAttribute(
+        "data-choice-feedback",change.selected?"add":"remove");
+    }
+  }
 }
