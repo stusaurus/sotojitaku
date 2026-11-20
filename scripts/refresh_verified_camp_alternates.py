@@ -130,7 +130,6 @@ def prioritize_recovery_targets(catalog, observed):
                 + list(CANDIDATES) + list(PRIORITY_GAPS)
                 + list(RECOVERY_GAPS))
     return tuple(dict.fromkeys(base))
-    return tuple(dict.fromkeys(order))
 
 
 def refresh_extra(audits_doc, existing, equipment, *, primary_report,
