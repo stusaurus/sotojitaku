@@ -523,3 +523,57 @@
   .world-note{font-size:12px;line-height:1.55}
   .world-caption{display:grid;gap:1px;background:linear-gradient(transparent,#13211bd9)}
 }
+
+
+/* Sprint 13 | the long experience chooser gives explicit, temporary
+   feedback while a single inert mirror shows changes to the real fixed-camera
+   world. Color never carries the selection message on its own. */
+.studio-mobile-feedback-count{
+  display:block;
+  min-height:2.8em;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+.studio-mobile-feedback[data-choice-feedback="add"]{
+  border-color:#93ad8d;
+  box-shadow:0 9px 24px #14271f1f,0 0 0 1px #93ad8d55;
+}
+.studio-mobile-feedback[data-choice-feedback="remove"]{
+  border-color:#c9bbac;
+}
+.studio-mobile-feedback[data-choice-feedback] .studio-mobile-feedback-count{
+  font-weight:650;
+  color:#254c36;
+}
+/* On narrow hand-held screens the next action remains in thumb reach while
+   the long grid scrolls. It stays inside the question sheet, not over the
+   global tab bar or over another route. */
+@media(max-width:760px){
+  .simulator:has(.studio-scene) .question-sheet:has(.experience-grid) .question-actions{
+    position:sticky;
+    bottom:calc(8px + env(safe-area-inset-bottom,0px));
+    z-index:14;
+    margin:20px -8px 0;
+    padding:8px;
+    border:1px solid #d9dfd2;
+    border-radius:16px;
+    background:rgba(250,248,240,.97);
+    box-shadow:0 8px 24px #14251e24;
+    backdrop-filter:blur(10px);
+  }
+  .simulator:has(.studio-scene) .question-sheet:has(.experience-grid) .question-actions .primary{
+    min-height:52px;
+  }
+  .simulator:has(.studio-scene) .question-sheet .experience{
+    min-height:105px;
+    touch-action:manipulation;
+  }
+  .simulator:has(.studio-scene) .question-sheet .experience:focus-visible{
+    outline:3px solid #d59b4b;
+    outline-offset:3px;
+  }
+  .simulator:has(.studio-scene) .question-sheet .experience,
+  .simulator:has(.studio-scene) .question-sheet .easy-option{
+    scroll-margin-bottom:calc(96px + env(safe-area-inset-bottom,0px));
+  }
+}
