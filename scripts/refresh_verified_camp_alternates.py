@@ -14,7 +14,7 @@ from pathlib import Path
 
 from acquire import ROOT
 import stage_camp_api_evidence as stage
-from refresh_verified_camp_offer import TARGETS as PRIMARY_TARGETS, refresh_snapshot, recent_original_proof, parse_time
+from refresh_verified_camp_offer import TARGETS as PRIMARY_TARGETS, refresh_snapshot, recent_original_proof, parse_time, valid_existing
 
 # Maximum three extra shared-Worker calls per run across all six candidates.
 # Originally audited merchants only; this allowlist is not authorization
@@ -86,12 +86,12 @@ def prioritize_recovery_targets(catalog, observed):
     # API + original seller/cart gates still control publication; this only
     # changes probe order, not quota or eligibility. Rotate sellers so an
     # unavailable single SKU does not monopolize that reserved slot.
-    live_categories = set()
-    for offer in current.values():
-        verified = parse_time(offer.get("verifiedAt"))
-        if (verified is not None and verified <= observed
-                and observed - verified <= timedelta(days=7)):
-            live_categories.add(offer.get("category"))
+    # Use the exact same strictly-less-than-7-days validity rule as the
+    # catalog publication path; a proof at the expiry boundary is not live.
+    live_categories = {
+        offer.get("category") for offer in current.values()
+        if valid_existing(offer, observed)
+    }
     empty_category_probes = [target for target in ALLOWED_TARGETS
                             if target not in current
                             and target[0] not in live_categories]
