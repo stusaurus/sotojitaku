@@ -143,7 +143,16 @@ try{
   await next();await select('[data-go="owned"]');await select('[data-owned="tent"]');await select('[data-go="gear"]');
   await page.locator('[data-status="tent"]').selectOption("rent");
   await page.locator('[data-status="mat"]').selectOption("skip");
+  if(width===390)await page.locator('[data-status="fuel"]').selectOption("skip");
   await page.goto(base+"camp/?test=1#provisional");
+  if(width===390){
+    const blocked=page.locator('.studio-scene .world-frame');
+    assert.equal(await blocked.getAttribute("data-fire-glow"),"false");
+    assert.equal(await blocked.locator('[data-inspect="fire_pit"],.world-coffee-steam').count(),0);
+    await select('[data-inspect="all"]');
+    assert(await page.locator('dialog[open] [data-world-row="fire_pit"]').isVisible());
+    await page.keyboard.press("Escape");
+  }
   await select('[data-inspect="tent"]');assert.match(await page.locator('dialog[open]').innerText(),/レンタル予定/);
   assert.match(await page.locator('.world-dialog li:not([hidden]) .world-status-pill').innerText(),/レンタル予定・予約要確認/);
   await page.keyboard.press("Escape");
@@ -152,6 +161,12 @@ try{
   assert(await page.locator("[data-complete]").isDisabled());
   await page.locator('[data-status="mat"]').selectOption("buy");
   await select("[data-complete]");await page.locator(".finished-world .studio-scene").waitFor();
+  if(width===390){
+    const [download]=await Promise.all([page.waitForEvent("download"),select("[data-export]")]);
+    assert.equal(download.suggestedFilename(),"SOTOJITAKU-my-camp.txt");
+    const exported=fs.readFileSync(await download.path(),"utf8");
+    for(const label of ["大人2人 / 子ども2人","道具予算目安","装備計画","過ごし方","焚き火台"])assert.ok(exported.includes(label),label);
+  }
   await select('[data-go="schedule"]');
   await context.route("**/world/**",r=>r.abort());
   await page.goto(base+"camp/?test=1#question");

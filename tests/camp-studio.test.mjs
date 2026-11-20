@@ -16,7 +16,7 @@ test("bonfire keeps the same camera and exposes the planned fire pit",()=>{
  assert.equal(result.variant,"bonfire");
  const gear=[{id:"fire_pit",quantity:1,status:"rent"}];
  const initial=renderCampStudioScene({answers:a,step:0,gear});
- const night=renderCampStudioScene({answers:a,step:5,gear});
+ const night=renderCampStudioScene({answers:a,step:5,gear,unlocked:["bonfire"]});
  for(const html of [initial,night])assert.match(html,/world\/lake.webp/);
  assert.doesNotMatch(initial,/data-inspect="fire_pit"/);
  assert.match(night,/data-inspect="fire_pit"/);
@@ -61,7 +61,7 @@ test("night floor illumination is conditional on non-deferred planned fire and l
  const a={...base,experiences:["bonfire"]};
  const fire={id:"fire_pit",quantity:1,status:"rent"};
  const lantern={id:"led_lantern",quantity:1,status:"buy"};
- const render=(gear)=>renderCampStudioScene({answers:a,step:5,previewTime:"night",gear});
+ const render=(gear)=>renderCampStudioScene({answers:a,step:5,previewTime:"night",gear,unlocked:["bonfire"]});
  assert.match(render([fire,lantern]),/data-fire-glow="true" data-lantern-glow="true"/);
  assert.match(render([{...fire,status:"skip"},{...lantern,status:"undecided"}]),/data-fire-glow="false" data-lantern-glow="false"/);
  assert.match(render([fire]),/world-fire-spill/);
@@ -113,19 +113,41 @@ test("one camera receives atmosphere and reflective lake surface without new ima
  assert.match(html,/data-season="autumn"/);
  assert.equal((html.match(/world\/lake\.webp/g)||[]).length,1);
  assert.doesNotMatch(html,/class="world-coffee-steam"/);
- assert.match(html,/風景の道具をタップして準備を確認できます/);
+ assert.match(html,/湖畔の印で体験を追加・解除できます/);
+ assert.match(renderCampStudioScene({answers:a,step:4,gear:[{id:"chair",quantity:2,status:"owned"}]}),/風景の道具をタップして準備を確認できます/);
 });
 
 test("morning coffee vapor is tied to chosen coffee and an active kettle, not arbitrary previews",()=>{
  const a={...base,experiences:["coffee"]};
  const kettle={id:"kettle",quantity:1,status:"buy"};
- const active=renderCampStudioScene({answers:a,step:5,gear:[kettle]});
- const deferred=renderCampStudioScene({answers:a,step:5,gear:[{...kettle,status:"skip"}]});
- const absent=renderCampStudioScene({answers:{...a,experiences:["relax"]},step:5,gear:[kettle]});
+ const active=renderCampStudioScene({answers:a,step:5,gear:[kettle],unlocked:["coffee"]});
+ const deferred=renderCampStudioScene({answers:a,step:5,gear:[{...kettle,status:"skip"}],unlocked:["coffee"]});
+ const absent=renderCampStudioScene({answers:{...a,experiences:["relax"]},step:5,gear:[kettle],unlocked:["coffee"]});
  assert.match(active,/class="world-coffee-steam" aria-hidden="true"/);
  assert.match(active,/class="world-atmosphere" aria-hidden="true"/);
  assert.doesNotMatch(deferred,/world-coffee-steam/);
  assert.doesNotMatch(absent,/world-coffee-steam/);
  // Preview-time changes do not replace the camera or its optional layer.
- assert.match(renderCampStudioScene({answers:a,step:5,previewTime:"night",gear:[kettle]}),/world-coffee-steam/);
+ assert.match(renderCampStudioScene({answers:a,step:5,previewTime:"night",gear:[kettle],unlocked:["coffee"]}),/world-coffee-steam/);
+});
+
+test("blocked heat and unplaced equipment stay off the site but remain in the preparation list",()=>{
+ const gear=["fire_pit","kettle","table"].map(id=>({id,quantity:1,status:id==="table"?"skip":"buy"}));
+ const html=renderCampStudioScene({answers:{...base,experiences:["bonfire","coffee"]},step:5,gear,unlocked:[]});
+ assert.doesNotMatch(html,/data-inspect="fire_pit"|data-inspect="table"|class="world-coffee-steam"/);
+ assert.match(html,/data-inspect="kettle"/);
+ assert.match(html,/data-fire-glow="false"/);
+ assert.match(html,/data-table-placed="false"/);
+ for(const item of gear)assert.ok(html.includes('data-world-row="'+item.id+'"'));
+});
+
+test("scene choices follow the sixth question only; a shared fire pit can outlast a deselected experience",()=>{
+ const gear=[{id:"fire_pit",quantity:1,status:"owned"}];
+ const options={answers:{...base,experiences:["bbq","coffee"]},gear,unlocked:["bbq","coffee"]};
+ const html=renderCampStudioScene({...options,step:5});
+ assert.match(html,/data-place-experience="bonfire" aria-pressed="false"/);
+ assert.match(html,/data-place-experience="coffee" aria-pressed="true"/);
+ assert.match(html,/data-inspect="fire_pit"/);
+ for(const step of [0,1,2,3,4,6])assert.doesNotMatch(renderCampStudioScene({...options,step}),/data-place-experience=/);
+ assert.doesNotMatch(renderCampStudioScene({...options,step:5,review:true}),/data-place-experience=/);
 });

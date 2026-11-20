@@ -54,10 +54,6 @@
 .finished-world{background:#182d28;padding:76px max(0px,calc((100% - 920px)/2)) 0}
 .finished-copy{padding:26px 5%;color:#fbf7eb}
 .finished-copy h1{font-family:var(--serif)}
-@media(prefers-reduced-motion:no-preference){
-  .world-object{animation:gear-arrival .38s ease-out both}
-  @keyframes gear-arrival{from{opacity:0;translate:0 -3px}to{translate:0 0}}
-}
 
 
 /* Sprint 02 | coherent night illumination. The spill lives on the ground behind props,
@@ -87,11 +83,11 @@
 }
 [data-studio-time="night"] .world-frame[data-fire-glow="true"] [data-chair-pose="mirrored"] img,
 [data-studio-time="night"] .world-frame[data-fire-glow="true"] [data-chair-pose="mirrored-near"] img{
-  filter:brightness(.67) sepia(.12) drop-shadow(0 0 8px #ffb65a66);
+  filter:brightness(.74) sepia(.22);
 }
 [data-studio-time="night"] .world-frame[data-lantern-glow="true"] [data-inspect="tent"] img,
 [data-studio-time="night"] .world-frame[data-lantern-glow="true"] [data-mini-role="tent"] img{
-  filter:brightness(.61) saturate(.75) drop-shadow(0 0 6px #ffcf8861);
+  filter:brightness(.65) saturate(.79);
 }
 [data-studio-time="night"] .world-object[data-deferred="true"] img{
   filter:brightness(.32) saturate(.45);
@@ -498,8 +494,8 @@
 .world-coffee-steam::before{left:26%;transform:rotate(-11deg)}
 .world-coffee-steam::after{left:61%;height:67%;transform:rotate(13deg);opacity:.68}
 @media(prefers-reduced-motion:no-preference){
-  .world-coffee-steam::before{animation:camp-steam-left 3.7s ease-in-out infinite alternate}
-  .world-coffee-steam::after{animation:camp-steam-right 4.2s ease-in-out infinite alternate}
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"][data-studio-time="morning"] .world-coffee-steam::before{animation:camp-steam-left 3.7s ease-in-out infinite alternate}
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"][data-studio-time="morning"] .world-coffee-steam::after{animation:camp-steam-right 4.2s ease-in-out infinite alternate}
   @keyframes camp-steam-left{
     from{transform:translateY(2px) rotate(-11deg);opacity:.36}
     to{transform:translateY(-4px) rotate(8deg);opacity:.82}
@@ -577,3 +573,111 @@
     scroll-margin-bottom:calc(96px + env(safe-area-inset-bottom,0px));
   }
 }
+
+/* Light comes across the shore from camera left. Project the silhouettes of
+   the actual photographs onto that ground plane. The table surface and steam
+   follow the pixel geometry of the furniture even on a wider tablet frame. */
+.world-frame {
+  --tabletop: calc(83% - 9.5cqw);
+  --kettle-base: 84%;
+  --shadow-projection: matrix(1, 0, -.47, .17, 0, 0);
+  --shadow-density: .30;
+}
+.world-frame[data-table-placed="true"] { --kettle-base: var(--tabletop); }
+[data-studio-time="evening"] .world-frame {
+  --shadow-projection: matrix(1, 0, -.96, .22, 0, 0);
+  --shadow-density: .43;
+}
+[data-studio-time="night"] .world-frame {
+  --shadow-projection: matrix(1, 0, .28, .10, 0, 0);
+  --shadow-density: .34;
+}
+[data-studio-time="evening"] .world-tint {
+  background: linear-gradient(110deg, #ffa775, #e2b697 49%, #94a6b1);
+  opacity: .69;
+}
+.world-pack { left: 68%; top: 70%; width: 8%; }
+.world-object { z-index: 2; }
+.world-object img { position: relative; transform-origin: 50% 97%; }
+.world-caption { z-index: 3; }
+.world-coffee-steam { top: auto; bottom: calc(100% - var(--kettle-base) + 5.2cqw); }
+:is([data-inspect="kettle"], [data-mini-role="kettle"]) { top: var(--kettle-base); }
+@supports (mask-image: linear-gradient(black, black)) {
+  .world-frame .world-object::before {
+    bottom: 0;
+    left: 50%;
+    width: min(100%, var(--visual-width));
+    height: auto;
+    aspect-ratio: var(--ratio);
+    border-radius: 0;
+    background: #302b24;
+    mask: var(--art) center / 100% 100% no-repeat;
+    filter: none;
+    opacity: var(--shadow-density);
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) var(--shadow-projection);
+    pointer-events: none;
+  }
+  .world-frame :is([data-inspect="kettle"], [data-mini-role="kettle"])::before {
+    --shadow-projection: matrix(1, 0, -.3, .12, 0, 0);
+  }
+  [data-studio-time="night"] .world-frame .world-object[data-chair-pose^="mirrored"]::before {
+    --shadow-projection: matrix(-1, 0, -.40, .13, 0, 0);
+  }
+}
+.world-object[data-departing] { pointer-events: none; }
+
+/* Sixth question only. Each flag is reached separately from the photograph's
+   inspection target. Both inputs lead to the same authoritative answer. */
+.world-sites { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.world-site {
+  position: absolute;
+  left: 55%;
+  bottom: calc(17% + 23cqw);
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  min-width: 44px;
+  border: 0;
+  padding: 0 2px;
+  background: transparent;
+  color: #24392e;
+  font: 600 clamp(12px, 1.5cqw, 15px)/1.2 var(--sans);
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  pointer-events: auto;
+}
+.world-site[data-place-experience="bonfire"] { left: 73%; bottom: calc(12% + 13cqw); }
+.world-site-label {
+  display: inline-flex; align-items: center; gap: .4em;
+  padding: .48em .73em .48em .56em;
+  background: #faf6e9;
+  border: 1px solid #405345;
+  border-radius: 2em;
+  box-shadow: 0 2px 6px #14271f38;
+}
+.world-site-label i {
+  display: grid; place-items: center;
+  width: 1.22em; height: 1.22em;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: 500 1em/1 var(--sans);
+}
+.world-site-label i::before { content: "+"; }
+.world-site[aria-pressed="true"] .world-site-label {
+  background: #284737; color: #fff9e8; border-color: #ece6c9;
+}
+.world-site[aria-pressed="true"] i::before { content: "✓"; }
+.world-site::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  top: calc(50% + .9em); width: 1px; height: clamp(11px, 2.8cqw, 24px);
+  background: #faf2d9; box-shadow: 1px 0 1px #233c31;
+}
+.world-site:focus-visible { outline: none !important; }
+.world-site:focus-visible .world-site-label {
+  outline: 3px solid #ffc975; outline-offset: 2px; box-shadow: 0 0 0 6px #243d31;
+}
+.studio-mobile-feedback-preview .world-object { min-width: 0; min-height: 0; width: var(--w); }
+.studio-scene[data-motion-quality="still"] :is(.world-object img, .world-tint, .studio-image, .world-light-spill) { transition: none; }

@@ -22,6 +22,7 @@ on:
       - 'tests/camp-device-browser.mjs'
       - 'tests/camp-performance-browser.mjs'
       - 'tests/camp-first-visit-browser.mjs'
+      - 'tests/camp-placement-browser.mjs'
   workflow_dispatch:
   schedule:
     - cron: '7 0 * * 1'
@@ -48,6 +49,10 @@ jobs:
         with:
           ref: c6413a2b3d691264d4ffdb2bc33a65660d8508a9
           path: previous-studio
+      - uses: actions/checkout@v4
+        with:
+          ref: 0fb2b9829702813b6c40802ca7d728ce4cddfbe4
+          path: previous-placement
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -56,7 +61,9 @@ jobs:
           npx playwright install --with-deps ${{ matrix.engine }}
           python -m http.server 4173 > /tmp/world-http 2>&1 &
           python -m http.server 4174 --directory previous-studio > /tmp/before-http 2>&1 &
+          python -m http.server 4175 --directory previous-placement > /tmp/placement-http 2>&1 &
           STUDIO_ENGINE=${{ matrix.engine }} BASELINE=http://127.0.0.1:4174/ node tests/camp-world-browser.mjs
+          STUDIO_ENGINE=${{ matrix.engine }} PLACEMENT_BASELINE=http://127.0.0.1:4175/ node tests/camp-placement-browser.mjs
           if [ "${{ matrix.engine }}" = "chromium" ]; then
             PROOF_DIR=browser-proof/performance node tests/camp-performance-browser.mjs
             PROOF_DIR=browser-proof/first-visit node tests/camp-first-visit-browser.mjs
@@ -73,6 +80,7 @@ jobs:
             browser-proof/devices/
             browser-proof/performance/
             browser-proof/first-visit/
+            browser-proof/placement/
           retention-days: 14
 
   public-http:
