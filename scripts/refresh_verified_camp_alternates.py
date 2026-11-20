@@ -77,59 +77,8 @@ def prioritize_recovery_targets(catalog, observed):
         # original SKU cannot monopolize all calls on every scheduled run.
         offset = observed.date().toordinal() % len(missing_gaps)
         missing_gaps = missing_gaps[offset:] + missing_gaps[:offset]
-    # At most three extra Item API calls are available each day. With many
-    # existing offers near their 7-day expiry, the previous renew-first order
-    # could repeatedly consume all three calls and never probe a category
-    # with ZERO live listings (notably a missing burner). Protect the first
-    # two aging offers, then reserve the third attempt for an independently
-    # audited fixed merchant in a currently empty category. The usual exact
-    # API + original seller/cart gates still control publication; this only
-    # changes probe order, not quota or eligibility. Rotate sellers so an
-    # unavailable single SKU does not monopolize that reserved slot.
-    live_categories = set()
-    for offer in current.values():
-        verified = parse_time(offer.get("verifiedAt"))
-        if (verified is not None and verified <= observed
-                and observed - verified <= timedelta(days=7)):
-            live_categories.add(offer.get("category"))
-    empty_category_probes = [target for target in ALLOWED_TARGETS
-                            if target not in current
-                            and target[0] not in live_categories]
-    # A genuine live snapshot with NO burner must try a burner seller even
-    # when fewer than three renewals are due. Otherwise the rotating tent
-    # recovery pool can consume all three slots first, as happened in the
-    # preceding merchant renewal report. Never infer stock from this order.
-    # An entirely empty test/snapshot retains the fair cross-category order.
-    missing_burner = bool(current) and "burner" not in live_categories
-    base = (renew + missing_gaps + list(CANDIDATES)
-            + list(PRIORITY_GAPS) + list(RECOVERY_GAPS))
-    if missing_burner:
-        # Protect at most two OTHER aging categories. An expired burner SKU is
-        # not proof of supply; repeatedly renewing only that same seller would
-        # starve its other independently audited fixed merchant forever.
-        protected = [target for target in renew if target[0] != "burner"][
-            :MAX_EXTRA_API_CALLS - 1]
-        choices = [target for target in ALLOWED_TARGETS
-                   if target[0] == "burner" and target not in current]
-        if not choices:
-            # Both historical burner sellers may exist but be expired. Rotate
-            # the exact, previously audited sellers; no speculative SKU search.
-            choices = [target for target in ALLOWED_TARGETS
-                       if target[0] == "burner"]
-        if choices:
-            gap = choices[observed.date().toordinal() % len(choices)]
-            remaining_renew = [target for target in renew
-                               if target not in protected and target != gap]
-            base = protected + [gap] + remaining_renew + missing_gaps
-            base += list(CANDIDATES) + list(PRIORITY_GAPS) + list(RECOVERY_GAPS)
-    elif len(renew) >= MAX_EXTRA_API_CALLS and empty_category_probes:
-        gap = empty_category_probes[
-            observed.date().toordinal() % len(empty_category_probes)]
-        base = (renew[:MAX_EXTRA_API_CALLS - 1] + [gap]
-                + renew[MAX_EXTRA_API_CALLS - 1:] + missing_gaps
-                + list(CANDIDATES) + list(PRIORITY_GAPS)
-                + list(RECOVERY_GAPS))
-    return tuple(dict.fromkeys(base))
+    targets = renew + missing_gaps + list(CANDIDATES) + list(PRIORITY_GAPS) + list(RECOVERY_GAPS)
+    return tuple(dict.fromkeys(targets))
 
 
 def refresh_extra(audits_doc, existing, equipment, *, primary_report,
