@@ -86,6 +86,10 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
   // A proposed object does not certify safety or acquisition; deferred objects cannot cast light.
   const fireGlow=items.some(item=>item.id==="fire_pit"&&!item.deferred);
   const lanternGlow=items.some(item=>item.id==="led_lantern"&&!item.deferred);
+  // Coffee steam is an aspirational scene detail, never a heat/safety claim.
+  // Keep the layer mounted when toggling time so previews need no re-render.
+  const coffeeSteam=Array.isArray(answers.experiences)&&answers.experiences.includes("coffee")&&
+    items.some(item=>item.id==="kettle"&&!item.deferred);
   const controls=SCENE_TIMES.map(({id,label})=>
     `<button type="button" class="studio-time-option" data-scene-preview="${id}" aria-pressed="${id===view.time}"${id==="night"&&view.nightDisabled?" disabled":""}>${label}</button>`).join("");
   const objects=items.map(({id,name,x,y,width,deferred,chairPose,statusKey})=>
@@ -96,14 +100,14 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
   return `<section class="studio-scene" data-studio-time="${view.time}" data-studio-variant="${view.variant}" aria-label="キャンプ風景のプレビュー">
     <div class="world-frame" data-season="${season}" data-fire-glow="${fireGlow}" data-lantern-glow="${lanternGlow}">
       <img class="studio-image" src="${asset("lake")}" alt="森と山に囲まれた湖畔のキャンプサイト" decoding="async">
-      <div class="world-tint"></div><div class="world-light-spill world-fire-spill" aria-hidden="true"></div><div class="world-light-spill world-lantern-spill" aria-hidden="true"></div>${step>=5&&answers.stay==="one_night"&&answers.experiences?.includes("stargazing")?'<div class="world-stars" aria-hidden="true"></div>':''}
+      <div class="world-tint"></div><div class="world-atmosphere" aria-hidden="true"></div><div class="world-light-spill world-fire-spill" aria-hidden="true"></div><div class="world-light-spill world-lantern-spill" aria-hidden="true"></div>${coffeeSteam?'<div class="world-coffee-steam" aria-hidden="true"></div>':""}${step>=5&&answers.stay==="one_night"&&answers.experiences?.includes("stargazing")?'<div class="world-stars" aria-hidden="true"></div>':''}
       ${packing?`<img class="world-pack" src="${asset(packing)}" alt="${packing==="pack"?"背負って運ぶ荷物":"車に積む収納箱"}">`:""}
       ${objects}
       <div class="world-caption"><span>湖畔のサイト</span><small class="studio-chip-row">${view.chips.join("　·　")}</small></div>
     </div>
     <div class="world-tools"><div role="group" class="world-times" aria-label="時間帯">${controls}</div>
     ${unique.length?'<button type="button" class="world-list" data-inspect="all">道具一覧</button>':''}</div>
-    <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>時間帯の切替は診断・安全判定を変更しません。</span></div>
+    <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>${unique.length?"風景の道具をタップして準備を確認できます。 ":""}時間帯の切替は診断・安全判定を変更しません。</span></div>
     <dialog class="world-dialog" aria-label="サイトの道具"><form method="dialog"><button aria-label="閉じる" autofocus>閉じる ×</button></form>
       <h2 class="world-dialog-title">サイトの道具</h2><p class="world-dialog-intro">必要な数と、現在の準備方法</p>
       <ul>${unique.map(item=>`<li data-world-row="${item.id}" data-world-status="${item.statusKey}"><span class="world-detail-thumb"><img src="${asset(item.id)}" alt="" loading="lazy"></span><span class="world-detail-content"><strong class="world-detail-name">${item.name} ×${item.quantity}</strong><small class="world-detail-role">${item.role}</small><span class="world-status-pill" data-status="${item.statusKey}">${item.status}</span><small class="world-detail-remark">${escapeSceneText(item.detail)}</small></span></li>`).join("")}</ul>
