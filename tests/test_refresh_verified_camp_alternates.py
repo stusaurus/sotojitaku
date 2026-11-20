@@ -393,6 +393,30 @@ class GapRecoveryPriority(unittest.TestCase):
         self.assertEqual(new["products"], before["products"])
         self.assertEqual(new_audits, audits)
 
+    def test_burner_at_seven_day_expiry_is_not_live_supply(self):
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        catalog = {"products": [
+            {"category": "tent", "model": "2000038141",
+             "verifiedAt": now.isoformat()},
+            {"category": "burner", "model": "ST-350",
+             "verifiedAt": (now-timedelta(days=7)).isoformat()}
+        ]}
+        before = copy.deepcopy(catalog)
+        first = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(first[0], ("burner", "ST-340"),
+                         "The exact seven-day expiry is not valid supply")
+        self.assertEqual(len(first), len(set(first)))
+        self.assertEqual(catalog, before)
+
+        # One second before expiry the catalog still has supply; the
+        # existing burner renewal is then a normal age-five-day priority.
+        catalog["products"][1]["verifiedAt"] = (
+            now-timedelta(days=7)+timedelta(seconds=1)).isoformat()
+        before = copy.deepcopy(catalog)
+        still_live = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(still_live[0], ("burner", "ST-350"))
+        self.assertEqual(catalog, before)
+
     def test_existing_burner_category_does_not_take_probe_slot_from_renewals(self):
         now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
         aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
