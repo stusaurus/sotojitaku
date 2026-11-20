@@ -20,6 +20,7 @@ try{
    await publicPage.goto(publicCamp,{waitUntil:"domcontentloaded",timeout:25000});
    await publicPage.locator("#main [data-start]").first().waitFor({timeout:15000});
    await publicPage.locator("#main [data-start]").first().click();
+   await publicPage.locator(".sim-visual img").first().evaluate(img=>img.decode());
    await publicPage.locator(".simulator").screenshot({path:proofDir+"/camp-studio-before-"+width+".png"});
   }catch(error){baseline="unavailable: "+error.message.slice(0,160);}
   await publicPage.close();

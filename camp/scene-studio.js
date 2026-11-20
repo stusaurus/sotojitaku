@@ -103,9 +103,9 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
       <div class="world-tint"></div><div class="world-atmosphere" aria-hidden="true"></div><div class="world-light-spill world-fire-spill" aria-hidden="true"></div><div class="world-light-spill world-lantern-spill" aria-hidden="true"></div>${coffeeSteam?'<div class="world-coffee-steam" aria-hidden="true"></div>':""}${step>=5&&answers.stay==="one_night"&&answers.experiences?.includes("stargazing")?'<div class="world-stars" aria-hidden="true"></div>':''}
       ${packing?`<img class="world-pack" src="${asset(packing)}" alt="${packing==="pack"?"背負って運ぶ荷物":"車に積む収納箱"}">`:""}
       ${objects}
-      <div class="world-caption"><span>湖畔のサイト</span><small class="studio-chip-row">${view.chips.join("　·　")}</small></div>
+      <div class="world-caption"><span>湖畔のサイト</span><small class="studio-chip-row">${!step&&!partyChosen?"同行者を選ぶと、設営が始まります":view.chips.join("　·　")}</small></div>
     </div>
-    <div class="world-tools"><div role="group" class="world-times" aria-label="時間帯">${controls}</div>
+    <div class="world-tools"><div class="world-light-picker"><span class="world-light-label">光のプレビュー</span><div role="group" class="world-times" aria-label="時間帯">${controls}</div></div>
     ${unique.length?'<button type="button" class="world-list" data-inspect="all">道具一覧</button>':''}</div>
     <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>${unique.length?"風景の道具をタップして準備を確認できます。 ":""}時間帯の切替は診断・安全判定を変更しません。</span></div>
     <dialog class="world-dialog" aria-label="サイトの道具"><form method="dialog"><button aria-label="閉じる" autofocus>閉じる ×</button></form>
@@ -150,7 +150,8 @@ export function updateQuestionScene(container,html){
   container.querySelector(".question-sheet").replaceWith(sheet);
   if(attr){
     const match=[...sheet.querySelectorAll("["+attr+"]")].find(b=>b.getAttribute(attr)===focused.getAttribute(attr)&&b.dataset.delta===focused.dataset.delta);
-    match?.focus({preventScroll:true});
+    const target=match?.disabled ? [...sheet.querySelectorAll("[data-step]")].find(b=>b.dataset.step===match.dataset.step&&!b.disabled) : match;
+    target?.focus({preventScroll:true});
   }else if(advanced){
     // A removed "next/back" button must not strand keyboard/screen-reader focus on <body>.
     const heading=sheet.querySelector(".question-title");

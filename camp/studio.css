@@ -513,3 +513,13 @@
   .world-atmosphere,.world-coffee-steam{transition:none}
   .world-coffee-steam::before,.world-coffee-steam::after{animation:none}
 }
+
+.world-light-picker{display:flex;align-items:center;gap:12px}
+.world-light-label{color:#e0e7db;font-size:13px}
+.world-caption .studio-chip-row{font-size:12px;line-height:1.45}
+@media(max-width:760px){
+  .world-light-picker{gap:7px}
+  .world-light-label{font-size:12px}
+  .world-note{font-size:12px;line-height:1.55}
+  .world-caption{display:grid;gap:1px;background:linear-gradient(transparent,#13211bd9)}
+}
