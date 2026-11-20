@@ -3,6 +3,7 @@ const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const crypto=require('node:crypto');
+const {fetchWithTransientRetry}=require('./public-http-retry.cjs');
 const base=process.env.HOME_BASE||'http://127.0.0.1:4173/';
 const urls=[
   'guides/','guides/gear/','guides/budget/',
@@ -23,13 +24,19 @@ const browserPromise=chromium.launch({headless:true});
       await context.route(/https:\/\/(www\.)?(googletagmanager\.com|google-analytics\.com|region1\.google-analytics\.com)\//,
         route=>route.fulfill({status:200,body:''}));
       const page=await context.newPage();
-      const home=await page.goto(new URL('?test=1',base).href,{waitUntil:'domcontentloaded',timeout:45000});
+      const home=await fetchWithTransientRetry(
+        () => page.goto(new URL('?test=1',base).href,{waitUntil:'domcontentloaded',timeout:45000}),
+        {label:'published HOME '+width+'px'}
+      );
       assert.equal(home?.status(),200,'HOME HTTP status '+width);
       // Detect a stale HTML cache key even if the CSS and links look right in
       // one browser cache. This catches an old Pages branch-build takeover.
       const stylesheet=await page.locator('link[rel="stylesheet"][href^="home.css?v="]').getAttribute('href');
       assert.ok(stylesheet,'HOME needs its versioned content stylesheet');
-      const cssResponse=await page.request.get(new URL('home.css',base).href);
+      const cssResponse=await fetchWithTransientRetry(
+        () => page.request.get(new URL('home.css',base).href),
+        {label:'published HOME stylesheet '+width+'px'}
+      );
       assert.equal(cssResponse.status(),200,'HOME stylesheet HTTP status');
       const css=await cssResponse.body();
       const actualVersion=crypto.createHash('sha256').update(css).digest('hex').slice(0,12);
