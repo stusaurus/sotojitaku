@@ -226,6 +226,241 @@ class GapRecoveryPriority(unittest.TestCase):
         self.assertEqual(set(first), set(recovery.ALLOWED_TARGETS))
         self.assertEqual(catalog, before)
 
+    def test_no_live_burner_gets_one_reserved_attempt_when_aging_offers_crowd_quota(self):
+        # Four independently audited sellers need renewal, but only three
+        # additional API calls exist. At least one call must reach the
+        # *missing category* while the two oldest remain first.
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
+                recovery.PRIORITY_GAPS[1], recovery.PRIORITY_GAPS[2]]
+        catalog = {"products": [
+            *[{"category": c, "model": m,
+               "verifiedAt": (now-timedelta(days=6)).isoformat()}
+              for c,m in aged],
+            {"category": "sleeping_bag", "model": "already-live",
+             "verifiedAt": now.isoformat()},
+        ]}
+        before = copy.deepcopy(catalog)
+        order = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(order[:2], tuple(aged[:2]))
+        self.assertEqual(order[2][0], "burner")
+        self.assertIn(order[2], (("burner", "ST-350"), ("burner", "ST-340")))
+        self.assertEqual(order[3], aged[2])
+        self.assertEqual(len(set(order)), len(recovery.ALLOWED_TARGETS))
+        self.assertEqual(set(order), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(catalog, before)
+        next_day = recovery.prioritize_recovery_targets(
+            catalog, now+timedelta(days=1))
+        self.assertEqual(next_day[2][0], "burner")
+        self.assertNotEqual(order[2], next_day[2],
+                            "Rotate two audited fixed-seller burner codes")
+
+    def test_nonempty_catalog_with_no_burner_probes_one_before_other_missing_tents(self):
+        # This is the real failure mode: all three extra calls were previously
+        # spent on table/sleeping bag/tent, leaving ST-340 and ST-350 untried.
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        catalog = {"products": [
+            {"category": c, "model": m, "verifiedAt": now.isoformat()}
+            for c,m in [
+                recovery.PRIORITY_GAPS[0],  # existing tent
+                recovery.PRIORITY_GAPS[1],  # existing table
+                recovery.PRIORITY_GAPS[2],  # existing fire pit
+            ]
+        ]}
+        before = copy.deepcopy(catalog)
+        first = recovery.prioritize_recovery_targets(catalog, now)
+        second = recovery.prioritize_recovery_targets(
+            catalog, now+timedelta(days=1))
+        self.assertEqual(first[0][0], "burner")
+        self.assertEqual(second[0][0], "burner")
+        self.assertIn(first[0], (("burner", "ST-350"), ("burner", "ST-340")))
+        self.assertNotEqual(first[0], second[0])
+        self.assertEqual(len(first), len(set(first)))
+        self.assertEqual(set(first), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(before, catalog)
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+
+    def test_nov20_main_verified_16_sku_snapshot_prioritizes_burner_next_morning(self):
+        # Frozen read-only sample from main after Actions 44697091040:
+        # 2026-11-20 catalog reached 16 items, still 0 burners. The source
+        # branch contains an older catalog; this fixture prevents regressions
+        # from being concealed by the PR's older snapshot.
+        sample = [
+            ("2026-11-16T07:17:52+00:00", [
+                ("led_lantern", "2000038854"), ("tent", "2000039087")]),
+            ("2026-11-19T07:54:48+00:00", [
+                ("fire_pit", "2000037404"), ("hot_sandwich_maker", "1709435")]),
+            ("2026-11-19T07:55:36+00:00", [
+                ("table", "2238333"), ("sleeping_bag", "2000034772"),
+                ("tent", "2000038429")]),
+            ("2026-11-20T07:43:54+00:00", [
+                ("sleeping_bag", "2000034774"), ("tent", "2206745"),
+                ("chair", "2190857"), ("mat", "2000036153"),
+                ("table", "2205816"), ("cooler", "2238149")]),
+            ("2026-11-20T07:45:59+00:00", [
+                ("tent", "2000038141"), ("table", "2205813"),
+                ("tent", "2000036439")]),
+        ]
+        products = [
+            {"category": category, "model": model, "verifiedAt": stamp}
+            for stamp, entries in sample for category, model in entries
+        ]
+        self.assertEqual(len(products), 16)
+        self.assertEqual(sum(p["category"] == "burner" for p in products), 0)
+        catalog = {"products": products}
+        before = copy.deepcopy(catalog)
+        next_scheduled_run = datetime(2026, 11, 21, 0, 40, tzinfo=timezone.utc)
+        order = recovery.prioritize_recovery_targets(catalog, next_scheduled_run)
+        self.assertEqual(order[0][0], "burner",
+                         "A 16-SKU main catalog still needs burner verification first")
+        self.assertIn(order[0], (("burner", "ST-340"), ("burner", "ST-350")))
+        self.assertIn("burner", {category for category, _ in order[:3]})
+        self.assertEqual(len(order), len(set(order)))
+        self.assertEqual(set(order), set(recovery.ALLOWED_TARGETS))
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+        self.assertEqual(catalog, before, "Planning may not mutate catalog")
+
+    def test_missing_burner_gets_actual_exact_api_call_under_three_call_cap(self):
+        # This checks the execution path, not just the ranking output.
+        # No external API or shop is called; an explicit 'not found' response
+        # must NOT create an unverified catalog entry.
+        observed = datetime(2026, 11, 21, 0, 40, tzinfo=timezone.utc)
+        audits = json.loads((ROOT / "data/audited-products.json").read_text(encoding="utf-8"))
+        equipment = json.loads((ROOT / "data/equipment.json").read_text(encoding="utf-8"))
+        catalog = {"products": [{
+            "category": "tent", "model": "already-verified-example",
+            "verifiedAt": observed.isoformat()
+        }]}
+        prior = copy.deepcopy(catalog["products"])
+        before_audits = copy.deepcopy(audits)
+        proof_codes = {
+            a["itemCode"]: (a["category"], a["model"])
+            for a in audits["products"] if a.get("itemCode")
+        }
+        api_calls = []
+        seller_calls = []
+
+        def api(req):
+            code = parse_qs(urlparse(req.full_url).query)["itemCode"][0]
+            api_calls.append(proof_codes[code])
+            return {"found": False}
+
+        def shop(url):
+            seller_calls.append(url)
+            raise AssertionError("No seller page is needed after exact-item rejection")
+
+        targets = recovery.prioritize_recovery_targets(catalog, observed)
+        new_audits, result, report = recovery.refresh_extra(
+            audits, catalog, equipment, primary_report=PRIMARY,
+            api_fetch=api, browser_get=shop, now=observed, run_id="offline",
+            targets=targets, skip_recent=True)
+        self.assertEqual(report["attempted"], len(api_calls))
+        self.assertGreaterEqual(len(api_calls), 1)
+        self.assertLessEqual(len(api_calls), recovery.MAX_EXTRA_API_CALLS)
+        self.assertIn(api_calls[0], (("burner", "ST-340"), ("burner", "ST-350")))
+        self.assertEqual(seller_calls, [])
+        self.assertEqual(report["results"][0]["apiStatus"], "exact_item_not_found")
+        self.assertEqual(result["products"], prior)
+        self.assertFalse(any(p["category"] == "burner" for p in result["products"]))
+        self.assertEqual(new_audits, before_audits)
+
+    def test_rate_limit_on_prioritized_burner_stops_following_api_calls(self):
+        # Burners receive a slot but NEVER bypass the shared Worker 429 stop.
+        observed = datetime(2026, 11, 21, 0, 40, tzinfo=timezone.utc)
+        audits = json.loads((ROOT / "data/audited-products.json").read_text(encoding="utf-8"))
+        equipment = json.loads((ROOT / "data/equipment.json").read_text(encoding="utf-8"))
+        catalog = {"products": [{
+            "category": "tent", "model": "already-verified-example",
+            "verifiedAt": observed.isoformat()
+        }]}
+        calls = []
+
+        def api(req):
+            calls.append(parse_qs(urlparse(req.full_url).query)["itemCode"][0])
+            return {"error": "worker_unavailable", "worker_status": 429}
+
+        before = copy.deepcopy(catalog)
+        new_audits, new, report = recovery.refresh_extra(
+            audits, catalog, equipment, primary_report=PRIMARY, api_fetch=api,
+            browser_get=lambda url: (_ for _ in ()).throw(
+                AssertionError("Seller access forbidden after worker 429")),
+            now=observed, targets=recovery.prioritize_recovery_targets(catalog, observed),
+            skip_recent=True)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(report["attempted"], 1)
+        self.assertTrue(report["stoppedBySharedFailure"])
+        self.assertEqual(report["stopReason"], "rate_limited")
+        self.assertEqual(new["products"], before["products"])
+        self.assertEqual(new_audits, audits)
+
+    def test_burner_at_seven_day_expiry_is_not_live_supply(self):
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        catalog = {"products": [
+            {"category": "tent", "model": "2000038141",
+             "verifiedAt": now.isoformat()},
+            {"category": "burner", "model": "ST-350",
+             "verifiedAt": (now-timedelta(days=7)).isoformat()}
+        ]}
+        before = copy.deepcopy(catalog)
+        first = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(first[0], ("burner", "ST-340"),
+                         "The exact seven-day expiry is not valid supply")
+        self.assertEqual(len(first), len(set(first)))
+        self.assertEqual(catalog, before)
+
+        # One second before expiry the catalog still has supply; the
+        # existing burner renewal is then a normal age-five-day priority.
+        catalog["products"][1]["verifiedAt"] = (
+            now-timedelta(days=7)+timedelta(seconds=1)).isoformat()
+        before = copy.deepcopy(catalog)
+        still_live = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(still_live[0], ("burner", "ST-350"))
+        self.assertEqual(catalog, before)
+
+    def test_existing_burner_category_does_not_take_probe_slot_from_renewals(self):
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        aged = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
+                recovery.PRIORITY_GAPS[1], recovery.PRIORITY_GAPS[2]]
+        catalog = {"products": [
+            *[{"category": c, "model": m,
+               "verifiedAt": (now-timedelta(days=6)).isoformat()}
+              for c,m in aged],
+            {"category": "sleeping_bag", "model": "live",
+             "verifiedAt": now.isoformat()},
+            {"category": "burner", "model": "ST-350",
+             "verifiedAt": now.isoformat()},
+        ]}
+        order = recovery.prioritize_recovery_targets(catalog, now)
+        self.assertEqual(order[:3], tuple(aged[:3]))
+        self.assertEqual(recovery.MAX_EXTRA_API_CALLS, 3)
+        self.assertEqual(len(order), len(set(order)))
+
+    def test_expired_burner_does_not_mask_zero_live_seller_supply(self):
+        now = datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc)
+        aging = [recovery.CANDIDATES[0], recovery.PRIORITY_GAPS[0],
+                 recovery.PRIORITY_GAPS[1], recovery.PRIORITY_GAPS[2]]
+        products = [
+            {"category": c, "model": m,
+             "verifiedAt": (now-timedelta(days=6)).isoformat()}
+            for c,m in aging
+        ]
+        products.extend([
+            {"category": "sleeping_bag", "model": "already-live",
+             "verifiedAt": now.isoformat()},
+            # An old row may remain in a source snapshot, but it is NOT a
+            # live offer after the seven-day publication deadline.
+            {"category": "burner", "model": "ST-350",
+             "verifiedAt": (now-timedelta(days=8)).isoformat()},
+        ])
+        result = recovery.prioritize_recovery_targets(
+            {"products": products}, now)
+        # Two other aging offers retain priority; the third slot tests the
+        # independent fixed seller rather than endlessly retrying expired ST-350.
+        self.assertEqual(result[:2], tuple(aging[:2]))
+        self.assertEqual(result[2], ("burner", "ST-340"),
+                         "Try independent audited seller after the first expired burner")
+        self.assertEqual(len(result), len(set(result)))
+
     def test_no_unapproved_or_stale_offer_becomes_published_during_planning(self):
         order = recovery.prioritize_recovery_targets({"products": []}, NOW)
         self.assertNotIn(("burner", "ST-310"), order)
