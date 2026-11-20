@@ -54,7 +54,19 @@ try{
     assert(rect&&rect.y>=0&&rect.y<160,"mini preview must stay near viewport top while scrolling");
     assert.equal(await mini.locator('[data-mini-role="fire_pit"]').count(),1);
     assert.equal(await mini.locator('[data-inspect]').count(),0,"mini view must have no duplicate actions");
-    assert.match(await mini.locator('.studio-mobile-feedback-count').innerText(),/選択中/);
+    const liveStatus=mini.locator('.studio-mobile-feedback-count');
+    assert.match(await liveStatus.innerText(),/朝コーヒーを追加/);
+    const preserved=await liveStatus.elementHandle();
+    await select('[data-experience="coffee"]');
+    assert.match(await liveStatus.innerText(),/朝コーヒーを解除/);
+    assert(await preserved.evaluate(el=>el.isConnected),"the same polite status node must survive toggle updates");
+    await select('[data-experience="coffee"]');
+    assert.match(await liveStatus.innerText(),/朝コーヒーを追加/);
+    const nextAction=page.locator('.question-sheet .question-actions .primary');
+    const actionBox=await nextAction.boundingBox();
+    assert(actionBox&&actionBox.height>=51,"thumb next action must be at least 52 CSS pixels");
+    assert(actionBox.y+actionBox.height<=844,"thumb next action must remain inside the viewport");
+    assert.equal(await page.locator('.studio-mobile-feedback [data-inspect]').count(),0);
     await snap("mobile-live-feedback");
   }
   // The old ::after looked 44px wide, but the button itself was only 5% of
