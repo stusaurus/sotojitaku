@@ -194,8 +194,8 @@ export function syncMobileWorldFeedback(root,change=null){
     const status=root.querySelector(".studio-mobile-feedback-count");
     if(status){
       // textContent avoids interpreting localized option labels as markup.
-      status.textContent="選択中 "+change.count+"件 · "+change.label+
-        (change.selected?"を追加":"を解除");
+      status.textContent=change.label+(change.selected?"を追加":"を解除")+
+        "（計"+change.count+"件）";
       status.closest(".studio-mobile-feedback")?.setAttribute(
         "data-choice-feedback",change.selected?"add":"remove");
     }
