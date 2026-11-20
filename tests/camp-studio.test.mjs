@@ -104,3 +104,28 @@ test("inspection notes are escaped even if unusual details enter the visual adap
  assert.doesNotMatch(html,/onerror="alert\(1\)"/);
  assert.match(html,/&lt;img src=x/);
 });
+
+
+test("one camera receives atmosphere and reflective lake surface without new image assets",()=>{
+ const a={...base,season:"autumn",experiences:["relax"]};
+ const html=renderCampStudioScene({answers:a,step:5,gear:[{id:"chair",quantity:2,status:"owned"}],partyChosen:true});
+ assert.match(html,/class="world-atmosphere" aria-hidden="true"/);
+ assert.match(html,/data-season="autumn"/);
+ assert.equal((html.match(/world\/lake\.webp/g)||[]).length,1);
+ assert.doesNotMatch(html,/class="world-coffee-steam"/);
+ assert.match(html,/風景の道具をタップして準備を確認できます/);
+});
+
+test("morning coffee vapor is tied to chosen coffee and an active kettle, not arbitrary previews",()=>{
+ const a={...base,experiences:["coffee"]};
+ const kettle={id:"kettle",quantity:1,status:"buy"};
+ const active=renderCampStudioScene({answers:a,step:5,gear:[kettle]});
+ const deferred=renderCampStudioScene({answers:a,step:5,gear:[{...kettle,status:"skip"}]});
+ const absent=renderCampStudioScene({answers:{...a,experiences:["relax"]},step:5,gear:[kettle]});
+ assert.match(active,/class="world-coffee-steam" aria-hidden="true"/);
+ assert.match(active,/class="world-atmosphere" aria-hidden="true"/);
+ assert.doesNotMatch(deferred,/world-coffee-steam/);
+ assert.doesNotMatch(absent,/world-coffee-steam/);
+ // Preview-time changes do not replace the camera or its optional layer.
+ assert.match(renderCampStudioScene({answers:a,step:5,previewTime:"night",gear:[kettle]}),/world-coffee-steam/);
+});
