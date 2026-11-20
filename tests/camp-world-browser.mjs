@@ -76,6 +76,13 @@ try{
   }
   await page.reload();await page.locator('[data-inspect="tent"]').first().waitFor();
   const snapshot=await saved();
+  const mist=page.locator('.sim-visual .world-atmosphere');
+  const steam=page.locator('.sim-visual .world-coffee-steam');
+  assert.equal(await mist.count(),1,"one visual atmospheric layer");
+  assert.equal(await steam.count(),1,"chosen coffee provides one camera-anchored vapor layer");
+  assert.match(await mist.evaluate(el=>getComputedStyle(el,'::after').backgroundImage),/gradient/);
+  assert.equal(await steam.evaluate(el=>getComputedStyle(el,'::before').animationName),"none",
+    "reduced-motion setting suppresses coffee vapor animation");
   await select('[data-inspect="tent"]');
   assert.match(await page.locator('dialog[open]').innerText(),/テント ×1/);
   assert.equal(await page.locator('.world-dialog-title').innerText(),"テントの準備");
@@ -95,6 +102,9 @@ try{
   await page.keyboard.press("Escape");
   for(const time of ["morning","evening","night"]){
    await select('[data-scene-preview="'+time+'"]');await snap(time);
+   const vaporOpacity=Number(await steam.evaluate(el=>getComputedStyle(el).opacity));
+   if(time==="morning")assert(vaporOpacity>.5,"coffee should release a gentle morning vapor");
+   else assert(vaporOpacity<.05,"steam must disappear outside the morning preview");
    if(time==="night"){
      const frame=page.locator('.sim-visual .world-frame');
      assert.equal(await frame.getAttribute("data-fire-glow"),"true");
