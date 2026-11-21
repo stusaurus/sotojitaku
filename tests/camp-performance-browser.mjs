@@ -100,11 +100,15 @@ try{
           twoFrameFeedbackSamples:window.__campLab.twoFrameFeedbackSamples,
           worldEncodedBytes:world.reduce((sum,e)=>sum+e.encodedBodySize,0),
           worldUniqueUrls:new Set(world.map(e=>e.name)).size,
+          worldRequests:world.map(e=>({asset:e.name.split("/").pop(),initiator:e.initiatorType,
+            encodedBytes:e.encodedBodySize,transferBytes:e.transferSize})),
           layoutOverflow:document.documentElement.scrollWidth>innerWidth+1
         };
       });
       assert.equal(stats.layoutOverflow,false,"horizontal overflow");
-      assert(stats.worldEncodedBytes<1100000,"regression in world asset budget");
+      // The nine photographic layers together are 512,768 bytes. One more
+      // network request can otherwise hide behind the same unique URL count.
+      assert(stats.worldEncodedBytes<=525000,"world art reloaded: "+JSON.stringify(stats.worldRequests));
       assert(stats.worldUniqueUrls<=9,"unintended extra world asset requests");
       assert(stats.twoFrameFeedbackSamples.length>=3,"two-frame response not recorded");
       assert(stats.twoFrameFeedbackSamples.every(e=>e.ms<1200),"very slow scene feedback");

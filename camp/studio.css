@@ -602,28 +602,26 @@
 .world-caption { z-index: 3; }
 .world-coffee-steam { top: auto; bottom: calc(100% - var(--kettle-base) + 5.2cqw); }
 :is([data-inspect="kettle"], [data-mini-role="kettle"]) { top: var(--kettle-base); }
-@supports (mask-image: linear-gradient(black, black)) {
-  .world-frame .world-object::before {
-    bottom: 0;
-    left: 50%;
-    width: min(100%, var(--visual-width));
-    height: auto;
-    aspect-ratio: var(--ratio);
-    border-radius: 0;
-    background: #302b24;
-    mask: var(--art) center / 100% 100% no-repeat;
-    filter: none;
-    opacity: var(--shadow-density);
-    transform-origin: 50% 100%;
-    transform: translateX(-50%) var(--shadow-projection);
-    pointer-events: none;
-  }
-  .world-frame :is([data-inspect="kettle"], [data-mini-role="kettle"])::before {
-    --shadow-projection: matrix(1, 0, -.3, .12, 0, 0);
-  }
-  [data-studio-time="night"] .world-frame .world-object[data-chair-pose^="mirrored"]::before {
-    --shadow-projection: matrix(-1, 0, -.40, .13, 0, 0);
-  }
+.world-frame .world-object::before {
+  bottom: 0;
+  left: 50%;
+  width: min(100%, var(--visual-width));
+  height: auto;
+  aspect-ratio: var(--ratio);
+  border-radius: 0;
+  /* Reuse the photograph in the same request mode as its visible layer. */
+  background: var(--art) center / 100% 100% no-repeat;
+  filter: brightness(0);
+  opacity: var(--shadow-density);
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) var(--shadow-projection);
+  pointer-events: none;
+}
+.world-frame :is([data-inspect="kettle"], [data-mini-role="kettle"])::before {
+  --shadow-projection: matrix(1, 0, -.3, .12, 0, 0);
+}
+[data-studio-time="night"] .world-frame .world-object[data-chair-pose^="mirrored"]::before {
+  --shadow-projection: matrix(-1, 0, -.40, .13, 0, 0);
 }
 .world-object[data-departing] { pointer-events: none; }
 
