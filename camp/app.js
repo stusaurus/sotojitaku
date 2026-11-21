@@ -1,7 +1,7 @@
 import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validateStored,selectedRecipes,gearDecision,purchaseDecisionSummary} from '../engine.js?v=7d08d37eb29c';
 import {recommend,defaultPreference,reject} from '../products.js?v=ac251aea4046';
 import {createCAMPVisitGate} from './funnel-metrics.js?v=20261106';
-import {renderCampStudioScene,updateQuestionScene,syncMobileWorldFeedback,observeCampScene} from './scene-studio.js?v=9a09a102921e';
+import {renderCampStudioScene,updateQuestionScene,syncMobileWorldFeedback,observeCampScene} from './scene-studio.js?v=5b2d67474bb3';
 import {eligibleChoiceCopy} from './choice-presentation.js?v=20261106';
 import {purchaseSelectionContext,affiliateClickSource} from './purchase-intent.js?v=20261106';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';

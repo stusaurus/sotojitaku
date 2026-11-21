@@ -136,6 +136,15 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
 
 let observedScene=null;
 let sceneObserver=null;
+let reducedMotion=null;
+
+function finishPlacementOnReduce({matches}){
+  if(!matches||!observedScene)return;
+  for(const animation of observedScene.getAnimations?.({subtree:true})||[]){
+    if(animation.id==="camp-placement")animation.cancel();
+  }
+  for(const ghost of observedScene.querySelectorAll("[data-departing]"))ghost.remove();
+}
 
 export function observeCampScene(root){
   const scene=root.querySelector(".studio-scene");
@@ -143,6 +152,10 @@ export function observeCampScene(root){
   sceneObserver?.disconnect();
   observedScene=scene;
   if(!scene)return;
+  if(!reducedMotion){
+    reducedMotion=matchMedia("(prefers-reduced-motion: reduce)");
+    reducedMotion.addEventListener("change",finishPlacementOnReduce);
+  }
   const lowPower=navigator.connection?.saveData||navigator.hardwareConcurrency<=2||navigator.deviceMemory<=2;
   scene.dataset.motionQuality=lowPower?"still":"normal";
   if(!("IntersectionObserver" in window)){
@@ -157,19 +170,19 @@ export function observeCampScene(root){
 
 function canAnimate(scene){
   return scene.dataset.inView==="true"&&scene.dataset.motionQuality==="normal"&&
-    !document.hidden&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&typeof Element.prototype.animate==="function";
+    !document.hidden&&!reducedMotion.matches&&typeof Element.prototype.animate==="function";
 }
 
 function enterSite(prop){
   // The hit rectangle stays fixed. The photograph and its ground shadow
   // appear together, including the very first frame of tent assembly.
   if(prop.dataset.inspect==="fire_pit"){
-    prop.animate([{opacity:0},{opacity:1}],{duration:320,easing:"ease-out"});
+    prop.animate([{opacity:0},{opacity:1}],{id:"camp-placement",duration:320,easing:"ease-out"});
     return;
   }
   const image=prop.querySelector("img");
   const tent=prop.dataset.inspect==="tent";
-  const timing={duration:tent?520:320,easing:"cubic-bezier(.18,.72,.22,1)"};
+  const timing={id:"camp-placement",duration:tent?520:320,easing:"cubic-bezier(.18,.72,.22,1)"};
   prop.animate([{opacity:0},{opacity:1}],timing);
   image.animate([
     {scale:tent?".72 .22":".94 .94",translate:tent?"0 0":"0 -5px"},
@@ -194,7 +207,7 @@ function leaveSite(prop,frame,key){
   const visual=sceneryCopy(prop);
   visual.dataset.departing=key;
   frame.append(visual);
-  const animation=visual.animate([{opacity:1},{opacity:0,translate:"0 3px"}],{duration:200,easing:"ease-in"});
+  const animation=visual.animate([{opacity:1},{opacity:0,translate:"0 3px"}],{id:"camp-placement",duration:200,easing:"ease-in"});
   animation.onfinish=animation.oncancel=()=>visual.remove();
 }
 
@@ -248,7 +261,7 @@ export function updateQuestionScene(container,html){
     removed.remove();
   }
   for(const ghost of frame.querySelectorAll("[data-departing]")){
-    if(desiredKeys.has(ghost.dataset.departing))ghost.remove();
+    if(!animate||desiredKeys.has(ghost.dataset.departing))ghost.remove();
   }
   let cursor=frame.firstElementChild;
   for(const candidate of [...replacement.children]){
