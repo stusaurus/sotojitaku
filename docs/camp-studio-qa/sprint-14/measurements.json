@@ -1,0 +1,762 @@
+{
+  "original": "0fb2b9829702813b6c40802ca7d728ce4cddfbe4",
+  "candidate": "cd27d84a156bddc2de9f1eace481554ad1d57c17",
+  "actionsRuns": {
+    "browser": "44863360793",
+    "core": "44863360913",
+    "analytics": "44863360829",
+    "growth": "44863360795",
+    "brand": "44863360801",
+    "isolatedProducts": "44863360838",
+    "choice": "44863360783"
+  },
+  "priorPerformanceRun": "44758748502",
+  "placement": {
+    "chromium": [
+      {
+        "engine": "chromium",
+        "width": 320,
+        "version": "before",
+        "twoFrameMs": [
+          28,
+          31
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 320,
+        "version": "after",
+        "twoFrameMs": [
+          31,
+          31
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 390,
+        "version": "before",
+        "twoFrameMs": [
+          21,
+          29
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 390,
+        "version": "after",
+        "twoFrameMs": [
+          29,
+          31
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 768,
+        "version": "before",
+        "twoFrameMs": [
+          21,
+          36
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 768,
+        "version": "after",
+        "twoFrameMs": [
+          22,
+          32
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 1024,
+        "version": "before",
+        "twoFrameMs": [
+          30,
+          19
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 1024,
+        "version": "after",
+        "twoFrameMs": [
+          26,
+          18
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 1440,
+        "version": "before",
+        "twoFrameMs": [
+          20,
+          22
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "width": 1440,
+        "version": "after",
+        "twoFrameMs": [
+          33,
+          20
+        ],
+        "errors": []
+      },
+      {
+        "engine": "chromium",
+        "profile": "regular-motion",
+        "tentAnimated": true
+      },
+      {
+        "engine": "chromium",
+        "profile": "low-capability",
+        "tentAnimated": false
+      }
+    ],
+    "webkit": [
+      {
+        "engine": "webkit",
+        "width": 320,
+        "version": "before",
+        "twoFrameMs": [
+          142,
+          123
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 320,
+        "version": "after",
+        "twoFrameMs": [
+          134,
+          114
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 390,
+        "version": "before",
+        "twoFrameMs": [
+          209,
+          147
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 390,
+        "version": "after",
+        "twoFrameMs": [
+          351,
+          335
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 768,
+        "version": "before",
+        "twoFrameMs": [
+          257,
+          190
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 768,
+        "version": "after",
+        "twoFrameMs": [
+          193,
+          175
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 1024,
+        "version": "before",
+        "twoFrameMs": [
+          187,
+          140
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 1024,
+        "version": "after",
+        "twoFrameMs": [
+          138,
+          121
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 1440,
+        "version": "before",
+        "twoFrameMs": [
+          229,
+          217
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "width": 1440,
+        "version": "after",
+        "twoFrameMs": [
+          198,
+          176
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "profile": "regular-motion",
+        "tentAnimated": true
+      },
+      {
+        "engine": "webkit",
+        "profile": "low-capability",
+        "tentAnimated": false
+      }
+    ]
+  },
+  "worldJourney": {
+    "chromium": [
+      {
+        "engine": "chromium",
+        "width": 320,
+        "sceneBytes": 487622,
+        "heapBytes": 10000000
+      },
+      {
+        "engine": "chromium",
+        "width": 390,
+        "sceneBytes": 487622,
+        "heapBytes": 10000000
+      },
+      {
+        "engine": "chromium",
+        "width": 768,
+        "sceneBytes": 487622,
+        "heapBytes": 10000000
+      },
+      {
+        "engine": "chromium",
+        "width": 1024,
+        "sceneBytes": 487622,
+        "heapBytes": 10000000
+      },
+      {
+        "engine": "chromium",
+        "width": 1440,
+        "sceneBytes": 649918,
+        "heapBytes": 10000000
+      }
+    ],
+    "webkit": [
+      {
+        "engine": "webkit",
+        "width": 320,
+        "sceneBytes": 487622,
+        "heapBytes": null
+      },
+      {
+        "engine": "webkit",
+        "width": 390,
+        "sceneBytes": 487622,
+        "heapBytes": null
+      },
+      {
+        "engine": "webkit",
+        "width": 768,
+        "sceneBytes": 487622,
+        "heapBytes": null
+      },
+      {
+        "engine": "webkit",
+        "width": 1024,
+        "sceneBytes": 487622,
+        "heapBytes": null
+      },
+      {
+        "engine": "webkit",
+        "width": 1440,
+        "sceneBytes": 487622,
+        "heapBytes": null
+      }
+    ]
+  },
+  "chromiumLab": {
+    "before": [
+      {
+        "width": 390,
+        "slowLake": false,
+        "worldUniqueUrls": 9,
+        "worldEncodedBytes": 512768,
+        "clsSupported": true,
+        "cls": 0,
+        "longTaskSupported": true,
+        "longTaskMs": 0,
+        "initialNavigationLcpMs": 108,
+        "sceneImageReadyAfterStartMs": 35,
+        "navigationDOMContentLoadedMs": 41,
+        "twoFrameFeedbackSamples": [
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "answer",
+            "ms": 30
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "experience",
+            "ms": 30
+          },
+          {
+            "target": "experience",
+            "ms": 32
+          },
+          {
+            "target": "time",
+            "ms": 30
+          }
+        ],
+        "layoutOverflow": false
+      },
+      {
+        "width": 1440,
+        "slowLake": false,
+        "worldUniqueUrls": 9,
+        "worldEncodedBytes": 512768,
+        "clsSupported": true,
+        "cls": 0,
+        "longTaskSupported": true,
+        "longTaskMs": 0,
+        "initialNavigationLcpMs": 40,
+        "sceneImageReadyAfterStartMs": 28,
+        "navigationDOMContentLoadedMs": 40,
+        "twoFrameFeedbackSamples": [
+          {
+            "target": "answer",
+            "ms": 32
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "answer",
+            "ms": 28
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "experience",
+            "ms": 28
+          },
+          {
+            "target": "experience",
+            "ms": 31
+          },
+          {
+            "target": "time",
+            "ms": 28
+          }
+        ],
+        "layoutOverflow": false
+      },
+      {
+        "width": 390,
+        "slowLake": true,
+        "worldUniqueUrls": 9,
+        "worldEncodedBytes": 512768,
+        "clsSupported": true,
+        "cls": 0,
+        "longTaskSupported": true,
+        "longTaskMs": 0,
+        "initialNavigationLcpMs": 104,
+        "sceneImageReadyAfterStartMs": 1228,
+        "navigationDOMContentLoadedMs": 38,
+        "twoFrameFeedbackSamples": [
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "experience",
+            "ms": 30
+          },
+          {
+            "target": "experience",
+            "ms": 30
+          },
+          {
+            "target": "time",
+            "ms": 29
+          }
+        ],
+        "layoutOverflow": false
+      }
+    ],
+    "after": [
+      {
+        "width": 390,
+        "slowLake": false,
+        "worldUniqueUrls": 9,
+        "worldEncodedBytes": 512768,
+        "clsSupported": true,
+        "cls": 0,
+        "longTaskSupported": true,
+        "longTaskMs": 0,
+        "initialNavigationLcpMs": 100,
+        "sceneImageReadyAfterStartMs": 57,
+        "navigationDOMContentLoadedMs": 86,
+        "twoFrameFeedbackSamples": [
+          {
+            "target": "answer",
+            "ms": 29
+          },
+          {
+            "target": "answer",
+            "ms": 30
+          },
+          {
+            "target": "answer",
+            "ms": 29
+          },
+          {
+            "target": "answer",
+            "ms": 29
+          },
+          {
+            "target": "experience",
+            "ms": 29
+          },
+          {
+            "target": "experience",
+            "ms": 31
+          },
+          {
+            "target": "time",
+            "ms": 30
+          }
+        ],
+        "layoutOverflow": false
+      },
+      {
+        "width": 1440,
+        "slowLake": false,
+        "worldUniqueUrls": 9,
+        "worldEncodedBytes": 512768,
+        "clsSupported": true,
+        "cls": 0,
+        "longTaskSupported": true,
+        "longTaskMs": 0,
+        "initialNavigationLcpMs": 128,
+        "sceneImageReadyAfterStartMs": 48,
+        "navigationDOMContentLoadedMs": 53,
+        "twoFrameFeedbackSamples": [
+          {
+            "target": "answer",
+            "ms": 36
+          },
+          {
+            "target": "answer",
+            "ms": 30
+          },
+          {
+            "target": "answer",
+            "ms": 28
+          },
+          {
+            "target": "answer",
+            "ms": 28
+          },
+          {
+            "target": "experience",
+            "ms": 28
+          },
+          {
+            "target": "experience",
+            "ms": 30
+          },
+          {
+            "target": "time",
+            "ms": 29
+          }
+        ],
+        "layoutOverflow": false
+      },
+      {
+        "width": 390,
+        "slowLake": true,
+        "worldUniqueUrls": 9,
+        "worldEncodedBytes": 512768,
+        "clsSupported": true,
+        "cls": 0,
+        "longTaskSupported": true,
+        "longTaskMs": 0,
+        "initialNavigationLcpMs": 68,
+        "sceneImageReadyAfterStartMs": 1241,
+        "navigationDOMContentLoadedMs": 42,
+        "twoFrameFeedbackSamples": [
+          {
+            "target": "answer",
+            "ms": 30
+          },
+          {
+            "target": "answer",
+            "ms": 31
+          },
+          {
+            "target": "answer",
+            "ms": 28
+          },
+          {
+            "target": "answer",
+            "ms": 29
+          },
+          {
+            "target": "experience",
+            "ms": 30
+          },
+          {
+            "target": "experience",
+            "ms": 30
+          },
+          {
+            "target": "time",
+            "ms": 29
+          }
+        ],
+        "layoutOverflow": false
+      }
+    ],
+    "afterResourceBreakdown": [
+      {
+        "asset": "lake.webp",
+        "initiator": "img",
+        "encodedBytes": 273114,
+        "transferBytes": 273414
+      },
+      {
+        "asset": "chair.webp",
+        "initiator": "css",
+        "encodedBytes": 24108,
+        "transferBytes": 24408
+      },
+      {
+        "asset": "tent.webp",
+        "initiator": "css",
+        "encodedBytes": 24882,
+        "transferBytes": 25182
+      },
+      {
+        "asset": "led_lantern.webp",
+        "initiator": "css",
+        "encodedBytes": 40468,
+        "transferBytes": 40768
+      },
+      {
+        "asset": "trunk.webp",
+        "initiator": "img",
+        "encodedBytes": 25146,
+        "transferBytes": 25446
+      },
+      {
+        "asset": "pack.webp",
+        "initiator": "img",
+        "encodedBytes": 52212,
+        "transferBytes": 52512
+      },
+      {
+        "asset": "fire_pit.webp",
+        "initiator": "css",
+        "encodedBytes": 15148,
+        "transferBytes": 15448
+      },
+      {
+        "asset": "table.webp",
+        "initiator": "css",
+        "encodedBytes": 21612,
+        "transferBytes": 21912
+      },
+      {
+        "asset": "kettle.webp",
+        "initiator": "css",
+        "encodedBytes": 36078,
+        "transferBytes": 36378
+      }
+    ]
+  },
+  "webkitDeviceProfiles": [
+    {
+      "device": "iPhone SE",
+      "status": "PASS",
+      "sceneResourceBytes": 512768,
+      "sceneResourceCount": 9,
+      "layoutOverflow": false,
+      "sceneControlsClipped": false,
+      "touchSupport": 0,
+      "viewportWidth": 320,
+      "viewportHeight": 568,
+      "diagnosticStatePreserved": true
+    },
+    {
+      "device": "iPhone 13",
+      "status": "PASS",
+      "sceneResourceBytes": 512768,
+      "sceneResourceCount": 9,
+      "layoutOverflow": false,
+      "sceneControlsClipped": false,
+      "touchSupport": 0,
+      "viewportWidth": 390,
+      "viewportHeight": 664,
+      "diagnosticStatePreserved": true
+    },
+    {
+      "device": "iPhone 13 landscape",
+      "status": "PASS",
+      "sceneResourceBytes": 512768,
+      "sceneResourceCount": 9,
+      "layoutOverflow": false,
+      "sceneControlsClipped": false,
+      "touchSupport": 0,
+      "viewportWidth": 750,
+      "viewportHeight": 342,
+      "diagnosticStatePreserved": true
+    },
+    {
+      "device": "iPad Mini",
+      "status": "PASS",
+      "sceneResourceBytes": 512768,
+      "sceneResourceCount": 9,
+      "layoutOverflow": false,
+      "sceneControlsClipped": false,
+      "touchSupport": 0,
+      "viewportWidth": 768,
+      "viewportHeight": 1024,
+      "diagnosticStatePreserved": true
+    },
+    {
+      "device": "iPad Mini landscape",
+      "status": "PASS",
+      "sceneResourceBytes": 512768,
+      "sceneResourceCount": 9,
+      "layoutOverflow": false,
+      "sceneControlsClipped": false,
+      "touchSupport": 0,
+      "viewportWidth": 1024,
+      "viewportHeight": 768,
+      "diagnosticStatePreserved": true
+    }
+  ],
+  "firstVisit": [
+    {
+      "persona": "solo-daytrip-mobile",
+      "status": "PASS",
+      "steps": 7,
+      "finishedPlan": true,
+      "departureReadinessNotClaimed": true,
+      "disabledCoreSkip": false,
+      "noOverflow": true
+    },
+    {
+      "persona": "family-overnight-desktop",
+      "status": "PASS",
+      "steps": 7,
+      "finishedPlan": true,
+      "departureReadinessNotClaimed": true,
+      "disabledCoreSkip": true,
+      "noOverflow": true
+    }
+  ],
+  "planAndOfferComparison": {
+    "original": "0fb2b9829702813b6c40802ca7d728ce4cddfbe4",
+    "candidate": "cd27d84a156bddc2de9f1eace481554ad1d57c17",
+    "catalogRef": "2d506e5d90c5de0ffeaf67838a1a787978b0189c",
+    "catalogBlob": "c654acc7aba554e4b5947830c6f327a4d9700c8e",
+    "asOf": "2026-11-21T03:59:14Z",
+    "catalogCount": 16,
+    "profiles": [
+      {
+        "id": "solo-daytrip",
+        "gear": 2,
+        "checkedCategories": 10,
+        "canComplete": true
+      },
+      {
+        "id": "couple-overnight",
+        "gear": 18,
+        "checkedCategories": 10,
+        "canComplete": true
+      },
+      {
+        "id": "family-bbq",
+        "gear": 21,
+        "checkedCategories": 10,
+        "canComplete": true
+      },
+      {
+        "id": "family-no-fuel",
+        "gear": 18,
+        "checkedCategories": 10,
+        "canComplete": true
+      },
+      {
+        "id": "core-mat-skipped",
+        "gear": 8,
+        "checkedCategories": 10,
+        "canComplete": false
+      },
+      {
+        "id": "five-person",
+        "gear": 21,
+        "checkedCategories": 10,
+        "canComplete": true
+      }
+    ],
+    "identicalRecommendationSets": 240,
+    "nonemptyRecommendationSets": 160
+  }
+}
