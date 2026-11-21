@@ -59,6 +59,7 @@ jobs:
       - run: |
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps ${{ matrix.engine }}
+          python -c "from PIL import Image" || python -m pip install Pillow
           python -m http.server 4173 > /tmp/world-http 2>&1 &
           python -m http.server 4174 --directory previous-studio > /tmp/before-http 2>&1 &
           python -m http.server 4175 --directory previous-placement > /tmp/placement-http 2>&1 &

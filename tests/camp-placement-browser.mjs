@@ -1,16 +1,39 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { execFileSync } from "node:child_process";
 import { chromium, webkit } from "playwright";
 
 const engine = process.env.STUDIO_ENGINE || "chromium";
 const candidate = process.env.CAMP_BASE || "http://127.0.0.1:4173/";
 const previous = process.env.PLACEMENT_BASELINE;
 const out = process.env.PROOF_DIR || "browser-proof/placement";
-const browser = await ({chromium, webkit}[engine]).launch({executablePath:process.env.BROWSER_BINARY || undefined});
+const freshBrowser = () => ({chromium, webkit}[engine]).launch({executablePath:process.env.BROWSER_BINARY || undefined});
 const results = [];
 fs.mkdirSync(out, {recursive:true});
 
+// Save the frame and its enclosing viewport from one compositor sample.
+// The fixed-size crop and the viewport now document exactly the same instant.
+async function captureFrame(page, frame, filename, viewport=false) {
+  const rect = await frame.evaluate(el => {
+    const {left,top,right,bottom}=el.getBoundingClientRect();
+    return [Math.round(left),Math.round(top),Math.round(right),Math.round(bottom)];
+  });
+  const size=page.viewportSize();
+  assert(rect[0]>=0 && rect[1]>=0 && rect[2]<=size.width && rect[3]<=size.height,
+    "scene is outside the captured viewport: "+JSON.stringify([rect,size]));
+  console.log("Capturing "+filename);
+  const screen=await page.screenshot({type:"png",timeout:30000});
+  execFileSync("python",["-c",[
+    "import io, json, sys",
+    "from PIL import Image",
+    "image = Image.open(io.BytesIO(sys.stdin.buffer.read())).convert('RGB')",
+    "image.crop(json.loads(sys.argv[1])).save(sys.argv[2]+'.jpg', quality=90)",
+    "if sys.argv[3] == 'full': image.save(sys.argv[2]+'-viewport.jpg', quality=83)"
+  ].join("\n"),JSON.stringify(rect),filename,viewport?"full":"crop"],{input:screen});
+}
+
 async function visit(base, width, version) {
+  const browser = await freshBrowser();
   const context = await browser.newContext({viewport:{width, height:width < 500 ? 844 : 900}, locale:"ja-JP",
     reducedMotion:"no-preference", hasTouch:width <= 768});
   try {
@@ -48,8 +71,7 @@ async function visit(base, width, version) {
       // Finish the real placement/light transitions before comparing stills.
       await page.waitForTimeout(680);
       const filename = out+"/"+engine+"-"+width+"-"+version+"-"+label;
-      await frame.screenshot({path:filename+".jpg", quality:90});
-      if (viewport) await page.screenshot({path:filename+"-viewport.jpg", quality:83});
+      await captureFrame(page,frame,filename,viewport);
     };
     await page.goto(base+"camp/?test=1");
     await click("#main [data-start]");
@@ -133,12 +155,13 @@ async function visit(base, width, version) {
       assert.equal(await frame.locator('[data-inspect="fire_pit"]').count(),0);
     }
     results.push({engine,width,version,twoFrameMs:feedback,errors:exceptions});
-  } finally { await context.close(); }
+  } finally { await browser.close(); }
 }
 
 async function testMotion(cores) {
   // Deterministic lab profiles. These numbers are capability hints, not
   // emulations of a physical phone's CPU, battery or thermal envelope.
+  const browser=await freshBrowser();
   const context=await browser.newContext({viewport:{width:390,height:844},locale:"ja-JP",reducedMotion:"no-preference"});
   try {
     await context.route(/googletagmanager|google-analytics|fonts\.googleapis|fonts\.gstatic/,route=>route.abort());
@@ -172,7 +195,7 @@ async function testMotion(cores) {
           const a=img.getAnimations().find(a=>a.effect.getTiming().duration===520); a.currentTime=part*520;
           return img.decode();
         },part);
-        await frame.screenshot({path:out+"/"+engine+"-390-assembly-"+Math.round(part*100)+".jpg",quality:90});
+        await captureFrame(page,frame,out+"/"+engine+"-390-assembly-"+Math.round(part*100));
       }
     }
     await next(); await next();
@@ -186,7 +209,7 @@ async function testMotion(cores) {
       assert.equal(await steam.evaluate(el=>getComputedStyle(el,"::before").animationName),"none");
     }
     results.push({engine,profile:cores===4?"regular-motion":"low-capability",tentAnimated:motion});
-  } finally { await context.close(); }
+  } finally { await browser.close(); }
 }
 
 try {
@@ -196,6 +219,5 @@ try {
   }
   await testMotion(4); await testMotion(2);
 } finally {
-  await browser.close();
   fs.writeFileSync(out+"/"+engine+"-placement.json", JSON.stringify(results,null,2)+"\n");
 }
