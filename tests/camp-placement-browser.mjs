@@ -39,7 +39,7 @@ async function visit(base, width, version) {
   try {
     await context.route(/googletagmanager|google-analytics|fonts\.googleapis|fonts\.gstatic/, route => route.abort());
     const page = await context.newPage();
-    page.setDefaultTimeout(9000);
+    page.setDefaultTimeout(15000);
     const exceptions = [];
     page.on("pageerror", error => exceptions.push(error.message));
     await page.addInitScript(() => {
@@ -50,7 +50,27 @@ async function visit(base, width, version) {
         requestAnimationFrame(() => requestAnimationFrame(() => window.siteDraw.push(Math.round(performance.now()-start))));
       }, true);
     });
-    const click = selector => page.locator(selector).first().click();
+    // Dispatch a real pointer at the visible button. Explicit hit testing also
+    // catches overlays that can be missed when automating only by selector.
+    const activate = async control => {
+      const point=await control.evaluate(el=>{
+        const center=()=>{
+          const r=el.getBoundingClientRect();
+          return {x:r.left+r.width/2,y:r.top+r.height/2};
+        };
+        const hit=({x,y})=>el.contains(document.elementFromPoint(x,y));
+        let p=center();
+        if(!hit(p)){
+          el.scrollIntoView({block:"center",inline:"nearest",behavior:"instant"});
+          p=center();
+        }
+        return {...p,hit:hit(p),enabled:!el.matches(":disabled"),label:el.textContent.trim()};
+      });
+      assert(point.hit && point.enabled,"unreachable control: "+JSON.stringify(point));
+      if(width<=768)await page.touchscreen.tap(point.x,point.y);
+      else await page.mouse.click(point.x,point.y);
+    };
+    const click = selector => activate(page.locator(selector).first());
     const next = () => click("[data-next]");
     const scene = page.locator(".sim-visual .studio-scene");
     const frame = scene.locator(".world-frame");
@@ -58,8 +78,7 @@ async function visit(base, width, version) {
     const card = id => page.locator('[data-experience="'+id+'"]');
     const press = async id => {
       const input = version === "before" ? card(id) : marker(id);
-      if (width <= 768) await input.tap();
-      else await input.click();
+      await activate(input);
     };
     const stored = () => page.evaluate(() => localStorage.getItem("sotojitaku_camp_v1"));
     const events = () => page.evaluate(() => window.dataLayer.filter(entry => entry[0] === "event").map(entry => ({
@@ -80,7 +99,7 @@ async function visit(base, width, version) {
       const picker=frame.locator(".world-party");
       assert.equal(await frame.locator('button[data-inspect="chair"]').count(),0);
       const initialEvents=await events();
-      await picker.locator("summary").click();
+      await activate(picker.locator("summary"));
       const choices=picker.locator("[data-place-party]");
       assert.equal(await choices.count(),4);
       assert(await choices.evaluateAll(buttons=>buttons.every(b=>{
@@ -88,7 +107,7 @@ async function visit(base, width, version) {
         return r.width>=44 && r.height>=44 && b.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));
       })));
       const family=picker.locator('[data-place-party="family"]');
-      if(width<=768)await family.tap(); else await family.click();
+      await activate(family);
       assert.equal(await picker.getAttribute("open"),null);
       assert.equal(await page.locator('[data-answer="family"]').getAttribute("aria-pressed"),"true");
       assert.equal(await frame.locator('button[data-inspect="chair"]').count(),4);
@@ -98,14 +117,14 @@ async function visit(base, width, version) {
         await picker.locator('[data-place-party="solo"]').focus(); await page.keyboard.press("Enter");
         assert.equal(await picker.locator("summary").evaluate(el=>el===document.activeElement),true);
         assert.equal(await frame.locator('button[data-inspect="chair"]').count(),1);
-        await picker.locator("summary").click(); await family.click();
+        await activate(picker.locator("summary")); await activate(family);
       }
     } else await click('[data-answer="family"]');
     if(width===390)await photo("seated");
     await next(); await next(); await click('[data-answer="autumn"]'); await next();
     if(version==="after"){
       const stay=scene.locator("[data-place-stay]");
-      await stay.click();
+      await activate(stay);
       assert.equal(await page.locator('[data-answer="daytrip"]').getAttribute("aria-pressed"),"true");
       assert(await scene.locator('[data-scene-preview="night"]').isDisabled());
       assert.equal(await frame.locator('button[data-inspect="tent"]').count(),0);
@@ -174,10 +193,10 @@ async function visit(base, width, version) {
       assert.equal(await frame.locator('[data-inspect="kettle"] img').evaluate(img=>img.getAnimations().length),0);
       await press("coffee");
       assert.equal(await frame.locator("[data-departing]").count(),0);
-      await press("bonfire"); await card("bbq").click(); await press("bonfire");
+      await press("bonfire"); await activate(card("bbq")); await press("bonfire");
       assert.equal(await marker("bonfire").getAttribute("aria-pressed"),"false");
       assert.equal(await frame.locator('[data-inspect="fire_pit"]').count(),1,"BBQ still needs the shared fire pit");
-      await card("bbq").click();
+      await activate(card("bbq"));
       assert.equal(await frame.locator('[data-inspect="fire_pit"]').count(),0);
     }
     results.push({engine,width,version,twoFrameMs:feedback,errors:exceptions});
@@ -196,6 +215,7 @@ async function testMotion(cores) {
       Object.defineProperty(navigator,"deviceMemory",{get:()=>4});
     },cores);
     const page=await context.newPage();
+    page.setDefaultTimeout(15000);
     await page.goto(candidate+"camp/?test=1");
     await page.locator("#main [data-start]").first().click();
     const next=()=>page.locator("[data-next]").click();
@@ -209,18 +229,21 @@ async function testMotion(cores) {
     await page.locator(".sim-visual .studio-image").evaluate(img=>img.decode());
     const motion=await button.evaluate(button=>{
       button.click();
-      const sprite=button.closest(".world-frame").querySelector('[data-inspect="tent"] img');
-      const animation=sprite.getAnimations().find(a=>a.effect.getTiming().duration===520);
-      if(animation)animation.pause();
-      return Boolean(animation);
+      const tent=button.closest(".world-frame").querySelector('[data-inspect="tent"]');
+      const assembly=tent.getAnimations({subtree:true}).filter(a=>a.effect.getTiming().duration===520);
+      assembly.forEach(a=>a.pause());
+      return assembly.length;
     });
-    assert.equal(motion,cores===4,"adaptive tent assembly");
+    assert.equal(motion,cores===4?2:0,"photo and shadow share the adaptive assembly");
     if(motion){
       for(const part of [0,0.45,1]){
-        await frame.locator('[data-inspect="tent"] img').evaluate((img,part)=>{
-          const a=img.getAnimations().find(a=>a.effect.getTiming().duration===520); a.currentTime=part*520;
-          return img.decode();
+        const opacity=await frame.locator('[data-inspect="tent"]').evaluate(async(tent,part)=>{
+          const assembly=tent.getAnimations({subtree:true}).filter(a=>a.effect.getTiming().duration===520);
+          assembly.forEach(a=>{a.currentTime=part*520;});
+          await tent.querySelector("img").decode();
+          return Number(getComputedStyle(tent).opacity);
         },part);
+        if(part===0||part===1)assert.equal(opacity,part,"the tent shadow must appear with the fabric");
         await captureFrame(page,frame,out+"/"+engine+"-390-assembly-"+Math.round(part*100));
       }
     }
@@ -234,7 +257,7 @@ async function testMotion(cores) {
       await page.waitForFunction(()=>document.querySelector(".studio-scene").dataset.inView==="false");
       assert.equal(await steam.evaluate(el=>getComputedStyle(el,"::before").animationName),"none");
     }
-    results.push({engine,profile:cores===4?"regular-motion":"low-capability",tentAnimated:motion});
+    results.push({engine,profile:cores===4?"regular-motion":"low-capability",tentAnimated:Boolean(motion)});
   } finally { await browser.close(); }
 }
 

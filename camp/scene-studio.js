@@ -161,17 +161,20 @@ function canAnimate(scene){
 }
 
 function enterSite(prop){
-  // Animate the photograph only. The accessible hit rectangle never moves.
+  // The hit rectangle stays fixed. The photograph and its ground shadow
+  // appear together, including the very first frame of tent assembly.
   if(prop.dataset.inspect==="fire_pit"){
     prop.animate([{opacity:0},{opacity:1}],{duration:320,easing:"ease-out"});
     return;
   }
   const image=prop.querySelector("img");
   const tent=prop.dataset.inspect==="tent";
+  const timing={duration:tent?520:320,easing:"cubic-bezier(.18,.72,.22,1)"};
+  prop.animate([{opacity:0},{opacity:1}],timing);
   image.animate([
-    {opacity:0,scale:tent?".72 .22":".94 .94",translate:tent?"0 0":"0 -5px"},
-    {opacity:1,scale:"1 1",translate:"0 0"}
-  ],{duration:tent?520:320,easing:"cubic-bezier(.18,.72,.22,1)"});
+    {scale:tent?".72 .22":".94 .94",translate:tent?"0 0":"0 -5px"},
+    {scale:"1 1",translate:"0 0"}
+  ],timing);
 }
 
 // Move just the photographic content into an inert span. Used by both the
