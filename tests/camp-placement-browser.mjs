@@ -44,11 +44,25 @@ async function visit(base, width, version) {
     page.on("pageerror", error => exceptions.push(error.message));
     await page.addInitScript(() => {
       window.siteDraw = [];
+      window.siteTrace = [];
+      const clicks = new WeakMap();
       document.addEventListener("click", event => {
-        if (!event.target.closest("[data-place-experience],[data-experience]")) return;
+        const button=event.target.closest("[data-place-experience],[data-experience]");
+        if (!button) return;
         const start = performance.now();
-        requestAnimationFrame(() => requestAnimationFrame(() => window.siteDraw.push(Math.round(performance.now()-start))));
+        const entry={id:button.dataset.placeExperience||button.dataset.experience, start, y:Math.round(scrollY)};
+        clicks.set(event,entry);window.siteTrace.push(entry);
+        requestAnimationFrame(() => {
+          entry.first=Math.round(performance.now()-start);
+          requestAnimationFrame(() => {
+            entry.second=Math.round(performance.now()-start);window.siteDraw.push(entry.second);
+          });
+        });
       }, true);
+      window.addEventListener("click",event=>{
+        const entry=clicks.get(event);
+        if(entry)entry.dispatch=Math.round(performance.now()-entry.start);
+      });
     });
     // Dispatch a real pointer at the visible button. Explicit hit testing also
     // catches overlays that can be missed when automating only by selector.
@@ -205,6 +219,7 @@ async function visit(base, width, version) {
     assert.equal(await frame.locator('button[data-inspect="fire_pit"],button[data-inspect="kettle"]').count(),0);
     assert.deepEqual(exceptions,[]);
     const feedback = await page.evaluate(() => window.siteDraw);
+    const firstRemovalTrace=await page.evaluate(()=>window.siteTrace);
     assert(feedback.length>=2 && feedback.every(ms=>ms < 1200));
     if(stable){
       assert(await stable.evaluate(state=>{
@@ -232,6 +247,31 @@ async function visit(base, width, version) {
         }
       }
     }
+    // Recreate the saved visit and tap twice while the morning view is being
+    // restored. Keep screenshots and unrelated controls outside this interval.
+    const restoredTaps=[];
+    if(width===390&&engine==="webkit"){
+      const cases=version==="before"?[["card","normal"]]:[
+        ["card","normal"],["world","normal"],["world","light"],["world","withdrawal"],
+        ["world","miniature"],["world","shadows"],["world","normal"]
+      ];
+      const comparisons={light:".studio-scene *,.studio-scene *::before,.studio-scene *::after{transition:none!important}",
+        withdrawal:".world-frame [data-departing]{visibility:hidden!important}",
+        miniature:".studio-mobile-feedback-preview{visibility:hidden!important}",
+        shadows:".world-frame .world-object::before{visibility:hidden!important}"};
+      for(const [surface,condition] of cases){
+        await page.evaluate(saved=>localStorage.setItem("sotojitaku_camp_v1",JSON.stringify(saved)),planned);
+        await page.reload();
+        if(comparisons[condition])await page.addStyleTag({content:comparisons[condition]});
+        await click('[data-scene-preview="morning"]');
+        for(const id of ["coffee","bonfire"])await activate(surface==="card"?card(id):marker(id));
+        await page.waitForFunction(()=>window.siteDraw.length===2,null,{polling:20});
+        const trace=await page.evaluate(()=>window.siteTrace);
+        assert.deepEqual(trace.map(t=>t.id),["coffee","bonfire"]);
+        assert.equal(await card("bonfire").getAttribute("aria-pressed"),"false");
+        restoredTaps.push({surface,condition,trace});
+      }
+    }
     if (version==="after" && width===390) {
       await page.emulateMedia({reducedMotion:"reduce"});
       await press("coffee");
@@ -255,7 +295,7 @@ async function visit(base, width, version) {
       await activate(card("stargazing"));
       assert.equal(await page.locator(".question-sheet > .note").count(),0);
     }
-    results.push({engine,width,version,twoFrameMs:feedback,settledTaps,motionProfile,errors:exceptions});
+    results.push({engine,width,version,twoFrameMs:feedback,firstRemovalTrace,settledTaps,restoredTaps,motionProfile,errors:exceptions});
   } finally { await browser.close(); }
 }
 
