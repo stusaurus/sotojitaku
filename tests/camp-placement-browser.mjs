@@ -86,7 +86,8 @@ async function visit(base, width, version) {
     })));
     const photo = async (label, viewport=false) => {
       await page.evaluate(() => scrollTo({top:0, behavior:"instant"}));
-      await frame.locator("img").evaluateAll(images => Promise.all(images.map(img => img.decode())));
+      await page.waitForFunction(()=>[...document.querySelectorAll(".sim-visual .world-frame img")]
+        .every(img=>img.complete&&img.naturalWidth>0),null,{polling:50});
       // Finish the real placement/light transitions before comparing stills.
       await page.waitForTimeout(680);
       const filename = out+"/"+engine+"-"+width+"-"+version+"-"+label;
@@ -180,6 +181,17 @@ async function visit(base, width, version) {
     await page.reload();
     assert.deepEqual(JSON.parse(await stored()).answers, planned.answers);
     await click('[data-scene-preview="morning"]');
+    const stable=version==="after"&&width===390?await page.evaluateHandle(()=>{
+      const frame=document.querySelector(".sim-visual .world-frame");
+      const tent=frame.querySelector('[data-inspect="tent"]');
+      const kept=[tent,...document.querySelectorAll(".experience-grid [data-experience], .studio-mobile-feedback-preview .studio-image, .studio-mobile-feedback-preview [data-mini-role=tent]")];
+      const removed=[];
+      const observer=new MutationObserver(records=>{
+        for(const record of records)if([...record.removedNodes].includes(tent))removed.push("tent");
+      });
+      observer.observe(frame,{childList:true});
+      return {kept,removed,observer};
+    }):null;
     await press("coffee"); await press("bonfire");
     await click('[data-scene-preview="morning"]');
     await photo("removed");
@@ -187,6 +199,32 @@ async function visit(base, width, version) {
     assert.deepEqual(exceptions,[]);
     const feedback = await page.evaluate(() => window.siteDraw);
     assert(feedback.length>=2 && feedback.every(ms=>ms < 1200));
+    if(stable){
+      assert(await stable.evaluate(state=>{
+        state.observer.disconnect();
+        return state.kept.length>=4 && state.kept.every(el=>el?.isConnected) && !state.removed.length;
+      }),"withdrawing gear should leave the tent, answer cards and thumbnail photographs mounted");
+      await stable.dispose();
+    }
+    const motionProfile=await scene.evaluate(el=>({cores:navigator.hardwareConcurrency,quality:el.dataset.motionQuality||"original"}));
+    const settledTaps=[];
+    if(width===390){
+      // Compare the same card on both revisions, and the direct control on
+      // this revision. No other tap, scroll, image decode or screenshot may
+      // intervene between the captured click and its second frame.
+      for(const surface of version==="before"?["card"]:["card","world"]){
+        for(const id of ["coffee","coffee","bonfire","bonfire","coffee","coffee","bonfire","bonfire"]){
+          const input=surface==="card"?card(id):marker(id);
+          await input.evaluate(el=>el.scrollIntoView({block:"center",behavior:"instant"}));
+          await page.waitForTimeout(400);
+          const count=await page.evaluate(()=>window.siteDraw.length);
+          await activate(input);
+          await page.waitForFunction(n=>window.siteDraw.length>n,count,{polling:20});
+          const ms=await page.evaluate(n=>window.siteDraw[n],count);
+          settledTaps.push({surface,id,selected:await input.getAttribute("aria-pressed")==="true",ms});
+        }
+      }
+    }
     if (version==="after" && width===390) {
       await page.emulateMedia({reducedMotion:"reduce"});
       await press("coffee");
@@ -198,8 +236,19 @@ async function visit(base, width, version) {
       assert.equal(await frame.locator('[data-inspect="fire_pit"]').count(),1,"BBQ still needs the shared fire pit");
       await activate(card("bbq"));
       assert.equal(await frame.locator('[data-inspect="fire_pit"]').count(),0);
+      for(const chosen of await page.locator('.question-sheet [data-experience][aria-pressed="true"]').all())
+        await activate(chosen);
+      assert(await page.locator("[data-next]").isDisabled(),"empty multi-select blocks moving on");
+      await activate(card("easy"));
+      assert(await page.locator("[data-next]").isEnabled());
+      await click("[data-back-question]"); await click("[data-back-question]");
+      await click('[data-answer="daytrip"]'); await next(); await next();
+      await activate(card("stargazing"));
+      assert(await page.locator(".question-sheet > .note").isVisible(),"day trip must show its overnight warning");
+      await activate(card("stargazing"));
+      assert.equal(await page.locator(".question-sheet > .note").count(),0);
     }
-    results.push({engine,width,version,twoFrameMs:feedback,errors:exceptions});
+    results.push({engine,width,version,twoFrameMs:feedback,settledTaps,motionProfile,errors:exceptions});
   } finally { await browser.close(); }
 }
 

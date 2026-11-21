@@ -105,9 +105,8 @@
     position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:12;
     display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:8px;
     border:1px solid #d4d7ca;border-radius:17px;
-    color:#21382d;background:rgba(249,247,239,.97);
+    color:#21382d;background:#f9f7ef;
     box-shadow:0 9px 24px rgba(20,39,31,.12);
-    backdrop-filter:blur(9px);
   }
   .studio-mobile-feedback-preview{
     width:42%;min-width:118px;max-width:160px;flex:0 0 42%;overflow:hidden;
@@ -156,9 +155,8 @@
     display:flex;align-items:center;gap:12px;
     margin:0 0 18px;padding:8px;
     border:1px solid #d4d7ca;border-radius:17px;
-    color:#21382d;background:rgba(249,247,239,.97);
+    color:#21382d;background:#f9f7ef;
     box-shadow:0 9px 24px rgba(20,39,31,.12);
-    backdrop-filter:blur(9px)
   }
   .studio-mobile-feedback-preview{
     width:140px;max-width:32vw;flex:0 0 140px;
@@ -553,9 +551,8 @@
     padding:8px;
     border:1px solid #d9dfd2;
     border-radius:16px;
-    background:rgba(250,248,240,.97);
+    background:#faf8f0;
     box-shadow:0 8px 24px #14251e24;
-    backdrop-filter:blur(10px);
   }
   .simulator:has(.studio-scene) .question-sheet:has(.experience-grid) .question-actions .primary{
     min-height:52px;
@@ -677,6 +674,9 @@
 .world-site:focus-visible .world-site-label {
   outline: 3px solid #ffc975; outline-offset: 2px; box-shadow: 0 0 0 6px #243d31;
 }
+/* The small status picture follows the final lighting immediately. Only the
+   large scene needs to composite the photographic transition on each tap. */
+.studio-mobile-feedback-preview :is(.studio-image,.world-tint,.world-light-spill,.world-object img) { transition: none; }
 .studio-mobile-feedback-preview .world-object { min-width: 0; min-height: 0; width: var(--w); }
 .studio-scene[data-motion-quality="still"] :is(.world-object img, .world-tint, .studio-image, .world-light-spill) { transition: none; }
 .world-site[data-place-stay] { left: 31%; bottom: calc(29% + 28cqw); }

@@ -198,6 +198,33 @@ function leaveSite(prop,frame,key){
   animation.onfinish=animation.oncancel=()=>visual.remove();
 }
 
+function copySceneState(target,source,keys){
+  for(const key of keys){
+    if(target.dataset[key]!==source.dataset[key])target.dataset[key]=source.dataset[key];
+  }
+}
+
+const lightingKeys=["studioTime","studioVariant"];
+const groundKeys=["season","fireGlow","lanternGlow","tablePlaced"];
+
+// The sixth question keeps its answer photographs, live region, sticky
+// controls and focus in place when only the selection changes.
+function updateExperienceSheet(sheet,next){
+  const toggles=new Map([...sheet.querySelectorAll("[data-experience]")].map(button=>[button.dataset.experience,button]));
+  for(const option of next.querySelectorAll("[data-experience]")){
+    const button=toggles.get(option.dataset.experience);
+    const pressed=option.getAttribute("aria-pressed");
+    if(button.getAttribute("aria-pressed")!==pressed){
+      button.setAttribute("aria-pressed",pressed);
+      button.querySelector(".checkmark").textContent=option.querySelector(".checkmark").textContent;
+    }
+  }
+  sheet.querySelector("[data-next]").disabled=next.querySelector("[data-next]").disabled;
+  const note=sheet.querySelector(":scope > .note"),nextNote=next.querySelector(":scope > .note");
+  if(nextNote&&!note)sheet.querySelector(".question-actions").before(nextNote);
+  if(!nextNote)note?.remove();
+}
+
 // Keep the camera, unchanged gear and the focused placement control mounted.
 export function updateQuestionScene(container,html){
   const template=document.createElement("template");
@@ -207,52 +234,54 @@ export function updateQuestionScene(container,html){
   const frame=current.querySelector(".world-frame");
   const replacement=next.querySelector(".world-frame");
   const focused=document.activeElement;
-  current.dataset.studioTime=next.dataset.studioTime;
-  current.dataset.studioVariant=next.dataset.studioVariant;
-  frame.dataset.season=replacement.dataset.season;
-  frame.dataset.fireGlow=replacement.dataset.fireGlow;
-  frame.dataset.lanternGlow=replacement.dataset.lanternGlow;
-  frame.dataset.tablePlaced=replacement.dataset.tablePlaced;
+  copySceneState(current,next,lightingKeys);
+  copySceneState(frame,replacement,groundKeys);
   const animate=canAnimate(current);
   const key=node=>node.dataset.inspect ? node.dataset.inspect+node.style.getPropertyValue("--x") : node.dataset.siteStep||node.className;
-  const departures=new Map([...frame.querySelectorAll("[data-departing]")].map(node=>[node.dataset.departing,node]));
   const previous=new Map([...frame.children].filter(node=>!node.hasAttribute("data-departing")).map(node=>[key(node),node]));
+  const desiredKeys=new Set([...replacement.children].map(key));
+  // Remove the obsolete layer before walking the new order. Otherwise
+  // removing steam re-inserts every chair, the tent, and the focused marker.
+  for(const [id,removed] of previous){
+    if(desiredKeys.has(id))continue;
+    if(animate&&removed.classList.contains("world-object"))leaveSite(removed,frame,id);
+    removed.remove();
+  }
+  for(const ghost of frame.querySelectorAll("[data-departing]")){
+    if(desiredKeys.has(ghost.dataset.departing))ghost.remove();
+  }
   let cursor=frame.firstElementChild;
   for(const candidate of [...replacement.children]){
     const id=key(candidate),old=previous.get(id);
-    departures.get(id)?.remove();
     let node=old?.isEqualNode(candidate)?old:candidate;
     if(old&&candidate.classList.contains("world-sites")){
-      for(const [index,marker] of [...candidate.children].entries())
-        old.children[index].setAttribute("aria-pressed",marker.getAttribute("aria-pressed"));
+      for(const [index,marker] of [...candidate.children].entries()){
+        const pressed=marker.getAttribute("aria-pressed");
+        if(old.children[index].getAttribute("aria-pressed")!==pressed)old.children[index].setAttribute("aria-pressed",pressed);
+      }
       node=old;
     }
     if(node!==cursor)frame.insertBefore(node,cursor);
     if(old && old!==node)old.remove();
-    previous.delete(id);
     cursor=node.nextElementSibling;
     if(!old&&animate&&node.classList.contains("world-object"))enterSite(node);
   }
-  for(const [id,removed] of previous){
-    if(animate&&removed.classList.contains("world-object"))leaveSite(removed,frame,id);
-    removed.remove();
+  for(const selector of [".world-tools",".world-note","dialog"]){
+    const mounted=current.querySelector(selector),updated=next.querySelector(selector);
+    if(!mounted.isEqualNode(updated))mounted.replaceWith(updated);
   }
-  current.querySelector(".world-tools").replaceWith(next.querySelector(".world-tools"));
-  current.querySelector(".world-note").replaceWith(next.querySelector(".world-note"));
-  current.querySelector("dialog").replaceWith(next.querySelector("dialog"));
   if(focused?.hasAttribute("data-place-party"))frame.querySelector(".world-party summary")?.focus({preventScroll:true});
   if(focused?.matches("[data-place-experience],[data-place-stay]")&&focused.isConnected&&document.activeElement!==focused)
     focused.focus({preventScroll:true});
+  const sheet=template.content.querySelector(".question-sheet");
+  const mountedSheet=container.querySelector(".question-sheet");
+  if(mountedSheet.querySelector(".experience-grid")&&sheet.querySelector(".experience-grid")){
+    updateExperienceSheet(mountedSheet,sheet);
+    return;
+  }
   const attr=["data-answer","data-experience","data-step"].find(name=>focused?.hasAttribute(name));
   const advanced=focused?.hasAttribute("data-next")||focused?.hasAttribute("data-back-question");
-  const sheet=template.content.querySelector(".question-sheet");
-  // Reparent the SAME polite live region during in-place multi-select updates.
-  // Recreating an aria-live node on every tap can prevent screen readers from
-  // announcing the newly chosen experience, even when visual focus survives.
-  const oldStatus=container.querySelector(".studio-mobile-feedback-count");
-  const nextStatus=sheet.querySelector(".studio-mobile-feedback-count");
-  if(oldStatus&&nextStatus)nextStatus.replaceWith(oldStatus);
-  container.querySelector(".question-sheet").replaceWith(sheet);
+  mountedSheet.replaceWith(sheet);
   if(attr){
     const match=[...sheet.querySelectorAll("["+attr+"]")].find(b=>b.getAttribute(attr)===focused.getAttribute(attr)&&b.dataset.delta===focused.dataset.delta);
     const target=match?.disabled ? [...sheet.querySelectorAll("[data-step]")].find(b=>b.dataset.step===match.dataset.step&&!b.disabled) : match;
@@ -264,6 +293,9 @@ export function updateQuestionScene(container,html){
   }
 }
 
+// The mapping belongs to this thumbnail. Leaving question six releases it.
+const thumbnailLayers=new WeakMap();
+
 /**
  * An inert, cached-image copy of the live scene. It is only presented beside the
  * long multi-select question on narrow screens; the actual world remains the sole
@@ -273,15 +305,34 @@ export function syncMobileWorldFeedback(root,change=null){
   const preview=root.querySelector(".studio-mobile-feedback-preview");
   const scene=root.querySelector(".sim-visual .studio-scene");
   if(!preview||!scene)return;
-  const clone=scene.querySelector(".world-frame").cloneNode(true);
-  clone.querySelector(".world-sites")?.remove();
-  for(const exiting of clone.querySelectorAll("[data-departing]"))exiting.remove();
-  for(const button of clone.querySelectorAll(".world-object"))button.replaceWith(sceneryCopy(button));
-  for(const img of clone.querySelectorAll("img"))img.alt="";
-  clone.setAttribute("aria-hidden","true");
-  preview.dataset.studioTime=scene.dataset.studioTime;
-  preview.dataset.studioVariant=scene.dataset.studioVariant;
-  preview.replaceChildren(clone);
+  const frame=scene.querySelector(".world-frame");
+  let miniature=preview.firstElementChild;
+  if(!miniature){
+    miniature=frame.cloneNode(false);
+    miniature.setAttribute("aria-hidden","true");
+    thumbnailLayers.set(miniature,new WeakMap());
+    preview.append(miniature);
+  }
+  copySceneState(preview,scene,lightingKeys);
+  copySceneState(miniature,frame,groundKeys);
+  const miniLayers=thumbnailLayers.get(miniature);
+  const desired=new Set();
+  for(const layer of frame.children){
+    if(layer.dataset.siteStep||layer.dataset.departing||layer.classList.contains("world-caption"))continue;
+    let visual=miniLayers.get(layer);
+    if(!visual){
+      visual=layer.classList.contains("world-object")?sceneryCopy(layer):layer.cloneNode(true);
+      if(visual.tagName==="IMG")visual.alt="";
+      miniLayers.set(layer,visual);
+    }
+    desired.add(visual);
+  }
+  for(const layer of [...miniature.children])if(!desired.has(layer))layer.remove();
+  let cursor=miniature.firstElementChild;
+  for(const layer of desired){
+    if(layer!==cursor)miniature.insertBefore(layer,cursor);
+    cursor=layer.nextElementSibling;
+  }
   if(change){
     const status=root.querySelector(".studio-mobile-feedback-count");
     if(status){
