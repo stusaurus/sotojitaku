@@ -101,12 +101,19 @@ async function visit(base, width, version) {
       assert.equal(await frame.locator('button[data-inspect="chair"]').count(),0);
       const initialEvents=await events();
       await activate(picker.locator("summary"));
+      // WebKit can return from touchend before the native summary has opened.
+      await picker.locator(".world-party-options").waitFor({state:"visible",timeout:1500});
       const choices=picker.locator("[data-place-party]");
       assert.equal(await choices.count(),4);
-      assert(await choices.evaluateAll(buttons=>buttons.every(b=>{
+      const partyTargets=await choices.evaluateAll(buttons=>buttons.map(b=>{
         const r=b.getBoundingClientRect();
-        return r.width>=44 && r.height>=44 && b.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));
-      })));
+        const hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+        return {party:b.dataset.placeParty,x:r.x,y:r.y,width:r.width,height:r.height,
+          hit:b.contains(hit),top:hit?.outerHTML.slice(0,160)};
+      }));
+      const canPick=partyTargets.every(t=>t.width>=44&&t.height>=44&&t.hit);
+      if(!canPick)await page.screenshot({path:`${out}/${engine}-${width}-party-hit.jpg`,type:"jpeg"});
+      assert(canPick,JSON.stringify(partyTargets));
       const family=picker.locator('[data-place-party="family"]');
       await activate(family);
       assert.equal(await picker.getAttribute("open"),null);
