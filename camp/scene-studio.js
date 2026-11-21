@@ -1,7 +1,7 @@
 /**
- * CAMP Scene Studio — visual projection only.
+ * CAMP Scene Studio — plan projection and in-scene answer controls.
  * The authoritative seven-question answers and gear/safety engines remain in app.js/engine.js.
- * Preview controls change the artwork, never the saved plan or readiness.
+ * Time previews change the artwork. Placement controls use the shared answer pipeline.
  */
 const PEOPLE = {solo:"ひとり",couple:"ふたり",family:"家族",friends:"友人"};
 const SEASONS = {spring:"春",summer:"夏",autumn:"秋"};
@@ -106,7 +106,11 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
   }).join("");
   const editing=step===5&&!review;
   const placingTent=step===3&&!review;
-  const markers=editing?`<div class="world-sites" data-site-step="experiences" role="group" aria-label="湖畔で体験を選ぶ">${siteChoices.map(id=>
+  const choosingParty=step===0&&!review;
+  const partyMenu=choosingParty?`<details class="world-party" data-site-step="party"><summary><span class="world-site-label">${partyChosen?label(PEOPLE,answers.party_type,"同行者")+"の椅子":"椅子を置く"}<span aria-hidden="true">⌄</span></span></summary><div class="world-party-options" role="group" aria-label="同行者を選ぶ">${Object.entries(PEOPLE).map(([id,name])=>
+    `<button type="button" data-place-party="${id}" aria-pressed="${partyChosen&&answers.party_type===id}">${name}</button>`
+  ).join("")}</div></details>`:"";
+  const markers=choosingParty?partyMenu:editing?`<div class="world-sites" data-site-step="experiences" role="group" aria-label="湖畔で体験を選ぶ">${siteChoices.map(id=>
     `<button type="button" class="world-site" data-place-experience="${id}" aria-pressed="${answers.experiences?.includes(id)===true}"><span class="world-site-label"><i aria-hidden="true"></i>${EXPERIENCES[id]}</span></button>`
   ).join("")}</div>`:placingTent?`<div class="world-sites" data-site-step="stay" role="group" aria-label="湖畔で宿泊を選ぶ"><button type="button" class="world-site" data-place-stay aria-pressed="${answers.stay==="one_night"}"><span class="world-site-label"><i aria-hidden="true"></i>テント泊</span></button></div>`:"";
   const season=step>=2 && Object.hasOwn(SEASONS,answers.season)?answers.season:"spring";
@@ -122,7 +126,7 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
     </div>
     <div class="world-tools"><div class="world-light-picker"><span class="world-light-label">光のプレビュー</span><div role="group" class="world-times" aria-label="時間帯">${controls}</div></div>
     ${unique.length?'<button type="button" class="world-list" data-inspect="all">道具一覧</button>':''}</div>
-    <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>${editing?"湖畔の印で体験を追加・解除できます。 ":placingTent?"テント泊の印を外すと、日帰りになります。 ":unique.length?"風景の道具をタップして準備を確認できます。 ":""}${placed.length<items.length?"準備待ち・見送りの道具は一覧で確認できます。 ":""}時間帯の切替は診断・安全判定を変更しません。</span></div>
+    <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>${choosingParty?"同行者を選ぶと、湖畔に椅子が並びます。 ":editing?"湖畔の印で体験を追加・解除できます。 ":placingTent?"テント泊の印を外すと、日帰りになります。 ":unique.length?"風景の道具をタップして準備を確認できます。 ":""}${placed.length<items.length?"準備待ち・見送りの道具は一覧で確認できます。 ":""}時間帯の切替は診断・安全判定を変更しません。</span></div>
     <dialog class="world-dialog" aria-label="サイトの道具"><form method="dialog"><button aria-label="閉じる" autofocus>閉じる ×</button></form>
       <h2 class="world-dialog-title">サイトの道具</h2><p class="world-dialog-intro">必要な数と、現在の準備方法</p>
       <ul>${unique.map(item=>`<li data-world-row="${item.id}" data-world-status="${item.statusKey}"><span class="world-detail-thumb"><img src="${asset(item.id)}" alt="" loading="lazy"></span><span class="world-detail-content"><strong class="world-detail-name">${item.name} ×${item.quantity}</strong><small class="world-detail-role">${item.role}</small><span class="world-status-pill" data-status="${item.statusKey}">${item.status}</span><small class="world-detail-remark">${escapeSceneText(item.detail)}</small></span></li>`).join("")}</ul>
@@ -233,6 +237,7 @@ export function updateQuestionScene(container,html){
   current.querySelector(".world-tools").replaceWith(next.querySelector(".world-tools"));
   current.querySelector(".world-note").replaceWith(next.querySelector(".world-note"));
   current.querySelector("dialog").replaceWith(next.querySelector("dialog"));
+  if(focused?.hasAttribute("data-place-party"))frame.querySelector(".world-party summary")?.focus({preventScroll:true});
   if(focused?.matches("[data-place-experience],[data-place-stay]")&&focused.isConnected&&document.activeElement!==focused)
     focused.focus({preventScroll:true});
   const attr=["data-answer","data-experience","data-step"].find(name=>focused?.hasAttribute(name));

@@ -75,7 +75,33 @@ async function visit(base, width, version) {
     };
     await page.goto(base+"camp/?test=1");
     await click("#main [data-start]");
-    await click('[data-answer="family"]');
+    if(width===390)await photo("arrival",true);
+    if(version==="after"){
+      const picker=frame.locator(".world-party");
+      assert.equal(await frame.locator('button[data-inspect="chair"]').count(),0);
+      const initialEvents=await events();
+      await picker.locator("summary").click();
+      const choices=picker.locator("[data-place-party]");
+      assert.equal(await choices.count(),4);
+      assert(await choices.evaluateAll(buttons=>buttons.every(b=>{
+        const r=b.getBoundingClientRect();
+        return r.width>=44 && r.height>=44 && b.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));
+      })));
+      const family=picker.locator('[data-place-party="family"]');
+      if(width<=768)await family.tap(); else await family.click();
+      assert.equal(await picker.getAttribute("open"),null);
+      assert.equal(await page.locator('[data-answer="family"]').getAttribute("aria-pressed"),"true");
+      assert.equal(await frame.locator('button[data-inspect="chair"]').count(),4);
+      assert.deepEqual((await events()).slice(initialEvents.length).map(e=>[e.name,e.answer]),[["simulator_answer","family"]]);
+      if(width===390){
+        await picker.locator("summary").focus(); await page.keyboard.press("Enter");
+        await picker.locator('[data-place-party="solo"]').focus(); await page.keyboard.press("Enter");
+        assert.equal(await picker.locator("summary").evaluate(el=>el===document.activeElement),true);
+        assert.equal(await frame.locator('button[data-inspect="chair"]').count(),1);
+        await picker.locator("summary").click(); await family.click();
+      }
+    } else await click('[data-answer="family"]');
+    if(width===390)await photo("seated");
     await next(); await next(); await click('[data-answer="autumn"]'); await next();
     if(version==="after"){
       const stay=scene.locator("[data-place-stay]");

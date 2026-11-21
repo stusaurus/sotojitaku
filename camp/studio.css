@@ -705,3 +705,32 @@
     100% { transform: skewX(-1deg) scaleY(.95); }
   }
 }
+
+/* A single place to start on the empty shore. The four existing party
+   choices unfold only while needed and leave the lake visible afterwards. */
+.world-party {
+  position: absolute; z-index: 4; top: 25%; left: 9%;
+  color: #24392e; font: 600 clamp(12px, 1.5cqw, 15px)/1.2 var(--sans);
+}
+.world-party summary {
+  display: flex; align-items: center; width: max-content; min-height: 44px;
+  cursor: pointer; touch-action: manipulation; list-style: none;
+}
+.world-party summary::-webkit-details-marker { display: none; }
+.world-party summary .world-site-label { gap: .65em; padding-inline: .8em; }
+.world-party summary [aria-hidden] { font-size: 1.2em; line-height: .75; }
+.world-party[open] summary [aria-hidden] { transform: rotate(180deg); }
+.world-party-options {
+  display: flex; width: max-content; padding: 2px; gap: 2px;
+  background: #f8f4e6; border: 1px solid #405345; border-radius: 9px;
+  box-shadow: 0 3px 8px #14271f38;
+}
+.world-party-options button {
+  min-width: 44px; min-height: 44px; padding: 0 .55em;
+  border: 0; border-radius: 6px; background: transparent; color: #24392e;
+  font: inherit; cursor: pointer; touch-action: manipulation;
+}
+.world-party-options button[aria-pressed="true"] { background: #284737; color: #fff9e8; }
+.world-party :is(summary, button):focus-visible {
+  outline: 3px solid #ffc975; outline-offset: 1px; box-shadow: 0 0 0 5px #243d31;
+}
