@@ -55,7 +55,18 @@ async function visit(base, width, version) {
     await click("#main [data-start]");
     await click('[data-answer="family"]');
     await next(); await next(); await click('[data-answer="autumn"]'); await next();
-    await click('[data-answer="one_night"]'); await next(); await click('[data-answer="no_car"]'); await next();
+    if(version==="after"){
+      const stay=scene.locator("[data-place-stay]");
+      await stay.click();
+      assert.equal(await page.locator('[data-answer="daytrip"]').getAttribute("aria-pressed"),"true");
+      assert(await scene.locator('[data-scene-preview="night"]').isDisabled());
+      assert.equal(await frame.locator('button[data-inspect="tent"]').count(),0);
+      await stay.focus(); await page.keyboard.press("Enter");
+      assert.equal(await stay.getAttribute("aria-pressed"),"true");
+      assert.equal(await stay.evaluate(el=>el===document.activeElement),true);
+      assert.equal(await page.locator('[data-answer="one_night"]').getAttribute("aria-pressed"),"true");
+    } else await click('[data-answer="one_night"]');
+    await next(); await click('[data-answer="no_car"]'); await next();
     await click('[data-scene-preview="morning"]');
     await photo("empty", true);
     const before = await events();
@@ -125,11 +136,65 @@ async function visit(base, width, version) {
   } finally { await context.close(); }
 }
 
+async function testMotion(cores) {
+  // Deterministic lab profiles. These numbers are capability hints, not
+  // emulations of a physical phone's CPU, battery or thermal envelope.
+  const context=await browser.newContext({viewport:{width:390,height:844},locale:"ja-JP",reducedMotion:"no-preference"});
+  try {
+    await context.route(/googletagmanager|google-analytics|fonts\.googleapis|fonts\.gstatic/,route=>route.abort());
+    await context.addInitScript(cores=>{
+      Object.defineProperty(navigator,"hardwareConcurrency",{get:()=>cores});
+      Object.defineProperty(navigator,"deviceMemory",{get:()=>4});
+    },cores);
+    const page=await context.newPage();
+    await page.goto(candidate+"camp/?test=1");
+    await page.locator("#main [data-start]").first().click();
+    const next=()=>page.locator("[data-next]").click();
+    await page.locator('[data-answer="family"]').click(); await next(); await next(); await next();
+    const frame=page.locator(".sim-visual .world-frame");
+    const button=frame.locator("[data-place-stay]");
+    await button.click();
+    await page.waitForFunction(()=>!document.querySelector(".world-frame [data-departing]"));
+    await frame.scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>document.querySelector(".studio-scene").dataset.inView==="true");
+    await page.locator(".sim-visual .studio-image").evaluate(img=>img.decode());
+    const motion=await button.evaluate(button=>{
+      button.click();
+      const sprite=button.closest(".world-frame").querySelector('[data-inspect="tent"] img');
+      const animation=sprite.getAnimations().find(a=>a.effect.getTiming().duration===520);
+      if(animation)animation.pause();
+      return Boolean(animation);
+    });
+    assert.equal(motion,cores===4,"adaptive tent assembly");
+    if(motion){
+      for(const part of [0,0.45,1]){
+        await frame.locator('[data-inspect="tent"] img').evaluate((img,part)=>{
+          const a=img.getAnimations().find(a=>a.effect.getTiming().duration===520); a.currentTime=part*520;
+          return img.decode();
+        },part);
+        await frame.screenshot({path:out+"/"+engine+"-390-assembly-"+Math.round(part*100)+".jpg",quality:90});
+      }
+    }
+    await next(); await next();
+    await frame.locator('[data-place-experience="coffee"]').click();
+    await page.locator('[data-scene-preview="morning"]').click();
+    const steam=frame.locator(".world-coffee-steam");
+    assert.equal(await steam.evaluate(el=>getComputedStyle(el,"::before").animationName !== "none"),cores===4);
+    if(cores===4){
+      await page.locator('[data-experience="easy"]').scrollIntoViewIfNeeded();
+      await page.waitForFunction(()=>document.querySelector(".studio-scene").dataset.inView==="false");
+      assert.equal(await steam.evaluate(el=>getComputedStyle(el,"::before").animationName),"none");
+    }
+    results.push({engine,profile:cores===4?"regular-motion":"low-capability",tentAnimated:motion});
+  } finally { await context.close(); }
+}
+
 try {
   for (const width of [320,390,768,1024,1440]) {
     if (previous) await visit(previous,width,"before");
     await visit(candidate,width,"after");
   }
+  await testMotion(4); await testMotion(2);
 } finally {
   await browser.close();
   fs.writeFileSync(out+"/"+engine+"-placement.json", JSON.stringify(results,null,2)+"\n");

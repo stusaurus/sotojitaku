@@ -627,13 +627,13 @@
 }
 .world-object[data-departing] { pointer-events: none; }
 
-/* Sixth question only. Each flag is reached separately from the photograph's
+/* The stay and experience questions. Each flag is reached separately from the photograph's
    inspection target. Both inputs lead to the same authoritative answer. */
 .world-sites { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .world-site {
   position: absolute;
   left: 55%;
-  bottom: calc(17% + 23cqw);
+  bottom: max(calc(17% + 23cqw), calc(12% + 13cqw + 52px));
   transform: translateX(-50%);
   display: grid;
   place-items: center;
@@ -675,9 +675,35 @@
   top: calc(50% + .9em); width: 1px; height: clamp(11px, 2.8cqw, 24px);
   background: #faf2d9; box-shadow: 1px 0 1px #233c31;
 }
-.world-site:focus-visible { outline: none !important; }
+.studio-scene .world-site:focus-visible { outline: none; }
 .world-site:focus-visible .world-site-label {
   outline: 3px solid #ffc975; outline-offset: 2px; box-shadow: 0 0 0 6px #243d31;
 }
 .studio-mobile-feedback-preview .world-object { min-width: 0; min-height: 0; width: var(--w); }
 .studio-scene[data-motion-quality="still"] :is(.world-object img, .world-tint, .studio-image, .world-light-spill) { transition: none; }
+.world-site[data-place-stay] { left: 31%; bottom: calc(29% + 28cqw); }
+@media(max-width:360px) {
+  .world-light-picker { gap: 4px; }
+  .world-light-label, .world-list { white-space: nowrap; }
+  .world-list { padding-inline: 0; }
+  .world-times button { min-width: 44px; padding-inline: 4px; }
+}
+.world-flame-tip { display: none; }
+@media(prefers-reduced-motion:no-preference) {
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"] [data-inspect="fire_pit"] > img {
+    clip-path: inset(31% 0 0);
+  }
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"] .world-flame-tip {
+    position: absolute; display: block; pointer-events: none;
+    bottom: 0; left: 50%; translate: -50%;
+    width: var(--visual-width); aspect-ratio: var(--ratio);
+    background: var(--art) center / contain no-repeat;
+    clip-path: inset(0 0 68%); transform-origin: 50% 32%;
+    animation: camp-kindling 720ms ease-in-out 3 alternate;
+  }
+  @keyframes camp-kindling {
+    0% { transform: skewX(-3deg) scaleY(.89); }
+    45% { transform: skewX(4deg) scaleY(1.04); }
+    100% { transform: skewX(-1deg) scaleY(.95); }
+  }
+}

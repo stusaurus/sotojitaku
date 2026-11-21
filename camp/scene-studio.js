@@ -102,12 +102,13 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
   const placed=items.filter(item=>!item.deferred&&(item.id!=="fire_pit"||fireGlow));
   const objects=placed.map(({id,name,x,y,width,chairPose,statusKey})=>{
     const [w,h]=dimensions[id];
-    return `<button class="world-object" data-deferred="false" data-plan-status="${statusKey}"${id==="chair"?` data-chair-pose="${chairPose}"`:""} type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%;--visual-width:${width}cqw;--art:url('${asset(id)}');--ratio:${w}/${h}"><img alt="" src="${asset(id)}" width="${w}" height="${h}"></button>`;
+    return `<button class="world-object" data-deferred="false" data-plan-status="${statusKey}"${id==="chair"?` data-chair-pose="${chairPose}"`:""} type="button" data-inspect="${id}" aria-label="${name}の準備を確認" style="--x:${x}%;--y:${y}%;--w:${width}%;--visual-width:${width}cqw;--art:url('${asset(id)}');--ratio:${w}/${h}"><img alt="" src="${asset(id)}" width="${w}" height="${h}">${id==="fire_pit"?'<span class="world-flame-tip" aria-hidden="true"></span>':""}</button>`;
   }).join("");
   const editing=step===5&&!review;
-  const markers=editing?`<div class="world-sites" role="group" aria-label="湖畔で体験を選ぶ">${siteChoices.map(id=>
+  const placingTent=step===3&&!review;
+  const markers=editing?`<div class="world-sites" data-site-step="experiences" role="group" aria-label="湖畔で体験を選ぶ">${siteChoices.map(id=>
     `<button type="button" class="world-site" data-place-experience="${id}" aria-pressed="${answers.experiences?.includes(id)===true}"><span class="world-site-label"><i aria-hidden="true"></i>${EXPERIENCES[id]}</span></button>`
-  ).join("")}</div>`:"";
+  ).join("")}</div>`:placingTent?`<div class="world-sites" data-site-step="stay" role="group" aria-label="湖畔で宿泊を選ぶ"><button type="button" class="world-site" data-place-stay aria-pressed="${answers.stay==="one_night"}"><span class="world-site-label"><i aria-hidden="true"></i>テント泊</span></button></div>`:"";
   const season=step>=2 && Object.hasOwn(SEASONS,answers.season)?answers.season:"spring";
   const packing=step>=4 ? (answers.transport==="no_car"?"pack":"trunk") : null;
   const budget=step===6&&cost ? `道具の概算 ¥${cost.total.toLocaleString("ja-JP")} ／ ${cost.limit===null?"上限設定なし":"予算 ¥"+cost.limit.toLocaleString("ja-JP")}` : "";
@@ -121,7 +122,7 @@ export function renderCampStudioScene({answers={},step=0,previewTime=null,gear=[
     </div>
     <div class="world-tools"><div class="world-light-picker"><span class="world-light-label">光のプレビュー</span><div role="group" class="world-times" aria-label="時間帯">${controls}</div></div>
     ${unique.length?'<button type="button" class="world-list" data-inspect="all">道具一覧</button>':''}</div>
-    <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>${editing?"湖畔の印で体験を追加・解除できます。 ":unique.length?"風景の道具をタップして準備を確認できます。 ":""}${placed.length<items.length?"準備待ち・見送りの道具は一覧で確認できます。 ":""}時間帯の切替は診断・安全判定を変更しません。</span></div>
+    <div class="world-note">${budget&&cost.limit?`<meter min="0" max="${cost.limit}" value="${Math.min(cost.limit,cost.total)}" aria-label="予算に占める概算額"></meter>`:""}${budget||"配置は希望のイメージです。"} <span>${editing?"湖畔の印で体験を追加・解除できます。 ":placingTent?"テント泊の印を外すと、日帰りになります。 ":unique.length?"風景の道具をタップして準備を確認できます。 ":""}${placed.length<items.length?"準備待ち・見送りの道具は一覧で確認できます。 ":""}時間帯の切替は診断・安全判定を変更しません。</span></div>
     <dialog class="world-dialog" aria-label="サイトの道具"><form method="dialog"><button aria-label="閉じる" autofocus>閉じる ×</button></form>
       <h2 class="world-dialog-title">サイトの道具</h2><p class="world-dialog-intro">必要な数と、現在の準備方法</p>
       <ul>${unique.map(item=>`<li data-world-row="${item.id}" data-world-status="${item.statusKey}"><span class="world-detail-thumb"><img src="${asset(item.id)}" alt="" loading="lazy"></span><span class="world-detail-content"><strong class="world-detail-name">${item.name} ×${item.quantity}</strong><small class="world-detail-role">${item.role}</small><span class="world-status-pill" data-status="${item.statusKey}">${item.status}</span><small class="world-detail-remark">${escapeSceneText(item.detail)}</small></span></li>`).join("")}</ul>
@@ -157,6 +158,10 @@ function canAnimate(scene){
 
 function enterSite(prop){
   // Animate the photograph only. The accessible hit rectangle never moves.
+  if(prop.dataset.inspect==="fire_pit"){
+    prop.animate([{opacity:0},{opacity:1}],{duration:320,easing:"ease-out"});
+    return;
+  }
   const image=prop.querySelector("img");
   const tent=prop.dataset.inspect==="tent";
   image.animate([
@@ -202,7 +207,7 @@ export function updateQuestionScene(container,html){
   frame.dataset.lanternGlow=replacement.dataset.lanternGlow;
   frame.dataset.tablePlaced=replacement.dataset.tablePlaced;
   const animate=canAnimate(current);
-  const key=node=>node.dataset.inspect ? node.dataset.inspect+node.style.getPropertyValue("--x") : node.className;
+  const key=node=>node.dataset.inspect ? node.dataset.inspect+node.style.getPropertyValue("--x") : node.dataset.siteStep||node.className;
   const departures=new Map([...frame.querySelectorAll("[data-departing]")].map(node=>[node.dataset.departing,node]));
   const previous=new Map([...frame.children].filter(node=>!node.hasAttribute("data-departing")).map(node=>[key(node),node]));
   let cursor=frame.firstElementChild;
@@ -211,9 +216,8 @@ export function updateQuestionScene(container,html){
     departures.get(id)?.remove();
     let node=old?.isEqualNode(candidate)?old:candidate;
     if(old&&candidate.classList.contains("world-sites")){
-      for(const marker of candidate.children){
-        old.querySelector('[data-place-experience="'+marker.dataset.placeExperience+'"]').setAttribute("aria-pressed",marker.getAttribute("aria-pressed"));
-      }
+      for(const [index,marker] of [...candidate.children].entries())
+        old.children[index].setAttribute("aria-pressed",marker.getAttribute("aria-pressed"));
       node=old;
     }
     if(node!==cursor)frame.insertBefore(node,cursor);
@@ -229,7 +233,7 @@ export function updateQuestionScene(container,html){
   current.querySelector(".world-tools").replaceWith(next.querySelector(".world-tools"));
   current.querySelector(".world-note").replaceWith(next.querySelector(".world-note"));
   current.querySelector("dialog").replaceWith(next.querySelector("dialog"));
-  if(focused?.hasAttribute("data-place-experience")&&focused.isConnected&&document.activeElement!==focused)
+  if(focused?.matches("[data-place-experience],[data-place-stay]")&&focused.isConnected&&document.activeElement!==focused)
     focused.focus({preventScroll:true});
   const attr=["data-answer","data-experience","data-step"].find(name=>focused?.hasAttribute(name));
   const advanced=focused?.hasAttribute("data-next")||focused?.hasAttribute("data-back-question");

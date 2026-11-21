@@ -1,7 +1,7 @@
 import {DEFAULT,plan,readiness,costs,adjust,desired,schedule,totalPeople,validateStored,selectedRecipes,gearDecision,purchaseDecisionSummary} from '../engine.js?v=7d08d37eb29c';
 import {recommend,defaultPreference,reject} from '../products.js?v=ac251aea4046';
 import {createCAMPVisitGate} from './funnel-metrics.js?v=20261106';
-import {renderCampStudioScene,updateQuestionScene,syncMobileWorldFeedback,observeCampScene} from './scene-studio.js?v=20ce9db5f7ce';
+import {renderCampStudioScene,updateQuestionScene,syncMobileWorldFeedback,observeCampScene} from './scene-studio.js?v=9ea32c01db4b';
 import {eligibleChoiceCopy} from './choice-presentation.js?v=20261106';
 import {purchaseSelectionContext,affiliateClickSource} from './purchase-intent.js?v=20261106';
 const $=s=>document.querySelector(s),main=$('#main'),KEY='sotojitaku_camp_v1';
@@ -120,6 +120,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t
    if(route==='question')syncMobileWorldFeedback(main);
    return;
  }
+ if(t.hasAttribute('data-place-stay')&&route==='question'&&qIndex===3){changeAnswer(state.answers.stay==='one_night'?'daytrip':'one_night');return;}
  if(t.dataset.answer){changeAnswer(t.dataset.answer);return;}
  const experience=t.dataset.experience||t.dataset.placeExperience;
  if(experience){
