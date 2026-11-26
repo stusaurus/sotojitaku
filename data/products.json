@@ -2,183 +2,6 @@
   "version": 1,
   "products": [
     {
-      "category": "tent",
-      "itemCode": "sports-bazaar:10314223",
-      "model": "2000038141",
-      "query": "2000038141",
-      "family": "tent-2000038141",
-      "name": "Coleman ツーリングドーム/ST 2000038141",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 15720,
-      "spec": {
-        "capacity": 2,
-        "weight": 4000,
-        "packed_size": "約φ19×49cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
-        "specification": "https://ec.coleman.co.jp/item/2000038141.html",
-        "fields": {
-          "capacity": "https://ec.coleman.co.jp/item/2000038141.html",
-          "weight": "https://ec.coleman.co.jp/item/2000038141.html",
-          "packed_size": "https://ec.coleman.co.jp/item/2000038141.html"
-        }
-      },
-      "scores": {
-        "fit": 0.93,
-        "beginner": 0.96,
-        "comfort": 0.72,
-        "portability": 0.55,
-        "value": 0.9,
-        "trust": 0.96
-      },
-      "traits": [
-        "easy",
-        "value"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-20T07:45:59.903977+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 44697091040",
-      "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
-      "specSummary": "定員2人 / 約4.0kg / 収納約φ19×49cm。",
-      "identityTerms": [
-        "ツーリングドーム",
-        "ST",
-        "2000038141"
-      ],
-      "price": 15720,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40coleman-2000038141%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10314223%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sports-bazaar/cabinet/shiratori-82/8c3376fae6c3746fc4_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-20T07:45:59.903977+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "table",
-      "itemCode": "naturum:18689872",
-      "model": "2205813",
-      "query": "2205813",
-      "family": "table-2205813",
-      "name": "Coleman ナチュラルパズルテーブル/120 2205813",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 10295,
-      "spec": {
-        "table_size": "約120×70×41/60/70cm",
-        "weight": 5000,
-        "packed_size": "約70×7×60.5cm",
-        "table_capacity": 4
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum/3454308/",
-        "specification": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
-        "fields": {
-          "table_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
-          "weight": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
-          "packed_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html"
-        }
-      },
-      "scores": {
-        "fit": 0.96,
-        "beginner": 0.95,
-        "comfort": 0.94,
-        "portability": 0.3,
-        "value": 0.85,
-        "trust": 0.95
-      },
-      "traits": [
-        "easy",
-        "comfort"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-20T07:45:59.903977+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 44697091040",
-      "itemUrl": "https://item.rakuten.co.jp/naturum/3454308/",
-      "specSummary": "使用約120×70×41/60/70cm / 約5.0kg / 収納約70×7×60.5cm。",
-      "identityTerms": [
-        "ナチュラルパズルテーブル",
-        "120",
-        "2205813"
-      ],
-      "price": 9776,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00pn5fo.7cx6m0ea.g00pn5fo.7cx6n596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum%2F3454308%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum%2Fi%2F18689872%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum/cabinet/goods/034543/08_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-20T07:45:59.903977+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "tent",
-      "itemCode": "goose:10002974",
-      "model": "2000036439",
-      "query": "2000036439",
-      "family": "tent-2000036439",
-      "name": "Coleman パーティーキャビン/3025 2000036439",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 32800,
-      "spec": {
-        "capacity": 5,
-        "weight": 16500,
-        "packed_size": "約24×21×100cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/goose/0535-007008/",
-        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
-        "fields": {
-          "capacity": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
-          "weight": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
-          "packed_size": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/"
-        }
-      },
-      "scores": {
-        "fit": 0.93,
-        "beginner": 1,
-        "comfort": 0.92,
-        "portability": 0.08,
-        "value": 0.88,
-        "trust": 0.93
-      },
-      "traits": [
-        "easy"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-20T07:45:59.903977+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 44697091040",
-      "itemUrl": "https://item.rakuten.co.jp/goose/0535-007008/",
-      "specSummary": "定員4〜5人 / 約16.5kg / 収納約24×21×100cm。広げるだけの簡単組立を重視したロッジ型。",
-      "identityTerms": [
-        "パーティーキャビン",
-        "3025",
-        "2000036439"
-      ],
-      "price": 32800,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00td38o.7cx6mb55.g00td38o.7cx6na8e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgoose%2F0535-007008%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fgoose%2Fi%2F10002974%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/goose/cabinet/07497217/08948924/imgrc0099313169.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-20T07:45:59.903977+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
       "category": "burner",
       "itemCode": "cheeky:10427303",
       "model": "ST-350",
@@ -294,64 +117,6 @@
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00uw3xo.7cx6m15b.g00uw3xo.7cx6n863/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsproutsllc%2Fs-b0bjpfm46y-20260602%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsproutsllc%2Fi%2F10034068%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sproutsllc/cabinet/n20260602105312/b0bjpfm46y-1.jpg?_ex=128x128",
       "verifiedAt": "2026-11-22T07:28:17.469506+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "hot_sandwich_maker",
-      "itemCode": "sorabostore:10004146",
-      "model": "1709435",
-      "query": "1709435",
-      "family": "hot_sandwich_maker-1709435",
-      "name": "Coleman ホットサンドイッチクッカー 1709435",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 4011,
-      "spec": {
-        "heat_source": "direct_flame",
-        "weight": 550
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/sorabostore/b004iwr4ve/",
-        "specification": "https://ec.coleman.co.jp/item/1709435.html",
-        "fields": {
-          "heat_source": "https://ec.coleman.co.jp/item/1709435.html",
-          "weight": "https://ec.coleman.co.jp/item/1709435.html"
-        }
-      },
-      "scores": {
-        "fit": 0.95,
-        "beginner": 0.96,
-        "comfort": 0.9,
-        "portability": 0.9,
-        "value": 0.82,
-        "trust": 0.96
-      },
-      "traits": [
-        "easy",
-        "compact"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-23T08:12:10.850419+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45136677719",
-      "itemUrl": "https://item.rakuten.co.jp/sorabostore/b004iwr4ve/",
-      "specSummary": "約550g / 直火対応。使用するバーナーの安定性も確認。",
-      "identityTerms": [
-        "ホットサンド",
-        "クッカー"
-      ],
-      "lookupName": true,
-      "brand": "Coleman",
-      "price": 4122,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00und4o.7cx6m6e6.g00und4o.7cx6nb57/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsorabostore%2Fb004iwr4ve%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsorabostore%2Fi%2F10004146%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sorabostore/cabinet/onesell067/b004iwr4ve.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-23T08:12:10.850419+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
     },
@@ -475,356 +240,6 @@
       "verificationMode": "sales_page_and_official_item_api"
     },
     {
-      "category": "sleeping_bag",
-      "itemCode": "naturum-outdoor:10241000",
-      "model": "2000034774",
-      "query": "2000034774",
-      "family": "coleman-2000034774",
-      "name": "コールマン Coleman シュラフ パフォーマーIII/C5 オレンジ 2000034774",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 6380,
-      "spec": {
-        "comfort_temperature": 5,
-        "weight": 1400,
-        "packed_size": "φ24×41cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
-        "specification": "https://ec.coleman.co.jp/category/240/2000034774.html",
-        "fields": {
-          "comfort_temperature": "https://ec.coleman.co.jp/category/240/2000034774.html",
-          "weight": "https://ec.coleman.co.jp/category/240/2000034774.html",
-          "packed_size": "https://ec.coleman.co.jp/category/240/2000034774.html"
-        }
-      },
-      "scores": {
-        "fit": 0.9,
-        "beginner": 0.85,
-        "comfort": 0.85,
-        "portability": 0.55,
-        "value": 0.8,
-        "trust": 0.9
-      },
-      "listingAuditedAt": "2026-11-24T10:25:06.936804+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45374568663",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
-      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
-      "identityTerms": [
-        "パフォーマーIII/C5",
-        "2000034774"
-      ],
-      "traits": [
-        "value",
-        "easy"
-      ],
-      "price": 5490,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=128x128",
-      "reviewCount": null,
-      "reviewAverage": null,
-      "verifiedAt": "2026-11-24T10:25:06.936804+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "tent",
-      "itemCode": "naturum-outdoor:10712574",
-      "model": "2206745",
-      "query": "2206745",
-      "family": "tent-2206745",
-      "name": "Coleman タフドーム VI/3025 2206745",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 37680,
-      "spec": {
-        "capacity": 5,
-        "weight": 9000,
-        "packed_size": "約φ23×70cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
-        "specification": "https://ec.coleman.co.jp/item/2206745.html",
-        "fields": {
-          "capacity": "https://ec.coleman.co.jp/item/2206745.html",
-          "weight": "https://ec.coleman.co.jp/item/2206745.html",
-          "packed_size": "https://ec.coleman.co.jp/item/2206745.html"
-        }
-      },
-      "scores": {
-        "fit": 0.98,
-        "beginner": 0.95,
-        "comfort": 0.9,
-        "portability": 0.38,
-        "value": 0.86,
-        "trust": 0.96
-      },
-      "traits": [
-        "balanced"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-24T10:25:06.936804+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45374568663",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
-      "specSummary": "定員4〜5人 / 約9kg / 収納約φ23×70cm。アルミ合金メインポールの定番ドーム。",
-      "identityTerms": [
-        "タフドーム",
-        "2206745"
-      ],
-      "price": 37680,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3454294%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10712574%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/034542/94_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-24T10:25:06.936804+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "chair",
-      "itemCode": "naturum-outdoor:10639044",
-      "model": "2190857",
-      "query": "2190857",
-      "family": "chair-2190857",
-      "name": "Coleman ヒーリングチェアNX オリーブ 2190857",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 5280,
-      "spec": {
-        "weight": 2500,
-        "packed_size": "約25×14×65cm",
-        "load_capacity": 100
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
-        "specification": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
-        "fields": {
-          "weight": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
-          "packed_size": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
-          "load_capacity": "https://ec.coleman.co.jp/category/CAMP/2190857.html"
-        }
-      },
-      "scores": {
-        "fit": 0.96,
-        "beginner": 0.96,
-        "comfort": 0.96,
-        "portability": 0.66,
-        "value": 0.88,
-        "trust": 0.96
-      },
-      "traits": [
-        "easy",
-        "comfort"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-24T10:25:06.936804+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45374568663",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
-      "specSummary": "約2.5kg / 収納約25×14×65cm / 耐荷重約100kg。背もたれも折れて比較的コンパクト。",
-      "identityTerms": [
-        "ヒーリングチェアNX",
-        "2190857"
-      ],
-      "price": 5259,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3360729%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10639044%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/033607/29_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-24T10:25:06.936804+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "mat",
-      "itemCode": "cross-one:10020252",
-      "model": "2000036153",
-      "query": "2000036153",
-      "family": "mat-2000036153",
-      "name": "Coleman キャンパーインフレーターマットハイピーク/シングル 2000036153",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 15238,
-      "spec": {
-        "length": 198,
-        "width": 68,
-        "weight": 2700
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/cross-one/csbf936d818e/",
-        "specification": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
-        "fields": {
-          "length": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
-          "width": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
-          "weight": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html"
-        }
-      },
-      "scores": {
-        "fit": 0.95,
-        "beginner": 0.95,
-        "comfort": 0.98,
-        "portability": 0.3,
-        "value": 0.7,
-        "trust": 0.96
-      },
-      "traits": [
-        "comfort",
-        "easy"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-24T10:25:06.936804+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45374568663",
-      "itemUrl": "https://item.rakuten.co.jp/cross-one/csbf936d818e/",
-      "specSummary": "約198×68cm / 約2.7kg。",
-      "identityTerms": [
-        "キャンパーインフレーターマットハイピーク",
-        "シングル",
-        "2000036153"
-      ],
-      "price": 15238,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u2doo.7cx6m858.g00u2doo.7cx6ne19/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcross-one%2Fcsbf936d818e%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fcross-one%2Fi%2F10020252%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/cross-one/cabinet/onesell007/csbf936d818e.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-24T10:25:06.936804+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "table",
-      "itemCode": "naturum-outdoor:10697876",
-      "model": "2205816",
-      "query": "2205816",
-      "family": "table-2205816",
-      "name": "Coleman ナチュラルパズルテーブル/90 2205816",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 8800,
-      "spec": {
-        "table_size": "約90×70×41/60/70cm",
-        "weight": 4100,
-        "packed_size": "約70×6.5×45.5cm",
-        "table_capacity": 2
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3454307/",
-        "specification": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
-        "fields": {
-          "table_size": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
-          "weight": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
-          "packed_size": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html"
-        }
-      },
-      "scores": {
-        "fit": 0.93,
-        "beginner": 0.95,
-        "comfort": 0.84,
-        "portability": 0.35,
-        "value": 0.84,
-        "trust": 0.95
-      },
-      "traits": [
-        "easy",
-        "value"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-24T10:25:06.936804+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45374568663",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454307/",
-      "specSummary": "使用約90×70×41/60/70cm / 約4.1kg / 収納約70×6.5×45.5cm。",
-      "identityTerms": [
-        "ナチュラルパズルテーブル",
-        "90",
-        "2205816"
-      ],
-      "price": 8800,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3454307%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10697876%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/034543/07_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-24T10:25:06.936804+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "cooler",
-      "itemCode": "naturum-outdoor:10744086",
-      "model": "2238149",
-      "query": "2238149",
-      "family": "cooler-2238149",
-      "name": "Coleman アルティメイトアイスクーラーII 25L アイスブルー 2238149",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 6990,
-      "spec": {
-        "capacity_l": 25,
-        "weight": 1300
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000041/",
-        "specification": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html",
-        "fields": {
-          "capacity_l": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html",
-          "weight": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html"
-        }
-      },
-      "scores": {
-        "fit": 0.97,
-        "beginner": 0.96,
-        "comfort": 0.94,
-        "portability": 0.9,
-        "value": 0.92,
-        "trust": 0.96
-      },
-      "traits": [
-        "comfort",
-        "compact",
-        "value"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-24T10:25:06.936804+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45374568663",
-      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000041/",
-      "specSummary": "容量約25L / 約1.3kg。",
-      "identityTerms": [
-        "アルティメイトアイスクーラーII",
-        "25L",
-        "2238149"
-      ],
-      "price": 6990,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F10000041%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10744086%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/100000/41_1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-24T10:25:06.936804+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
       "category": "table",
       "itemCode": "naturum-outdoor:10744105",
       "model": "2238333",
@@ -943,6 +358,356 @@
       "verificationMode": "sales_page_and_official_item_api"
     },
     {
+      "category": "sleeping_bag",
+      "itemCode": "naturum-outdoor:10241000",
+      "model": "2000034774",
+      "query": "2000034774",
+      "family": "coleman-2000034774",
+      "name": "コールマン Coleman シュラフ パフォーマーIII/C5 オレンジ 2000034774",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 6380,
+      "spec": {
+        "comfort_temperature": 5,
+        "weight": 1400,
+        "packed_size": "φ24×41cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
+        "specification": "https://ec.coleman.co.jp/category/240/2000034774.html",
+        "fields": {
+          "comfort_temperature": "https://ec.coleman.co.jp/category/240/2000034774.html",
+          "weight": "https://ec.coleman.co.jp/category/240/2000034774.html",
+          "packed_size": "https://ec.coleman.co.jp/category/240/2000034774.html"
+        }
+      },
+      "scores": {
+        "fit": 0.9,
+        "beginner": 0.85,
+        "comfort": 0.85,
+        "portability": 0.55,
+        "value": 0.8,
+        "trust": 0.9
+      },
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/2941537/",
+      "specSummary": "快適使用温度5℃以上 / 約1.4kg / 収納φ24×41cm。現地の最低気温を必ず確認。",
+      "identityTerms": [
+        "パフォーマーIII/C5",
+        "2000034774"
+      ],
+      "traits": [
+        "value",
+        "easy"
+      ],
+      "price": 5490,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F2941537%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10241000%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/029415/37_1.jpg?_ex=128x128",
+      "reviewCount": null,
+      "reviewAverage": null,
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "tent",
+      "itemCode": "naturum-outdoor:10712574",
+      "model": "2206745",
+      "query": "2206745",
+      "family": "tent-2206745",
+      "name": "Coleman タフドーム VI/3025 2206745",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 37680,
+      "spec": {
+        "capacity": 5,
+        "weight": 9000,
+        "packed_size": "約φ23×70cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
+        "specification": "https://ec.coleman.co.jp/item/2206745.html",
+        "fields": {
+          "capacity": "https://ec.coleman.co.jp/item/2206745.html",
+          "weight": "https://ec.coleman.co.jp/item/2206745.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2206745.html"
+        }
+      },
+      "scores": {
+        "fit": 0.98,
+        "beginner": 0.95,
+        "comfort": 0.9,
+        "portability": 0.38,
+        "value": 0.86,
+        "trust": 0.96
+      },
+      "traits": [
+        "balanced"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454294/",
+      "specSummary": "定員4〜5人 / 約9kg / 収納約φ23×70cm。アルミ合金メインポールの定番ドーム。",
+      "identityTerms": [
+        "タフドーム",
+        "2206745"
+      ],
+      "price": 37680,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3454294%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10712574%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/034542/94_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "chair",
+      "itemCode": "naturum-outdoor:10639044",
+      "model": "2190857",
+      "query": "2190857",
+      "family": "chair-2190857",
+      "name": "Coleman ヒーリングチェアNX オリーブ 2190857",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 5280,
+      "spec": {
+        "weight": 2500,
+        "packed_size": "約25×14×65cm",
+        "load_capacity": 100
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
+        "specification": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
+        "fields": {
+          "weight": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
+          "packed_size": "https://ec.coleman.co.jp/category/CAMP/2190857.html",
+          "load_capacity": "https://ec.coleman.co.jp/category/CAMP/2190857.html"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.96,
+        "comfort": 0.96,
+        "portability": 0.66,
+        "value": 0.88,
+        "trust": 0.96
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3360729/",
+      "specSummary": "約2.5kg / 収納約25×14×65cm / 耐荷重約100kg。背もたれも折れて比較的コンパクト。",
+      "identityTerms": [
+        "ヒーリングチェアNX",
+        "2190857"
+      ],
+      "price": 5280,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3360729%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10639044%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/033607/29_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "mat",
+      "itemCode": "cross-one:10020252",
+      "model": "2000036153",
+      "query": "2000036153",
+      "family": "mat-2000036153",
+      "name": "Coleman キャンパーインフレーターマットハイピーク/シングル 2000036153",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15238,
+      "spec": {
+        "length": 198,
+        "width": 68,
+        "weight": 2700
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/cross-one/csbf936d818e/",
+        "specification": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
+        "fields": {
+          "length": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
+          "width": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html",
+          "weight": "https://ec.coleman.co.jp/category/ACTIVITY/2000036153.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.95,
+        "comfort": 0.98,
+        "portability": 0.3,
+        "value": 0.7,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "easy"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/cross-one/csbf936d818e/",
+      "specSummary": "約198×68cm / 約2.7kg。",
+      "identityTerms": [
+        "キャンパーインフレーターマットハイピーク",
+        "シングル",
+        "2000036153"
+      ],
+      "price": 15238,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u2doo.7cx6m858.g00u2doo.7cx6ne19/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcross-one%2Fcsbf936d818e%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fcross-one%2Fi%2F10020252%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/cross-one/cabinet/onesell007/csbf936d818e.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "table",
+      "itemCode": "naturum-outdoor:10697876",
+      "model": "2205816",
+      "query": "2205816",
+      "family": "table-2205816",
+      "name": "Coleman ナチュラルパズルテーブル/90 2205816",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 8800,
+      "spec": {
+        "table_size": "約90×70×41/60/70cm",
+        "weight": 4100,
+        "packed_size": "約70×6.5×45.5cm",
+        "table_capacity": 2
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/3454307/",
+        "specification": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
+          "weight": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html",
+          "packed_size": "https://ec.coleman.co.jp/category/ACTIVITY/2205816.html"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 0.95,
+        "comfort": 0.84,
+        "portability": 0.35,
+        "value": 0.84,
+        "trust": 0.95
+      },
+      "traits": [
+        "easy",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/3454307/",
+      "specSummary": "使用約90×70×41/60/70cm / 約4.1kg / 収納約70×6.5×45.5cm。",
+      "identityTerms": [
+        "ナチュラルパズルテーブル",
+        "90",
+        "2205816"
+      ],
+      "price": 8800,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F3454307%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10697876%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/034543/07_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "cooler",
+      "itemCode": "naturum-outdoor:10744086",
+      "model": "2238149",
+      "query": "2238149",
+      "family": "cooler-2238149",
+      "name": "Coleman アルティメイトアイスクーラーII 25L アイスブルー 2238149",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 6990,
+      "spec": {
+        "capacity_l": 25,
+        "weight": 1300
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum-outdoor/10000041/",
+        "specification": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html",
+        "fields": {
+          "capacity_l": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html",
+          "weight": "https://ec.coleman.co.jp/category/NEWPRODUCT/2238149.html"
+        }
+      },
+      "scores": {
+        "fit": 0.97,
+        "beginner": 0.96,
+        "comfort": 0.94,
+        "portability": 0.9,
+        "value": 0.92,
+        "trust": 0.96
+      },
+      "traits": [
+        "comfort",
+        "compact",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/naturum-outdoor/10000041/",
+      "specSummary": "容量約25L / 約1.3kg。",
+      "identityTerms": [
+        "アルティメイトアイスクーラーII",
+        "25L",
+        "2238149"
+      ],
+      "price": 6990,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tabvo.7cx6m2ba.g00tabvo.7cx6nd14/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum-outdoor%2F10000041%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum-outdoor%2Fi%2F10744086%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum-outdoor/cabinet/goods/100000/41_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
       "category": "fire_pit",
       "itemCode": "kanedestore:10014957",
       "model": "2000037404",
@@ -985,17 +750,252 @@
       ],
       "reviewCount": null,
       "reviewAverage": null,
-      "listingAuditedAt": "2026-11-23T08:12:10.850419+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45136677719",
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
       "itemUrl": "https://item.rakuten.co.jp/kanedestore/kaaaf5196875/",
       "specSummary": "約0.9kg / 収納約φ32×10cm。火気ルールと消火用品を確認。",
       "identityTerms": [
         "ファイアーディスクソロ"
       ],
-      "price": 5322,
+      "price": 5299,
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00upfzo.7cx6m64d.g00upfzo.7cx6nddd/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkanedestore%2Fkaaaf5196875%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fkanedestore%2Fi%2F10014957%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
       "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/kanedestore/cabinet/onesell024/kaaaf5196875_0.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-23T08:12:10.850419+00:00",
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "hot_sandwich_maker",
+      "itemCode": "sorabostore:10004146",
+      "model": "1709435",
+      "query": "1709435",
+      "family": "hot_sandwich_maker-1709435",
+      "name": "Coleman ホットサンドイッチクッカー 1709435",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 4011,
+      "spec": {
+        "heat_source": "direct_flame",
+        "weight": 550
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sorabostore/b004iwr4ve/",
+        "specification": "https://ec.coleman.co.jp/item/1709435.html",
+        "fields": {
+          "heat_source": "https://ec.coleman.co.jp/item/1709435.html",
+          "weight": "https://ec.coleman.co.jp/item/1709435.html"
+        }
+      },
+      "scores": {
+        "fit": 0.95,
+        "beginner": 0.96,
+        "comfort": 0.9,
+        "portability": 0.9,
+        "value": 0.82,
+        "trust": 0.96
+      },
+      "traits": [
+        "easy",
+        "compact"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:52:51.550866+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/sorabostore/b004iwr4ve/",
+      "specSummary": "約550g / 直火対応。使用するバーナーの安定性も確認。",
+      "identityTerms": [
+        "ホットサンド",
+        "クッカー"
+      ],
+      "lookupName": true,
+      "brand": "Coleman",
+      "price": 4591,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00und4o.7cx6m6e6.g00und4o.7cx6nb57/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsorabostore%2Fb004iwr4ve%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsorabostore%2Fi%2F10004146%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sorabostore/cabinet/onesell067/b004iwr4ve.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:52:51.550866+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "tent",
+      "itemCode": "sports-bazaar:10314223",
+      "model": "2000038141",
+      "query": "2000038141",
+      "family": "tent-2000038141",
+      "name": "Coleman ツーリングドーム/ST 2000038141",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 15720,
+      "spec": {
+        "capacity": 2,
+        "weight": 4000,
+        "packed_size": "約φ19×49cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
+        "specification": "https://ec.coleman.co.jp/item/2000038141.html",
+        "fields": {
+          "capacity": "https://ec.coleman.co.jp/item/2000038141.html",
+          "weight": "https://ec.coleman.co.jp/item/2000038141.html",
+          "packed_size": "https://ec.coleman.co.jp/item/2000038141.html"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 0.96,
+        "comfort": 0.72,
+        "portability": 0.55,
+        "value": 0.9,
+        "trust": 0.96
+      },
+      "traits": [
+        "easy",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:55:30.667436+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/sports-bazaar/s-40coleman-2000038141/",
+      "specSummary": "定員2人 / 約4.0kg / 収納約φ19×49cm。",
+      "identityTerms": [
+        "ツーリングドーム",
+        "ST",
+        "2000038141"
+      ],
+      "price": 15720,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00r1jto.7cx6mf1a.g00r1jto.7cx6n2da/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsports-bazaar%2Fs-40coleman-2000038141%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsports-bazaar%2Fi%2F10314223%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sports-bazaar/cabinet/shiratori-82/8c3376fae6c3746fc4_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:55:30.667436+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "table",
+      "itemCode": "naturum:18689872",
+      "model": "2205813",
+      "query": "2205813",
+      "family": "table-2205813",
+      "name": "Coleman ナチュラルパズルテーブル/120 2205813",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 10295,
+      "spec": {
+        "table_size": "約120×70×41/60/70cm",
+        "weight": 5000,
+        "packed_size": "約70×7×60.5cm",
+        "table_capacity": 4
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/naturum/3454308/",
+        "specification": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
+        "fields": {
+          "table_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
+          "weight": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html",
+          "packed_size": "https://ec.coleman.co.jp/category/ITEM_LIST/2205813.html"
+        }
+      },
+      "scores": {
+        "fit": 0.96,
+        "beginner": 0.95,
+        "comfort": 0.94,
+        "portability": 0.3,
+        "value": 0.85,
+        "trust": 0.95
+      },
+      "traits": [
+        "easy",
+        "comfort"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:55:30.667436+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/naturum/3454308/",
+      "specSummary": "使用約120×70×41/60/70cm / 約5.0kg / 収納約70×7×60.5cm。",
+      "identityTerms": [
+        "ナチュラルパズルテーブル",
+        "120",
+        "2205813"
+      ],
+      "price": 10449,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00pn5fo.7cx6m0ea.g00pn5fo.7cx6n596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnaturum%2F3454308%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fnaturum%2Fi%2F18689872%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/naturum/cabinet/goods/034543/08_1.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:55:30.667436+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "tent",
+      "itemCode": "goose:10002974",
+      "model": "2000036439",
+      "query": "2000036439",
+      "family": "tent-2000036439",
+      "name": "Coleman パーティーキャビン/3025 2000036439",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 32800,
+      "spec": {
+        "capacity": 5,
+        "weight": 16500,
+        "packed_size": "約24×21×100cm"
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/goose/0535-007008/",
+        "specification": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
+        "fields": {
+          "capacity": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
+          "weight": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/",
+          "packed_size": "https://www.coleman.co.jp/customersupport/howtomovie/%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-3025/"
+        }
+      },
+      "scores": {
+        "fit": 0.93,
+        "beginner": 1,
+        "comfort": 0.92,
+        "portability": 0.08,
+        "value": 0.88,
+        "trust": 0.93
+      },
+      "traits": [
+        "easy"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-26T08:55:30.667436+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45786877867",
+      "itemUrl": "https://item.rakuten.co.jp/goose/0535-007008/",
+      "specSummary": "定員4〜5人 / 約16.5kg / 収納約24×21×100cm。広げるだけの簡単組立を重視したロッジ型。",
+      "identityTerms": [
+        "パーティーキャビン",
+        "3025",
+        "2000036439"
+      ],
+      "price": 32800,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00td38o.7cx6mb55.g00td38o.7cx6na8e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgoose%2F0535-007008%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fgoose%2Fi%2F10002974%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/goose/cabinet/07497217/08948924/imgrc0099313169.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-26T08:55:30.667436+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
     }
@@ -1037,8 +1037,7 @@
     "cooler:2238145": "not_reverified",
     "led_lantern:2218364": "exact_item_not_found",
     "fire_pit:ST-032RS": "rate_limited",
-    "tent:2000038429": "exact_item_not_found",
-    "fire_pit:2000037404": "rate_limited"
+    "tent:2000038429": "exact_item_not_found"
   },
-  "updatedAt": "2026-11-25T09:07:52.828912+00:00"
+  "updatedAt": "2026-11-26T08:55:30.667436+00:00"
 }
