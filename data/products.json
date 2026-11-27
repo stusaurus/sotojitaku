@@ -2,125 +2,6 @@
   "version": 1,
   "products": [
     {
-      "category": "burner",
-      "itemCode": "cheeky:10427303",
-      "model": "ST-350",
-      "query": "ST-350",
-      "family": "burner-st-350",
-      "name": "SOTO レギュレーターストーブ TriTrail ST-350",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 8100,
-      "spec": {
-        "fuel_type": "CB",
-        "ignition_type": "圧電点火方式",
-        "weight": 135
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/cheeky/u523500/",
-        "specification": "https://shop.shinfuji.co.jp/products/st-350",
-        "fields": {
-          "fuel_type": "https://shop.shinfuji.co.jp/products/st-350",
-          "ignition_type": "https://shop.shinfuji.co.jp/products/st-350",
-          "weight": "https://shop.shinfuji.co.jp/products/st-350"
-        }
-      },
-      "scores": {
-        "fit": 0.94,
-        "beginner": 0.9,
-        "comfort": 0.78,
-        "portability": 1,
-        "value": 0.84,
-        "trust": 0.97
-      },
-      "traits": [
-        "compact",
-        "value"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-22T07:28:17.469506+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 44998206336",
-      "itemUrl": "https://item.rakuten.co.jp/cheeky/u523500/",
-      "specSummary": "約135g / CB缶 / 圧電点火方式 / 屋外専用。",
-      "identityTerms": [
-        "レギュレーターストーブ",
-        "TriTrail",
-        "ST-350"
-      ],
-      "lookupName": true,
-      "brand": "SOTO",
-      "price": 8100,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00s4gao.7cx6m1c7.g00s4gao.7cx6n30e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcheeky%2Fu523500%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fcheeky%2Fi%2F10427303%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/cheeky/cabinet/23251-23500/u523500.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-22T07:28:17.469506+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
-      "category": "tent",
-      "itemCode": "sproutsllc:10034068",
-      "model": "2185614",
-      "query": "2185614",
-      "family": "tent-2185614",
-      "name": "Coleman ティピー/ST 2185614",
-      "audited": true,
-      "bodyConfirmed": true,
-      "condition": "new",
-      "fixedVariant": true,
-      "available": true,
-      "quantityPerListing": 1,
-      "priceAudit": true,
-      "referencePrice": 30685,
-      "spec": {
-        "capacity": 4,
-        "weight": 6300,
-        "packed_size": "約φ20×60cm"
-      },
-      "evidence": {
-        "listing": "https://item.rakuten.co.jp/sproutsllc/s-b0bjpfm46y-20260602/",
-        "specification": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html",
-        "fields": {
-          "capacity": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html",
-          "weight": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html",
-          "packed_size": "https://ec.coleman.co.jp/category/BEGINNER/2185614.html"
-        }
-      },
-      "scores": {
-        "fit": 0.95,
-        "beginner": 0.94,
-        "comfort": 0.78,
-        "portability": 0.72,
-        "value": 0.88,
-        "trust": 0.95
-      },
-      "traits": [
-        "compact"
-      ],
-      "reviewCount": null,
-      "reviewAverage": null,
-      "listingAuditedAt": "2026-11-22T07:28:17.469506+00:00",
-      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 44998206336",
-      "itemUrl": "https://item.rakuten.co.jp/sproutsllc/s-b0bjpfm46y-20260602/",
-      "specSummary": "定員3〜4人 / 約6.3kg / 収納約φ20×60cm。メインポール1本のシンプルなティピー型。",
-      "identityTerms": [
-        "ティピー",
-        "ST",
-        "2185614"
-      ],
-      "price": 23260,
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00uw3xo.7cx6m15b.g00uw3xo.7cx6n863/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsproutsllc%2Fs-b0bjpfm46y-20260602%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsproutsllc%2Fi%2F10034068%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
-      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/sproutsllc/cabinet/n20260602105312/b0bjpfm46y-1.jpg?_ex=128x128",
-      "verifiedAt": "2026-11-22T07:28:17.469506+00:00",
-      "shipping": "included",
-      "verificationMode": "sales_page_and_official_item_api"
-    },
-    {
       "category": "led_lantern",
       "itemCode": "sorabostore:10004141",
       "model": "2000038854",
@@ -998,6 +879,67 @@
       "verifiedAt": "2026-11-26T08:55:30.667436+00:00",
       "shipping": "included",
       "verificationMode": "sales_page_and_official_item_api"
+    },
+    {
+      "category": "burner",
+      "itemCode": "cheeky:10427303",
+      "model": "ST-350",
+      "query": "ST-350",
+      "family": "burner-st-350",
+      "name": "SOTO レギュレーターストーブ TriTrail ST-350",
+      "audited": true,
+      "bodyConfirmed": true,
+      "condition": "new",
+      "fixedVariant": true,
+      "available": true,
+      "quantityPerListing": 1,
+      "priceAudit": true,
+      "referencePrice": 8100,
+      "spec": {
+        "fuel_type": "CB",
+        "ignition_type": "圧電点火方式",
+        "weight": 135
+      },
+      "evidence": {
+        "listing": "https://item.rakuten.co.jp/cheeky/u523500/",
+        "specification": "https://shop.shinfuji.co.jp/products/st-350",
+        "fields": {
+          "fuel_type": "https://shop.shinfuji.co.jp/products/st-350",
+          "ignition_type": "https://shop.shinfuji.co.jp/products/st-350",
+          "weight": "https://shop.shinfuji.co.jp/products/st-350"
+        }
+      },
+      "scores": {
+        "fit": 0.94,
+        "beginner": 0.9,
+        "comfort": 0.78,
+        "portability": 1,
+        "value": 0.84,
+        "trust": 0.97
+      },
+      "traits": [
+        "compact",
+        "value"
+      ],
+      "reviewCount": null,
+      "reviewAverage": null,
+      "listingAuditedAt": "2026-11-27T09:03:46.296963+00:00",
+      "listingAudit": "Verified by the original merchant's fixed SKU, inventory and price plus exact official Rakuten Item API; GitHub Actions run 45970539055",
+      "itemUrl": "https://item.rakuten.co.jp/cheeky/u523500/",
+      "specSummary": "約135g / CB缶 / 圧電点火方式 / 屋外専用。",
+      "identityTerms": [
+        "レギュレーターストーブ",
+        "TriTrail",
+        "ST-350"
+      ],
+      "lookupName": true,
+      "brand": "SOTO",
+      "price": 8100,
+      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00s4gao.7cx6m1c7.g00s4gao.7cx6n30e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcheeky%2Fu523500%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fcheeky%2Fi%2F10427303%2F&rafcid=wsc_i_is_3fdd6218-dff7-43fd-8f3a-b4d75c514e43",
+      "image": "https://thumbnail.image.rakuten.co.jp/@0_mall/cheeky/cabinet/23251-23500/u523500.jpg?_ex=128x128",
+      "verifiedAt": "2026-11-27T09:03:46.296963+00:00",
+      "shipping": "included",
+      "verificationMode": "sales_page_and_official_item_api"
     }
   ],
   "status": "ok",
@@ -1037,7 +979,8 @@
     "cooler:2238145": "not_reverified",
     "led_lantern:2218364": "exact_item_not_found",
     "fire_pit:ST-032RS": "rate_limited",
-    "tent:2000038429": "exact_item_not_found"
+    "tent:2000038429": "rate_limited",
+    "tent:2185614": "exact_item_not_found"
   },
-  "updatedAt": "2026-11-26T08:55:30.667436+00:00"
+  "updatedAt": "2026-11-27T09:03:46.296963+00:00"
 }
