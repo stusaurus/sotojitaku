@@ -3,6 +3,10 @@ import hashlib,re
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def version(name):return hashlib.sha256((ROOT/name).read_bytes()).hexdigest()[:12]
+# New scene module must be fingerprinted before camp/app.js itself is hashed.
+p=ROOT/'camp/app.js';s=p.read_text()
+s=re.sub(r'(\./scene-studio\.js)(?:\?v=[a-z0-9]+)?',r'\1?v='+version('camp/scene-studio.js'),s)
+p.write_text(s)
 for app_name,prefix in [('app.js','./'),('camp/app.js','../')]:
  p=ROOT/app_name;s=p.read_text()
  for name in ['engine.js','products.js']:
@@ -11,6 +15,7 @@ for app_name,prefix in [('app.js','./'),('camp/app.js','../')]:
 p=ROOT/'camp/index.html';s=p.read_text()
 for name in ['app.js','style.css']:
  s=re.sub(r'(["\'])((?:\.\./|\./)?'+re.escape(name)+r')(?:\?v=[a-z0-9]+)?(["\'])',lambda m:m[1]+m[2]+'?v='+version('camp/app.js' if name=='app.js' else name)+m[3],s)
+s=re.sub(r'(\./studio\.css)(?:\?v=[a-z0-9]+)?',r'\1?v='+version('camp/studio.css'),s)
 p.write_text(s)
 
 p=ROOT/'index.html';s=p.read_text()

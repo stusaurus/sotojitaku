@@ -1,0 +1,736 @@
+.sim-visual:has(.studio-scene){background:#182d28;display:grid;align-content:center;padding-top:65px;box-sizing:border-box}
+.studio-scene{color:#fbf7eb;background:#182d28;min-width:0;width:100%;font-family:var(--sans)}
+.world-frame{position:relative;aspect-ratio:1.56;overflow:hidden;isolation:isolate;background:linear-gradient(#96b6bb,#637c6c 55%,#82775e)}
+.studio-image,.world-tint{position:absolute;width:100%;height:100%;inset:0;pointer-events:none}
+.studio-image{object-fit:cover;object-position:center;transition:filter .6s}
+.world-frame[data-season="autumn"] .studio-image{filter:sepia(.42) saturate(1.2)}
+.world-frame[data-season="summer"] .studio-image{filter:saturate(1.35)}
+.world-tint{background:#f9cb86;mix-blend-mode:multiply;opacity:.12;transition:background .6s,opacity .6s}
+[data-studio-time="evening"] .world-tint{background:#e79d79;opacity:.65}
+[data-studio-time="night"] .world-tint{background:#243951;opacity:.9}
+.world-object,.world-pack{position:absolute;left:var(--x);top:var(--y);width:var(--w);transform:translate(-50%,-100%);padding:0;border:none;background:none;cursor:pointer}
+.world-object img,.world-pack{display:block;width:100%;filter:drop-shadow(3px 3px 2px #30271966);transition:filter .6s}
+.world-pack{width:9%;left:49%;top:73%;pointer-events:none}
+.world-object:before{content:"";position:absolute;bottom:0;left:8%;width:89%;height:10%;background:#382f24;opacity:.36;border-radius:50%;filter:blur(2px);transform:skewX(-25deg)}
+.world-object:after{content:"";position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);min-width:44px;min-height:44px}
+[data-studio-time="evening"] :is(.world-object img,.world-pack){filter:sepia(.2) brightness(.81) drop-shadow(4px 2px 2px #33231a66)}
+[data-studio-time="night"] :is(.world-object img,.world-pack){filter:brightness(.44) saturate(.65) drop-shadow(2px 2px 2px #06101599)}
+[data-studio-time="night"] [data-inspect="fire_pit"] img,[data-studio-time="night"] [data-inspect="led_lantern"] img{filter:brightness(.9) drop-shadow(0 0 8px #ffa23c)}
+.world-caption{position:absolute;inset:auto 0 0;padding:4% 4% 2%;display:flex;align-items:baseline;gap:12px;pointer-events:none;background:linear-gradient(transparent,#101e1ccf);text-shadow:0 1px 4px #172423}
+.world-caption span{font:500 clamp(17px,2vw,30px) var(--serif)}
+.studio-chip-row{font-size:12px}
+.world-tools,.world-note{margin:0 4%}
+.world-tools{display:flex;justify-content:space-between;align-items:center;padding:12px 0 6px;gap:8px}
+.world-times{display:flex;border:1px solid #9ca992;border-radius:5px;overflow:hidden}
+.studio-time-option,.world-list,.world-dialog form button{min-width:46px;min-height:44px;border:0;background:none;color:inherit;font:inherit;font-size:13px;cursor:pointer}
+.studio-time-option[aria-pressed="true"]{background:#e8e5d3;color:#22392f}
+.studio-time-option:disabled{opacity:.42}
+.world-list,.world-dialog form button{text-decoration:underline;text-underline-offset:4px}
+.world-note{font-size:12px;line-height:1.5;color:#d7dfd7;padding-bottom:14px}
+.world-dialog{width:min(90vw,390px);max-height:80svh;background:#faf7ed;color:#24392d;border:0;border-radius:12px;padding:20px 24px;box-sizing:border-box}
+.world-dialog::backdrop{background:#0e1d19aa}
+.world-dialog form{text-align:right}
+.world-dialog h2{font:500 24px var(--serif)}
+.world-dialog ul{list-style:none;padding:0}
+.world-dialog li{padding:10px 0;border-bottom:1px solid #ced4c9}
+.world-dialog li span,.world-dialog p{display:block;font-size:13px;line-height:1.65}
+.studio-scene button:focus-visible{outline:3px solid #dc9332;outline-offset:-3px}
+@media(max-width:760px){
+.sim-visual:has(.studio-scene){height:auto;min-height:0;padding:65px 0 0}
+.simulator:has(.studio-scene) .question-sheet{margin:0;padding-top:20px;border-radius:0}
+.world-tools{padding:5px 0 2px}
+.world-note{font-size:11px;padding-bottom:7px}
+.world-caption{gap:8px}.studio-chip-row{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.studio-scene *{transition:none!important;animation:none!important}}
+.world-pack{left:66%;top:70%}
+[data-studio-time="night"] :is([data-inspect="fire_pit"],[data-inspect="led_lantern"]) img{filter:brightness(.9)}
+[data-studio-time="night"] :is([data-inspect="fire_pit"],[data-inspect="led_lantern"]):before{left:-45%;width:190%;height:50%;opacity:.7;background:radial-gradient(ellipse,#f5ac5866,transparent 72%);filter:blur(3px)}
+.world-object[data-deferred="true"]{opacity:.55}
+.world-dialog small{display:block;color:#435346;font-size:12px;line-height:1.6}
+.world-note meter{display:block;max-width:220px;width:100%}
+.world-stars{position:absolute;inset:0 0 83%;opacity:0;pointer-events:none;background:radial-gradient(circle at 9% 21%,#fff9 1px,transparent 1.4px),radial-gradient(circle at 21% 65%,#fff7 .7px,transparent 1px),radial-gradient(circle at 44% 12%,#fff9 1px,transparent 1.3px),radial-gradient(circle at 66% 34%,#fff8 .8px,transparent 1px);background-size:27% 59%,37% 100%,44% 71%,63% 75%;transition:opacity .55s}
+[data-studio-time="night"] .world-stars{opacity:.9}
+.finished-world{background:#182d28;padding:76px max(0px,calc((100% - 920px)/2)) 0}
+.finished-copy{padding:26px 5%;color:#fbf7eb}
+.finished-copy h1{font-family:var(--serif)}
+
+
+/* Sprint 02 | coherent night illumination. The spill lives on the ground behind props,
+   and only a planned, non-deferred object can illuminate its surroundings. */
+.world-light-spill{
+  position:absolute;z-index:1;pointer-events:none;opacity:0;
+  mix-blend-mode:screen;filter:blur(7px);
+  transition:opacity .6s ease;
+}
+.world-fire-spill{
+  left:73%;top:88%;width:59%;height:42%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at 50% 54%,#ffb65a9c 0%,#ff8d315c 28%,#f3772223 54%,transparent 74%);
+}
+.world-lantern-spill{
+  left:40%;top:88%;width:37%;height:35%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse,#ffe2a88f 0%,#eebd6761 33%,transparent 72%);
+}
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] .world-fire-spill{opacity:.85}
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] .world-lantern-spill{opacity:.62}
+[data-studio-time="evening"] .world-frame[data-fire-glow="true"] .world-fire-spill{opacity:.25}
+[data-studio-time="evening"] .world-frame[data-lantern-glow="true"] .world-lantern-spill{opacity:.12}
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] :is([data-inspect="fire_pit"],[data-mini-role="fire_pit"]) img,
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] :is([data-inspect="led_lantern"],[data-mini-role="led_lantern"]) img{
+  filter:brightness(1.03) saturate(1.06) drop-shadow(0 0 11px #ffb65a9c);
+}
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] [data-chair-pose="mirrored"] img,
+[data-studio-time="night"] .world-frame[data-fire-glow="true"] [data-chair-pose="mirrored-near"] img{
+  filter:brightness(.74) sepia(.22);
+}
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] [data-inspect="tent"] img,
+[data-studio-time="night"] .world-frame[data-lantern-glow="true"] [data-mini-role="tent"] img{
+  filter:brightness(.65) saturate(.79);
+}
+[data-studio-time="night"] .world-object[data-deferred="true"] img{
+  filter:brightness(.32) saturate(.45);
+}
+/* Camera-stable mirror and subtle tilt; no arbitrary 3D rotation of a flat asset. */
+.world-object[data-chair-pose="mirrored"] img{transform:scaleX(-1) rotate(-2deg);transform-origin:50% 92%}
+.world-object[data-chair-pose="angled"] img{transform:rotate(-4deg);transform-origin:50% 92%}
+.world-object[data-chair-pose="mirrored-near"] img{transform:scaleX(-1) rotate(2deg);transform-origin:50% 92%}
+
+/* A compact live mirror appears only on the long experience chooser, not on
+   every step; it stays in sight while users scroll to the lower choices. */
+.studio-mobile-feedback{display:none}
+@media(max-width:900px) and (orientation:portrait){
+  .studio-mobile-feedback{
+    position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:12;
+    display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:8px;
+    border:1px solid #d4d7ca;border-radius:17px;
+    color:#21382d;background:#f9f7ef;
+    box-shadow:0 9px 24px rgba(20,39,31,.12);
+  }
+  .studio-mobile-feedback-preview{
+    width:42%;min-width:118px;max-width:160px;flex:0 0 42%;overflow:hidden;
+    border-radius:11px;background:#182d28;pointer-events:none;isolation:isolate;
+  }
+  .studio-mobile-feedback-preview .world-frame{width:100%;aspect-ratio:1.56}
+  .studio-mobile-feedback-preview .world-caption{display:none}
+  .studio-mobile-feedback-preview .world-object{
+    cursor:default;pointer-events:none;
+  }
+  .studio-mobile-feedback-copy{
+    min-width:0;flex:1;display:flex;flex-direction:column;gap:4px;
+    font-family:var(--sans);line-height:1.45;
+  }
+  .studio-mobile-feedback-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;color:#687d6d}
+  .studio-mobile-feedback-copy strong{font-size:12px;line-height:1.5}
+  .studio-mobile-feedback-count{font-size:11px;color:#506857}
+}
+@media(max-width:360px){
+  .studio-mobile-feedback{gap:8px;padding:7px}
+  .studio-mobile-feedback-preview{min-width:111px}
+  .studio-mobile-feedback-copy strong{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .world-light-spill{transition:none}
+  .world-object[data-chair-pose] img{transition:none}
+}
+
+
+/* Short-landscape touch layout: a 55/45 fixed-height split clipped the
+   scene tools on phones rotated sideways. Stack the scene and the controls
+   and keep the small live mirror while choosing experiences. */
+@media (max-width:960px) and (max-height:540px) and (orientation:landscape){
+  .simulator:has(.studio-scene){display:block}
+  .sim-visual:has(.studio-scene){
+    height:auto;min-height:0;overflow:visible;
+    padding:64px 0 0;position:relative
+  }
+  .studio-scene{width:100%;max-width:none}
+  .studio-scene .world-frame{aspect-ratio:1.9}
+  .simulator:has(.studio-scene) .question-sheet{
+    margin:0;border-radius:0;padding:20px 24px 48px
+  }
+  .studio-mobile-feedback{
+    position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:12;
+    display:flex;align-items:center;gap:12px;
+    margin:0 0 18px;padding:8px;
+    border:1px solid #d4d7ca;border-radius:17px;
+    color:#21382d;background:#f9f7ef;
+    box-shadow:0 9px 24px rgba(20,39,31,.12);
+  }
+  .studio-mobile-feedback-preview{
+    width:140px;max-width:32vw;flex:0 0 140px;
+    overflow:hidden;border-radius:11px;
+    background:#182d28;pointer-events:none;isolation:isolate
+  }
+  .studio-mobile-feedback-preview .world-frame{width:100%;aspect-ratio:1.56}
+  .studio-mobile-feedback-preview .world-caption{display:none}
+  .studio-mobile-feedback-preview .world-object{pointer-events:none}
+  .studio-mobile-feedback-copy{
+    min-width:0;flex:1;display:flex;flex-direction:column;gap:3px;
+    font-family:var(--sans);line-height:1.45
+  }
+  .studio-mobile-feedback-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;color:#687d6d}
+  .studio-mobile-feedback-copy strong{font-size:12px}
+  .studio-mobile-feedback-count{font-size:11px;color:#506857}
+}
+
+
+/* Tablet portrait: a 55/45 split produced a small mid-panel photograph with
+   large empty green areas on iPad Mini. Give the fixed-camera world its full
+   photographic width above the questionnaire, like a premium editorial scene. */
+@media (min-width:761px) and (max-width:900px) and (orientation:portrait){
+  .simulator:has(.studio-scene){display:block}
+  .sim-visual:has(.studio-scene){
+    height:auto;min-height:0;overflow:visible;
+    padding:76px 0 0;position:relative
+  }
+  .studio-scene{width:100%}
+  .studio-scene .world-frame{aspect-ratio:1.9}
+  .simulator:has(.studio-scene) .question-sheet{
+    margin:0;padding:32px clamp(40px,8vw,88px) 80px;border-radius:0
+  }
+}
+
+
+/* Accessible prop interaction: retain the original percentages and photographic
+   composition, but give real button elements (not ::after shadows) a >=44px
+   pointer/keyboard target. Sprite widths remain in camera-relative cqw units.
+   This needs the world-frame inline size to define stable container units. */
+.world-frame{container-type:inline-size}
+.world-object{
+  width:max(44px,var(--w));
+  min-height:44px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  touch-action:manipulation;
+}
+.world-object img{
+  width:min(100%,var(--visual-width));
+  max-width:100%;
+  height:auto;
+  flex:0 0 auto;
+  pointer-events:none;
+}
+.world-object::before{
+  left:50%;
+  width:min(89%,var(--visual-width));
+  transform:translateX(-50%) skewX(-25deg);
+}
+.world-object::after{
+  inset:0;
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  transform:none;
+}
+
+
+/* 320px visual QA: never split the short lake title just because the plan
+   summary needs space. Keep both lines legible and avoid spilling off-screen. */
+@media(max-width:360px){
+  .world-caption{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+    padding:3% 4%;
+  }
+  .world-caption span{white-space:nowrap;font-size:17px}
+  .world-caption .studio-chip-row{
+    display:block;
+    max-width:100%;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:10px;
+  }
+}
+
+
+/* Sprint 06 | the same objects users touch appear in the inspection sheet.
+   Acquisition state is always expressed as text, never color alone. */
+.world-dialog{
+  overflow-y:auto;
+  box-shadow:0 30px 90px #0b1a18a8;
+  border:1px solid #dadfd3;
+}
+.world-dialog-title{font-size:clamp(22px,3vw,26px);line-height:1.5}
+.world-dialog .world-dialog-intro{
+  margin:2px 0 12px;
+  color:#5d6c5e;
+  font-size:12px;
+}
+.world-dialog ul{margin:10px 0 18px}
+.world-dialog li{
+  display:grid;
+  grid-template-columns:66px minmax(0,1fr);
+  gap:13px;
+  align-items:start;
+  padding:13px 0;
+}
+.world-dialog li[hidden]{display:none}
+.world-detail-thumb{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  height:76px;
+  padding:7px;
+  border-radius:10px;
+  background:linear-gradient(145deg,#eceee3,#d9e0d1);
+  overflow:hidden;
+}
+.world-detail-thumb img{
+  display:block;
+  width:100%;height:100%;
+  object-fit:contain;
+  filter:drop-shadow(1px 3px 2px #192d2740);
+}
+.world-detail-content{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  align-items:flex-start;
+  min-width:0;
+}
+.world-detail-content .world-detail-name{
+  font-family:var(--serif);
+  font-size:17px;line-height:1.5;
+  color:#203c2f;
+}
+.world-dialog .world-detail-role{
+  color:#526456;font-size:12px;line-height:1.5;
+}
+.world-dialog .world-detail-remark{
+  color:#526456;font-size:12px;line-height:1.55;
+}
+.world-status-pill{
+  display:inline-flex;
+  max-width:100%;
+  border-radius:999px;
+  padding:3px 9px;
+  font-size:11px;
+  line-height:1.55;
+  font-weight:600;
+  background:#e6e6de;color:#49534d;
+}
+.world-status-pill[data-status="owned"]{background:#dce9db;color:#355f43}
+.world-status-pill[data-status="buy"]{background:#eee0cd;color:#755332}
+.world-status-pill[data-status="rent"]{background:#dae5ec;color:#395b70}
+.world-status-pill[data-status="skip"]{background:#e7e7e3;color:#5e635d}
+.world-status-pill[data-status="undecided"]{background:#eee5dc;color:#735f4e}
+.world-dialog .world-dialog-safety{
+  padding-top:6px;
+  color:#526355;
+  border-top:1px solid #ced6c8;
+}
+.world-object[data-inspect-focus="true"]{
+  z-index:5;
+}
+.world-object[data-inspect-focus="true"]::after{
+  inset:-5px;
+  width:calc(100% + 10px);
+  height:calc(100% + 10px);
+  border:2px solid #f4d7a2;
+  border-radius:10px;
+  background:#f9c87612;
+  box-shadow:0 0 0 5px #edbc8540,0 0 20px #f6b36e66;
+}
+@media(max-width:360px){
+  .world-dialog{padding:16px}
+  .world-dialog li{grid-template-columns:56px minmax(0,1fr);gap:10px}
+  .world-detail-thumb{height:64px}
+  .world-detail-content .world-detail-name{font-size:15px}
+}
+
+/* Override legacy .world-dialog li span display:block for new flex layouts. */
+.world-dialog .world-detail-thumb,.world-dialog .world-detail-content{display:flex}
+.world-dialog .world-status-pill{display:inline-flex}
+
+
+/* Launch readiness is separate from completing the planning exercise.
+   Keep this truth visible next to the celebration, not buried below gear cards. */
+.completion-reality{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  margin:17px 0 22px;
+  padding:13px 16px;
+  border-left:3px solid #c0ac80;
+  border-radius:0 9px 9px 0;
+  background:rgba(244,242,224,.10);
+  color:#f8f4e6;
+  font-family:var(--sans);
+  line-height:1.65;
+  max-width:60ch;
+}
+.completion-reality strong{font-size:13px;font-weight:600}
+.completion-reality span{font-size:12px;color:#e4e2d5}
+@media(max-width:390px){
+  .completion-reality{padding:11px 12px;margin:14px 0 19px}
+  .completion-reality strong{font-size:12px}
+  .completion-reality span{font-size:11px}
+}
+
+
+/* Budget gate remains advisory for a plan, but an over-budget finish must be
+   immediately legible next to the scene—not buried in the cost summary. */
+.completion-budget-warning{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+  margin:0 0 20px;
+  padding:13px 16px;
+  border-left:3px solid #e8bb7d;
+  border-radius:0 9px 9px 0;
+  color:#fff1d8;
+  background:rgba(162,93,42,.16);
+  max-width:60ch;
+  font-family:var(--sans);
+  line-height:1.65;
+}
+.completion-budget-warning strong{font-size:14px;font-weight:700}
+.completion-budget-warning span{font-size:12px}
+.completion-budget-warning button{
+  border:0;
+  padding:4px 0;
+  min-height:40px;
+  background:none;
+  color:#ffe1a6;
+  font-size:12px;
+  text-align:left;
+  text-decoration:underline;
+  text-underline-offset:4px;
+  cursor:pointer;
+}
+.completion-budget-warning button:focus-visible{outline:2px solid #ffe1a6;outline-offset:3px}
+@media(max-width:390px){
+  .completion-budget-warning{padding:11px 12px}
+  .completion-budget-warning strong{font-size:12px}
+  .completion-budget-warning span{font-size:11px}
+}
+
+
+/* Sprint 11 | one camera, three honest atmospheres. The ground and the
+   still lake remain the same WebP; tint-reflected mist is composited behind
+   the tappable props. These layers create zero network requests. */
+.world-atmosphere{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:.82;
+  transition:opacity .6s ease;
+}
+.world-atmosphere::before{
+  content:"";
+  position:absolute;
+  inset:29% 0 38%;
+  background:linear-gradient(180deg,transparent 2%,#f7f4e81c 36%,#e5eff442 54%,transparent 94%);
+  filter:blur(9px);
+}
+.world-atmosphere::after{
+  content:"";
+  position:absolute;
+  inset:42% 9% 42%;
+  border-radius:55%;
+  background:
+    linear-gradient(180deg,transparent 18%,#f6e8c01c 44%,transparent 74%),
+    repeating-linear-gradient(177deg,transparent 0 9px,#f5efdd16 10px 11px,transparent 12px 21px);
+  filter:blur(3px);
+  transform:skewX(-9deg);
+}
+.world-frame[data-season="spring"] .world-atmosphere{opacity:.92}
+.world-frame[data-season="summer"] .world-atmosphere{opacity:.47}
+.world-frame[data-season="autumn"] .world-atmosphere{opacity:.72}
+[data-studio-time="evening"] .world-atmosphere::before{
+  background:linear-gradient(180deg,transparent 4%,#dfae7d1c 28%,#ffd5a54c 53%,transparent 95%);
+}
+[data-studio-time="evening"] .world-atmosphere::after{
+  background:
+    linear-gradient(180deg,transparent 18%,#eaa46c4d 44%,transparent 76%),
+    repeating-linear-gradient(177deg,transparent 0 9px,#ffdaa024 10px 11px,transparent 12px 21px);
+}
+[data-studio-time="night"] .world-atmosphere::before{
+  background:linear-gradient(180deg,transparent 4%,#779eb013 39%,#94b9c52d 59%,transparent 95%);
+}
+[data-studio-time="night"] .world-atmosphere::after{
+  background:
+    linear-gradient(180deg,transparent 18%,#a0bfda23 44%,transparent 76%),
+    repeating-linear-gradient(177deg,transparent 0 9px,#8aafbf16 10px 11px,transparent 12px 21px);
+}
+/* Chosen morning coffee has a subtle trail above the already illustrated
+   kettle. Its visibility follows the temporary time preview without adding
+   a second scene, new controls, sound, persistence or heat certification. */
+.world-coffee-steam{
+  position:absolute;
+  left:54.5%;
+  top:52%;
+  width:5%;
+  height:15%;
+  z-index:2;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .45s ease;
+}
+[data-studio-time="morning"] .world-coffee-steam{opacity:.72}
+.world-coffee-steam::before,.world-coffee-steam::after{
+  position:absolute;
+  content:"";
+  bottom:0;
+  height:86%;
+  width:29%;
+  border-radius:100% 35% 80% 24%;
+  background:linear-gradient(0deg,transparent 3%,#fbfcf6c0 46%,#fff9 72%,transparent 100%);
+  filter:blur(1.8px);
+  transform-origin:bottom center;
+}
+.world-coffee-steam::before{left:26%;transform:rotate(-11deg)}
+.world-coffee-steam::after{left:61%;height:67%;transform:rotate(13deg);opacity:.68}
+@media(prefers-reduced-motion:no-preference){
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"][data-studio-time="morning"] .world-coffee-steam::before{animation:camp-steam-left 3.7s ease-in-out infinite alternate}
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"][data-studio-time="morning"] .world-coffee-steam::after{animation:camp-steam-right 4.2s ease-in-out infinite alternate}
+  @keyframes camp-steam-left{
+    from{transform:translateY(2px) rotate(-11deg);opacity:.36}
+    to{transform:translateY(-4px) rotate(8deg);opacity:.82}
+  }
+  @keyframes camp-steam-right{
+    from{transform:translateY(0) rotate(13deg);opacity:.7}
+    to{transform:translateY(-5px) rotate(-9deg);opacity:.32}
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .world-atmosphere,.world-coffee-steam{transition:none}
+  .world-coffee-steam::before,.world-coffee-steam::after{animation:none}
+}
+
+.world-light-picker{display:flex;align-items:center;gap:12px}
+.world-light-label{color:#e0e7db;font-size:13px}
+.world-caption .studio-chip-row{font-size:12px;line-height:1.45}
+@media(max-width:760px){
+  .world-light-picker{gap:7px}
+  .world-light-label{font-size:12px}
+  .world-note{font-size:12px;line-height:1.55}
+  .world-caption{display:grid;gap:1px;background:linear-gradient(transparent,#13211bd9)}
+}
+
+
+/* Sprint 13 | the long experience chooser gives explicit, temporary
+   feedback while a single inert mirror shows changes to the real fixed-camera
+   world. Color never carries the selection message on its own. */
+.studio-mobile-feedback-count{
+  display:block;
+  min-height:2.8em;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+.studio-mobile-feedback[data-choice-feedback="add"]{
+  border-color:#93ad8d;
+  box-shadow:0 9px 24px #14271f1f,0 0 0 1px #93ad8d55;
+}
+.studio-mobile-feedback[data-choice-feedback="remove"]{
+  border-color:#c9bbac;
+}
+.studio-mobile-feedback[data-choice-feedback] .studio-mobile-feedback-count{
+  font-weight:650;
+  color:#254c36;
+}
+/* On narrow hand-held screens the next action remains in thumb reach while
+   the long grid scrolls. It stays inside the question sheet, not over the
+   global tab bar or over another route. */
+@media(max-width:760px){
+  .simulator:has(.studio-scene) .question-sheet:has(.experience-grid) .question-actions{
+    position:sticky;
+    bottom:calc(8px + env(safe-area-inset-bottom,0px));
+    z-index:14;
+    margin:20px -8px 0;
+    padding:8px;
+    border:1px solid #d9dfd2;
+    border-radius:16px;
+    background:#faf8f0;
+    box-shadow:0 8px 24px #14251e24;
+  }
+  .simulator:has(.studio-scene) .question-sheet:has(.experience-grid) .question-actions .primary{
+    min-height:52px;
+  }
+  .simulator:has(.studio-scene) .question-sheet .experience{
+    min-height:105px;
+    touch-action:manipulation;
+  }
+  .simulator:has(.studio-scene) .question-sheet .experience:focus-visible{
+    outline:3px solid #d59b4b;
+    outline-offset:3px;
+  }
+  .simulator:has(.studio-scene) .question-sheet .experience,
+  .simulator:has(.studio-scene) .question-sheet .easy-option{
+    scroll-margin-bottom:calc(96px + env(safe-area-inset-bottom,0px));
+  }
+}
+
+/* Light comes across the shore from camera left. Project the silhouettes of
+   the actual photographs onto that ground plane. The table surface and steam
+   follow the pixel geometry of the furniture even on a wider tablet frame. */
+.world-frame {
+  --tabletop: calc(83% - 9.5cqw);
+  --kettle-base: 84%;
+  --shadow-projection: matrix(1, 0, -.47, .17, 0, 0);
+  --shadow-density: .30;
+}
+.world-frame[data-table-placed="true"] { --kettle-base: var(--tabletop); }
+[data-studio-time="evening"] .world-frame {
+  --shadow-projection: matrix(1, 0, -.96, .22, 0, 0);
+  --shadow-density: .43;
+}
+[data-studio-time="night"] .world-frame {
+  --shadow-projection: matrix(1, 0, .28, .10, 0, 0);
+  --shadow-density: .34;
+}
+[data-studio-time="evening"] .world-tint {
+  background: linear-gradient(110deg, #ffa775, #e2b697 49%, #94a6b1);
+  opacity: .69;
+}
+.world-pack { left: 68%; top: 70%; width: 8%; }
+.world-object { z-index: 2; }
+.world-object img { position: relative; transform-origin: 50% 97%; }
+.world-caption { z-index: 3; }
+.world-coffee-steam { top: auto; bottom: calc(100% - var(--kettle-base) + 5.2cqw); }
+:is([data-inspect="kettle"], [data-mini-role="kettle"]) { top: var(--kettle-base); }
+.world-frame .world-object::before {
+  bottom: 0;
+  left: 50%;
+  width: min(100%, var(--visual-width));
+  height: auto;
+  aspect-ratio: var(--ratio);
+  border-radius: 0;
+  /* Reuse the photograph in the same request mode as its visible layer. */
+  background: var(--art) center / 100% 100% no-repeat;
+  filter: brightness(0);
+  opacity: var(--shadow-density);
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) var(--shadow-projection);
+  pointer-events: none;
+}
+.world-frame :is([data-inspect="kettle"], [data-mini-role="kettle"])::before {
+  --shadow-projection: matrix(1, 0, -.3, .12, 0, 0);
+}
+[data-studio-time="night"] .world-frame .world-object[data-chair-pose^="mirrored"]::before {
+  --shadow-projection: matrix(-1, 0, -.40, .13, 0, 0);
+}
+.world-object[data-departing] { pointer-events: none; }
+
+/* The stay and experience questions. Each flag is reached separately from the photograph's
+   inspection target. Both inputs lead to the same authoritative answer. */
+.world-sites { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.world-site {
+  position: absolute;
+  left: 55%;
+  bottom: max(calc(17% + 23cqw), calc(12% + 13cqw + 52px));
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  min-width: 44px;
+  border: 0;
+  padding: 0 2px;
+  background: transparent;
+  color: #24392e;
+  font: 600 clamp(12px, 1.5cqw, 15px)/1.2 var(--sans);
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  pointer-events: auto;
+}
+.world-site[data-place-experience="bonfire"] { left: 73%; bottom: calc(12% + 13cqw); }
+.world-site-label {
+  display: inline-flex; align-items: center; gap: .4em;
+  padding: .48em .73em .48em .56em;
+  background: #faf6e9;
+  border: 1px solid #405345;
+  border-radius: 2em;
+  box-shadow: 0 2px 6px #14271f38;
+}
+.world-site-label i {
+  display: grid; place-items: center;
+  width: 1.22em; height: 1.22em;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: 500 1em/1 var(--sans);
+}
+.world-site-label i::before { content: "+"; }
+.world-site[aria-pressed="true"] .world-site-label {
+  background: #284737; color: #fff9e8; border-color: #ece6c9;
+}
+.world-site[aria-pressed="true"] i::before { content: "✓"; }
+.world-site::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  top: calc(50% + .9em); width: 1px; height: clamp(11px, 2.8cqw, 24px);
+  background: #faf2d9; box-shadow: 1px 0 1px #233c31;
+}
+.studio-scene .world-site:focus-visible { outline: none; }
+.world-site:focus-visible .world-site-label {
+  outline: 3px solid #ffc975; outline-offset: 2px; box-shadow: 0 0 0 6px #243d31;
+}
+/* The small status picture follows the final lighting immediately. Only the
+   large scene needs to composite the photographic transition on each tap. */
+.studio-mobile-feedback-preview :is(.studio-image,.world-tint,.world-light-spill,.world-object img) { transition: none; }
+.studio-mobile-feedback-preview .world-object { min-width: 0; min-height: 0; width: var(--w); }
+.studio-scene[data-motion-quality="still"] :is(.world-object img, .world-tint, .studio-image, .world-light-spill) { transition: none; }
+.world-site[data-place-stay] { left: 31%; bottom: calc(29% + 28cqw); }
+@media(max-width:360px) {
+  .world-light-picker { gap: 4px; }
+  .world-light-label, .world-list { white-space: nowrap; }
+  .world-list { padding-inline: 0; }
+  .world-times button { min-width: 44px; padding-inline: 4px; }
+}
+.world-flame-tip { display: none; }
+@media(prefers-reduced-motion:no-preference) {
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"] [data-inspect="fire_pit"] > img {
+    clip-path: inset(31% 0 0);
+  }
+  .studio-scene[data-in-view="true"][data-motion-quality="normal"] .world-flame-tip {
+    position: absolute; display: block; pointer-events: none;
+    bottom: 0; left: 50%; translate: -50%;
+    width: var(--visual-width); aspect-ratio: var(--ratio);
+    background: var(--art) center / contain no-repeat;
+    clip-path: inset(0 0 68%); transform-origin: 50% 32%;
+    animation: camp-kindling 720ms ease-in-out 3 alternate;
+  }
+  @keyframes camp-kindling {
+    0% { transform: skewX(-3deg) scaleY(.89); }
+    45% { transform: skewX(4deg) scaleY(1.04); }
+    100% { transform: skewX(-1deg) scaleY(.95); }
+  }
+}
+
+/* A single place to start on the empty shore. The four existing party
+   choices unfold only while needed and leave the lake visible afterwards. */
+.world-party {
+  position: absolute; z-index: 4; top: 25%; left: 9%;
+  color: #24392e; font: 600 clamp(12px, 1.5cqw, 15px)/1.2 var(--sans);
+}
+.world-party summary {
+  display: flex; align-items: center; width: max-content; min-height: 44px;
+  cursor: pointer; touch-action: manipulation; list-style: none;
+}
+.world-party summary::-webkit-details-marker { display: none; }
+.world-party summary .world-site-label { gap: .65em; padding-inline: .8em; }
+.world-party summary [aria-hidden] { font-size: 1.2em; line-height: .75; }
+.world-party[open] summary [aria-hidden] { transform: rotate(180deg); }
+.world-party-options {
+  display: flex; width: max-content; padding: 2px; gap: 2px;
+  background: #f8f4e6; border: 1px solid #405345; border-radius: 9px;
+  box-shadow: 0 3px 8px #14271f38;
+}
+.world-party-options button {
+  min-width: 44px; min-height: 44px; padding: 0 .55em;
+  border: 0; border-radius: 6px; background: transparent; color: #24392e;
+  font: inherit; cursor: pointer; touch-action: manipulation;
+}
+.world-party-options button[aria-pressed="true"] { background: #284737; color: #fff9e8; }
+.world-party :is(summary, button):focus-visible {
+  outline: 3px solid #ffc975; outline-offset: 1px; box-shadow: 0 0 0 5px #243d31;
+}

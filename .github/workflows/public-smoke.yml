@@ -19,6 +19,10 @@ on:
       - '.github/workflows/publish-static.yml'
       - '.github/workflows/refresh-verified-camp-offer.yml'
       - 'tests/camp-published-catalog.mjs'
+      - 'tests/camp-device-browser.mjs'
+      - 'tests/camp-performance-browser.mjs'
+      - 'tests/camp-first-visit-browser.mjs'
+      - 'tests/camp-placement-browser.mjs'
   workflow_dispatch:
   schedule:
     - cron: '7 0 * * 1'
@@ -31,6 +35,55 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  camp-world:
+    if: github.event_name == 'pull_request' && github.event.pull_request.number == 337
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: c6413a2b3d691264d4ffdb2bc33a65660d8508a9
+          path: previous-studio
+      - uses: actions/checkout@v4
+        with:
+          ref: 0fb2b9829702813b6c40802ca7d728ce4cddfbe4
+          path: previous-placement
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps ${{ matrix.engine }}
+          python -c "from PIL import Image" || python -m pip install Pillow
+          python -m http.server 4173 > /tmp/world-http 2>&1 &
+          python -m http.server 4174 --directory previous-studio > /tmp/before-http 2>&1 &
+          python -m http.server 4175 --directory previous-placement > /tmp/placement-http 2>&1 &
+          STUDIO_ENGINE=${{ matrix.engine }} BASELINE=http://127.0.0.1:4174/ node tests/camp-world-browser.mjs
+          STUDIO_ENGINE=${{ matrix.engine }} PLACEMENT_BASELINE=http://127.0.0.1:4175/ node tests/camp-placement-browser.mjs
+          if [ "${{ matrix.engine }}" = "chromium" ]; then
+            PROOF_DIR=browser-proof/performance node tests/camp-performance-browser.mjs
+            PROOF_DIR=browser-proof/first-visit node tests/camp-first-visit-browser.mjs
+          fi
+          if [ "${{ matrix.engine }}" = "webkit" ]; then
+            PROOF_DIR=browser-proof/devices node tests/camp-device-browser.mjs
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: camp-world-${{ matrix.engine }}
+          path: |
+            browser-proof/world/
+            browser-proof/devices/
+            browser-proof/performance/
+            browser-proof/first-visit/
+            browser-proof/placement/
+          retention-days: 14
+
   public-http:
     runs-on: ubuntu-latest
     timeout-minutes: 4
@@ -62,7 +115,11 @@ jobs:
         timeout-minutes: 7
         run: |
           npm install --no-save --package-lock=false playwright
-          npx playwright install --with-deps chromium
+          # Ubuntu Actions already provides the core browser shared libraries.
+          # --with-deps unnecessarily downloads large apt font packages and
+          # timed out before any browser QA ran on PR #337 HEAD 969ac57.
+          # Keep a real Chromium launch in the following tests as the gate.
+          npx playwright install chromium
       - name: Verify candidate HOME guide and calculator entry at Pages subpath
         if: github.event_name == 'pull_request'
         run: |
@@ -72,6 +129,7 @@ jobs:
           python3 -m http.server 4173 --directory /tmp/soto-guide-preview > /tmp/soto-guide-preview.log 2>&1 &
           HOME_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/home-guide-browser.cjs
           CAMP_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/camp-buy-less-browser.mjs
+          CAMP_BASE=http://127.0.0.1:4173/sotojitaku/ node tests/camp-studio-browser.mjs
       - name: Inspect all four published experiences and catalog links
         env:
           SOTOJITAKU_BASE: https://stusaurus.github.io/sotojitaku/
